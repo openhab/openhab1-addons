@@ -8,13 +8,13 @@ You may define default values for parameters to action calls in the file `servic
 To override the default values, specify configuration parameters in the action call (using `Action override`).
 
 | Property            | Default | Required                        | Action override       | Description                                                                                                   |
-|---------------------|---------|:-------------------------------:|-----------------------|---------------------------------------------------------------------------------------------------------------|
-| accesstoken         |         | Yes                             | -                     | Pushbullet [API token](https://www.pushbullet.com/#settings) to send to devices       |
-| devicename          | DEFAULT | No                              |  botname              | The name of the openHAB bot                                                                                   |
-| defaultreceiver     |         | No                              | receiver              | The name of the Recipient                                                                                     |
-| bots                |         | No                              | -                     | Comma-separated list of multiple bots, each with its own settings below.                                    |
-| `<bot>`.devicename  |         | Yes, if using multiple bots     | botname               | Device name for a single bot                                                                                 |
-| `<bot>`.accesstoken |         | Yes, if using multiple bots     | -                                       | API token for a single bot                                                                 |
+|---------------------|---------|:-------------------------------:|-----------------------|---------------------------------------------------------------------------|
+| accesstoken         |         | Yes                             | -                     | Pushbullet [API token](#obtaining-an-api-key) to send to devices       |
+| devicename          | DEFAULT | No                              |  botname              | The name of the openHAB bot                                               |
+| defaultreceiver     |         | No                              | receiver              | The name of the Recipient                                                 |
+| bots                |         | No                              | -                     | Comma-separated list of multiple bots, each with its own settings below.  |
+| `<bot>`.devicename  |         | Yes, if using multiple bots     | botname               | Device name for a single bot                                               |
+| `<bot>`.accesstoken |         | Yes, if using multiple bots     | -                                       | API token for a single bot                               |
 
 ### Example Configurations
 Minimal (required):
