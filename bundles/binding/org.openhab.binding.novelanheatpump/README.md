@@ -18,7 +18,7 @@ The heat pump bundle connects to your heat pump via network. Make sure your heat
 
 ## Binding Configuration
 
-This binding can be configured in the file `services/novelanheatpump.cfg`.
+This binding can be configured in the file `services/novelanheatpump.cfg`. Make sure to remove "#" in the lines you edit, as "#" marks comments.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
@@ -148,3 +148,17 @@ Setpoint item=HeatPump_heating_temperature minValue=-10 maxValue=10 step=0.5
 Switch item=HeatPump_warmwater_operation_mode  mappings=[0="Auto", 1="Zuheizer", 2="Party", 3="Ferien", 4="Aus"]
 Setpoint item=HeatPump_warmwater_temperature minValue=10 maxValue=65 step=1
 ```
+
+## Troubleshooting
+Having troubles integrating your heatpump? Try this..
+1. Connect your heatpumpt to the LAN and configure the heatpump webserver (see manual). Activate DHCP Client. WebServer Password can be kept default (999999). Reboot your heatpump (power off/on) in order that IP connection works. 
+2. Try to access your heatpump with a webbrowser. Make sure your web browser supports Java applets (eg Internet Explorer not Edge)
+
+## Heatpump Compatibilty List
+
+With the following heatpumps the binding was successfully tested.
+
+| Vendor | Model| SW Version | Comments |
+|----------|---------|:--------:|-------------|
+| Novelan     |         |     |  |
+| CTA | Aeroheat CS 12is  |   V 1.73     | Had to use default port=8888 |
