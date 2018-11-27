@@ -1,6 +1,6 @@
 # Prowl Actions
 
-Prowl lets you use push notifications on iOS devices (please check openhab.cfg for required configuration settings):
+Prowl lets you use push notifications on iOS devices (please check $OPENHAB_CONF/services/prowl.cfg for required configuration settings):
 
 ## Actions
 
