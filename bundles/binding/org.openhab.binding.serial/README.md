@@ -54,7 +54,7 @@ The format has the following variations:
 ```
 serial="<port>@<baudrate>" 
 serial="<port>@<baudrate>,REGEX(<regular expression>)" 
-serial="<port>@<baudrate>,BASE64 
+serial="<port>@<baudrate>,BASE64"
 serial="<port>@<baudrate>,ON(<On string>),OFF(<Off string>)" 
 serial="<port>@<baudrate>,REGEX(<regular expression>), UP(<Up string>),DOWN(<Down string>), STOP(<Stop string>)" 
 ```
