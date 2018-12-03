@@ -90,6 +90,7 @@ tcp=">[192.168.0.2:3000:]" // same as REGEX above but outgoing, it connects to r
 ```
 
 Here's a full item configuration:
+
 ```
 String TCP_Lyngdorf	"Lyngdorf TCP"      	(gHifi)	[ "Hifi" ]	  { tcp=">[*:10.0.0.4:7000:]" }
 Switch	MyVirtualLyngdorfPowerSwitch	"Lyngdorf TDAI-2170"	(gHifi)	[ "Hifi" ]
@@ -107,5 +108,3 @@ The TCP binding may exhaust the memory and/or use up the CPU by trying to rebind
 
 An alternative solution to using a TCP binding may be to use MTQQ and a small python server delivering data to MTQQ message broker. 
 See [JGluch example on the community forum](https://community.openhab.org/t/solved-optoma-beamer-via-rs232-over-tcp-ip-connector/38719/10). 
-
-
