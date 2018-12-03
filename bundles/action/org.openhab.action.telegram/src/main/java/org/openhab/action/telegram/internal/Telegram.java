@@ -233,14 +233,12 @@ public class Telegram {
             URL url;
             try {
                 url = new URL(photoURL);
+                image = Files.readAllBytes(Paths.get(url.getPath()));
             } catch (MalformedURLException e) {
                 logger.warn("File specification {} is not properly formed: {}", photoURL, e.getMessage());
                 return false;
-            }
-            try {
-                image = Files.readAllBytes(Paths.get(url.getPath()));
             } catch (IOException e) {
-                logger.warn("Unable to read file {} from local file system: {}", url.getPath(), e.getMessage());
+                logger.warn("Unable to read file {} from local file system: {}", photoURL, e.getMessage());
                 return false;
             }
         } else {

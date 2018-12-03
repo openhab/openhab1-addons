@@ -146,7 +146,7 @@ when
     Item Light_GF_Living_Table changed
 then
     var String base64Image = "data:image/jpeg;base64, LzlqLzRBQ..."
-    sendTelegramPhoto("bot1", base64Image, "sent from Openhab")
+    sendTelegramPhoto("bot1", base64Image, "sent from openHAB")
 end
 ```
 
@@ -159,7 +159,7 @@ rule "Send telegram with local image and caption"
 when
     Item Light_GF_Living_Table changed
 then
-    sendTelegramPhoto("bot1", "file///path/to/local/image.jpg", "sent from Openhab")
+    sendTelegramPhoto("bot1", "file:///path/to/local/image.jpg", "sent from openHAB")
 end
 ```
 
@@ -172,6 +172,6 @@ rule "Send telegram with Image Item image and caption"
 when
     Item Webcam_Image changed
 then
-    sendTelegramPhoto("bot1", Webcam_Image.state.toFullString, "sent from Openhab")
+    sendTelegramPhoto("bot1", Webcam_Image.state.toFullString, "sent from openHAB")
 end
 ```
