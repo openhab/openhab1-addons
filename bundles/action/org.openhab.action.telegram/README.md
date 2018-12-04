@@ -32,7 +32,8 @@ Each of the actions returns `true` on success or `false` on failure.
 
 - `sendTelegram(String group, String message)`: Sends a Telegram via Telegram REST API - direct message
 - `sendTelegram(String group, String format, Object... args)`: Sends a Telegram via Telegram REST API - build message with format and args
-- `sendTelegramPhoto(String group, String photoURL, String caption)`: Sends a Picture via Telegram REST API
+- `sendTelegramPhoto(String group, String photoURL, String caption)`: Sends a Picture via Telegram REST API.
+The URL can be specified using the http, https, and file protocols.
 - `sendTelegramPhoto(String group, String photoURL, String caption, Integer timeoutMillis)`: Sends a Picture via Telegram REST API, using custom HTTP timeout
 - `sendTelegramPhoto(String group, String photoURL, String caption, String username, String password)`: Sends a Picture, protected by username/password authentication, via Telegram REST API
 - `sendTelegramPhoto(String group, String photoURL, String caption, String username, String password, int timeoutMillis, int retries)`: Sends a Picture, protected by username/password authentication, using custom HTTP timeout and retries, via Telegram REST API
@@ -95,7 +96,7 @@ When sending an image from a URL, do not place the username/password in the URL 
 `http://<username>:<password>@server/image.png`; pass the credentials to the `sendTelegramPhoto`
 method instead.
 
-`http` and `https` are the only protocols allowed.
+`http`, `https`, and `file` are the only protocols allowed.
 
 telegram.rules
 
@@ -145,7 +146,20 @@ when
     Item Light_GF_Living_Table changed
 then
     var String base64Image = "data:image/jpeg;base64, LzlqLzRBQ..."
-    sendTelegramPhoto("bot1", base64Image, "sent from Openhab")
+    sendTelegramPhoto("bot1", base64Image, "sent from openHAB")
+end
+```
+
+To send an image that resides on the local computer file system:
+
+telegram.rules
+
+```java
+rule "Send telegram with local image and caption"
+when
+    Item Light_GF_Living_Table changed
+then
+    sendTelegramPhoto("bot1", "file:///path/to/local/image.jpg", "sent from openHAB")
 end
 ```
 
@@ -158,6 +172,6 @@ rule "Send telegram with Image Item image and caption"
 when
     Item Webcam_Image changed
 then
-    sendTelegramPhoto("bot1", Webcam_Image.state.toFullString, "sent from Openhab")
+    sendTelegramPhoto("bot1", Webcam_Image.state.toFullString, "sent from openHAB")
 end
 ```
