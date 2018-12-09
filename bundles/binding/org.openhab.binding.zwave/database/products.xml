@@ -3532,6 +3532,15 @@
 		<Product>
 			<Reference>
 				<Type>0002</Type>
+				<Id>0003</Id>
+			</Reference>
+			<Model>RGBWE2</Model>
+			<Label lang="en">RGBW Bulb  V2</Label>
+			<ConfigFile>zipato/bulb2rgbw.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
 				<Id>0002</Id>
 			</Reference>
 			<Model>RGBWE27ZW</Model>
@@ -3999,6 +4008,19 @@
 			<Model>Flood sensor</Model>
 			<Label lang="en">Coolcam flood/water sensor</Label>
 			<ConfigFile>shenzhen/floodsensor.xml</ConfigFile>
+		</Product>
+		<Product>
+			<Reference>
+				<Type>0003</Type>
+				<Id>008B</Id>
+			</Reference>
+			<Reference>
+				<Type>0003</Type>
+				<Id>108B</Id>
+			</Reference>
+			<Model>EU-2</Model>
+			<Label lang="en">Light Switch 2 Channel</Label>
+			<ConfigFile>shenzhen/eu2.xml</ConfigFile>
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
