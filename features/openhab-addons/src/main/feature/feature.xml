@@ -36,14 +36,6 @@
     <configfile finalname="${openhab.conf}/services/mios.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mios</configfile>
   </feature>
 
-  <feature name="openhab-action-mqtt" description="MQTT Action" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
-    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mqtt/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
-  </feature>
-
   <feature name="openhab-action-pebble" description="Pebble Action" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -425,15 +417,6 @@
     <configfile finalname="${openhab.conf}/transform/miosUnSwitchIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-unswitchin</configfile>
     <configfile finalname="${openhab.conf}/transform/miosWeatherConditionGroupIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-weatherconditiongroupin</configfile>
     <configfile finalname="${openhab.conf}/transform/miosZWaveStatusIn.map" override="true">mvn:${project.groupId}/openhab-addons-external/${project.version}/map/mios-zwavestatusin</configfile>
-  </feature>
-
-  <feature name="openhab-binding-mqtt1" description="MQTT Binding (1.x)" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mqtt/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/mqtt.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt</configfile>
-    <configfile finalname="${openhab.conf}/services/mqtt-eventbus.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqtt-eventbus</configfile>
   </feature>
 
   <feature name="openhab-binding-mystromecopower1" description="MystromEcoPower Binding" version="${project.version}">
