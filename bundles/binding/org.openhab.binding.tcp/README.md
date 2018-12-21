@@ -33,8 +33,11 @@ It is thus not possible to have different postambles for two distinct endpoints.
 | bindingsharedconnections | false | No | Set to `true` to share connections between item binding configurations |
 | directionssharedconnections | true | No | Set to `false` to not share connections between inbound and outbound connections |
 
-Note that certain parameters imply other parameters. bindingsharedconnections=true will imply that itemsharedconnections=true (and give warning if itemsharedconnections=false).
-directionssharedconnections=true will imply bindingsharedconnections=true (and give warning if bindingsharedconnections=false)
+The indicated default values apply to both bindings unless otherwise noted.
+
+Use of certain parameters requires other parameters. If these dependencies are not satisified, warnings will be generated:
+- bindingsharedconnections=true requires itemsharedconnections=true
+- directionssharedconnections=true requires bindingsharedconnections=true
 
 ## Item Configuration
 
@@ -46,7 +49,6 @@ The format of the binding configuration is simple and looks like this:
 
 ```
 tcp="<direction>[<command>:<ip address>:<port>:<transformationrule>], <direction>[<command>:<ip address>:<port>:<transformationrule>], ..."
-tcp="<direction>[<ip address>:<port>:<transformationrule>]"
 ```
 
 where `<direction>` is one of the following values:
@@ -54,7 +56,7 @@ where `<direction>` is one of the following values:
 - `<` for inbound-triggered communication, whereby the openHAB runtime will act as a server and listen for incoming connections from the specified `<ip address>:<port>`
 - `>` for outbound-triggered communication, whereby the openHAB runtime will act as a client and establish an outbound connection to the specified `<ip address>:<port>`
 
-`<command>` is the openHAB command. `<command>:` can be omitted or be '*'. Omit the command if using generic mapping via transformations, or if no mapping is needed.
+`<command>` is the openHAB command. `<command>:` can be omitted or have the value '*'. Omit the command if using generic mapping via transformations, or if no mapping is needed.
 
 `<ip address>` is the hostname or IP address in dotted notation of the remote host.
 
@@ -68,25 +70,31 @@ where `<direction>` is one of the following values:
 
 ## Item Commands and updates - sending and receiving data
 
-When the tcp-item receives a command it will send that data to the remote party. When data is received on the TCP-connection the tcp-item will get its state updated with a postUpdate.
-Note that this is identical for incoming and outgoing directions. The direction just says who connects to who (client/server), data can be sent and received from either.
+When the item receives a command it will send that data to the remote party. When data is received on the TCP connection, the item will get its state updated with a postUpdate.
+This is identical for incoming and outgoing directions. The direction just says who connects to whom (client/server); data can be sent and received from either.
 
 ## Examples
 
 Here are some examples of valid binding configuration strings. 
 
-In the first examples we open a port on the OpenHAB server and listen for incoming connections.
+Open a port on the openHAB server and listen for incoming connections (e.g. for a String Item that captures some state of a remote device that connects to openHAB):
 
 ```
 tcp="<[192.168.0.2:3000:'REGEX((.*))']"
 ```
 
-Here we connect to a remote server:
+Connect to a remote server, for a Switch Item where values are converted using the my.device.map:
 
 ```
-tcp=">[ON:192.168.0.1:3000:'MAP(my.device.map)'], >[OFF:192.168.0.1:3000:'MAP(my.device.map)']" // for a Switch Item where values are converted using the my.device.map
+tcp=">[ON:192.168.0.1:3000:'MAP(my.device.map)'], >[OFF:192.168.0.1:3000:'MAP(my.device.map)']"
+```
+
+Connect to a remote server and send any commands received.
+Both of the following are equivalent.
+
+```
 tcp=">[192.168.0.2:3000:REGEX((.*))]" 
-tcp=">[192.168.0.2:3000:]" // same as REGEX above but outgoing, it connects to remote port, and sends any commands received
+tcp=">[192.168.0.2:3000:]"
 ```
 
 Here's a full item configuration:
@@ -102,9 +110,9 @@ The data can be mapped via rules to virtual items such as MyVirtualLyngdorfPower
 
 ## Known Issues
 
-The TCP binding may exhaust the memory and/or use up the CPU by trying to rebind connections. See [this GitHub issue](https://github.com/openhab/openhab1-addons/issues/2706). 
+The TCP binding may exhaust the memory and/or use up the CPU by trying to rebind connections. [(GitHub issue 2706)](https://github.com/openhab/openhab1-addons/issues/2706).
 
-## Alternative solutions
+## Alternative Solutions
 
-An alternative solution to using a TCP binding may be to use MTQQ and a small python server delivering data to MTQQ message broker. 
-See [JGluch example on the community forum](https://community.openhab.org/t/solved-optoma-beamer-via-rs232-over-tcp-ip-connector/38719/10). 
+An alternative solution to using the TCP Binding may be to use MQTT.  See [JGluch's example](https://community.openhab.org/t/solved-optoma-beamer-via-rs232-over-tcp-ip-connector/38719/10) on the community forum.
+
