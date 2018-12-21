@@ -8,11 +8,12 @@ The TCP & UDP Bindings act as a network client or as a network server.
 
 ## Binding Configuration
 
-The TCP and UDP bindings can be configured in the files `services/tcp.cfg` and `services/udp.cfg`, respectively.
+The TCP and UDP bindings can be configured in the files `services/tcp.cfg` and `services/udp.cfg`, respectively. Note that the parameters set in these files 
+will be common for all the TCP connections of this binding, both client and server connections.
+It is thus not possible to have different postambles for two distinct endpoints.
 
 > Note: This is optional for the configuration and not necessary for receiving data. Item-defintions are enough for receiving data. (Developer confirm? 20150128). There's a bug in the binding that requires at least one udp configuration to be defined or the binding will not send UDP messages.
 
-The indicated default values apply to both bindings unless otherwise noted.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
@@ -32,6 +33,9 @@ The indicated default values apply to both bindings unless otherwise noted.
 | bindingsharedconnections | false | No | Set to `true` to share connections between item binding configurations |
 | directionssharedconnections | true | No | Set to `false` to not share connections between inbound and outbound connections |
 
+Note that certain parameters imply other parameters. bindingsharedconnections=true will imply that itemsharedconnections=true (and give warning if itemsharedconnections=false).
+directionssharedconnections=true will imply bindingsharedconnections=true (and give warning if bindingsharedconnections=false)
+
 ## Item Configuration
 
 The syntax for the TCP & UDP binding configuration string is explained here:
@@ -42,6 +46,7 @@ The format of the binding configuration is simple and looks like this:
 
 ```
 tcp="<direction>[<command>:<ip address>:<port>:<transformationrule>], <direction>[<command>:<ip address>:<port>:<transformationrule>], ..."
+tcp="<direction>[<ip address>:<port>:<transformationrule>]"
 ```
 
 where `<direction>` is one of the following values:
@@ -49,7 +54,7 @@ where `<direction>` is one of the following values:
 - `<` for inbound-triggered communication, whereby the openHAB runtime will act as a server and listen for incoming connections from the specified `<ip address>:<port>`
 - `>` for outbound-triggered communication, whereby the openHAB runtime will act as a client and establish an outbound connection to the specified `<ip address>:<port>`
 
-`<command>` is the openHAB command. For String items, `<command>:` can be omitted.
+`<command>` is the openHAB command. `<command>:` can be omitted or be '*'. Omit the command if using generic mapping via transformations, or if no mapping is needed.
 
 `<ip address>` is the hostname or IP address in dotted notation of the remote host.
 
@@ -61,11 +66,45 @@ where `<direction>` is one of the following values:
 
 > :warning: The `<transformationrule>` field will be stripped of its single quotes if they are present; this means that in any case, `'TEXT'` is treated the same way as `TEXT`.
 
+## Item Commands and updates - sending and receiving data
+
+When the tcp-item receives a command it will send that data to the remote party. When data is received on the TCP-connection the tcp-item will get its state updated with a postUpdate.
+Note that this is identical for incoming and outgoing directions. The direction just says who connects to who (client/server), data can be sent and received from either.
+
 ## Examples
 
-Here are some examples of valid binding configuration strings:
+Here are some examples of valid binding configuration strings. 
+
+In the first examples we open a port on the OpenHAB server and listen for incoming connections.
+
+```
+tcp="<[192.168.0.2:3000:'REGEX((.*))']"
+```
+
+Here we connect to a remote server:
 
 ```
 tcp=">[ON:192.168.0.1:3000:'MAP(my.device.map)'], >[OFF:192.168.0.1:3000:'MAP(my.device.map)']" // for a Switch Item where values are converted using the my.device.map
-tcp="<[192.168.0.2:3000:'REGEX((.*))']" // for a String Item that captures some state of a remote device that connects to openHAB
+tcp=">[192.168.0.2:3000:REGEX((.*))]" 
+tcp=">[192.168.0.2:3000:]" // same as REGEX above but outgoing, it connects to remote port, and sends any commands received
 ```
+
+Here's a full item configuration:
+
+```
+String TCP_Lyngdorf	"Lyngdorf TCP"      	(gHifi)	[ "Hifi" ]	  { tcp=">[*:10.0.0.4:7000:]" }
+Switch	MyVirtualLyngdorfPowerSwitch	"Lyngdorf TDAI-2170"	(gHifi)	[ "Hifi" ]
+```
+
+The TCP Binding will open a port to remote host 10.0.0.4:7000. Any commands received on the item will be sent to the remote with pre and postfix specified by preamble and postamble. 
+The Item will get postUpdate on any data received from the remote via the TCP connection. 
+The data can be mapped via rules to virtual items such as MyVirtualLyngdorfPowerSwitch.
+
+## Known Issues
+
+The TCP binding may exhaust the memory and/or use up the CPU by trying to rebind connections. See [this GitHub issue](https://github.com/openhab/openhab1-addons/issues/2706). 
+
+## Alternative solutions
+
+An alternative solution to using a TCP binding may be to use MTQQ and a small python server delivering data to MTQQ message broker. 
+See [JGluch example on the community forum](https://community.openhab.org/t/solved-optoma-beamer-via-rs232-over-tcp-ip-connector/38719/10). 
