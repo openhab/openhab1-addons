@@ -1,36 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>org.openhab.bundles</groupId>
-		<artifactId>action</artifactId>
-		<version>1.11.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.action.xpl</bundle.symbolicName>
-		<bundle.namespace>org.openhab.action.xpl</bundle.namespace>
-		<deb.name>openhab-addon-action-xpl</deb.name>
-		<deb.description>${project.name}</deb.description>
-		<deb.depends>openhab-addon-io-xpl</deb.depends>
-	</properties>
+  <parent>
+    <groupId>org.openhab.bundles</groupId>
+    <artifactId>action</artifactId>
+    <version>1.14.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.openhab.action</groupId>
+  <artifactId>org.openhab.action.xpl</artifactId>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openhab.action</groupId>
-	<artifactId>org.openhab.action.xpl</artifactId>
+  <packaging>eclipse-plugin</packaging>
 
-	<name>openHAB xPL Action</name>
-
-	<packaging>eclipse-plugin</packaging>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+  <name>openHAB xPL Action</name>
 
 </project>

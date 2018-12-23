@@ -4,7 +4,7 @@ The pilight binding allows openHAB to communicate with a [pilight](http://www.pi
 
 > pilight is a free open source full fledge domotica solution that runs on a Raspberry Pi, HummingBoard, BananaPi, Radxa, but also on *BSD and various linuxes (tested on Arch, Ubuntu and Debian). It's open source and freely available for anyone. pilight works with a great deal of devices and is frequency independent. Therefor, it can control devices working at 315Mhz, 433Mhz, 868Mhz etc. Support for these devices are dependent on community, because we as developers don't own them all.
 
-pilight is a cheap way to control 'Click On Click Off' devices. It started as an application for the Raspberry Pi (using the GPIO interface) but it's also possible now to connect it to any other PC using an Arduino Nano. You will need a cheap 433Mhz transceiver in both cases. See the [Pilight manual](http://manual.pilight.org/en/electronics-wiring) for more information.
+pilight is a cheap way to control 'Click On Click Off' devices. It started as an application for the Raspberry Pi (using the GPIO interface) but it's also possible now to connect it to any other PC using an Arduino Nano. You will need a cheap 433Mhz transceiver in both cases. See the [Pilight manual](https://manual.pilight.org/electronics/wiring.html) for more information.
 
 The binding supports Switch, Dimmer, Contact, String, and Number items.
 

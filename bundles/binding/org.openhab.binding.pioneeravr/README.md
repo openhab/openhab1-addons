@@ -4,7 +4,7 @@ This binding allows openHAB to remotely control a Pioneer AV receiver equipped w
 
 Most common commands are supported directly, special commands can be added manually using the "advanced command" mechanism described below.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/pioneeravr/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/pioneeravr/).
 
 ## Binding configuration
 

@@ -114,7 +114,9 @@ public class FatekSwitchItem extends FatekPLCItem {
 			}
 			reg = reg1;
 		} else {
-			value = !negate2;
+			if (negate2){
+				value = !value;
+			}
 			reg = reg2;
 		}
 

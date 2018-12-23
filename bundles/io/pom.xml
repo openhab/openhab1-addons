@@ -1,24 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.11.0-SNAPSHOT</version>
+    <version>1.14.0-SNAPSHOT</version>
   </parent>
-
-  <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.bundles</groupId>
   <artifactId>io</artifactId>
 
-  <name>openHAB I/O Components</name>
-
   <packaging>pom</packaging>
+
+  <name>openHAB I/O Components</name>
 
   <modules>
     <module>org.openhab.io.caldav</module>
-    <!--module>org.openhab.io.cv</module-->
-    <module>org.openhab.io.dropbox</module>
     <module>org.openhab.io.gcal</module>
     <module>org.openhab.io.gcal.test</module>
     <module>org.openhab.io.gpio</module>

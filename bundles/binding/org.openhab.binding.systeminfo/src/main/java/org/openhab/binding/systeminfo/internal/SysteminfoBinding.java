@@ -280,7 +280,7 @@ public class SysteminfoBinding extends AbstractActiveBinding<SysteminfoBindingPr
             }
 
         } catch (SigarException e) {
-            logger.error("Error occured while reading KPI's", e);
+            logger.error("Error occurred while reading KPI's", e);
         }
 
         return state;

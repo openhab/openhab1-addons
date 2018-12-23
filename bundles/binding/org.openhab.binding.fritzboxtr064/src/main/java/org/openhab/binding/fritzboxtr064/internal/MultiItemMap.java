@@ -16,7 +16,7 @@ import java.util.function.Function;
 /**
  * {@link ItemMap} for a FritzBox SOAP service which returns the values of multiple items in
  * a single service response. The value of each {@link #getItemCommands() configured command} is
- * read from one {@link #getReadDataOutName(String)} XML element in the service response by
+ * read from one {@link #getItemArgumentName(String)} XML element in the service response by
  * a {@link SoapValueParser}.
  *
  * @author Michael Koch <tensberg@gmx.net>
@@ -40,7 +40,7 @@ public class MultiItemMap extends AbstractItemMap {
     }
 
     @Override
-    public String getReadDataOutName(String itemCommand) {
+    public String getItemArgumentName(String itemCommand) {
         if (!_itemCommands.contains(itemCommand)) {
             throw new IllegalArgumentException("unsupported itemCommand " + itemCommand);
         }

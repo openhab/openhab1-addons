@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -25,10 +25,8 @@ import org.slf4j.LoggerFactory;
  */
 public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements MqttMessageProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger(MqttMessagePublisher.class);
-
+    private final Logger logger = LoggerFactory.getLogger(MqttMessagePublisher.class);
     private MqttSenderChannel senderChannel;
-
     private String trigger;
 
     /**
@@ -43,7 +41,6 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
 
         String[] config = splitConfigurationString(configuration);
         try {
-
             if (config.length != 5) {
                 throw new BindingConfigParseException("Configuration requires 5 parameters separated by ':'");
             }
@@ -83,7 +80,6 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
                 setTransformationRule(config[4].trim());
                 initTransformService();
             }
-
         } catch (BindingConfigParseException e) {
             throw new BindingConfigParseException(
                     "Configuration '" + configuration + "' is not a valid outbound configuration: " + e.getMessage());
@@ -94,13 +90,14 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
      * Check if this configuration supports processing of the given State.
      * 
      * @param state
-     *            for which to check if we can process.
-     * @return true if processing is supported.
+     *            for which to check if we can process
+     * @return true if processing is supported
      */
     public boolean supportsState(State state) {
         if (getMessageType().equals(MessageType.COMMAND)) {
             return false;
         }
+
         if (getTrigger().equals("*")) {
             return true;
         }
@@ -112,13 +109,14 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
      * Check if this configuration supports processing of the given Command.
      * 
      * @param command
-     *            for which to check if we can process.
-     * @return true if processing is supported.
+     *            for which to check if we can process
+     * @return true if processing is supported
      */
     public boolean supportsCommand(Command command) {
         if (getMessageType().equals(MessageType.STATE)) {
             return false;
         }
+
         if (getTrigger().equals("*")) {
             return true;
         }
@@ -132,12 +130,11 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
      * performed, the default parameters are replaced in the content string.
      * 
      * @param value
-     *            command or state in string representation.
-     * @return message content.
+     *            command or state in string representation
+     * @return message content
      * @throws Exception
      */
     private byte[] createMessage(String value) throws Exception {
-
         if (getTransformationServiceName() != null && getTransformationService() == null) {
             logger.debug("Sending message before transformation service '{}' was initialized.");
             initTransformService();
@@ -156,6 +153,7 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
         } else {
             content = StringUtils.replace(content, "${command}", value);
         }
+
         content = StringUtils.replace(content, "${itemName}", getItemName());
         return content.getBytes();
     }
@@ -168,13 +166,14 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
      */
     public void publish(String topic, byte[] message) {
         if (senderChannel == null) {
+            logger.debug("Unable to publish. No senderChannel exists.");
             return;
         }
 
         try {
-            senderChannel.publish(topic, createMessage(new String(message)));
+            senderChannel.publish(topic, createMessage(new String(message, "UTF-8")));
         } catch (Exception e) {
-            logger.error("Error publishing...", e);
+            logger.warn("Error publishing message to topic '{}'", topic, e);
         }
     }
 
@@ -185,7 +184,7 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
 
     /**
      * @return string representation of state or command which triggers the
-     *         sending of a message.
+     *         sending of a message
      */
     public String getTrigger() {
         return trigger;
@@ -193,7 +192,7 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
 
     /**
      * @return true if this publisher has been activated by the
-     *         MqttBrokerConnection.
+     *         MqttBrokerConnection
      */
     public boolean isActivated() {
         return senderChannel != null;
@@ -205,5 +204,4 @@ public class MqttMessagePublisher extends AbstractMqttMessagePubSub implements M
     public String getTopic(String itemName) {
         return StringUtils.replace(getTopic(), "${item}", itemName);
     }
-
 }

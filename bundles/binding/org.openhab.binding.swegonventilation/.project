@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.openhab.binding.swegonventilation</name>
+	<name>org.openhab.binding.swegonventilation1</name>
 	<comment>This is the Swegon ventilation binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>

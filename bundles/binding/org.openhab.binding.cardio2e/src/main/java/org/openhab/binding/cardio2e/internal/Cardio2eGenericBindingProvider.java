@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017, openHAB.org and others.
+ * Copyright (c) 2010-2018, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -143,7 +143,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = lightingTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for LIGHTING object number.");
 							}
@@ -171,7 +171,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = relayTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for RELAY object number.");
 							}
@@ -205,7 +205,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(1).transaction = relayTransactionDown;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept values '"
+										"Cannot accept values '"
 												+ parameters[1]
 												+ "' or '"
 												+ parameters[2]
@@ -235,7 +235,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = hvacTemperatureTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for HVAC_TEMPERATURE object number.");
 							}
@@ -269,7 +269,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = hvacControlTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for HVAC_CONTROL object number.");
 							}
@@ -304,7 +304,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = hvacControlTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for HVAC_CONTROL object number.");
 							}
@@ -343,7 +343,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = zonesTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1] + "' or '"
 												+ parameters[2]
 												+ "' for ZONES object.");
@@ -372,7 +372,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = zonesBypassTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for ZONES_BYPASS object.");
 							}
@@ -471,7 +471,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = curtainTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for CURTAIN object number.");
 							}

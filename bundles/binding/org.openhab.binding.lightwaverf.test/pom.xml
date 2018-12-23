@@ -1,35 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>org.openhab.bundles</groupId>
-		<artifactId>binding</artifactId>
-		<version>1.11.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.lightwaverf.test</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.lightwaverf.test</bundle.namespace>
-	</properties>
+  <parent>
+    <groupId>org.openhab.bundles</groupId>
+    <artifactId>binding</artifactId>
+    <version>1.14.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.openhab.binding</groupId>
+  <artifactId>org.openhab.binding.lightwaverf.test</artifactId>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openhab.binding</groupId>
-	<artifactId>org.openhab.binding.lightwaverf.test</artifactId>
+  <packaging>eclipse-test-plugin</packaging>
 
-	<name>openHAB LightwaveRf Binding Tests</name>
+  <name>openHAB LightwaveRf Binding Tests</name>
 
-	<packaging>eclipse-test-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho-version}</version>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <version>${tycho-version}</version>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

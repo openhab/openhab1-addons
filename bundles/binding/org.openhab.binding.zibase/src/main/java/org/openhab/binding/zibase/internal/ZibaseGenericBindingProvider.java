@@ -49,6 +49,11 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
     static final HashMap<String, Vector<String>> itemIdNameMap = new HashMap<String, Vector<String>>();
 
     /**
+     * Map that allows to get registered item by name
+     */
+    static final HashMap<String, Item> itemMap = new HashMap<String, Item>();
+	
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -76,8 +81,8 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
             throws BindingConfigParseException {
         super.processBindingConfiguration(context, item, bindingConfig);
 
-        logger.debug("read item : " + item);
-        logger.debug("read config : " + bindingConfig);
+        logger.debug("read item : {}", item);
+        logger.debug("read config : {}", bindingConfig);
 
         String[] itemConfig = StringUtils.split(bindingConfig, ZibaseBindingConfig.CONFIG_SEPARATOR);
 
@@ -86,6 +91,7 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
 
         itemNameMap.put(item.getName(), config);
         itemUniqueIdMap.put(item.getName() + "_" + id, config);
+        itemMap.put(item.getName(), item);
 
         if (itemIdNameMap.containsKey(id)) {
             if (!itemIdNameMap.get(id).contains(item.getName())) {
@@ -97,7 +103,7 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
             itemIdNameMap.put(id, vector);
         }
 
-        logger.info("Added " + item.getName() + " (id=" + id + ")");
+        logger.info("Added {} (id={})", item.getName(), id);
 
         addBindingConfig(item, config);
     }
@@ -110,7 +116,7 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
      * @return the item's config
      */
     public ZibaseBindingConfig getItemConfig(String itemName) {
-        logger.debug("retreive config for item : " + itemName);
+        logger.debug("retreive config for item : {}", itemName);
         ZibaseBindingConfig config = itemNameMap.get(itemName);
 
         return config;
@@ -123,7 +129,7 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
      * @return the item's config
      */
     public ZibaseBindingConfig getItemConfigByUniqueId(String uniqueId) {
-        logger.debug("retreive config for item : " + uniqueId);
+        logger.debug("retreive config for item : {}", uniqueId);
         ZibaseBindingConfig config = itemUniqueIdMap.get(uniqueId);
 
         return config;
@@ -137,5 +143,14 @@ public class ZibaseGenericBindingProvider extends AbstractGenericBindingProvider
      */
     public Vector<String> getItemNamesById(String rfId) {
         return itemIdNameMap.get(rfId);
+    }
+    
+    /**
+     * get registered item by its name
+     * @param name of item
+     * @return
+     */
+    public Item getItemByName(String itemName) {
+        return itemMap.get(itemName);
     }
 }

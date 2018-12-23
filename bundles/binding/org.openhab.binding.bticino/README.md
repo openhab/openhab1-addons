@@ -18,6 +18,8 @@ This binding can be configured in the file `services/bticino.cfg`.
 | webserver.port | 20000 | No   | OpenWebNet gateway port |
 | webserver.passwd | 12345 | No   | OpenWebNet gateway password |
 | webserver.rescan_secs | 120 | No | OpenWebNet bus status rescan interval |
+| webserver.heating_zones | 0 | No | OpenWebNet heating zones |
+| webserver.shutter_run_msecs | 0 | No | OpenWebNet Runtime of Shutter to calculate Position Feedback |
 
 A sample configuration could look like:
 
@@ -70,6 +72,8 @@ Group Corridor
 Group Living                                                                                                                                                                                 
 Group Plugs
 Group RollerUpShutters
+Group Heating
+Group HeatingActor
 
 // Sceneries
 Switch Movie_Scenery "Movie scenery"
@@ -87,6 +91,85 @@ Switch Doorbell_Light "Doorbell courtesy light" (Entrance, Lights) {bticino="if=
 // Rollershutters 
 Rollershutter RollUpShutter_1 "Roller-up shutter 1" (Living, RollerUpShutters) {bticino="if=webserver;who=2;what=0;where=46"}
 Rollershutter RollUpShutter_2 "Roller-up shutter 2" (Living, RollerUpShutters) {bticino="if=webserver;who=2;what=0;where=47"}
+
+//Heating
+Number ActualTemp_1 "Actual Temperature 1 [%.1f °C]" <temperature> (Heating) {bticino="if=default;who=4;what=0;where=1"}
+Number ControlTemp_1 "Control Temperature 1 [%.1f °C]" <temperature> (Heating) {bticino="if=default;who=4;what=12;where=1"}
+Number OffsetTemp_1 "Offset Temperature 1 [MAP(yourbticino_offset.map):%s]" <heating_offset> (Heating) {bticino="if=default;who=4;what=13;where=1"}
+Number SetTemp_1 "Set Temperature [%.1f °C]" <heating_set> (Heating) {bticino="if=default;who=4;what=14;where=1"}
+
+Number HCtrlMode_1 "Control Mode [MAP(yourbticino.map):%s]" <settings> (Heating) {bticino="if=default;who=4;what=100;where=1"}
+Number HOpMode_1 "Operation Mode [MAP(yourbticino.map):%s]" <heating_cooling> (Heating) {bticino="if=default;who=4;what=101;where=1"}
+
+Contact HValve_1 "Actor 1 [MAP(yourbticino.map):%s]" <undefloor_heating> (HeatingActor) {bticino="if=default;who=4;what=20;where=1"}
+
+Contact HPumpe "Pump [MAP(yourbticino.map):%s]" <pump> (HeatingActor) {bticino="if=default;who=4;what=20;where=0"}
+Number MHCtrlMode "Main Unit Control Mode [MAP(yourbticino.map):%s]" <heating> (Heating) {bticino="if=default;who=4;what=100;where=0"}
+Number HMCtrlRemote "Main Unit Remote [MAP(yourbticino.map):%s]" <heating> (Heating) {bticino="if=default;who=4;what=102;where=0"}
+String HMCtrlStatus "Main Unit Status [%s]" <heating> (Heating) {bticino="if=default;who=4;what=103;where=0"}
+String HMCtrlFailure "Main Unit Failure [%s]" <heating> (Heating) {bticino="if=default;who=4;what=104;where=0"}
+```
+
+transform/yourbticino.map
+
+```
+CLOSED=Heating OFF
+OPEN=Heating ON
+
+1=HEATING
+2=COLLING
+
+20=Remote Control disabled
+21=Remote Control enabled
+
+102=FREEZE PROTECTION
+103=OFF
+110=MANUAL
+111=AUTOMATIK
+
+202=FREEZE PROTECTION
+203=OFF
+210=MANUAL
+211=AUTOMATIK
+
+302=FREEZE PROTECTION
+303=OFF
+310=MANUAL
+311=AUTOMATIK
+
+1101=Program Winter 1
+1102=Program Winter 2
+1103=Program Winter 3
+
+1201=Scenario Winter 1
+1202=Scenario Winter 2
+..
+1216=Scenario Winter 16
+
+2101=Program Summer 1
+2102=Program Summer 2
+2103=Program Summer 3
+
+
+2201=Scenario Winter 1
+2202=Scenario Winter 2
+..
+2216=Scenario Winter 16
+```
+
+transform/yourbticino_offset.map
+
+```
+NULL=----
+0=+0 °C
+1=+1 °C
+2=+2 °C
+3=+3 °C
+4=-OFF-
+5=FREEZE
+-1=-1 °C
+-2=-2 °C
+-3=-3 °C
 ```
 
 sitemaps/yourbticino.sitemap
@@ -102,6 +185,23 @@ sitemap yourbticino label="Main panel" {
      Frame label="Sceneries" {                                                              
             Switch item=Movie_Scenery mappings=[OFF="Turn OFF",ON="Turn ON"]                                                                                                                                                                         
      }  
+     
+     Frame label="Heating Main Control Unit" {
+            Selection item=HMCtrlMode label="Control Mode Main Unit [%.1f]" mappings=[103="OFF", 102="FREEZE PROTECTION", 1101="Program Winter 1", 1201="Scenario Winter 1"]
+            Text item=HMCtrlRemote 
+            Text item=HMCtrlStatus
+            Text item=HMCtrlFailure
+            Default item=HPumpe 
+     }            
+     Frame label="Heating Room 1" {
+            Text item=ActualTemp_1
+            Text item=OffsetTemp_1 
+            Setpoint item=SetTemp_1 label="Set Point Temperature [%.1f °C]" step=0.5 minValue=16 maxValue=25
+            Text item=ControlTemp_1
+            Selection item=HCtrlMode_1 label="Control Mode [%.1f]" mappings=[103="OFF", 110="MANUAL", 111="AUTOMATIC", 102="FREEZE PROTECTION"]
+            Text item=HOpMode_1
+            Text item=HValve_1
+     }
 }
 ```
 
@@ -132,8 +232,8 @@ then
     }   
 end
 
-// Doorbel ringer light
-rule "Doorbel ringer"
+// Doorbell ringer light
+rule "Doorbell ringer"
 when
     Item Doorbell_Light received update
 then

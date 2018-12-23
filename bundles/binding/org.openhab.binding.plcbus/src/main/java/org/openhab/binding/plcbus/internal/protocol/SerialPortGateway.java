@@ -34,8 +34,9 @@ public class SerialPortGateway implements ISerialPortGateway {
     }
 
     @Override
-    public void send(TransmitFrame frame, IReceiveFrameContainer receivedFrameContainer) {
+    public synchronized void send(TransmitFrame frame, IReceiveFrameContainer receivedFrameContainer) {
         try {
+            logger.debug("thread {} entering send", Thread.currentThread());
             byte[] paket = Convert.toByteArray(frame.getBytes());
 
             OutputStream out = serialPort.getOutputStream();
@@ -50,6 +51,8 @@ public class SerialPortGateway implements ISerialPortGateway {
 
         } catch (Exception e) {
             logger.info("Error in write method: " + e.getMessage());
+        } finally {
+            logger.debug("thread {} leaving send", Thread.currentThread());
         }
     }
 

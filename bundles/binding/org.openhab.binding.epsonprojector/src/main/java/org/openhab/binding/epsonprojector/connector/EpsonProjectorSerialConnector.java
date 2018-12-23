@@ -86,21 +86,19 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, S
         if (out != null) {
             logger.debug("Close serial out stream");
             IOUtils.closeQuietly(out);
+            out = null;
         }
         if (in != null) {
             logger.debug("Close serial in stream");
             IOUtils.closeQuietly(in);
+            in = null;
         }
         if (serialPort != null) {
             logger.debug("Close serial port");
             serialPort.close();
+            serialPort.removeEventListener();
+            serialPort = null;
         }
-
-        serialPort.removeEventListener();
-
-        serialPort = null;
-        out = null;
-        in = null;
 
         logger.debug("Closed");
     }
@@ -136,7 +134,7 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, S
 
         } catch (IOException e) {
 
-            logger.debug("IO error occured...reconnect and resend ones");
+            logger.debug("IO error occurred...reconnect and resend ones");
             disconnect();
             connect();
 

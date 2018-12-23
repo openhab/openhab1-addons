@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -5581,7 +5581,7 @@ public class Thermostat extends AbstractMessagePart {
      * <p>
      * When adding a Climate it is optional whether you reference the new Climate in the schedule cells in the same
      * request or not. However, when deleting a Climate (by omitting that entire Climate object from the POST request)
-     * it can not be be deleted if it is still referenced in the schedule cells.
+     * it cannot be be deleted if it is still referenced in the schedule cells.
      *
      * <p>
      * There are three default Climates for each {@link Thermostat}, with possible <code>climateRef</code> values of

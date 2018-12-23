@@ -25,15 +25,17 @@ import java.util.Set;
 public interface ItemMap {
     /**
      * @return Names of the item commands which are provided by the response to the
-     *         {@link #getReadDataOutName(String) SOAP service command} of this map.
+     *         {@link #getItemArgumentName(String) SOAP service command} of this map.
      */
     Set<String> getItemCommands();
 
     /**
-     * @param itemCommand
-     * @return Name of the XML element in the service response which contains the value of the given command.
+     * Get the name of the XML element in the TR064 service call which contains the value of the given command.
+     * For writing calls, this is an element in the service request, for reading calls in the service response.
+     *
+     * @return Name of the XML element for the item value.
      */
-    String getReadDataOutName(String itemCommand);
+    String getItemArgumentName(String itemCommand);
 
     String getServiceId();
 

@@ -234,7 +234,7 @@ public class DSMRPort {
                 // Port was closed
                 logger.info("Read aborted: DSMRPort is closed");
             } else {
-                logger.error("Unexpected problem occured", npe);
+                logger.error("Unexpected problem occurred", npe);
 
                 close();
             }

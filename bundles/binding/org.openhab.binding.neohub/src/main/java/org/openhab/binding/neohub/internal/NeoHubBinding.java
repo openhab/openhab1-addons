@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.neohub.internal;
 
+import java.math.BigDecimal;
 import java.util.Dictionary;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +20,7 @@ import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
+import org.openhab.core.types.UnDefType;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Sebastian Prehn
  * @since 1.5.0
  */
-public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>implements ManagedService {
+public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(NeoHubBinding.class);
 
@@ -110,10 +112,28 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
     private State mapResponseToState(final InfoResponse infoResponse, final String deviceName,
             final NeoStatProperty property) {
         final Device deviceInfo = infoResponse.getDevice(deviceName);
+        if (deviceInfo == null) {
+            logger.warn("Failed to find device info for {}", deviceName);
+            return UnDefType.NULL;
+        }
         switch (property) {
             case CurrentTemperature:
-                return new DecimalType(deviceInfo.getCurrentTemperature());
+                BigDecimal currentTemperature = deviceInfo.getCurrentTemperature();
+                if (currentTemperature.intValue() == 255) {
+                    // when device is off or just reset we will get 255.255
+                    logger.debug("Current temperature for device {} is out of range (is device off?): {}", deviceName,
+                            currentTemperature);
+                    return UnDefType.UNDEF;
+                }
+                return new DecimalType(currentTemperature);
             case CurrentFloorTemperature:
+                BigDecimal currentFloortemperature = deviceInfo.getCurrentFloorTemperature();
+                // when floor sensor is off we will get 127
+                if (currentFloortemperature.intValue() == 127) {
+                    logger.debug("Current floor temperature for device {} is out of range (is floor sensor off?): {}",
+                            deviceName, currentFloortemperature);
+                    return UnDefType.UNDEF;
+                }
                 return new DecimalType(deviceInfo.getCurrentFloorTemperature());
             case CurrentSetTemperature:
                 return new DecimalType(deviceInfo.getCurrentSetTemperature());
@@ -121,6 +141,10 @@ public class NeoHubBinding extends AbstractActiveBinding<NeoHubBindingProvider>i
                 return new StringType(deviceInfo.getDeviceName());
             case Away:
                 return deviceInfo.isAway() ? OnOffType.ON : OnOffType.OFF;
+            case Holiday:
+                return deviceInfo.isHoliday() ? OnOffType.ON : OnOffType.OFF;
+            case HolidayDays:
+                return new DecimalType(deviceInfo.getHolidayDays());
             case Standby:
                 return deviceInfo.isStandby() ? OnOffType.ON : OnOffType.OFF;
             case Heating:

@@ -146,7 +146,7 @@ public class NibeHeatPumpBinding extends AbstractBinding<NibeHeatPumpBindingProv
             try {
                 connector.connect();
             } catch (NibeHeatPumpException e) {
-                logger.error("Error occured when connecting to heat pump", e);
+                logger.error("Error occurred when connecting to heat pump", e);
 
                 logger.warn("Closing Nibe heatpump message listener");
 
@@ -227,14 +227,14 @@ public class NibeHeatPumpBinding extends AbstractBinding<NibeHeatPumpBindingProv
 
                     }
                 } catch (NibeHeatPumpException e) {
-                    logger.error("Error occured when received data from heat pump", e);
+                    logger.error("Error occurred when received data from heat pump", e);
                 }
             }
 
             try {
                 connector.disconnect();
             } catch (NibeHeatPumpException e) {
-                logger.error("Error occured when disconnecting form heat pump", e);
+                logger.error("Error occurred when disconnecting form heat pump", e);
             }
         }
 

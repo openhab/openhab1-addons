@@ -2,7 +2,7 @@
 
 This binding allows openHAB to check whether a device is currently available on the network.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/network/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/network/).
 
 ## Binding Configuration
 

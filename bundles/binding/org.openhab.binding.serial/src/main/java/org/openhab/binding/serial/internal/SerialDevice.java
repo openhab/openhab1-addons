@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@ package org.openhab.binding.serial.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +62,7 @@ public class SerialDevice implements SerialPortEventListener {
 
     private CommPortIdentifier portId;
     private SerialPort serialPort;
+    private Charset charset;
 
     private InputStream inputStream;
 
@@ -117,12 +120,36 @@ public class SerialDevice implements SerialPortEventListener {
     }
 
     public SerialDevice(String port) {
-        this.port = port;
+        this(port, null);
+    }
+
+    public SerialDevice(String port, String charsetName) {
+        this(port, 9600, charsetName);
     }
 
     public SerialDevice(String port, int baud) {
+        this(port, baud, null);
+    }
+
+    public SerialDevice(String port, int baud, String charsetName) {
         this.port = port;
         this.baud = baud;
+        setCharset(charsetName);
+    }
+
+    private void setCharset(String charsetName) {
+        try {
+            if (charsetName == null) {
+                charset = Charset.defaultCharset();
+            } else {
+                charset = Charset.forName(charsetName);
+            }
+
+            logger.debug("Serial port '{}' charset '{}' set.", port, charsetName);
+        } catch (IllegalCharsetNameException e) {
+            logger.warn("Serial port '{}' charset '{}' not found.", port, charsetName);
+            charset = Charset.defaultCharset();
+        }
     }
 
     public void setEventPublisher(EventPublisher eventPublisher) {
@@ -188,7 +215,7 @@ public class SerialDevice implements SerialPortEventListener {
     /**
      * Initialize this device and open the serial port
      *
-     * @throws InitializationException if port can not be opened
+     * @throws InitializationException if port cannot be opened
      */
     @SuppressWarnings("rawtypes")
     public void initialize() throws InitializationException {
@@ -276,7 +303,7 @@ public class SerialDevice implements SerialPortEventListener {
                         // read data from serial device
                         while (inputStream.available() > 0) {
                             int bytes = inputStream.read(readBuffer);
-                            sb.append(new String(readBuffer, 0, bytes));
+                            sb.append(new String(readBuffer, 0, bytes, charset));
                         }
                         try {
                             // add wait states around reading the stream, so that interrupted transmissions are merged
@@ -289,7 +316,7 @@ public class SerialDevice implements SerialPortEventListener {
                     String result = sb.toString();
 
                     // send data to the bus
-                    logger.debug("Received message '{}' on serial port {}", new String[] { result, port });
+                    logger.debug("Received message '{}' on serial port {}", result, port);
 
                     if (eventPublisher != null) {
                         if (configMap != null && !configMap.isEmpty()) {
@@ -317,7 +344,7 @@ public class SerialDevice implements SerialPortEventListener {
                                                 eventPublisher.postUpdate(entry.getKey(), state);
                                             } catch (NumberFormatException e) {
                                                 logger.warn("Unable to convert regex result '{}' for item {} to number",
-                                                        new String[] { result, entry.getKey() });
+                                                        result, entry.getKey());
                                             }
                                         }
                                     } catch (TransformationException e) {
@@ -325,7 +352,7 @@ public class SerialDevice implements SerialPortEventListener {
                                     }
                                 } else if (entry.getValue().type == StringItem.class) {
                                     if (entry.getValue().base64) {
-                                        result = Base64.encodeBase64String(result.getBytes());
+                                        result = Base64.encodeBase64String(result.getBytes(charset));
                                     }
                                     eventPublisher.postUpdate(entry.getKey(), new StringType(result));
 
@@ -365,7 +392,7 @@ public class SerialDevice implements SerialPortEventListener {
                     }
 
                 } catch (IOException e) {
-                    logger.debug("Error receiving data on serial port {}: {}", new String[] { port, e.getMessage() });
+                    logger.debug("Error receiving data on serial port {}: {}", port, e.getMessage());
                 }
                 break;
         }
@@ -377,18 +404,18 @@ public class SerialDevice implements SerialPortEventListener {
      * @param msg the string to send
      */
     public void writeString(String msg) {
-        logger.debug("Writing '{}' to serial port {}", new String[] { msg, port });
+        logger.debug("Writing '{}' to serial port {}", msg, port);
         try {
             // write string to serial port
             if (msg.startsWith("BASE64:")) {
                 outputStream.write(Base64.decodeBase64(msg.substring(7, msg.length())));
             } else {
-                outputStream.write(msg.getBytes());
+                outputStream.write(msg.getBytes(charset));
             }
 
             outputStream.flush();
         } catch (IOException e) {
-            logger.error("Error writing '{}' to serial port {}: {}", new String[] { msg, port, e.getMessage() });
+            logger.warn("Error writing '{}' to serial port {}: {}", msg, port, e.getMessage());
         }
     }
 

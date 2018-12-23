@@ -32,7 +32,7 @@ import fr.zapi.Zibase;
  * @author Julien Tiphaine
  * @since 1.7.0
  */
-public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>implements ManagedService {
+public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider> implements ManagedService {
 
     /**
      * generic logger
@@ -154,21 +154,40 @@ public class ZibaseBinding extends AbstractActiveBinding<ZibaseBindingProvider>i
     /**
      * @{inheritDoc}
      *               TODO : handle all states (variables, calendars...)
+     *               TODO : catch java.net.SocketTimeoutException and deactivate / activate the binding to restart
+     *               connection
      */
     @Override
     protected void execute() {
         Collection<ZibaseBindingConfig> configs = ZibaseGenericBindingProvider.itemNameMap.values();
+
+        // Zibase may not yet be ready, or may be disconnected
+        if (zibase == null) {
+            return;
+        }
+
+        logger.debug("START Zibase items refresh (interval: {})", refreshInterval);
+
         for (ZibaseBindingConfig config : configs) {
 
             // Update receivers state
-            if (config.getClass() == ZibaseBindingConfigReceiver.class) {
+            if (config.getClass() == ZibaseBindingConfigReceiver.class
+                    || config.getClass() == ZibaseBindingConfigVariable.class) {
+
+                logger.debug("  trying to get zibase value for ID : {}", config.getId());
+
                 State state = config.getOpenhabStateFromZibaseValue(zibase, null);
-                eventPublisher.postUpdate(bindingProvider.getItemNamesById(config.getId()).firstElement(), state);
-            } else if (config.getClass() == ZibaseBindingConfigVariable.class) {
-                State state = config.getOpenhabStateFromZibaseValue(zibase, null);
-                eventPublisher.postUpdate(bindingProvider.getItemNamesById(config.getId()).firstElement(), state);
+
+                if (state != null) {
+                    logger.debug("  got value : {}", state);
+                    eventPublisher.postUpdate(bindingProvider.getItemNamesById(config.getId()).firstElement(), state);
+                } else {
+                    logger.info("  got null value from zibase for ID: {}", config.getId());
+                }
             }
         }
+
+        logger.debug("END Zibase items refresh");
     }
 
     /**

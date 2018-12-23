@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
- *
+ * Copyright (c) 2010-2018 by the respective copyright holders.
+ * <p>
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,10 @@ package org.openhab.action.telegram.internal;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -161,7 +165,7 @@ public class Telegram {
     static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
             @ParamDoc(name = "username") String username, @ParamDoc(name = "password") String password) {
-        return sendTelegramPhoto(group, photoURL, caption, null, null, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
+        return sendTelegramPhoto(group, photoURL, caption, username, password, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
 
     }
 
@@ -181,50 +185,85 @@ public class Telegram {
             return false;
         }
 
-        // load image from url
-        byte[] imageFromURL;
+        byte[] image;
 
-        HttpClient getClient = new HttpClient();
+        if (photoURL.toLowerCase().startsWith("http")) {
+            // load image from url
+            logger.debug("Photo URL provided.");
 
-        if (username != null && password != null) {
-            getClient.getParams().setAuthenticationPreemptive(true);
-            Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
-            getClient.getState().setCredentials(AuthScope.ANY, defaultcreds);
-        }
+            HttpClient getClient = new HttpClient();
 
-        GetMethod getMethod = new GetMethod(photoURL);
-        getMethod.getParams().setSoTimeout(timeoutMillis);
-        getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(retries, false));
-        try {
-            int statusCode = getClient.executeMethod(getMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.warn("Failed to retrieve an image. Received status: {}", getMethod.getStatusLine());
-                return false;
+            if (username != null && password != null) {
+                getClient.getParams().setAuthenticationPreemptive(true);
+                Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
+                getClient.getState().setCredentials(AuthScope.ANY, defaultcreds);
             }
 
-            // if the content-length is 0 (which shouldn't happen),
-            // flag an appropriate error
-            if (getMethod.getResponseContentLength() == 0) {
-                logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
+            GetMethod getMethod = new GetMethod(photoURL);
+            getMethod.getParams().setSoTimeout(timeoutMillis);
+            getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(retries, false));
+            try {
+                int statusCode = getClient.executeMethod(getMethod);
+                if (statusCode != HttpStatus.SC_OK) {
+                    logger.warn("Failed to retrieve an image. Received status: {}", getMethod.getStatusLine());
+                    return false;
+                }
+
+                // if the content-length is 0 (which shouldn't happen),
+                // flag an appropriate error
+                if (getMethod.getResponseContentLength() == 0) {
+                    logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
+                    return false;
+                }
+
+                image = getMethod.getResponseBody();
+            } catch (HttpException e) {
+                logger.warn("HTTP protocol violation: {}", e);
+                return false;
+            } catch (IOException e) {
+                logger.warn("Transport error: {}", e);
+                return false;
+            } finally {
+                getMethod.releaseConnection();
+            }
+        } else if (photoURL.toLowerCase().startsWith("file")) {
+            // Load image from local file system
+            logger.debug("Read file from local file system: {}", photoURL);
+            URL url;
+            try {
+                url = new URL(photoURL);
+                image = Files.readAllBytes(Paths.get(url.getPath()));
+            } catch (MalformedURLException e) {
+                logger.warn("File specification {} is not properly formed: {}", photoURL, e.getMessage());
+                return false;
+            } catch (IOException e) {
+                logger.warn("Unable to read file {} from local file system: {}", photoURL, e.getMessage());
                 return false;
             }
+        } else {
+            // Load image from provided base64 image
+            logger.debug("Photo base64 provided; converting to binary.");
 
-            imageFromURL = getMethod.getResponseBody();
-        } catch (HttpException e) {
-            logger.warn("HTTP protocol violation: {}", e);
-            return false;
-        } catch (IOException e) {
-            logger.warn("Transport error: {}", e);
-            return false;
-        } finally {
-            getMethod.releaseConnection();
+            if (photoURL.split(",").length > 1) {
+                String base64Image = photoURL.split(",")[1];
+
+                try {
+                    image = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+                } catch (Exception e) {
+                    logger.warn("Failed to convert base64 image to binary: {}", e);
+                    return false;
+                }
+            } else {
+                logger.warn("Invalid base64 image provided.");
+                return false;
+            }
         }
 
         // parse image type
         String imageType;
         try {
-            ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageFromURL));
+            ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(image));
             logger.debug("imageInputStream length: {}", iis.length());
             Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
             if (!imageReaders.hasNext()) {
@@ -252,8 +291,7 @@ public class Telegram {
                     new DefaultHttpMethodRetryHandler(retries, false));
             Part[] parts = new Part[caption != null ? 3 : 2];
             parts[0] = new StringPart("chat_id", groupTokens.get(group).getChatId());
-            parts[1] = new FilePart("photo",
-                    new ByteArrayPartSource(String.format("image.%s", imageType), imageFromURL));
+            parts[1] = new FilePart("photo", new ByteArrayPartSource(String.format("image.%s", imageType), image));
             if (caption != null) {
                 parts[2] = new StringPart("caption", caption, "UTF-8");
             }

@@ -168,7 +168,7 @@ public class RWESmarthomeConfig {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("host", host)
-                .append("username", username).append("password", "*****").append("aliveInterval", aliveInterval)
+                .append("username", username).append("aliveInterval", aliveInterval)
                 .append("bindingChangedInterval", bindingChangedInterval).toString();
     }
 

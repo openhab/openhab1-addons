@@ -44,9 +44,9 @@ public class ISYActiveBindingConfig {
     public ISYActiveBindingConfig(Map<Object, Object> config) {
 
         this.logger.info(
-                "OpenHab Binding Configuration(refresh='{}',upnp='{}',uuid='{}',ip='{}',port='{}',user='{}',password='{}')",
+                "openHAB Binding Configuration(refresh='{}',upnp='{}',uuid='{}',ip='{}',port='{}',user='{}')",
                 config.get("refresh"), config.get("upnp"), config.get("uuid"), config.get("ip"), config.get("port"),
-                config.get("user"), "xxxxxx");
+                config.get("user"));
 
         if (isNotBlank((String) config.get("refresh"))) {
             refreshInterval = Long.parseLong((String) config.get("refresh"));

@@ -1,50 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<parent>
-		<groupId>org.openhab.bundles</groupId>
-		<artifactId>action</artifactId>
-		<version>1.11.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.action.ciscospark</bundle.symbolicName>
-		<bundle.namespace>org.openhab.action.ciscospark</bundle.namespace>
-		<deb.name>openhab-addon-action-ciscospark</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
+  <parent>
+    <groupId>org.openhab.bundles</groupId>
+    <artifactId>action</artifactId>
+    <version>1.14.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.openhab.action</groupId>
+  <artifactId>org.openhab.action.ciscospark</artifactId>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openhab.action</groupId>
-	<artifactId>org.openhab.action.ciscospark</artifactId>
+  <packaging>eclipse-plugin</packaging>
 
-	<name>openHAB Cisco Spark Action</name>
+  <name>openHAB Cisco Spark Action</name>
 
-	<packaging>eclipse-plugin</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>javax.json</groupId>
+      <artifactId>javax.json-api</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-    <dependencies>
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
+      <version>1.0.4</version>
+      <!--<scope>test</scope>-->
+    </dependency>
 
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
-            <!--<scope>test</scope>-->
-        </dependency>
-
-    </dependencies>
+  </dependencies>
 </project>
