@@ -1,10 +1,10 @@
 # ekey Binding
 
-[ekey](http://ekey.net/) is an Austrian company that provides biometric
+[ekey](https://ekey.net/) is an Austrian company that provides biometric
 access-control solutions, more precisely fingerprint readers and
 corresponding controllers.  This binding extends the functionality of the
-products [ekey home](http://ekey.net/ekey-home-en) and
-[ekey multi](http://ekey.net/ekey-multi-en).
+products [ekey home](https://www.ekey.net/en/ekey_home) and
+[ekey multi](https://www.ekey.net/en/ekey_multi).
 
 ## Setup
 
@@ -16,7 +16,7 @@ Additionally the _ekey UDP converter_ is needed. This module provides an
 interface by converting the internal RS485 signals to Ethernet. Connecting
 this to the local network enables ekey to communicate to the ekey binding.
 
-![example](http://ekey.net/media/W/720/bilder/automatisierung/example_E.jpg)
+![example](https://ekey.net/media/W/720/bilder/automatisierung/example_E.jpg)
 
 The ekey binding translates information that comes from the ekey controller and
 makes it usable to openHAB.  Usually ekey sends packets with information on
