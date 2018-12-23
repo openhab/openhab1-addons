@@ -12,7 +12,7 @@ The TCP and UDP bindings can be configured in the files `services/tcp.cfg` and `
 will be common for all the TCP connections of this binding, both client and server connections.
 It is thus not possible to have different postambles for two distinct endpoints.
 
-> Note: This is optional for the configuration and not necessary for receiving data. Item-defintions are enough for receiving data. (Developer confirm? 20150128). There's a bug in the binding that requires at least one udp configuration to be defined or the binding will not send UDP messages.
+> Note: This is optional for the configuration and not necessary for receiving data. Item-definitions are enough for receiving data. There's a bug in the binding that requires at least one udp configuration to be defined or the binding will not send UDP messages.
 
 
 | Property | Default | Required | Description |
