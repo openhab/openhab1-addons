@@ -43,6 +43,7 @@ The LightwaveRF binding works on the concept of giving each item a type. This wi
 Valid types are
 
 | LightwaveRF Type | openHAB Type | Read/Write | Devices | From Version |
+|------------------|--------------|------------|---------|--------------|
 | DIMMER | Dimmer | Read/Write | Dimmer | 1.7.0 |
 | SWITCH | Switch | Read/Write | Switch | 1.7.0 |
 | MOOD | Number | Read/Write | Setup in LightwaveRF App | 1.9.0 |
