@@ -213,3 +213,4 @@ All known <B>Velux</B> devices can be handled by this binding. However, there mi
 ```
 [ERROR] [g.velux.things.VeluxProductReference] - PLEASE REPORT THIS TO MAINTAINER: VeluxProductReference(3) has found an unregistered ProductTypeId.
 ```
+## End-of-file
