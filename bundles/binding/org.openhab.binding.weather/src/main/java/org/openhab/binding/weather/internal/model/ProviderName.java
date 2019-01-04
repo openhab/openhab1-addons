@@ -19,7 +19,6 @@ public enum ProviderName {
     OPENWEATHERMAP,
     FORECASTIO,
     WORLDWEATHERONLINE,
-    YAHOO,
     HAMWEATHER,
     METEOBLUE;
 
@@ -37,8 +36,6 @@ public enum ProviderName {
             return FORECASTIO;
         } else if (WORLDWEATHERONLINE.toString().equalsIgnoreCase(name)) {
             return WORLDWEATHERONLINE;
-        } else if (YAHOO.toString().equalsIgnoreCase(name)) {
-            return YAHOO;
         } else if (HAMWEATHER.toString().equalsIgnoreCase(name)) {
             return HAMWEATHER;
         } else if (METEOBLUE.toString().equalsIgnoreCase(name)) {

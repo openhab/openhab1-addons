@@ -31,7 +31,6 @@ public class Condition {
             @Provider(name = ProviderName.FORECASTIO, property = "currently.summary"),
             @Provider(name = ProviderName.FORECASTIO, property = "daily.data.summary"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "weatherDesc.value"),
-            @Provider(name = ProviderName.YAHOO, property = "text"),
             @Provider(name = ProviderName.HAMWEATHER, property = "weather") })
     private String text;
 
@@ -42,8 +41,6 @@ public class Condition {
             @Provider(name = ProviderName.FORECASTIO, property = "time", converter = ConverterType.UNIX_DATE),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "localObsDateTime", converter = ConverterType.UTC_DATE),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "date", converter = ConverterType.DATE),
-            @Provider(name = ProviderName.YAHOO, property = "lastBuildDate", converter = ConverterType.FULL_UTC_DATE),
-            @Provider(name = ProviderName.YAHOO, property = "forecast.date", converter = ConverterType.SIMPLE_DATE),
             @Provider(name = ProviderName.HAMWEATHER, property = "ob.timestamp", converter = ConverterType.UNIX_DATE),
             @Provider(name = ProviderName.HAMWEATHER, property = "periods.timestamp", converter = ConverterType.UNIX_DATE),
             @Provider(name = ProviderName.METEOBLUE, property = "last_model_update", converter = ConverterType.JSON_DATE) })
@@ -51,7 +48,6 @@ public class Condition {
 
     @ProviderMappings({
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.id"),
-            @Provider(name = ProviderName.YAHOO, property = "code"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "weatherCode"),
             @Provider(name = ProviderName.HAMWEATHER, property = "weatherPrimaryCoded", converter = ConverterType.MULTI_ID),
             @Provider(name = ProviderName.METEOBLUE, property = "pictocode"),

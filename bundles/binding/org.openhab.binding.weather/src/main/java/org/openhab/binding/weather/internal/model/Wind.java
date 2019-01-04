@@ -29,7 +29,6 @@ public class Wind {
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "speed", converter = ConverterType.WIND_MPS),
             @Provider(name = ProviderName.FORECASTIO, property = "windSpeed", converter = ConverterType.WIND_MPS),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "windspeedKmph"),
-            @Provider(name = ProviderName.YAHOO, property = "wind.speed"),
             @Provider(name = ProviderName.HAMWEATHER, property = "windSpeedKPH"),
             @Provider(name = ProviderName.METEOBLUE, property = "wind_speed"),
             @Provider(name = ProviderName.METEOBLUE, property = "wind_speed_max") })
@@ -46,7 +45,6 @@ public class Wind {
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "deg"),
             @Provider(name = ProviderName.FORECASTIO, property = "windBearing"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "winddirDegree"),
-            @Provider(name = ProviderName.YAHOO, property = "wind.direction"),
             @Provider(name = ProviderName.HAMWEATHER, property = "windDirDEG") })
     private Integer degree;
 
@@ -60,7 +58,6 @@ public class Wind {
     private Double gust;
 
     @ProviderMappings({
-            @Provider(name = ProviderName.YAHOO, property = "wind.chill"),
             @Provider(name = ProviderName.WUNDERGROUND, property = "windchill_c"),
             @Provider(name = ProviderName.HAMWEATHER, property = "windchillC") })
     private Double chill;

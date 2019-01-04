@@ -4,8 +4,6 @@ The Weather binding collects current and forecast weather data from different pr
 
 ![](https://farm4.staticflickr.com/3946/15407522168_7ea34d51e1_o.png)
 
-There is also a binding specifically openHAB 2 [here](https://www.openhab.org/addons/bindings/yahooweather/) for Yahoo! Weather.
-
 ## Table of Contents
 
 <!-- MarkdownTOC -->
@@ -42,7 +40,6 @@ Before you can use a weather provider, you need to register a free apikey on the
 The apikey for the different weather providers, at least one must be specified.
 
 > [Hamweather](http://hamweather.com) has two apikeys (client_id, secret_id).
-> [Yahoo](https://weather.yahoo.com) does not need an apikey.
 
 | Property                  | Description |
 |---------------------------|-------------|
@@ -63,9 +60,8 @@ You can specify multiple locations by repeating these properties with different 
 | Property                               | Description |
 |----------------------------------------|-------------|
 | location.`<locationId>`.name           | the name of the location, useful for displaying in html layouts (optional) |
-| location.`<locationId>`.latitude       | the latitude the weather is retrieved from (not required for Yahoo) |
-| location.`<locationId>`.longitude      | the longitude the weather is retrieved from (not required for Yahoo) |
-| location.`<locationId>`.woeid          | required for Yahoo, the numeric Where On Earth ID, found at end of your weather.yahoo.com URL |
+| location.`<locationId>`.latitude       | the latitude the weather is retrieved from |
+| location.`<locationId>`.longitude      | the longitude the weather is retrieved from |
 | location.`<locationId>`.provider       | reference to a provider name |
 | location.`<locationId>`.language       | the language of the weather condition text (see provider homepage for supported languages) |
 | location.`<locationId>`.updateInterval | the interval in minutes the weather is retrieved |
@@ -75,13 +71,13 @@ You can specify multiple locations by repeating these properties with different 
 
 ### Configuration Example
 
-Let's display the current temperature and humidity in Salzburg (AT) from Yahoo.  
+Let's display the current temperature and humidity in Salzburg (AT).
 
 services/weather.cfg
 
 ```
 location.home.woeid=547826
-location.home.provider=Yahoo
+location.home.provider=ForecastIo
 location.home.language=de
 location.home.updateInterval=10
 ```
@@ -92,8 +88,6 @@ yourweather.items
 Number   Temperature   "Temperature [%.2f °C]"   {weather="locationId=home, type=temperature, property=current"}
 Number   Humidity      "Humidity [%d %%]"        {weather="locationId=home, type=atmosphere, property=humidity"}
 ```
-
-For Yahoo, you don't need an apikey, but you do need a woeid (which you can find as the numeric digits at the end of your weather.yahoo.com URL). The location has the locationId *home* and updates the weather data every 10 minutes.  
 
 In the items file, you reference the `<locationId>` and the type and property to display (see below for more).
 
@@ -308,7 +302,6 @@ Each provider sends different forecast days.
 - WorldWeatherOnline: 5 days (0-4)
 - Wunderground: 10 days (0-9)
 - Hamweather: 5 days (0-4)
-- Yahoo: 10 days (0-9)
 
 **Note:** If you omit the forecast property, the *current* conditions are shown, if you specify forecast=0, the forecast for *today* is shown.
 

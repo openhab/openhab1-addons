@@ -166,11 +166,7 @@ public class LocationConfig {
             return false;
         }
 
-        if (providerName == ProviderName.YAHOO) {
-            return woeid != null;
-        } else {
-            return latitude != null && longitude != null;
-        }
+        return latitude != null && longitude != null;
     }
 
     /**

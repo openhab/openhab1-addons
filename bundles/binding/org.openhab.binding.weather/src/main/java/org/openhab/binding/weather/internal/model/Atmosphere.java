@@ -28,7 +28,6 @@ public class Atmosphere {
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "humidity"),
             @Provider(name = ProviderName.FORECASTIO, property = "humidity", converter = ConverterType.FRACTION_INTEGER),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "humidity"),
-            @Provider(name = ProviderName.YAHOO, property = "atmosphere.humidity"),
             @Provider(name = ProviderName.HAMWEATHER, property = "humidity"),
             @Provider(name = ProviderName.METEOBLUE, property = "relative_humidity_avg") })
     private Integer humidity;
@@ -37,7 +36,6 @@ public class Atmosphere {
             @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.visibility_km"),
             @Provider(name = ProviderName.FORECASTIO, property = "visibility"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "visibility"),
-            @Provider(name = ProviderName.YAHOO, property = "atmosphere.visibility"),
             @Provider(name = ProviderName.HAMWEATHER, property = "visibilityKM") })
     private Double visibility;
 
@@ -46,7 +44,6 @@ public class Atmosphere {
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "pressure"),
             @Provider(name = ProviderName.FORECASTIO, property = "pressure"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "pressure"),
-            @Provider(name = ProviderName.YAHOO, property = "atmosphere.pressure"),
             @Provider(name = ProviderName.HAMWEATHER, property = "pressureMB"),
             @Provider(name = ProviderName.METEOBLUE, property = "pressure_hpa") })
     private Double pressure;

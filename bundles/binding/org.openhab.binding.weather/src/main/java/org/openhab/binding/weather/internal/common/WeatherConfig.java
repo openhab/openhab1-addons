@@ -37,18 +37,16 @@ import org.slf4j.LoggerFactory;
  * #weather:apikey2.Hamweather=
  *
  * # location configuration, you can specify multiple locations
- * #weather:location.<locationId1>.latitude=   (not required for Yahoo provider)
- * #weather:location.<locationId1>.longitude=  (not required for Yahoo provider)
+ * #weather:location.<locationId1>.latitude=   
+ * #weather:location.<locationId1>.longitude=  
  * #weather:location.<locationId1>.provider=
- * #weather:location.<locationId1>.woeid=      (required for Yahoo provider)
  * #weather:location.<locationId1>.language=
  * #weather:location.<locationId1>.updateInterval= (optional, defaults to 240)
  * #weather:location.<locationId1>.units=      (optional; defaults to "si")
  *
- * #weather:location.<locationId2>.latitude=   (not required for Yahoo provider)
- * #weather:location.<locationId2>.longitude=  (not required for Yahoo provider)
+ * #weather:location.<locationId2>.latitude=   
+ * #weather:location.<locationId2>.longitude=  
  * #weather:location.<locationId2>.provider=
- * #weather:location.<locationId2>.woeid=      (required for Yahoo provider)
  * #weather:location.<locationId2>.language=
  * #weather:location.<locationId2>.updateInterval= (optional, defaults to 240)
  * #weather:location.<locationId2>.units=      (optional; defaults to "si")
@@ -100,7 +98,7 @@ public class WeatherConfig {
                         "Incomplete location config for locationId '" + lc.getLocationId() + "'. Check openhab.cfg.");
             }
 
-            if (lc.getProviderName() != ProviderName.YAHOO && !providerConfigs.containsKey(lc.getProviderName())) {
+            if (!providerConfigs.containsKey(lc.getProviderName())) {
                 parseCompleted = true;
                 logger.warn("No apikey found for provider '{}'. Check openhab.cfg.", lc.getProviderName());
                 throw new ConfigurationException("weather",

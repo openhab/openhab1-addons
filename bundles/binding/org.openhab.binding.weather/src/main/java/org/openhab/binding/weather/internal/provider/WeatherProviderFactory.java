@@ -29,7 +29,6 @@ public class WeatherProviderFactory {
         weatherProviders.put(ProviderName.OPENWEATHERMAP, OpenWeatherMapProvider.class);
         weatherProviders.put(ProviderName.WORLDWEATHERONLINE, WorldWeatherOnlineProvider.class);
         weatherProviders.put(ProviderName.WUNDERGROUND, WundergroundProvider.class);
-        weatherProviders.put(ProviderName.YAHOO, YahooProvider.class);
         weatherProviders.put(ProviderName.METEOBLUE, MeteoBlueProvider.class);
     }
 
