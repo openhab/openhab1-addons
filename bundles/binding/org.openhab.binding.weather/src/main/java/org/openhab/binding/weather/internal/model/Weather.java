@@ -8,18 +8,16 @@
  */
 package org.openhab.binding.weather.internal.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-
 import org.openhab.binding.weather.internal.annotation.Forecast;
 import org.openhab.binding.weather.internal.annotation.ForecastMappings;
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Common provider model for weather data.
@@ -29,9 +27,7 @@ import java.util.List;
  */
 public class Weather {
     public static final String VIRTUAL_TEMP_MINMAX = "temperature.minMax";
-    private static final String[] VIRTUAL_PROPERTIES = new String[] {
-            VIRTUAL_TEMP_MINMAX
-        };
+    private static final String[] VIRTUAL_PROPERTIES = new String[] { VIRTUAL_TEMP_MINMAX };
     private Atmosphere atmosphere = new Atmosphere();
     private Clouds clouds = new Clouds();
     private Condition condition = new Condition();
@@ -40,29 +36,25 @@ public class Weather {
     private Wind wind = new Wind();
     private Station station = new Station();
     private ProviderName provider;
-    @ProviderMappings({@Provider(name = ProviderName.HAMWEATHER,property = "error.description")
-        , @Provider(name = ProviderName.FORECASTIO,property = "error")
-        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "message")
-        , @Provider(name = ProviderName.WORLDWEATHERONLINE,property = "data.error.msg")
-        , @Provider(name = ProviderName.WUNDERGROUND,property = "response.error.type")
-        , @Provider(name = ProviderName.METEOBLUE,property = "error_message")
-        , @Provider(name = ProviderName.APIXU,property = "error.message")
-        , @Provider(name = ProviderName.WEATHERBIT,property = "error")
-    })
+    @ProviderMappings({ @Provider(name = ProviderName.HAMWEATHER, property = "error.description"),
+            @Provider(name = ProviderName.FORECASTIO, property = "error"),
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "message"),
+            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "data.error.msg"),
+            @Provider(name = ProviderName.WUNDERGROUND, property = "response.error.type"),
+            @Provider(name = ProviderName.METEOBLUE, property = "error_message"),
+            @Provider(name = ProviderName.APIXU, property = "error.message"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "error") })
     private String error;
-    @ProviderMappings({@Provider(name = ProviderName.OPENWEATHERMAP,property = "cod")
-        , @Provider(name = ProviderName.WEATHERBIT,property = "count")
-    })
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "cod") })
     private Integer responseCode;
-    @ForecastMappings({@Forecast(provider = ProviderName.OPENWEATHERMAP,property = "list")
-        , @Forecast(provider = ProviderName.WUNDERGROUND,property = "forecast.simpleforecast.forecastday")
-        , @Forecast(provider = ProviderName.FORECASTIO,property = "daily.data")
-        , @Forecast(provider = ProviderName.WORLDWEATHERONLINE,property = "data.weather")
-        , @Forecast(provider = ProviderName.HAMWEATHER,property = "response.responses.response.periods")
-        , @Forecast(provider = ProviderName.METEOBLUE,property = "forecast")
-        , @Forecast(provider = ProviderName.APIXU,property = "forecast.forecastday")
-        , @Forecast(provider = ProviderName.WEATHERBIT,property = "forecast")
-    })
+    @ForecastMappings({ @Forecast(provider = ProviderName.OPENWEATHERMAP, property = "list"),
+            @Forecast(provider = ProviderName.WUNDERGROUND, property = "forecast.simpleforecast.forecastday"),
+            @Forecast(provider = ProviderName.FORECASTIO, property = "daily.data"),
+            @Forecast(provider = ProviderName.WORLDWEATHERONLINE, property = "data.weather"),
+            @Forecast(provider = ProviderName.HAMWEATHER, property = "response.responses.response.periods"),
+            @Forecast(provider = ProviderName.METEOBLUE, property = "forecast"),
+            @Forecast(provider = ProviderName.APIXU, property = "forecast.forecastday"),
+            @Forecast(provider = ProviderName.WEATHERBIT, property = "forecast") })
     private List<org.openhab.binding.weather.internal.model.Forecast> forecast = new ArrayList<org.openhab.binding.weather.internal.model.Forecast>();
 
     /**
@@ -175,17 +167,14 @@ public class Weather {
      */
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder(this,
-                ToStringStyle.SHORT_PREFIX_STYLE);
+        ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE);
 
         if (this instanceof org.openhab.binding.weather.internal.model.Forecast) {
-            tsb.append("day",
-                ((org.openhab.binding.weather.internal.model.Forecast) this).getDay());
+            tsb.append("day", ((org.openhab.binding.weather.internal.model.Forecast) this).getDay());
         }
 
-        tsb.append(temperature).append(atmosphere).append(clouds)
-           .append(condition).append(precipitation).append(wind).append(station)
-           .append(error);
+        tsb.append(temperature).append(atmosphere).append(clouds).append(condition).append(precipitation).append(wind)
+                .append(station).append(error);
 
         return tsb.toString();
     }
