@@ -8,19 +8,21 @@
  */
 package org.openhab.binding.weather.internal.model;
 
+
 /**
- * Definition of all supported weather prividers.
+ * Definition of all supported weather providers.
  *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
-public enum ProviderName {
-    WUNDERGROUND,
+public enum ProviderName {WUNDERGROUND,
     OPENWEATHERMAP,
     FORECASTIO,
     WORLDWEATHERONLINE,
     HAMWEATHER,
-    METEOBLUE;
+    METEOBLUE,
+    APIXU,
+    WEATHERBIT;
 
     /**
      * Parses the string and returns the ProviderName enum.
@@ -40,6 +42,10 @@ public enum ProviderName {
             return HAMWEATHER;
         } else if (METEOBLUE.toString().equalsIgnoreCase(name)) {
             return METEOBLUE;
+        } else if (APIXU.toString().equalsIgnoreCase(name)) {
+            return APIXU;
+        } else if (WEATHERBIT.toString().equalsIgnoreCase(name)) {
+            return WEATHERBIT;
         } else {
             return null;
         }

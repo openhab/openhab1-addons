@@ -8,10 +8,11 @@
  */
 package org.openhab.binding.weather.internal.provider;
 
+import org.openhab.binding.weather.internal.model.ProviderName;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.weather.internal.model.ProviderName;
 
 /**
  * Simple factory which creates WeatherProvider objects based on the provider
@@ -21,7 +22,8 @@ import org.openhab.binding.weather.internal.model.ProviderName;
  * @since 1.6.0
  */
 public class WeatherProviderFactory {
-    private static final Map<ProviderName, Class<? extends WeatherProvider>> weatherProviders = new HashMap<ProviderName, Class<? extends WeatherProvider>>();
+    private static final Map<ProviderName, Class<?extends WeatherProvider>> weatherProviders =
+        new HashMap<ProviderName, Class<?extends WeatherProvider>>();
 
     static {
         weatherProviders.put(ProviderName.FORECASTIO, ForecastIoProvider.class);
@@ -30,16 +32,21 @@ public class WeatherProviderFactory {
         weatherProviders.put(ProviderName.WORLDWEATHERONLINE, WorldWeatherOnlineProvider.class);
         weatherProviders.put(ProviderName.WUNDERGROUND, WundergroundProvider.class);
         weatherProviders.put(ProviderName.METEOBLUE, MeteoBlueProvider.class);
+        weatherProviders.put(ProviderName.APIXU, ApiXuProvider.class);
+        weatherProviders.put(ProviderName.WEATHERBIT, WeatherbitProvider.class);
     }
 
     /**
      * Creates a WeatherProvider for the specified provider.
      */
-    public static WeatherProvider createWeatherProvider(ProviderName providerName) throws Exception {
-        Class<? extends WeatherProvider> provider = weatherProviders.get(providerName);
+    public static WeatherProvider createWeatherProvider(
+        ProviderName providerName) throws Exception {
+        Class<?extends WeatherProvider> provider = weatherProviders.get(providerName);
+
         if (provider != null) {
             return provider.newInstance();
         }
+
         return null;
     }
 }

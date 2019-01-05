@@ -10,9 +10,11 @@ package org.openhab.binding.weather.internal.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
+
 
 /**
  * Common provider model for precipitation data.
@@ -21,38 +23,38 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  * @since 1.6.0
  */
 public class Precipitation {
-
-    @ProviderMappings({
-            @Provider(name = ProviderName.FORECASTIO, property = "precipIntensity"),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.precip_1hr_metric"),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "qpf_allday.mm"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "rain.3h", converter = ConverterType.DOUBLE_3H),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "rain"),
-            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "precipMM"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "precipMM"),
-            @Provider(name = ProviderName.METEOBLUE, property = "precipitation_amount") })
+    @ProviderMappings({@Provider(name = ProviderName.FORECASTIO,property = "precipIntensity")
+        , @Provider(name = ProviderName.WUNDERGROUND,property = "current_observation.precip_1hr_metric")
+        , @Provider(name = ProviderName.WUNDERGROUND,property = "qpf_allday.mm")
+        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "rain.3h",converter = ConverterType.DOUBLE_3H)
+        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "rain")
+        , @Provider(name = ProviderName.WORLDWEATHERONLINE,property = "precipMM")
+        , @Provider(name = ProviderName.HAMWEATHER,property = "precipMM")
+        , @Provider(name = ProviderName.METEOBLUE,property = "precipitation_amount")
+        , @Provider(name = ProviderName.APIXU,property = "precip_mm")
+        , @Provider(name = ProviderName.WEATHERBIT,property = "percip")
+    })
     private Double rain;
-
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "snow_allday.cm"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "snow.3h", converter = ConverterType.DOUBLE_3H),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "snow"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "snowDepthCM") })
+    @ProviderMappings({@Provider(name = ProviderName.WUNDERGROUND,property = "snow_allday.cm")
+        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "snow.3h",converter = ConverterType.DOUBLE_3H)
+        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "snow")
+        , @Provider(name = ProviderName.HAMWEATHER,property = "snowDepthCM")
+        , @Provider(name = ProviderName.WEATHERBIT,property = "snow")
+    })
     private Double snow;
-
-    @ProviderMappings({
-            @Provider(name = ProviderName.FORECASTIO, property = "precipType"),
-            @Provider(name = ProviderName.METEOBLUE, property = "is_snow") })
+    @ProviderMappings({@Provider(name = ProviderName.FORECASTIO,property = "precipType")
+        , @Provider(name = ProviderName.METEOBLUE,property = "is_snow")
+    })
     private String type;
-
-    @ProviderMappings({
-            @Provider(name = ProviderName.FORECASTIO, property = "precipProbability", converter = ConverterType.FRACTION_INTEGER),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "pop"),
-            @Provider(name = ProviderName.METEOBLUE, property = "precipitation_probability") })
+    @ProviderMappings({@Provider(name = ProviderName.FORECASTIO,property = "precipProbability",converter = ConverterType.FRACTION_INTEGER)
+        , @Provider(name = ProviderName.WUNDERGROUND,property = "pop")
+        , @Provider(name = ProviderName.METEOBLUE,property = "precipitation_probability")
+        , @Provider(name = ProviderName.WEATHERBIT,property = "pop")
+    })
     private Integer probability;
-
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "precip_today_metric") })
+    @ProviderMappings({@Provider(name = ProviderName.WUNDERGROUND,property = "precip_today_metric")
+        , @Provider(name = ProviderName.APIXU,property = "day.totalprecip_mm")
+    })
     private Double total;
 
     /**
@@ -116,7 +118,9 @@ public class Precipitation {
      */
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("rain", rain).append("snow", snow)
-                .append("probability", probability).append("total", total).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("rain",
+            rain).append("snow", snow).append("probability", probability)
+                                                                          .append("total",
+            total).toString();
     }
 }
