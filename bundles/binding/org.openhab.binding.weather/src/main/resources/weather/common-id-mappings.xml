@@ -183,7 +183,7 @@
   </common-id-mapping>
   <common-id-mapping id="snow-showers">
     <provider name="ApiXU" ids="1255, 1258"/>
-    <provider name="Weatherbit ids="621, 622""/>
+    <provider name="Weatherbit" ids="621, 622"/>
   </common-id-mapping>
   <common-id-mapping id="scattered-thundershowers">
   </common-id-mapping>
