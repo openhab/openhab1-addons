@@ -562,7 +562,7 @@
     <configfile finalname="${openhab.conf}/services/tinkerforge.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/tinkerforge</configfile>
   </feature>
 
-  <feature name="openhab-binding-ucprelayboard" description="UCProjects.eu Relay Board Binding" version="${project.version}">
+  <feature name="openhab-binding-ucprelayboard1" description="UCProjects.eu Relay Board Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <feature>openhab-transport-serial</feature>
