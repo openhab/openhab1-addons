@@ -1,5 +1,11 @@
 # Fritz!Box Binding
 
+## Prerequisites
+
+Note that this binding requires you to enable telnet on your FRITZ!Box, for which, due to security reasons, support has been dropped in firmware version 06.25 and later.
+
+Instead, you may use the [Fritzbox binding (using TR06 protocol)](./fritzboxtr0641).
+
 ## Binding Configuration
 
 This binding can be configured in the `services/fritzbox.cfg` file.
@@ -12,7 +18,7 @@ This binding can be configured in the `services/fritzbox.cfg` file.
 
 ## Prepare your Fritzbox
 
-* Enable Telnet ([Link](http://www.wehavemorefun.de/fritzbox/Starten_von_telnetd))<BR>
+* Enable Telnet <BR>
 * Activate User Login: FRITZ!Box-Benutzer -> Anmeldung im Heimnetz -> Anmeldung mit dem FRITZ!Box-Kennwort
 
 ## Item Configuration
