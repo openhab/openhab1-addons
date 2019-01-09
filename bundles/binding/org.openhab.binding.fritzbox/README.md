@@ -2,9 +2,14 @@
 
 ## Prerequisites
 
-Note that this binding requires you to enable telnet on your FRITZ!Box, for which, due to security reasons, support has been dropped in firmware version 06.25 and later.
+Note that this binding requires you to enable telnet on your FRITZ!Box, for which, due to security reasons, support has been dropped in firmware version 06.25 and later. 
 
 Instead, you may use the [Fritzbox binding (using TR06 protocol)](./fritzboxtr0641).
+
+### Prepare your Fritzbox
+
+* Enable telnet: from a phone connected to the FRITZ!Box, dial `#96*7*` to enable telnet, dial `#96*8*` to disable
+* Activate user login: FRITZ!Box-Benutzer -> Anmeldung im Heimnetz -> Anmeldung mit dem FRITZ!Box-Kennwort
 
 ## Binding Configuration
 
@@ -16,10 +21,6 @@ This binding can be configured in the `services/fritzbox.cfg` file.
 | password |         |   Yes    | Password to your Fritz!Box |
 | user     |         | when user management is enabled | User of your Fritz!Box. It is a good practice to create an additional user for openHAB. |
 
-## Prepare your Fritzbox
-
-* Enable Telnet <BR>
-* Activate User Login: FRITZ!Box-Benutzer -> Anmeldung im Heimnetz -> Anmeldung mit dem FRITZ!Box-Kennwort
 
 ## Item Configuration
 
