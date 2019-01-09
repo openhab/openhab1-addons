@@ -750,6 +750,12 @@ public class Tr064Comm {
             logger.debug("Found 2,4 Ghz Wifi");
         }
 
+        // Phonebook List
+        SingleItemMap imPhonebookList = SingleItemMap.builder().itemCommand("phonebookList")
+                .serviceId("urn:X_AVM-DE_OnTel-com:serviceId:X_AVM-DE_OnTel1")
+                .itemArgumentName("NewPhonebookList").readServiceCommand("GetPhonebookList").build();
+        addItemMap(imPhonebookList);
+
         // Phonebook Download
         // itemcommand is dummy: not a real item
         ItemMap imPhonebook = SingleItemMap.builder().itemCommand("phonebook")

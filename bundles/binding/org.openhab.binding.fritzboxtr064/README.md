@@ -43,7 +43,7 @@ This binding can be configured in the file `services/fritzboxtr064.cfg`.
 | refresh     | 60000   |   No     | Refresh interval in milliseconds |
 | user        | dslf-config |  No  | User Name.  Only use this value if you configured a user in fbox webui/config!  It is recommended to switch to authentication by username in fritzbox config and add a separate config user for this binding. |
 | pass        |         |   Yes    | Password |
-| phonebookid | 0       |   No     | PhoneBook ID if you use a different phonebook (like a Google-synced phonebook). |
+| phonebookid | 0       |   No     | PhoneBook ID if you use a different phonebook (like a Google-synced phonebook). Use "-1" to read all available phonebooks. |
 
 
 ## Item Configuration

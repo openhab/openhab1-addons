@@ -105,6 +105,17 @@ public class PhonebookManager {
      * Downloads and parses phonebooks from fbox.
      */
     public void downloadPhonebooks(int phonebookid) {
+        // Download all phonebooks?
+        if (phonebookid == -1) {
+            String phonebookList = _tr064comm.getTr064Value(new ItemConfiguration("phonebookList"));
+            logger.info("Downloading phonebooks: {}", phonebookList);
+            for (String id : phonebookList.split(",")) {
+                int pbId = Integer.parseInt(id);
+                if (pbId >= 0) downloadPhonebooks(pbId);
+            }
+            logger.info("Found {} phonebook entries", _alEntries.size());
+            return;
+        }
         Document pb = downloadPhonebook(phonebookid);
         if (pb != null) {
             NodeList nlContacts = pb.getElementsByTagName("contact");
