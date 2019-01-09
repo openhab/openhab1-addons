@@ -73,9 +73,9 @@ public class WeatherConfig {
         valid = false;
         if (properties == null) {
             parseCompleted = true;
-            logger.warn("No configuration found for the weather binding. Check openhab.cfg.");
+            logger.warn("No configuration found for the weather binding. Check the binding config.");
             throw new ConfigurationException("weather",
-                    "No configuration found for the weather binding. Check openhab.cfg.");
+                    "No configuration found for the weather binding. Check the binding config.");
         }
 
         Enumeration<String> keys = properties.keys();
@@ -96,16 +96,16 @@ public class WeatherConfig {
         for (LocationConfig lc : locationConfigs.values()) {
             if (!lc.isValid()) {
                 parseCompleted = true;
-                logger.warn("Incomplete location config for locationId '{}'. Check openhab.cfg.", lc.getLocationId());
+                logger.warn("Incomplete location config for locationId '{}'. Check the binding config.", lc.getLocationId());
                 throw new ConfigurationException("weather",
-                        "Incomplete location config for locationId '" + lc.getLocationId() + "'. Check openhab.cfg.");
+                        "Incomplete location config for locationId '" + lc.getLocationId() + "'. Check the binding config.");
             }
 
             if (!providerConfigs.containsKey(lc.getProviderName())) {
                 parseCompleted = true;
-                logger.warn("No apikey found for provider '{}'. Check openhab.cfg.", lc.getProviderName());
+                logger.warn("No apikey found for provider '{}'. Check the binding config.", lc.getProviderName());
                 throw new ConfigurationException("weather",
-                        "No apikey found for provider '" + lc.getProviderName() + "'. Check openhab.cfg.");
+                        "No apikey found for provider '" + lc.getProviderName() + "'. Check the binding config.");
             }
         }
 
@@ -113,9 +113,9 @@ public class WeatherConfig {
         for (ProviderConfig pc : providerConfigs.values()) {
             if (!pc.isValid()) {
                 parseCompleted = true;
-                logger.warn("Invalid apikey config for provider '{}'. Check openhab.cfg.", pc.getProviderName());
+                logger.warn("Invalid apikey config for provider '{}'. Check the binding config.", pc.getProviderName());
                 throw new ConfigurationException("weather",
-                        "Invalid apikey config for provider '" + pc.getProviderName() + "'. Check openhab.cfg.");
+                        "Invalid apikey config for provider '" + pc.getProviderName() + "'. Check the binding config.");
             }
         }
 
@@ -130,7 +130,7 @@ public class WeatherConfig {
     private void parseLocation(String key, String value)
         throws ConfigurationException {
         if (value == null) {
-            logger.warn("Weather location setting '{}' has no value. Check openhab.cfg.",
+            logger.warn("Weather location setting '{}' has no value. Check the binding config.",
                 key);
 
             return;
@@ -139,7 +139,7 @@ public class WeatherConfig {
         String locationId = StringUtils.substringBetween(key, ".");
 
         if (StringUtils.isBlank(locationId)) {
-            logger.warn("Weather location setting '{}' is missing its location. Check openhab.cfg.", key);
+            logger.warn("Weather location setting '{}' is missing its location. Check the binding config.", key);
         }
 
         LocationConfig lc = locationConfigs.get(locationId);
@@ -169,7 +169,7 @@ public class WeatherConfig {
         } else if (StringUtils.equalsIgnoreCase(keyId, "units")) {
             lc.setMeasurementUnits(value.toLowerCase());
         } else {
-            logger.debug("Unknown weather configuration setting '{}'. Check openhab.cfg.", key);
+            logger.debug("Unknown weather configuration setting '{}'. Check the binding config.", key);
         }
     }
 
@@ -179,7 +179,7 @@ public class WeatherConfig {
     private void parseApiKey(String key, String value)
         throws ConfigurationException {
         if (value == null) {
-            logger.warn("Weather apikey setting '{}' has no value. Check openhab.cfg.", key);
+            logger.warn("Weather apikey setting '{}' has no value. Check the binding config.", key);
             return;
         }
 
@@ -200,7 +200,7 @@ public class WeatherConfig {
         } else if (StringUtils.equalsIgnoreCase(keyId, "apikey2")) {
             pConfig.setApiKey2(value);
         } else {
-            logger.warn("Unknown configuration key '{}'. Check openhab.cfg.", key);
+            logger.warn("Unknown configuration key '{}'. Check the binding config.", key);
         }
     }
 
@@ -211,9 +211,9 @@ public class WeatherConfig {
         try {
             return Double.parseDouble(value);
         } catch (Exception ex) {
-            logger.warn("Parameter '{}' empty or in wrong format ('{}'). Check openhab.cfg.", key, value);
+            logger.warn("Parameter '{}' empty or in wrong format ('{}'). Check the binding config.", key, value);
             throw new ConfigurationException("weather",
-                    "Parameter '" + key + "' empty or in wrong format ('" + value + "'). Check openhab.cfg.");
+                    "Parameter '" + key + "' empty or in wrong format ('" + value + "'). Check the binding config.");
         }
     }
 
@@ -224,9 +224,9 @@ public class WeatherConfig {
         ProviderName providerName = ProviderName.parse(name);
 
         if (providerName == null) {
-            logger.warn("Provider with name '{}' not found. Check openhab.cfg.", name);
+            logger.warn("Provider with name '{}' not found. Check the binding config.", name);
             throw new ConfigurationException("weather",
-                    "Provider with name '" + name + "' not found. Check openhab.cfg.");
+                    "Provider with name '" + name + "' not found. Check the binding config.");
         }
 
         return providerName;
