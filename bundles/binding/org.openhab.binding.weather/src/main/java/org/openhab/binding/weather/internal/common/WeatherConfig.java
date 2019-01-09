@@ -8,22 +8,18 @@
  */
 package org.openhab.binding.weather.internal.common;
 
-import org.apache.commons.lang.StringUtils;
-
-import org.openhab.binding.weather.internal.model.ProviderName;
-import org.openhab.binding.weather.internal.utils.PropertyResolver;
-
-import org.osgi.service.cm.ConfigurationException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.openhab.binding.weather.internal.model.ProviderName;
+import org.openhab.binding.weather.internal.utils.PropertyResolver;
+import org.osgi.service.cm.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses the config in openhab.cfg.
@@ -72,17 +68,14 @@ public class WeatherConfig {
     /**
      * Parses and validates the properties in openhab.cfg.
      */
-    public void parse(Dictionary<String, ?> properties)
-        throws ConfigurationException {
+    public void parse(Dictionary<String, ?> properties) throws ConfigurationException {
         parseCompleted = false;
         valid = false;
-
         if (properties == null) {
             parseCompleted = true;
-            logger.warn(
-                "No configuration found for the weather binding. Check openhab.cfg.");
+            logger.warn("No configuration found for the weather binding. Check openhab.cfg.");
             throw new ConfigurationException("weather",
-                "No configuration found for the weather binding. Check openhab.cfg.");
+                    "No configuration found for the weather binding. Check openhab.cfg.");
         }
 
         Enumeration<String> keys = properties.keys();
@@ -103,20 +96,16 @@ public class WeatherConfig {
         for (LocationConfig lc : locationConfigs.values()) {
             if (!lc.isValid()) {
                 parseCompleted = true;
-                logger.warn("Incomplete location config for locationId '{}'. Check openhab.cfg.",
-                    lc.getLocationId());
+                logger.warn("Incomplete location config for locationId '{}'. Check openhab.cfg.", lc.getLocationId());
                 throw new ConfigurationException("weather",
-                    "Incomplete location config for locationId '" +
-                    lc.getLocationId() + "'. Check openhab.cfg.");
+                        "Incomplete location config for locationId '" + lc.getLocationId() + "'. Check openhab.cfg.");
             }
 
             if (!providerConfigs.containsKey(lc.getProviderName())) {
                 parseCompleted = true;
-                logger.warn("No apikey found for provider '{}'. Check openhab.cfg.",
-                    lc.getProviderName());
+                logger.warn("No apikey found for provider '{}'. Check openhab.cfg.", lc.getProviderName());
                 throw new ConfigurationException("weather",
-                    "No apikey found for provider '" + lc.getProviderName() +
-                    "'. Check openhab.cfg.");
+                        "No apikey found for provider '" + lc.getProviderName() + "'. Check openhab.cfg.");
             }
         }
 
@@ -124,11 +113,9 @@ public class WeatherConfig {
         for (ProviderConfig pc : providerConfigs.values()) {
             if (!pc.isValid()) {
                 parseCompleted = true;
-                logger.warn("Invalid apikey config for provider '{}'. Check openhab.cfg.",
-                    pc.getProviderName());
+                logger.warn("Invalid apikey config for provider '{}'. Check openhab.cfg.", pc.getProviderName());
                 throw new ConfigurationException("weather",
-                    "Invalid apikey config for provider '" +
-                    pc.getProviderName() + "'. Check openhab.cfg.");
+                        "Invalid apikey config for provider '" + pc.getProviderName() + "'. Check openhab.cfg.");
             }
         }
 
@@ -152,8 +139,7 @@ public class WeatherConfig {
         String locationId = StringUtils.substringBetween(key, ".");
 
         if (StringUtils.isBlank(locationId)) {
-            logger.warn("Weather location setting '{}' is missing its location. Check openhab.cfg.",
-                key);
+            logger.warn("Weather location setting '{}' is missing its location. Check openhab.cfg.", key);
         }
 
         LocationConfig lc = locationConfigs.get(locationId);
@@ -183,8 +169,7 @@ public class WeatherConfig {
         } else if (StringUtils.equalsIgnoreCase(keyId, "units")) {
             lc.setMeasurementUnits(value.toLowerCase());
         } else {
-            logger.debug("Unknown weather configuration setting '{}'. Check openhab.cfg.",
-                key);
+            logger.debug("Unknown weather configuration setting '{}'. Check openhab.cfg.", key);
         }
     }
 
@@ -194,9 +179,7 @@ public class WeatherConfig {
     private void parseApiKey(String key, String value)
         throws ConfigurationException {
         if (value == null) {
-            logger.warn("Weather apikey setting '{}' has no value. Check openhab.cfg.",
-                key);
-
+            logger.warn("Weather apikey setting '{}' has no value. Check openhab.cfg.", key);
             return;
         }
 
@@ -212,46 +195,38 @@ public class WeatherConfig {
         }
 
         String keyId = PropertyResolver.first(key);
-
         if (StringUtils.equalsIgnoreCase(keyId, "apikey")) {
             pConfig.setApiKey(value);
         } else if (StringUtils.equalsIgnoreCase(keyId, "apikey2")) {
             pConfig.setApiKey2(value);
         } else {
-            logger.warn("Unknown configuration key '{}'. Check openhab.cfg.",
-                key);
+            logger.warn("Unknown configuration key '{}'. Check openhab.cfg.", key);
         }
     }
 
     /**
      * Parse a double value from a string.
      */
-    private Double parseNumber(String key, String value)
-        throws ConfigurationException {
+    private Double parseNumber(String key, String value) throws ConfigurationException {
         try {
             return Double.parseDouble(value);
         } catch (Exception ex) {
-            logger.warn("Parameter '{}' empty or in wrong format ('{}'). Check openhab.cfg.",
-                key, value);
+            logger.warn("Parameter '{}' empty or in wrong format ('{}'). Check openhab.cfg.", key, value);
             throw new ConfigurationException("weather",
-                "Parameter '" + key + "' empty or in wrong format ('" + value +
-                "'). Check openhab.cfg.");
+                    "Parameter '" + key + "' empty or in wrong format ('" + value + "'). Check openhab.cfg.");
         }
     }
 
     /**
      * Parse a ProviderName from a string.
      */
-    private ProviderName getProviderName(String name)
-        throws ConfigurationException {
+    private ProviderName getProviderName(String name) throws ConfigurationException {
         ProviderName providerName = ProviderName.parse(name);
 
         if (providerName == null) {
-            logger.warn("Provider with name '{}' not found. Check openhab.cfg.",
-                name);
+            logger.warn("Provider with name '{}' not found. Check openhab.cfg.", name);
             throw new ConfigurationException("weather",
-                "Provider with name '" + name +
-                "' not found. Check openhab.cfg.");
+                    "Provider with name '" + name + "' not found. Check openhab.cfg.");
         }
 
         return providerName;
