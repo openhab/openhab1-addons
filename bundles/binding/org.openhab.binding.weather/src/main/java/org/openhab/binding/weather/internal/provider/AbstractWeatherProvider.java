@@ -115,7 +115,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
             }
 
             if (weather.hasError()) {
-                logger.error("{}[{}]: Can't retreive weather data: {}", getProviderName(),
+                logger.error("{}[{}]: Can't retrieve weather data: {}", getProviderName(),
                         locationConfig.getLocationId(), weather.getError());
             } else {
                 setLastUpdate(weather);
