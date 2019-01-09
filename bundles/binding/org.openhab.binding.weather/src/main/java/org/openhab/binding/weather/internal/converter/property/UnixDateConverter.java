@@ -8,11 +8,10 @@
  */
 package org.openhab.binding.weather.internal.converter.property;
 
-import org.openhab.binding.weather.internal.converter.Converter;
-import org.openhab.binding.weather.internal.converter.ConverterType;
-
 import java.util.Calendar;
 
+import org.openhab.binding.weather.internal.converter.Converter;
+import org.openhab.binding.weather.internal.converter.ConverterType;
 
 /**
  * Date converter for a unix timestamp.
@@ -21,6 +20,7 @@ import java.util.Calendar;
  * @since 1.6.0
  */
 public class UnixDateConverter implements Converter<Calendar> {
+
     /**
      * {@inheritDoc}
      */
@@ -28,7 +28,6 @@ public class UnixDateConverter implements Converter<Calendar> {
     public Calendar convert(String value) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis((long) (Double.valueOf(value) * 1000));
-
         return cal;
     }
 
@@ -39,4 +38,5 @@ public class UnixDateConverter implements Converter<Calendar> {
     public ConverterType getType() {
         return ConverterType.UNIX_DATE;
     }
+
 }
