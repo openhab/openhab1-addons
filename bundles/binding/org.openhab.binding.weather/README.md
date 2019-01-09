@@ -305,7 +305,7 @@ Each provider sends different forecast days.
 - Hamweather: 5 days (0-4)
 - Meteoblue: 10 days (0-9)
 - ApiXU: 7 days (0-6)
-- Weaterbit: 10 days (0-9)
+- Weatherbit: 10 days (0-9)
 
 **Note:** If you omit the forecast property, the *current* conditions are shown, if you specify forecast=0, the forecast for *today* is shown.
 
