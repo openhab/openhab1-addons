@@ -21,7 +21,7 @@ import org.openhab.binding.weather.internal.model.ProviderName;
  * @since 1.6.0
  */
 public class WeatherProviderFactory {
-    private static final Map<ProviderName, Class<?extends WeatherProvider>> weatherProviders = new HashMap<ProviderName, Class<?extends WeatherProvider>>();
+    private static final Map<ProviderName, Class<? extends WeatherProvider>> weatherProviders = new HashMap<ProviderName, Class<? extends WeatherProvider>>();
 
     static {
         weatherProviders.put(ProviderName.FORECASTIO, ForecastIoProvider.class);
@@ -38,7 +38,7 @@ public class WeatherProviderFactory {
      * Creates a WeatherProvider for the specified provider.
      */
     public static WeatherProvider createWeatherProvider( ProviderName providerName) throws Exception {
-        Class<?extends WeatherProvider> provider = weatherProviders.get(providerName);
+        Class<? extends WeatherProvider> provider = weatherProviders.get(providerName);
         if (provider != null) {
             return provider.newInstance();
         }
