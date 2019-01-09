@@ -143,9 +143,8 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
             }
 
             // special handling because of bad OpenWeatherMap json structure
-            if ((weather.getProvider() == ProviderName.OPENWEATHERMAP) &&
-                    (weather.getResponseCode() != null) &&
-                    (weather.getResponseCode() == 200)) {
+            if (weather.getProvider() == ProviderName.OPENWEATHERMAP && weather.getResponseCode() != null
+                && weather.getResponseCode() == 200) {
                 weather.setError(null);
             }
 
@@ -154,9 +153,8 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
             }
 
             if (weather.hasError()) {
-                logger.error("{}[{}]: Can't retreive weather data: {}",
-                    getProviderName(), locationConfig.getLocationId(),
-                    weather.getError());
+                logger.error("{}[{}]: Can't retrieve weather data: {}", getProviderName(),
+                        locationConfig.getLocationId(), weather.getError());
             } else {
                 setLastUpdate(weather);
             }
