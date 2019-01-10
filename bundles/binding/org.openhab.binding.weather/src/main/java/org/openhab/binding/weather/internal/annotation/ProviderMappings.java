@@ -25,6 +25,6 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface ProviderMappings {
 
-    public Provider[]value();
+    public Provider[] value();
 
 }

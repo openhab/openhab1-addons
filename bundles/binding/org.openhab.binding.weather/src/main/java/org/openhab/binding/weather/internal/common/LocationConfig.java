@@ -25,7 +25,6 @@ public class LocationConfig {
     private String language = "en";
     private Double latitude;
     private Double longitude;
-    private String woeid;
     private Integer updateInterval = DEFAULT_UPDATE_INTERVAL;
     private String locationId;
     private String name;
@@ -76,6 +75,7 @@ public class LocationConfig {
     /**
      * Returns the woeid.
      */
+    @deprecated("The Yahoo weather API has ceased to exist. This method will be removed eventually.")
     public String getWoeid() {
         return woeid;
     }
@@ -83,6 +83,7 @@ public class LocationConfig {
     /**
      * Sets the woeid.
      */
+    @deprecated("The Yahoo weather API has ceased to exist. This method will be removed eventually.")
     public void setWoeid(String woeid) {
         this.woeid = woeid;
     }
@@ -176,8 +177,7 @@ public class LocationConfig {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("providerName", providerName)
                 .append("language", language).append("updateInterval", updateInterval).append("latitude", latitude)
-                .append("longitude", longitude).append("woeid", woeid).append("locationId", locationId)
-                .append("name", name).toString();
+                .append("longitude", longitude).append("locationId", locationId).append("name", name).toString();
     }
 
 }

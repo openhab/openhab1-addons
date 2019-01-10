@@ -15,7 +15,6 @@ import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
 
-
 /**
  * Common provider model for clouds data.
  *
@@ -23,14 +22,13 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  * @since 1.6.0
  */
 public class Clouds {
-    @ProviderMappings({@Provider(name = ProviderName.OPENWEATHERMAP,property = "clouds.all")
-        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "clouds")
-        , @Provider(name = ProviderName.FORECASTIO,property = "cloudCover",converter = ConverterType.FRACTION_INTEGER)
-        , @Provider(name = ProviderName.WORLDWEATHERONLINE,property = "cloudcover")
-        , @Provider(name = ProviderName.HAMWEATHER,property = "sky")
-        , @Provider(name = ProviderName.APIXU,property = "cloud")
-        , @Provider(name = ProviderName.WEATHERBIT,property = "clouds")
-    })
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds.all"),
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "clouds"),
+            @Provider(name = ProviderName.FORECASTIO, property = "cloudCover", converter = ConverterType.FRACTION_INTEGER),
+            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "cloudcover"),
+            @Provider(name = ProviderName.HAMWEATHER, property = "sky"),
+            @Provider(name = ProviderName.APIXU, property = "cloud"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "clouds") })
     private Integer percent;
 
     /**
@@ -52,7 +50,6 @@ public class Clouds {
      */
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("percent",
-            percent).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("percent", percent).toString();
     }
 }

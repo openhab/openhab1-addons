@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
  * #weather:apikey.ForecastIo=
  * #weather:apikey.OpenWeatherMap=
  * #weather:apikey.WorldWeatherOnline=
- * #weather:apikey.Wunderground=
  * #weather:apikey.Hamweather=
  * #weather:apikey2.Hamweather=
  * #weather:apikey.Meteoblue=
@@ -96,9 +95,10 @@ public class WeatherConfig {
         for (LocationConfig lc : locationConfigs.values()) {
             if (!lc.isValid()) {
                 parseCompleted = true;
-                logger.warn("Incomplete location config for locationId '{}'. Check the binding config.", lc.getLocationId());
-                throw new ConfigurationException("weather",
-                        "Incomplete location config for locationId '" + lc.getLocationId() + "'. Check the binding config.");
+                logger.warn("Incomplete location config for locationId '{}'. Check the binding config.",
+                        lc.getLocationId());
+                throw new ConfigurationException("weather", "Incomplete location config for locationId '"
+                        + lc.getLocationId() + "'. Check the binding config.");
             }
 
             if (!providerConfigs.containsKey(lc.getProviderName())) {
@@ -127,11 +127,9 @@ public class WeatherConfig {
     /**
      * Parses the properties for a location config.
      */
-    private void parseLocation(String key, String value)
-        throws ConfigurationException {
+    private void parseLocation(String key, String value) throws ConfigurationException {
         if (value == null) {
-            logger.warn("Weather location setting '{}' has no value. Check the binding config.",
-                key);
+            logger.warn("Weather location setting '{}' has no value. Check the binding config.", key);
 
             return;
         }
@@ -160,8 +158,6 @@ public class WeatherConfig {
             lc.setLatitude(parseNumber(key, value));
         } else if (StringUtils.equalsIgnoreCase(keyId, "longitude")) {
             lc.setLongitude(parseNumber(key, value));
-        } else if (StringUtils.equalsIgnoreCase(keyId, "woeid")) {
-            lc.setWoeid(value);
         } else if (StringUtils.equalsIgnoreCase(keyId, "language")) {
             lc.setLanguage(value);
         } else if (StringUtils.equalsIgnoreCase(keyId, "name")) {
@@ -176,8 +172,7 @@ public class WeatherConfig {
     /**
      * Parses the properties for a provider config.
      */
-    private void parseApiKey(String key, String value)
-        throws ConfigurationException {
+    private void parseApiKey(String key, String value) throws ConfigurationException {
         if (value == null) {
             logger.warn("Weather apikey setting '{}' has no value. Check the binding config.", key);
             return;

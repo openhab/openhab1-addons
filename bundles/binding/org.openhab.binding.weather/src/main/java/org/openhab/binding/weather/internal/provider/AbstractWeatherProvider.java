@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 
-
 /**
  * Common base class for all weather providers. Retrieves, parses and returns
  * weather data.
@@ -48,26 +47,21 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
      * {@inheritDoc}
      */
     @Override
-    public Weather getWeather(LocationConfig locationConfig)
-        throws Exception {
+    public Weather getWeather(LocationConfig locationConfig) throws Exception {
         Weather weather = new Weather(getProviderName());
-        executeRequest(weather, prepareUrl(getWeatherUrl(), locationConfig),
-            locationConfig);
+        executeRequest(weather, prepareUrl(getWeatherUrl(), locationConfig), locationConfig);
 
         String forecastUrl = getForecastUrl();
 
         if ((forecastUrl != null) && !weather.hasError()) {
-            executeRequest(weather, prepareUrl(forecastUrl, locationConfig),
-                locationConfig);
+            executeRequest(weather, prepareUrl(forecastUrl, locationConfig), locationConfig);
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("{}[{}]: {}", getProviderName(),
-                locationConfig.getLocationId(), weather.toString());
+            logger.debug("{}[{}]: {}", getProviderName(), locationConfig.getLocationId(), weather.toString());
 
             for (Weather fc : weather.getForecast()) {
-                logger.debug("{}[{}]: {}", getProviderName(),
-                    locationConfig.getLocationId(), fc.toString());
+                logger.debug("{}[{}]: {}", getProviderName(), locationConfig.getLocationId(), fc.toString());
             }
         }
 
@@ -81,30 +75,23 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
         ProviderConfig providerConfig = config.getProviderConfig(getProviderName());
 
         if (providerConfig != null) {
-            url = StringUtils.replace(url, "[API_KEY]",
-                    providerConfig.getApiKey());
-            url = StringUtils.replace(url, "[API_KEY_2]",
-                    providerConfig.getApiKey2());
+            url = StringUtils.replace(url, "[API_KEY]", providerConfig.getApiKey());
+            url = StringUtils.replace(url, "[API_KEY_2]", providerConfig.getApiKey2());
         }
 
         if (locationConfig.getLatitude() != null) {
-            url = StringUtils.replace(url, "[LATITUDE]",
-                    locationConfig.getLatitude().toString());
+            url = StringUtils.replace(url, "[LATITUDE]", locationConfig.getLatitude().toString());
         }
 
         if (locationConfig.getLongitude() != null) {
-            url = StringUtils.replace(url, "[LONGITUDE]",
-                    locationConfig.getLongitude().toString());
+            url = StringUtils.replace(url, "[LONGITUDE]", locationConfig.getLongitude().toString());
         }
 
         if (locationConfig.getMeasurementUnits() != null) {
-            url = StringUtils.replace(url, "[UNITS]",
-                    locationConfig.getMeasurementUnits());
+            url = StringUtils.replace(url, "[UNITS]", locationConfig.getMeasurementUnits());
         }
 
-        url = StringUtils.replace(url, "[LANGUAGE]",
-                locationConfig.getLanguage());
-        url = StringUtils.replace(url, "[WOEID]", locationConfig.getWoeid());
+        url = StringUtils.replace(url, "[LANGUAGE]", locationConfig.getLanguage());
 
         return url;
     }
@@ -112,21 +99,17 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
     /**
      * Executes the http request and parses the returned stream.
      */
-    private void executeRequest(Weather weather, String url,
-        LocationConfig locationConfig) throws Exception {
+    private void executeRequest(Weather weather, String url, LocationConfig locationConfig) throws Exception {
         try {
-            logger.trace("{}[{}]: request : {}", getProviderName(),
-                locationConfig.getLocationId(), url);
+            logger.trace("{}[{}]: request : {}", getProviderName(), locationConfig.getLocationId(), url);
 
-            String response = StringUtils.trimToEmpty(HttpUtil.executeUrl(
-                        "GET", url, 15000));
+            String response = StringUtils.trimToEmpty(HttpUtil.executeUrl("GET", url, 15000));
 
             /**
              * special handling because of identical current and forecast json structure
              * if 'url' contains "forecast" replace data key with forecast
              */
-            if ((weather.getProvider() == ProviderName.WEATHERBIT) &&
-                    StringUtils.contains(url, "forecast/daily")) {
+            if ((weather.getProvider() == ProviderName.WEATHERBIT) && StringUtils.contains(url, "forecast/daily")) {
                 // replace data with forecast
                 response = StringUtils.replace(response, "data", "forecast");
             }
@@ -134,8 +117,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
             if (logger.isTraceEnabled()) {
                 response = StringUtils.remove(response, "\n");
                 response = StringUtils.trim(response);
-                logger.trace("{}[{}]: response: {}", getProviderName(),
-                    locationConfig.getLocationId(), response);
+                logger.trace("{}[{}]: response: {}", getProviderName(), locationConfig.getLocationId(), response);
             }
 
             if (!response.isEmpty()) {
@@ -144,7 +126,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
 
             // special handling because of bad OpenWeatherMap json structure
             if (weather.getProvider() == ProviderName.OPENWEATHERMAP && weather.getResponseCode() != null
-                && weather.getResponseCode() == 200) {
+                    && weather.getResponseCode() == 200) {
                 weather.setError(null);
             }
 
@@ -160,8 +142,7 @@ public abstract class AbstractWeatherProvider implements WeatherProvider {
             }
         } catch (Exception ex) {
             logger.error(getProviderName() + ": " + ex.getMessage());
-            weather.setError(ex.getClass().getSimpleName() + ": " +
-                ex.getMessage());
+            weather.setError(ex.getClass().getSimpleName() + ": " + ex.getMessage());
             throw ex;
         }
     }

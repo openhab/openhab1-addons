@@ -8,14 +8,13 @@
  */
 package org.openhab.binding.weather.internal.model;
 
-
 /**
  * Definition of all supported weather providers.
  *
  * @author Gerhard Riegler
  * @since 1.6.0
  */
-public enum ProviderName {WUNDERGROUND,
+public enum ProviderName {
     OPENWEATHERMAP,
     FORECASTIO,
     WORLDWEATHERONLINE,
@@ -30,8 +29,6 @@ public enum ProviderName {WUNDERGROUND,
     public static ProviderName parse(String name) {
         if (name == null) {
             return null;
-        } else if (WUNDERGROUND.toString().equalsIgnoreCase(name)) {
-            return WUNDERGROUND;
         } else if (OPENWEATHERMAP.toString().equalsIgnoreCase(name)) {
             return OPENWEATHERMAP;
         } else if (FORECASTIO.toString().equalsIgnoreCase(name)) {
