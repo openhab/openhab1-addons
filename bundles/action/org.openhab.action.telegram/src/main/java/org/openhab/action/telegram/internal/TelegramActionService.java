@@ -62,8 +62,17 @@ public class TelegramActionService implements ActionService, ManagedService {
             for (String bot : bots) {
                 String chatIdKey = String.format("%s.chatId", bot);
                 String tokenKey = String.format("%s.token", bot);
+                String parseKey = String.format("%s.parseMode", bot);
+
                 if (config.get(chatIdKey) != null && config.get(tokenKey) != null) {
-                    Telegram.addToken(bot, (String) config.get(chatIdKey), (String) config.get(tokenKey));
+
+                    String chatId = (String) config.get(chatIdKey);
+                    String token = (String) config.get(tokenKey);
+                    if (parseKey == null) {
+                        Telegram.addToken(bot, chatId, token);
+                    } else {
+                        Telegram.addToken(bot, chatId, token, (String) config.get(parseKey));
+                    }
                     logger.info("Bot {} loaded from config file", bot);
                 } else {
                     logger.warn("Bot {} is misconfigured. Please check the configuration", bot);

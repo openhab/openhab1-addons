@@ -20,10 +20,17 @@ public class TelegramBot {
 
     private String chatId;
     private String token;
+    private String parseMode;
 
     public TelegramBot(String chatId, String token) {
         this.chatId = chatId;
         this.token = token;
+    }
+
+    public TelegramBot(String chatId, String token, String parseMode) {
+        this.chatId = chatId;
+        this.token = token;
+        this.parseMode = parseMode;
     }
 
     public String getChatId() {
@@ -32,5 +39,9 @@ public class TelegramBot {
 
     public String getToken() {
         return token;
+    }
+
+    public String getParseMode() {
+        return parseMode;
     }
 }
