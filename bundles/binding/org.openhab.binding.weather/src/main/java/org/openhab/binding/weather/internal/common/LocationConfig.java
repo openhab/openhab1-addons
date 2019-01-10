@@ -25,6 +25,7 @@ public class LocationConfig {
     private String language = "en";
     private Double latitude;
     private Double longitude;
+    private String woeid;
     private Integer updateInterval = DEFAULT_UPDATE_INTERVAL;
     private String locationId;
     private String name;
@@ -74,16 +75,16 @@ public class LocationConfig {
 
     /**
      * Returns the woeid.
+     * @deprecated The Yahoo weather API has ceased to exist. This method will be removed eventually.
      */
-    @deprecated("The Yahoo weather API has ceased to exist. This method will be removed eventually.")
     public String getWoeid() {
         return woeid;
     }
 
     /**
      * Sets the woeid.
+     * @deprecated The Yahoo weather API has ceased to exist. This method will be removed eventually.
      */
-    @deprecated("The Yahoo weather API has ceased to exist. This method will be removed eventually.")
     public void setWoeid(String woeid) {
         this.woeid = woeid;
     }
