@@ -50,6 +50,8 @@ The apikey for the different weather providers, at least one must be specified.
 | apikey.Hamweather         | `client_id` for [Hamweather](http://hamweather.com) |
 | apikey2.Hamweather        | `client_secret` for [Hamweather](http://hamweather.com) |
 | apikey.Meteoblue          | API key for [MeteoBlue](https://www.meteoblue.com/) |
+| apikey.ApiXU              | API key for [ApiXU](https://www.apixu.com/) |
+| apikey.Weatherbit         | API key for [Weatherbit](https://www.weatherbit.io/) |
 
 ### Location Configuration
 
@@ -76,7 +78,6 @@ Let's display the current temperature and humidity in Salzburg (AT).
 services/weather.cfg
 
 ```
-location.home.woeid=547826
 location.home.provider=ForecastIo
 location.home.language=de
 location.home.updateInterval=10
@@ -302,6 +303,9 @@ Each provider sends different forecast days.
 - WorldWeatherOnline: 5 days (0-4)
 - Wunderground: 10 days (0-9)
 - Hamweather: 5 days (0-4)
+- Meteoblue: 10 days (0-9)
+- ApiXU: 7 days (0-6)
+- Weatherbit: 10 days (0-9)
 
 **Note:** If you omit the forecast property, the *current* conditions are shown, if you specify forecast=0, the forecast for *today* is shown.
 
