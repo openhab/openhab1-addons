@@ -32,6 +32,19 @@ The binding can be configured in the file `services/anel.cfg`.  In the table bel
 | `cachePeriod` | 0 | No | Cache the state for `cachePeriod` minutes so only changes are posted (optional, defaults to 0 = disabled).  Example: if period is 60, once per hour all states are posted to the event bus; changes are always and immediately posted to the event bus. |
 
 
+## Addons.cfg Configuration
+
+If you don't want to use PaperUI, you can use addons.cfg to tell openhab to load this binding.
+(Be carefull to never combine PaperUI and this configuration file. 
+([![Read more on addons.cfg here](https://www.openhab.org/docs/configuration/addons.html#through-configuration-files))
+
+The name for this binding to use in addons.cfg is anel1.
+so you would have something like: 
+
+```
+# A comma-separated list of bindings to install (e.g. "binding = sonos,knx,zwave")
+binding = anel1
+```
 ### Notes
 
 * At least one option must be set for an identifier for the binding to work.
