@@ -27,7 +27,7 @@ public class UnixDateConverter implements Converter<Calendar> {
     @Override
     public Calendar convert(String value) {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(Long.valueOf(value) * 1000);
+        cal.setTimeInMillis((long) (Double.valueOf(value) * 1000));
         return cal;
     }
 

@@ -30,12 +30,14 @@ public class WeatherProviderFactory {
         weatherProviders.put(ProviderName.WORLDWEATHERONLINE, WorldWeatherOnlineProvider.class);
         weatherProviders.put(ProviderName.WUNDERGROUND, WundergroundProvider.class);
         weatherProviders.put(ProviderName.METEOBLUE, MeteoBlueProvider.class);
+        weatherProviders.put(ProviderName.APIXU, ApiXuProvider.class);
+        weatherProviders.put(ProviderName.WEATHERBIT, WeatherbitProvider.class);
     }
 
     /**
      * Creates a WeatherProvider for the specified provider.
      */
-    public static WeatherProvider createWeatherProvider(ProviderName providerName) throws Exception {
+    public static WeatherProvider createWeatherProvider( ProviderName providerName) throws Exception {
         Class<? extends WeatherProvider> provider = weatherProviders.get(providerName);
         if (provider != null) {
             return provider.newInstance();
