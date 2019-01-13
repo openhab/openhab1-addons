@@ -36,19 +36,20 @@ public class Weather {
     private Wind wind = new Wind();
     private Station station = new Station();
     private ProviderName provider;
+
     @ProviderMappings({ @Provider(name = ProviderName.HAMWEATHER, property = "error.description"),
             @Provider(name = ProviderName.FORECASTIO, property = "error"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "message"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "data.error.msg"),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "response.error.type"),
             @Provider(name = ProviderName.METEOBLUE, property = "error_message"),
             @Provider(name = ProviderName.APIXU, property = "error.message"),
             @Provider(name = ProviderName.WEATHERBIT, property = "error") })
     private String error;
+
     @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "cod") })
     private Integer responseCode;
+
     @ForecastMappings({ @Forecast(provider = ProviderName.OPENWEATHERMAP, property = "list"),
-            @Forecast(provider = ProviderName.WUNDERGROUND, property = "forecast.simpleforecast.forecastday"),
             @Forecast(provider = ProviderName.FORECASTIO, property = "daily.data"),
             @Forecast(provider = ProviderName.WORLDWEATHERONLINE, property = "data.weather"),
             @Forecast(provider = ProviderName.HAMWEATHER, property = "response.responses.response.periods"),

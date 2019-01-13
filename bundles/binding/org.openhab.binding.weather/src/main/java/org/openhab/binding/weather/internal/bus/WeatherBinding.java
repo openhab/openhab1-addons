@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Gerhard Riegler
  * @since 1.6.0
  */
-public class WeatherBinding extends AbstractBinding<WeatherBindingProvider>implements ManagedService {
+public class WeatherBinding extends AbstractBinding<WeatherBindingProvider> implements ManagedService {
     private static final Logger logger = LoggerFactory.getLogger(WeatherBinding.class);
 
     private static WeatherContext context = WeatherContext.getInstance();

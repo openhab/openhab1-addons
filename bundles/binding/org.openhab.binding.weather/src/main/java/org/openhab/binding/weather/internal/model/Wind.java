@@ -15,7 +15,6 @@ import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
 
-
 /**
  * Common provider model for wind data.
  *
@@ -24,47 +23,41 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  * @since 1.6.0
  */
 public class Wind {
-    @ProviderMappings({@Provider(name = ProviderName.WUNDERGROUND,property = "current_observation.wind_kph")
-        , @Provider(name = ProviderName.WUNDERGROUND,property = "avewind.kph")
-        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "speed",converter = ConverterType.WIND_MPS)
-        , @Provider(name = ProviderName.FORECASTIO,property = "windSpeed",converter = ConverterType.WIND_MPS)
-        , @Provider(name = ProviderName.WORLDWEATHERONLINE,property = "windspeedKmph")
-        , @Provider(name = ProviderName.HAMWEATHER,property = "windSpeedKPH")
-        , @Provider(name = ProviderName.METEOBLUE,property = "wind_speed")
-        , @Provider(name = ProviderName.METEOBLUE,property = "wind_speed_max")
-        , @Provider(name = ProviderName.APIXU,property = "wind_kph")
-        , @Provider(name = ProviderName.APIXU,property = "maxwind_kph")
-        , @Provider(name = ProviderName.WEATHERBIT,property = "wind_spd")
-    })
+    @ProviderMappings({
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "speed", converter = ConverterType.WIND_MPS),
+            @Provider(name = ProviderName.FORECASTIO, property = "windSpeed", converter = ConverterType.WIND_MPS),
+            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "windspeedKmph"),
+            @Provider(name = ProviderName.HAMWEATHER, property = "windSpeedKPH"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_speed"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_speed_max"),
+            @Provider(name = ProviderName.APIXU, property = "wind_kph"),
+            @Provider(name = ProviderName.APIXU, property = "maxwind_kph"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "wind_spd") })
     private Double speed;
-    @ProviderMappings({@Provider(name = ProviderName.WORLDWEATHERONLINE,property = "winddir16Point")
-        , @Provider(name = ProviderName.METEOBLUE,property = "wind_direction_dominant")
-        , @Provider(name = ProviderName.APIXU,property = "wind_dir")
-        , @Provider(name = ProviderName.WEATHERBIT,property = "wind_cdir_full")
-    })
+
+    @ProviderMappings({ @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "winddir16Point"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_direction_dominant"),
+            @Provider(name = ProviderName.APIXU, property = "wind_dir"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "wind_cdir_full") })
     private String direction;
-    @ProviderMappings({@Provider(name = ProviderName.WUNDERGROUND,property = "current_observation.wind_degrees")
-        , @Provider(name = ProviderName.WUNDERGROUND,property = "avewind.degrees")
-        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "deg")
-        , @Provider(name = ProviderName.FORECASTIO,property = "windBearing")
-        , @Provider(name = ProviderName.WORLDWEATHERONLINE,property = "winddirDegree")
-        , @Provider(name = ProviderName.HAMWEATHER,property = "windDirDEG")
-        , @Provider(name = ProviderName.APIXU,property = "wind_degree")
-        , @Provider(name = ProviderName.WEATHERBIT,property = "wind_dir")
-    })
+
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "deg"),
+            @Provider(name = ProviderName.FORECASTIO, property = "windBearing"),
+            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "winddirDegree"),
+            @Provider(name = ProviderName.HAMWEATHER, property = "windDirDEG"),
+            @Provider(name = ProviderName.APIXU, property = "wind_degree"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "wind_dir") })
     private Integer degree;
-    @ProviderMappings({@Provider(name = ProviderName.FORECASTIO,property = "windGust",converter = ConverterType.WIND_MPS)
-        , @Provider(name = ProviderName.WUNDERGROUND,property = "current_observation.wind_gust_kph")
-        , @Provider(name = ProviderName.WUNDERGROUND,property = "wind.gust")
-        , @Provider(name = ProviderName.OPENWEATHERMAP,property = "gust",converter = ConverterType.WIND_MPS)
-        , @Provider(name = ProviderName.HAMWEATHER,property = "windGustKPH")
-        , @Provider(name = ProviderName.METEOBLUE,property = "wind_gust_max")
-        , @Provider(name = ProviderName.WEATHERBIT,property = "wind_gust_spd")
-    })
+
+    @ProviderMappings({
+            @Provider(name = ProviderName.FORECASTIO, property = "windGust", converter = ConverterType.WIND_MPS),
+            @Provider(name = ProviderName.OPENWEATHERMAP, property = "gust", converter = ConverterType.WIND_MPS),
+            @Provider(name = ProviderName.HAMWEATHER, property = "windGustKPH"),
+            @Provider(name = ProviderName.METEOBLUE, property = "wind_gust_max"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "wind_gust_spd") })
     private Double gust;
-    @ProviderMappings({@Provider(name = ProviderName.WUNDERGROUND,property = "windchill_c")
-        , @Provider(name = ProviderName.HAMWEATHER,property = "windchillC")
-    })
+
+    @ProviderMappings({ @Provider(name = ProviderName.HAMWEATHER, property = "windchillC") })
     private Double chill;
 
     /**
@@ -142,9 +135,8 @@ public class Wind {
      */
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("speed",
-            speed).append("direction", direction).append("degree", degree)
-                                                                          .append("gust",
-            gust).append("chill", chill).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("speed", speed)
+                .append("direction", direction).append("degree", degree).append("gust", gust).append("chill", chill)
+                .toString();
     }
 }

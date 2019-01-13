@@ -5,7 +5,6 @@
     <provider name="WorldWeatherOnline" ids="392, 386, 200, 389"/>
     <provider name="Hamweather" ids="A,T"/>
     <provider name="ForecastIO" icons="hail, thunderstorm, tornado"/>
-    <provider name="Wunderground" icons="tstorms"/>
     <provider name="MeteoBlue" ids="8"/>
     <provider name="Weatherbit" ids="200, 201, 202, 230, 231, 232, 233"/>
   </common-id-mapping>
@@ -39,7 +38,6 @@
   <common-id-mapping id="few-showers">
     <provider name="OpenWeatherMap" ids="300, 301, 302, 310, 311, 500, 501, 520, 521"/>
     <provider name="WorldWeatherOnline" ids="353, 263, 176, 296, 293, 266"/>
-    <provider name="Wunderground" icons="chancerain"/>
     <provider name="Hamweather" ids="L, ZL"/>
     <provider name="MeteoBlue" ids="7"/>
     <provider name="ApiXU" ids="1063, 1150, 1153, 1180, 1186, 1192"/>
@@ -55,7 +53,6 @@
   <common-id-mapping id="rain">
     <provider name="OpenWeatherMap" ids="312, 313, 314, 321, 502, 503, 504, 522, 531"/>
     <provider name="ForecastIO" icons="rain"/>
-    <provider name="Wunderground" icons="nt_rain, rain"/>
     <provider name="WorldWeatherOnline" ids="356, 305, 299, 359, 308, 302"/>
     <provider name="Hamweather" ids="R, RW, WP"/>
     <provider name="MeteoBlue" ids="6, 12, 14, 16"/>
@@ -84,7 +81,6 @@
     <provider name="ForecastIO" icons="snow"/>
     <provider name="WorldWeatherOnline" ids="395, 371, 335, 338, 332"/>
     <provider name="Hamweather" ids="S"/>
-    <provider name="Wunderground" icons="snow, chancesnow"/>
     <provider name="MeteoBlue" ids="9, 15"/>
     <provider name="ApiXU" ids="1066, 1210, 1216, 1219, 1222, 1225"/>
     <provider name="Weatherbit" ids="601, 602"/>
@@ -92,20 +88,17 @@
   <common-id-mapping id="sleet">
     <provider name="WorldWeatherOnline" ids="377, 350, 317, 182"/>
     <provider name="Hamweather" ids="IC, IP"/>
-    <provider name="Wunderground" icons="sleet"/>
     <provider name="ApiXU" ids="1069, 1204, 1237, 1249, 1252"/>
     <provider name="Weatherbit" ids="611, 612"/>
   </common-id-mapping>
   <common-id-mapping id="dust">
     <provider name="WorldWeatherOnline" ids="143"/>
     <provider name="Hamweather" ids="BD, BN"/>
-    <provider name="Wunderground" icons="hazy"/>
     <provider name="ApiXU" ids="1030"/>
   </common-id-mapping>
   <common-id-mapping id="fog">
     <provider name="OpenWeatherMap" ids="701, 711, 721, 731, 741, 751, 761, 762"/>
     <provider name="ForecastIO" icons="fog"/>
-    <provider name="Wunderground" icons="fog"/>
     <provider name="WorldWeatherOnline" ids="260, 248"/>
     <provider name="Hamweather" ids="BR, F, H, IF, K, VA, ZF"/>
     <provider name="MeteoBlue" ids="5"/>
@@ -123,7 +116,6 @@
   <common-id-mapping id="cloudy">
     <provider name="OpenWeatherMap" ids="804"/>
     <provider name="ForecastIO" icons="cloudy"/>
-    <provider name="Wunderground" icons="nt_cloudy, cloudy"/>
     <provider name="WorldWeatherOnline" ids="122"/>
     <provider name="Hamweather" ids="OV, FZBR"/>
     <provider name="MeteoBlue" ids="4"/>
@@ -134,7 +126,6 @@
   </common-id-mapping>
   <common-id-mapping id="mostly-cloudy-day">
     <provider name="OpenWeatherMap" ids="802, 803"/>
-    <provider name="Wunderground" icons="mostlycloudy"/>
     <provider name="WorldWeatherOnline" ids="119"/>
     <provider name="Hamweather" ids="BK"/>
     <provider name="ApiXU" ids="1006"/>
@@ -146,7 +137,6 @@
   <common-id-mapping id="partly-cloudy-day">
     <provider name="OpenWeatherMap" ids="801"/>
     <provider name="ForecastIO" icons="partly-cloudy-day"/>
-    <provider name="Wunderground" icons="partlycloudy"/>
     <provider name="WorldWeatherOnline" ids="116"/>
     <provider name="Hamweather" ids="SC, FW"/>
     <provider name="MeteoBlue" ids="3"/>
@@ -155,13 +145,11 @@
   </common-id-mapping>
   <common-id-mapping id="clear-night">
     <provider name="ForecastIO" icons="clear-night"/>
-    <provider name="Wunderground" icons="nt_clear"/>
     <provider name="Weatherbit" icons="c01n"/>
   </common-id-mapping>
   <common-id-mapping id="sunny">
     <provider name="OpenWeatherMap" ids="800"/>
     <provider name="ForecastIO" icons="clear-day"/>
-    <provider name="Wunderground" icons="clear"/>
     <provider name="WorldWeatherOnline" ids="113"/>
     <provider name="Hamweather" ids="CL"/>
     <provider name="MeteoBlue" ids="1, 2"/>
@@ -172,7 +160,6 @@
     <provider name="OpenWeatherMap" ids="904"/>
   </common-id-mapping>
   <common-id-mapping id="scattered-thunder">
-    <provider name="Wunderground" icons="chancetstorms"/>
     <provider name="ApiXU" ids="1087"/>
   </common-id-mapping>
   <common-id-mapping id="scattered-showers">
