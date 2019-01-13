@@ -16,7 +16,7 @@ An example entry for an item with the name "AmbientLight" would look like this:
 
 ## Prerequisites
 
-First of all you have to setup and run an InfluxDB server. This is very easy and you will find good documentation on it on the [InfluxDB web site](https://docs.influxdata.com/influxdb/v1.2/).
+First of all you have to setup and run an InfluxDB server. This is very easy and you will find good documentation on it on the [InfluxDB web site](https://docs.influxdata.com/influxdb/v1.7/).
 
 Then database and the user must be created. This can be done using the InfluxDB admin web interface. If you want to use the defaults, then create a database called `openhab` and a user with write access on the database called `openhab`. Choose a password and remember it.
 
@@ -32,4 +32,4 @@ This service can be configured in the file `services/influxdb.cfg`.
 | db       | openhab |    No    | name of the database |
 | retentionPolicy | autogen |  No | name of the retentionPolicy. Please note starting with InfluxDB >= 1.0, the default retention policy name is no longer `default` but `autogen`. |
 
-All item- and event-related configuration is defined in either the file `persistence/influxdb.persist`.
+All item- and event-related configuration is defined in the file `persistence/influxdb.persist`.
