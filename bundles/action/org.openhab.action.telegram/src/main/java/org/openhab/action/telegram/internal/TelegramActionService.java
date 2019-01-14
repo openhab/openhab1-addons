@@ -9,6 +9,7 @@
 package org.openhab.action.telegram.internal;
 
 import java.util.Dictionary;
+import java.util.Objects;
 
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
@@ -62,16 +63,17 @@ public class TelegramActionService implements ActionService, ManagedService {
             for (String bot : bots) {
                 String chatIdKey = String.format("%s.chatId", bot);
                 String tokenKey = String.format("%s.token", bot);
-                String parseKey = String.format("%s.parseMode", bot);
+                String parseModeKey = String.format("%s.parseMode", bot);
 
-                if (config.get(chatIdKey) != null && config.get(tokenKey) != null) {
+                String chatId = getConfigValue(config, chatIdKey);
+                String token = getConfigValue(config, tokenKey);
+                String parseMode = getConfigValue(config, parseModeKey);
 
-                    String chatId = (String) config.get(chatIdKey);
-                    String token = (String) config.get(tokenKey);
-                    if (parseKey == null) {
+                if (chatId != null && token != null) {
+                    if (parseMode == null) {
                         Telegram.addToken(bot, chatId, token);
                     } else {
-                        Telegram.addToken(bot, chatId, token, (String) config.get(parseKey));
+                        Telegram.addToken(bot, chatId, token, parseMode);
                     }
                     logger.info("Bot {} loaded from config file", bot);
                 } else {
@@ -80,5 +82,9 @@ public class TelegramActionService implements ActionService, ManagedService {
             }
             isProperlyConfigured = true;
         }
+    }
+
+    private String getConfigValue(Dictionary<String, ?> config, String key) {
+        return Objects.toString(config.get(key));
     }
 }
