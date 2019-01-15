@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,6 +35,8 @@ import gnu.io.UnsupportedCommOperationException;
  *
  * @author Holger Hees
  * @since 1.3.0
+ * @author Grzegorz Miasko
+ * @since 1.14.0
  */
 public class ComfoAirConnector {
 
@@ -55,10 +57,10 @@ public class ComfoAirConnector {
      * Open and initialize a serial port.
      *
      * @param portName
-     *            e.g. /dev/ttyS0
+     *                     e.g. /dev/ttyS0
      * @param listener
-     *            the listener which is informed after a successful response
-     *            read
+     *                     the listener which is informed after a successful response
+     *                     read
      * @throws InitializationException
      */
     public void open(String portName) throws InitializationException {
@@ -88,7 +90,7 @@ public class ComfoAirConnector {
 
                 ComfoAirCommand command = ComfoAirCommandType.getChangeCommand(ComfoAirCommandType.ACTIVATE.key,
                         new DecimalType(1));
-                sendCommand(command);
+                sendCommand(command, null);
             } catch (PortInUseException e) {
                 throw new InitializationException(e);
             } catch (UnsupportedCommOperationException e) {
@@ -123,7 +125,7 @@ public class ComfoAirConnector {
 
         ComfoAirCommand command = ComfoAirCommandType.getChangeCommand(ComfoAirCommandType.ACTIVATE.key,
                 new DecimalType(0));
-        sendCommand(command);
+        sendCommand(command, null);
 
         IOUtils.closeQuietly(inputStream);
         IOUtils.closeQuietly(outputStream);
@@ -134,10 +136,10 @@ public class ComfoAirConnector {
      * Prepare a command for sending using the serial port.
      *
      * @param command
+     * @param preRequestData
      * @return reply byte values
      */
-    public synchronized int[] sendCommand(ComfoAirCommand command) {
-
+    public synchronized int[] sendCommand(ComfoAirCommand command, int[] preRequestData) {
         int requestCmd = command.getRequestCmd();
         int retry = 0;
 
@@ -152,7 +154,19 @@ public class ComfoAirConnector {
         }
 
         do {
-            int[] requestData = command.getRequestData();
+            // If preRequestData param was send (preRequestData is sending for write command)
+            int[] requestData;
+
+            if (preRequestData == null) {
+                requestData = command.getRequestData();
+            } else {
+                requestData = buildRequestData(command, preRequestData);
+
+                if (requestData == null) {
+                    logger.warn(String.format("Unable to build data for write command: %02x", command.getReplyCmd()));
+                    return null;
+                }
+            }
 
             // Fake read request for ccease properties
             if (requestData == null && requestCmd == 0x37) {
@@ -160,6 +174,8 @@ public class ComfoAirConnector {
             }
 
             byte[] requestBlock = calculateRequest(requestCmd, requestData);
+            logger.debug("send DATA: " + dumpData(requestBlock));
+
             if (!send(requestBlock)) {
                 return null;
             }
@@ -351,7 +367,8 @@ public class ComfoAirConnector {
         byte[] cleanedBuffer = new byte[50];
 
         for (int i = 4; i < processBuffer.length - 2; i++) {
-            if ((byte) 0x07 == processBuffer[i]) {
+
+            if ((byte) 0x07 == processBuffer[i] && (byte) 0x07 == processBuffer[i + 1]) {
                 i++;
             }
 
@@ -435,6 +452,162 @@ public class ComfoAirConnector {
             sb.append(String.format(" %02x", ch));
         }
         return sb.toString();
+    }
+
+    /**
+     * Build request data based on reply data
+     *
+     * @param command
+     * @param preRequestData
+     * @return new build int values array
+     */
+    private int[] buildRequestData(ComfoAirCommand command, int[] preRequestData) {
+        int[] newRequestData;
+
+        int requestCmd = command.getRequestCmd();
+        int dataPosition = command.getdataPosition();
+        int requestValue = command.getRequestValue();
+
+        if (requestCmd == 0xcb) {
+            newRequestData = new int[8];
+
+            if (newRequestData.length <= preRequestData.length) {
+
+                for (int i = 0; i < newRequestData.length; i++) {
+
+                    if (dataPosition == i) {
+                        newRequestData[i] = requestValue;
+                    } else {
+                        newRequestData[i] = preRequestData[i];
+                    }
+                }
+
+            } else {
+                return null;
+            }
+
+        } else if (requestCmd == 0xcf) {
+            newRequestData = new int[9];
+
+            if (newRequestData.length <= preRequestData.length) {
+
+                for (int i = 0; i < newRequestData.length; i++) {
+                    int j = i > 5 ? i + 4 : i;
+
+                    if (dataPosition == i) {
+                        newRequestData[i] = requestValue;
+                    } else {
+                        newRequestData[i] = preRequestData[j];
+                    }
+                }
+
+            } else {
+                return null;
+            }
+
+        } else if (requestCmd == 0xd7) {
+            newRequestData = new int[8];
+
+            if (newRequestData.length <= preRequestData.length) {
+
+                for (int i = 0; i < newRequestData.length; i++) {
+                    int j = i > 5 ? i + 3 : i;
+
+                    if (dataPosition == i) {
+
+                        if (dataPosition == 4) {
+                            requestValue = checkByteAndCalculateValue(command, requestValue, preRequestData[j]);
+
+                            newRequestData[i] = preRequestData[j] + requestValue;
+
+                        } else {
+                            newRequestData[i] = requestValue;
+                        }
+
+                    } else {
+                        newRequestData[i] = preRequestData[j];
+                    }
+                }
+
+            } else {
+                return null;
+            }
+
+        } else if (requestCmd == 0xed) {
+            newRequestData = new int[5];
+
+            if (newRequestData.length <= preRequestData.length) {
+
+                for (int i = 0; i < newRequestData.length; i++) {
+                    int j = i > 3 ? i + 2 : i;
+
+                    if (dataPosition == i) {
+                        newRequestData[i] = requestValue;
+                    } else {
+                        newRequestData[i] = preRequestData[j];
+                    }
+                }
+
+            } else {
+                return null;
+            }
+
+        } else if (requestCmd == 0x9f) {
+            newRequestData = new int[19];
+
+            if (newRequestData.length <= preRequestData.length) {
+
+                for (int i = 0; i < newRequestData.length; i++) {
+
+                    if (dataPosition == i) {
+
+                        if (dataPosition == 0 || dataPosition == 1 || dataPosition == 2) {
+                            requestValue = checkByteAndCalculateValue(command, requestValue, preRequestData[i]);
+
+                            newRequestData[i] = preRequestData[i] + requestValue;
+
+                        } else {
+                            newRequestData[i] = requestValue;
+                        }
+
+                    } else {
+                        newRequestData[i] = preRequestData[i];
+                    }
+                }
+
+            } else {
+                return null;
+            }
+
+        } else {
+            return null;
+        }
+
+        return newRequestData;
+    }
+
+    /**
+     * Check if preValue contains possible byte and calculate new value
+     *
+     * @param command
+     * @param requestValue
+     * @param preValue
+     * @return new int value
+     */
+    private int checkByteAndCalculateValue(ComfoAirCommand command, int requestValue, int preValue) {
+        String key = command.getKeys().get(0);
+        ComfoAirCommandType commandType = ComfoAirCommandType.getCommandTypeByKey(key);
+        int possibleValue = commandType.getPossibleValues()[0];
+
+        boolean isActive = (preValue & possibleValue) == possibleValue;
+        int newValue;
+
+        if (isActive) {
+            newValue = requestValue == 1 ? 0 : -possibleValue;
+        } else {
+            newValue = requestValue == 1 ? possibleValue : 0;
+        }
+        return newValue;
     }
 
     private class CPUWorkaroundThread implements SerialPortEventListener {
