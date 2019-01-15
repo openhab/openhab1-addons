@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,8 @@ import org.openhab.core.types.State;
  *
  * @author Holger Hees
  * @since 1.3.0
+ * @author Grzegorz Miasko
+ * @since 1.14.0
  */
 public class DataTypeBoolean implements ComfoAirDataType {
 
@@ -40,7 +42,8 @@ public class DataTypeBoolean implements ComfoAirDataType {
         int[] template = commandType.getChangeDataTemplate();
 
         template[commandType.getChangeDataPos()] = ((DecimalType) value).intValue() == 1
-                ? commandType.getPossibleValues()[0] : 0x00;
+                ? commandType.getPossibleValues()[0]
+                : 0x00;
 
         return template;
     }

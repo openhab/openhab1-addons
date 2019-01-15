@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,12 +15,10 @@ import org.openhab.core.types.State;
 /**
  * Class to handle temperature values
  *
- * @author Holger Hees
- * @since 1.3.0
  * @author Grzegorz Miasko
  * @since 1.14.0
  */
-public class DataTypeTemperature implements ComfoAirDataType {
+public class DataTypeVolt implements ComfoAirDataType {
 
     /**
      * {@inheritDoc}
@@ -28,7 +26,7 @@ public class DataTypeTemperature implements ComfoAirDataType {
     @Override
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
-        return new DecimalType((((double) data[commandType.getGetReplyDataPos()[0]]) / 2) - 20);
+        return new DecimalType(((double) data[commandType.getGetReplyDataPos()[0]]) * 10 / 255);
     }
 
     /**
@@ -39,7 +37,7 @@ public class DataTypeTemperature implements ComfoAirDataType {
 
         int[] template = commandType.getChangeDataTemplate();
 
-        template[commandType.getChangeDataPos()] = (int) (((DecimalType) value).doubleValue() + 20) * 2;
+        template[commandType.getChangeDataPos()] = (int) (((DecimalType) value).doubleValue() * 255 / 10);
 
         return template;
     }
