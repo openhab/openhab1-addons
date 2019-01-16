@@ -65,9 +65,9 @@ public class TelegramActionService implements ActionService, ManagedService {
                 String tokenKey = String.format("%s.token", bot);
                 String parseModeKey = String.format("%s.parseMode", bot);
 
-                String chatId = getConfigValue(config, chatIdKey);
-                String token = getConfigValue(config, tokenKey);
-                String parseMode = getConfigValue(config, parseModeKey);
+                String chatId = Objects.toString(config.get(chatIdKey), null);
+                String token = Objects.toString(config.get(tokenKey), null);
+                String parseMode = Objects.toString(config.get(parseModeKey), null);
 
                 if (chatId != null && token != null) {
                     if (parseMode == null) {
@@ -82,9 +82,5 @@ public class TelegramActionService implements ActionService, ManagedService {
             }
             isProperlyConfigured = true;
         }
-    }
-
-    private String getConfigValue(Dictionary<String, ?> config, String key) {
-        return Objects.toString(config.get(key));
     }
 }
