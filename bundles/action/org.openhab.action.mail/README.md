@@ -1,13 +1,15 @@
 # Mail Actions
 
-This add-on provides SMTP services so your rules and scripts can send e-mails.
-The `to` paremeter can contain a semicolon-separated list of email addresses.
+This add-on provides SMTP services so your rules and scripts can send emails.
+
 
 ## Actions
 
 - `sendMail(String to, String subject, String message)`: Sends an email via SMTP.
 - `sendMail(String to, String subject, String message, String attachmentUrl)`: Sends an email with attachment via SMTP.
 - `sendMail(String to, String subject, String message, List<String> attachmentUrlList)`: Sends an email with one or more attachments via SMTP.  
+
+The `to` parameter can contain a semicolon-separated list of email addresses. Email addresses can be either in the format "user@domain.com" or "First Lastname <user@domain.com>". 
 
 ## Configuration
 
@@ -19,7 +21,7 @@ This action service can be configured via the `services/mail.cfg` file.
 | port          | 25 (resp. 587 for TLS/SSL) | No                                                                      | SMTP port to use                                                                                                                                    |
 | username      |                            | if the SMTP server at `<hostname>` and `<port>` requires authentication | SMTP user name                                                                                                                                      |
 | password      |                            | if the SMTP server at `<hostname>` and `<port>` requires authentication | SMTP password                                                                                                                                       |
-| from          |                            | Yes                                                                     | Email address to use for sending mails                                                                                                              |
+| from          |                            | Yes                                                                     | Email address to use for sending mails. The email address can be given as from=user@domain.com" or from=First Lastname <user@domain.com> (do not use quotes).                                                                                                               |
 | tls           | false                      | No                                                                      | `true` if STARTTLS is enabled (not required) for the connection                                                                                     |
 | ssl           | false                      | No                                                                      | `true` if SSL negotiation should occur on connection.  Do not set both `tls` and `ssl` to `true`. If `true` is used here, the port will automatically be set to "465".                                                   |
 | popbeforesmtp | false                      | No                                                                      | set to `true` if POP before SMTP (another authentication mechanism) should be enabled. Username and password are taken from the above configuration |
