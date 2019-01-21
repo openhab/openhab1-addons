@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
 
 /**
- * Class to handle temperature values
+ * Class to handle volt values
  *
  * @author Grzegorz Miasko
  * @since 1.14.0
@@ -26,7 +26,11 @@ public class DataTypeVolt implements ComfoAirDataType {
     @Override
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
-        return new DecimalType(((double) data[commandType.getGetReplyDataPos()[0]]) * 10 / 255);
+        if (commandType.getGetReplyDataPos()[0] < data.length) {
+            return new DecimalType((double) data[commandType.getGetReplyDataPos()[0]] * 10 / 255);
+        } else {
+            return null;
+        }
     }
 
     /**

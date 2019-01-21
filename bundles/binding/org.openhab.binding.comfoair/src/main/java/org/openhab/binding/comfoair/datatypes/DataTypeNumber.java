@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,8 +17,6 @@ import org.openhab.core.types.State;
  *
  * @author Holger Hees
  * @since 1.3.0
- * @author Grzegorz Miasko
- * @since 1.14.0
  */
 public class DataTypeNumber implements ComfoAirDataType {
 
@@ -34,8 +32,13 @@ public class DataTypeNumber implements ComfoAirDataType {
         int base = 0;
 
         for (int i = get_reply_data_pos.length - 1; i >= 0; i--) {
-            value += data[get_reply_data_pos[i]] << base;
-            base += 8;
+
+            if (get_reply_data_pos[i] < data.length) {
+                value += data[get_reply_data_pos[i]] << base;
+                base += 8;
+            } else {
+                return null;
+            }
         }
 
         int[] possibleValues = commandType.getPossibleValues();
@@ -65,30 +68,20 @@ public class DataTypeNumber implements ComfoAirDataType {
 
         int[] template = commandType.getChangeDataTemplate();
         int[] possibleValues = commandType.getPossibleValues();
+        int position = commandType.getChangeDataPos();
 
         int intValue = ((DecimalType) value).intValue();
 
-        // by GM dopisany warunek dla przypadku braku podania possibleValues
-        /*
-         * for (int i = 0; i < possibleValues.length; i++) {
-         * if (possibleValues[i] == intValue) {
-         * template[commandType.getChangeDataPos()] = intValue;
-         * break;
-         * }
-         * }
-         */
         if (possibleValues == null) {
-            template[commandType.getChangeDataPos()] = intValue;
+            template[position] = intValue;
         } else {
             for (int i = 0; i < possibleValues.length; i++) {
                 if (possibleValues[i] == intValue) {
-                    template[commandType.getChangeDataPos()] = intValue;
+                    template[position] = intValue;
                     break;
                 }
             }
         }
-
-        System.out.println(template);
 
         return template;
     }
