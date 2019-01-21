@@ -284,7 +284,7 @@ Number	comfoairFanMode				"Supply / Exhaust"				<fan_in>	(ComfoAir)
 Number	comfoairFanMode_Message			"Supply / Exhaust [%d]"				<fan_in>	(ComfoAir)
 Number	comfoairTargetTemperature_Message	"Comfort temperature [%.1f °C]"			<temperature>	(ComfoAir)
 Number	comfoairErrorReset			"Error reset"					<service>	(ComfoAir)			{comfoair="error_reset"}
-Number	comfoairFilterReset			"Filter reset"					<service>	(ComfoAir)								{comfoair="filter_reset"}
+Number	comfoairFilterReset			"Filter reset"					<service>	(ComfoAir)			{comfoair="filter_reset"}
 Number	comfoairMode				"Manual - Auto [%d]"				<controlMode>	(ComfoAir)
 Switch	comfoairControl_Switch			"Activate"					<control>	(ComfoAir)
 Number	comfoairFilterPeriod			"Filter period [%d weeks]"			<clock>		(ComfoAir)			{comfoair="filter_period"}
@@ -301,7 +301,7 @@ String	comfoairError_Message			"Messages [%s]"					<attention>	(ComfoAir)
 Number	comfoairFilterRuntime											(ComfoAir)			{comfoair="filter_running"}
 String	comfoairFilterRuntime_Message		"Filter time [%s]"				<clock>		(ComfoAir)
 Number	comfoairFilterErrorI											(ComfoAir)			{comfoair="filter_error_intern"}
-Number	comfoairFilterErrorE																											(ComfoAir)			{comfoair="filter_error_extern"}
+Number	comfoairFilterErrorE											(ComfoAir)			{comfoair="filter_error_extern"}
 String	comfoairFrozenError
 String	comfoairInletError
 
@@ -311,13 +311,13 @@ Number	comfoairOutdoorIncomingTemperature	"Inlet air temperature [%.1f °C]"		<t
 Number	comfoairIndoorIncomingTemperature	"Supply air temperature [%.1f °C]"		<temperature>	(ComfoAir, comfoairTemps_Chart)	{comfoair="indoor_incomming_temperatur"}
 Number	comfoairIndoorOutgoingTemperature	"Return air temperature [%.1f °C]"		<temperature>	(ComfoAir, comfoairTemps_Chart)	{comfoair="indoor_outgoing_temperatur"}
 Number	comfoairOutdoorOutgoingTemperature	"Exhaust air temperature [%.1f °C]"		<temperature>	(ComfoAir, comfoairTemps_Chart)	{comfoair="outdoor_outgoing_temperatur"}
-Number	comfoairIncomingFan			"Supply capacity [%d %%]"			<fan_in>	(ComfoAir)								{comfoair="incomming_fan"}
+Number	comfoairIncomingFan			"Supply capacity [%d %%]"			<fan_in>	(ComfoAir)			{comfoair="incomming_fan"}
 Number	comfoairOutgoingFan			"Exhaust capasity [%d %%]"			<fan_out>	(ComfoAir)			{comfoair="outgoing_fan"}
 Number	comfoairFanIn0				"Supply capacity - level 0 [%d %%]"		<fan_in>	(ComfoAir)			{comfoair="fan_in_0"}
 Number	comfoairFanOut0				"Exhaust capasity - level 0 [%d %%]"		<fan_out>	(ComfoAir)			{comfoair="fan_out_0"}
 Number	comfoairEfficiency			"Efficiency [%.1f %%]"				<efficiency>	(ComfoAir)
 Number	comfoairBypassMode			"Bypass [MAP(comfoair_bypass.map):%s]"		<climate>	(ComfoAir)			{comfoair="bypass_mode"}
-Number	comfoairEWTMode 			"EWT [MAP(comfoair_on-off.map):%s]"		<climate>	(ComfoAir)	{comfoair="ewt_mode"}
+Number	comfoairEWTMode 			"EWT [MAP(comfoair_on-off.map):%s]"		<climate>	(ComfoAir)			{comfoair="ewt_mode"}
 Number	comfoairChimneyMode			"Fire programme [MAP(comfoair_on-off.map):%s]"	<climate>	(ComfoAir)			{comfoair="chimney_mode"}
 Number	comfoairPreheaterMode			"Preheater [MAP(comfoair_on-off.map):%s]"	<climate>	(ComfoAir)			{comfoair="preheater_mode"}
 Number	comfoairCookerHoodMode			"Extractor hood [MAP(comfoair_on-off.map):%s]"	<climate>	(ComfoAir)			{comfoair="cookerhood_mode"}
