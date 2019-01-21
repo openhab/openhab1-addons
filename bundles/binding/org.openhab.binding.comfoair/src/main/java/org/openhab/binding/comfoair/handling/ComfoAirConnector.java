@@ -392,8 +392,8 @@ public class ComfoAirConnector {
                             // checksum
                             if (calculateChecksum(_block) == checksum) {
 
-                                logger.debug(String.format("receive CMD: %02x DATA: {}", command.getReplyCmd(),
-                                        dumpData(replyData)));
+                                logger.debug(String.format("receive CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
+                                        dumpData(replyData));
 
                                 send(ACK);
 
@@ -405,8 +405,8 @@ public class ComfoAirConnector {
                             logger.warn("Unable to handle data. Data size not valid");
                         }
 
-                        logger.warn(String.format("skip CMD: %02x DATA: {}", command.getReplyCmd(),
-                                dumpData(cleanedBlock)));
+                        logger.warn(String.format("skip CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
+                                dumpData(cleanedBlock));
                     }
                 }
 
