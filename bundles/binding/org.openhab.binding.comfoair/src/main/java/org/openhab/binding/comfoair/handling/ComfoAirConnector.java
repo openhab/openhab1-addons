@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,8 +35,6 @@ import gnu.io.UnsupportedCommOperationException;
  *
  * @author Holger Hees
  * @since 1.3.0
- * @author Grzegorz Miasko
- * @since 1.14.0
  */
 public class ComfoAirConnector {
 
@@ -139,7 +137,13 @@ public class ComfoAirConnector {
      * @param preRequestData
      * @return reply byte values
      */
-    public synchronized int[] sendCommand(ComfoAirCommand command, int[] preRequestData) {
+
+    /*
+     * @deprecated old version of sendCommand method
+     */
+    @Deprecated
+    public synchronized int[] sendCommand(ComfoAirCommand command) {
+
         int requestCmd = command.getRequestCmd();
         int retry = 0;
 
@@ -154,19 +158,7 @@ public class ComfoAirConnector {
         }
 
         do {
-            // If preRequestData param was send (preRequestData is sending for write command)
-            int[] requestData;
-
-            if (preRequestData == null) {
-                requestData = command.getRequestData();
-            } else {
-                requestData = buildRequestData(command, preRequestData);
-
-                if (requestData == null) {
-                    logger.warn(String.format("Unable to build data for write command: %02x", command.getReplyCmd()));
-                    return null;
-                }
-            }
+            int[] requestData = command.getRequestData();
 
             // Fake read request for ccease properties
             if (requestData == null && requestCmd == 0x37) {
@@ -174,8 +166,6 @@ public class ComfoAirConnector {
             }
 
             byte[] requestBlock = calculateRequest(requestCmd, requestData);
-            logger.debug("send DATA: " + dumpData(requestBlock));
-
             if (!send(requestBlock)) {
                 return null;
             }
@@ -286,6 +276,158 @@ public class ComfoAirConnector {
 
         if (retry == 5) {
             logger.error("Unable to send command. " + retry + " retries failed.");
+        }
+
+        return null;
+    }
+
+    public synchronized int[] sendCommand(ComfoAirCommand command, int[] preRequestData) {
+        int requestCmd = command.getRequestCmd();
+        int retry = 0;
+
+        // Switch support for app or ccease control
+        if (requestCmd == 0x9b) {
+            isSuspended = !isSuspended;
+        } else if (requestCmd == 0x9c) {
+            return new int[] { isSuspended ? 0x00 : 0x03 };
+        } else if (isSuspended) {
+            logger.debug("Ignore cmd. Service is currently suspended");
+            return null;
+        }
+
+        do {
+            // If preRequestData param was send (preRequestData is sending for write command)
+            int[] requestData;
+
+            if (preRequestData == null) {
+                requestData = command.getRequestData();
+            } else {
+                requestData = buildRequestData(command, preRequestData);
+
+                if (requestData == null) {
+                    logger.warn(String.format("Unable to build data for write command: %02x", command.getReplyCmd()));
+                    return null;
+                }
+            }
+
+            // Fake read request for ccease properties
+            if (requestData == null && requestCmd == 0x37) {
+                requestData = new int[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            }
+
+            byte[] requestBlock = calculateRequest(requestCmd, requestData);
+            logger.debug("send DATA: {}", dumpData(requestBlock));
+
+            if (!send(requestBlock)) {
+                return null;
+            }
+
+            byte[] responseBlock = new byte[0];
+
+            try {
+
+                // 31 is max. response length
+                byte[] readBuffer = new byte[31];
+
+                do {
+                    while (inputStream.available() > 0) {
+
+                        int bytes = inputStream.read(readBuffer);
+
+                        // merge bytes
+                        byte[] mergedBytes = new byte[responseBlock.length + bytes];
+                        System.arraycopy(responseBlock, 0, mergedBytes, 0, responseBlock.length);
+                        System.arraycopy(readBuffer, 0, mergedBytes, responseBlock.length, bytes);
+
+                        responseBlock = mergedBytes;
+                    }
+                    try {
+                        // add wait states around reading the stream, so that
+                        // interrupted transmissions are merged
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        // ignore interruption
+                    }
+
+                } while (inputStream.available() > 0);
+
+                // check for ACK
+                if (responseBlock.length >= 2 && responseBlock[0] == (byte) 0x07 && responseBlock[1] == (byte) 0xf3) {
+                    if (command.getReplyCmd() == null) {
+                        // confirm additional data with an ACK
+                        if (responseBlock.length > 2) {
+                            send(ACK);
+                        }
+                        return null;
+                    }
+
+                    // check for start and end sequence and if the response cmd
+                    // matches
+                    // 11 is the minimum response length with one data byte
+                    if (responseBlock.length >= 11 && responseBlock[2] == (byte) 0x07 && responseBlock[3] == (byte) 0xf0
+                            && responseBlock[responseBlock.length - 2] == (byte) 0x07
+                            && responseBlock[responseBlock.length - 1] == (byte) 0x0f
+                            && (responseBlock[5] & 0xff) == command.getReplyCmd()) {
+
+                        logger.debug("receive RAW DATA: {}", dumpData(responseBlock));
+
+                        byte[] cleanedBlock = cleanupBlock(responseBlock);
+
+                        int dataSize = cleanedBlock[2];
+
+                        // the cleanedBlock size should equal dataSize + 2 cmd
+                        // bytes and + 1 checksum byte
+                        if (dataSize + 3 == cleanedBlock.length - 1) {
+
+                            byte checksum = cleanedBlock[dataSize + 3];
+                            int[] replyData = new int[dataSize];
+                            for (int i = 0; i < dataSize; i++) {
+                                replyData[i] = cleanedBlock[i + 3] & 0xff;
+                            }
+
+                            byte[] _block = new byte[3 + replyData.length];
+                            System.arraycopy(cleanedBlock, 0, _block, 0, _block.length);
+
+                            // validate calculated checksum against submitted
+                            // checksum
+                            if (calculateChecksum(_block) == checksum) {
+
+                                logger.debug(String.format("receive CMD: %02x DATA: {}", command.getReplyCmd(),
+                                        dumpData(replyData)));
+
+                                send(ACK);
+
+                                return replyData;
+                            }
+
+                            logger.warn("Unable to handle data. Checksum verification failed");
+                        } else {
+                            logger.warn("Unable to handle data. Data size not valid");
+                        }
+
+                        logger.warn(String.format("skip CMD: %02x DATA: {}", command.getReplyCmd(),
+                                dumpData(cleanedBlock)));
+                    }
+                }
+
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            try {
+
+                Thread.sleep(1000);
+                logger.warn("Retry cmd. Last call was not successful. Request: {} Response: {}", dumpData(requestBlock),
+                        (responseBlock.length > 0 ? dumpData(responseBlock) : "null"));
+
+            } catch (InterruptedException e) {
+                // ignore interruption
+            }
+
+        } while (retry++ < 5);
+
+        if (retry == 5) {
+            logger.error("Unable to send command. {} retries failed.", retry);
         }
 
         return null;
@@ -417,7 +559,7 @@ public class ComfoAirConnector {
      * @return successful flag
      */
     private boolean send(byte[] request) {
-        logger.debug("send DATA: " + dumpData(request));
+        logger.debug("send DATA: {}", dumpData(request));
 
         try {
             outputStream.write(request);
@@ -465,7 +607,7 @@ public class ComfoAirConnector {
         int[] newRequestData;
 
         int requestCmd = command.getRequestCmd();
-        int dataPosition = command.getdataPosition();
+        int dataPosition = command.getDataPosition();
         int requestValue = command.getRequestValue();
 
         if (requestCmd == 0xcb) {

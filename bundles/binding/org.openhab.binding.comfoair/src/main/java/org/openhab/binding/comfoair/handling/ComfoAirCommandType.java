@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -32,8 +32,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Holger Hees
  * @since 1.3.0
- * @author Grzegorz Miasko
- * @since 1.14.0
  */
 public enum ComfoAirCommandType {
 
@@ -43,15 +41,11 @@ public enum ComfoAirCommandType {
      * @param key
      *                                 command name
      * @param data_tape
-     *                                 data type (can be: DataTypeNumber.class, DataTypeBoolean.class,
-     *                                 DataTypeTemperature.class, DataTypeMessage.class)
-     *                                 DataTypeBoolean.class is used for coded data
-     *                                 DataTypeTemperature.class is for fan and EWT temperature write-read command (adds
-     *                                 20 degrees)
-     *                                 DataTypeMessage.class id for error command only
+     *                                 data type (can be: DataTypeBoolean.class, DataTypeMessage.class,
+     *                                 DataTypeNumber.class, DataTypeRPM.class,
+     *                                 DataTypeTemperature.class, DataTypeVolt.class)
      * @param possible_values
-     *                                 possible values for
-     *                                 is needed for write command, if it can only take certain values
+     *                                 possible values for write command, if it can only take certain values
      * @param change_command
      *                                 byte number for ComfoAir write command
      * @param change_data_size
@@ -2125,7 +2119,7 @@ public enum ComfoAirCommandType {
         try {
             return data_type.newInstance();
         } catch (Exception e) {
-            logger.error("Creating new DataType went wrong", e);
+            logger.error("Creating new DataType went wrong ", e);
         }
         return null;
     }

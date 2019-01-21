@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,8 +16,6 @@ import java.util.List;
  *
  * @author Holger Hees
  * @since 1.3.0
- * @author Grzegorz Miasko
- * @since 1.14.0
  */
 public class ComfoAirCommand {
 
@@ -40,8 +38,21 @@ public class ComfoAirCommand {
      * @param requestValue
      *                         request byte value
      * @param dataPosition
-     *                         request byte possition
+     *                         request byte position
      */
+
+    /*
+     * @deprecated old version of ComfoAirCommand method
+     */
+    @Deprecated
+    public ComfoAirCommand(String key, Integer requestCmd, Integer replyCmd, int[] requestData) {
+        this.keys = new ArrayList<String>();
+        this.keys.add(key);
+        this.requestCmd = requestCmd;
+        this.requestData = requestData;
+        this.replyCmd = replyCmd;
+    }
+
     public ComfoAirCommand(String key, Integer requestCmd, Integer replyCmd, int[] requestData, Integer dataPosition,
             Integer requestValue) {
         this.keys = new ArrayList<String>();
@@ -89,7 +100,6 @@ public class ComfoAirCommand {
         return replyCmd;
     }
 
-    // by GM nowa komendy
     /**
      * @return request value as byte value
      */
@@ -98,28 +108,28 @@ public class ComfoAirCommand {
     }
 
     /**
-     * @return possition of request byte
+     * @return position of request byte
      */
-    public Integer getdataPosition() {
+    public Integer getDataPosition() {
         return dataPosition;
     }
 
     /**
-     * @set request command byte value
+     * set request command byte value
      */
     public void setRequestCmd(Integer newRequestCmd) {
         requestCmd = newRequestCmd;
     }
 
     /**
-     * @set reply command byte value
+     * set reply command byte value
      */
     public void setReplyCmd(Integer newReplyCmd) {
         replyCmd = newReplyCmd;
     }
 
     /**
-     * @set request data byte values
+     * set request data byte values
      */
     public void setRequestData(int[] newRequestData) {
         requestData = newRequestData;
