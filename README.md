@@ -313,6 +313,8 @@ Number	comfoairIndoorOutgoingTemperature	"Return air temperature [%.1f °C]"		<t
 Number	comfoairOutdoorOutgoingTemperature	"Exhaust air temperature [%.1f °C]"		<temperature>	(ComfoAir, comfoairTemps_Chart)	{comfoair="outdoor_outgoing_temperatur"}
 Number	comfoairIncomingFan			"Supply capacity [%d %%]"			<fan_in>	(ComfoAir)			{comfoair="incomming_fan"}
 Number	comfoairOutgoingFan			"Exhaust capasity [%d %%]"			<fan_out>	(ComfoAir)			{comfoair="outgoing_fan"}
+Number	comfoairFanIn0				"Supply capacity - level 0 [%d %%]"		<fan_in>	(ComfoAir)			{comfoair="fan_in_0"}
+Number	comfoairFanOut0				"Exhaust capasity - level 0 [%d %%]"		<fan_out>	(ComfoAir)			{comfoair="fan_out_0"}
 Number	comfoairEfficiency			"Efficiency [%.1f %%]"				<efficiency>	(ComfoAir)
 Number	comfoairBypassMode			"Bypass [MAP(comfoair_bypass.map):%s]"		<climate>	(ComfoAir)			{comfoair="bypass_mode"}
 Number	comfoairEWTMode 			"EWT [MAP(comfoair_on-off.map):%s]"		<climate>	(ComfoAir)			{comfoair="ewt_mode"}
