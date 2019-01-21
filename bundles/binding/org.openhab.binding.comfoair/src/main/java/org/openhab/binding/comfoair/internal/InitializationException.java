@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,8 +14,6 @@ package org.openhab.binding.comfoair.internal;
  *
  * @author Holger Hees
  * @since 1.3.0
- * @author Grzegorz Miasko
- * @since 1.14.0
  */
 public class InitializationException extends Exception {
 
@@ -23,7 +21,7 @@ public class InitializationException extends Exception {
 
     /**
      * Initialize the exceptions with an error message
-     *
+     * 
      * @param msg
      */
     public InitializationException(String msg) {
@@ -32,7 +30,7 @@ public class InitializationException extends Exception {
 
     /**
      * Initialize the exceptions with a encapsulated exceptions
-     *
+     * 
      * @param msg
      */
     public InitializationException(Throwable cause) {
@@ -41,7 +39,7 @@ public class InitializationException extends Exception {
 
     /**
      * Initialize the exceptions with a error message and a encapsulated exceptions
-     *
+     * 
      * @param msg
      */
     public InitializationException(String msg, Throwable cause) {
