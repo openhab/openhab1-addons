@@ -285,6 +285,7 @@ Number	comfoairFanMode_Message			"Supply / Exhaust [%d]"				<fan_in>	(ComfoAir)
 Number	comfoairTargetTemperature_Message	"Comfort temperature [%.1f °C]"			<temperature>	(ComfoAir)
 Number	comfoairErrorReset			"Error reset"					<service>	(ComfoAir)			{comfoair="error_reset"}
 Number	comfoairFilterReset			"Filter reset"					<service>	(ComfoAir)			{comfoair="filter_reset"}
+Number	comfoairReset				"Reset"						<reset>		(ComfoAir)
 Number	comfoairMode				"Manual - Auto [%d]"				<controlMode>	(ComfoAir)
 Switch	comfoairControl_Switch			"Activate"					<control>	(ComfoAir)
 Number	comfoairFilterPeriod			"Filter period [%d weeks]"			<clock>		(ComfoAir)			{comfoair="filter_period"}
@@ -630,7 +631,7 @@ end
 
 rule "errorReset"
 when
-    Item comfoairReset changed
+	Item comfoairReset changed
 then
 	var String error
 	
@@ -649,17 +650,16 @@ then
 			error = "" + callScript( "comfoair_errorMsg" )
 			comfoairError_Message.postUpdate( error )
 		])
-	    
-   } else {
-    	if( comfoairReset.state == "0" || comfoairReset.state == "1" ) {
+	} else {
+		if( comfoairReset.state == "0" || comfoairReset.state == "1" ) {
 			comfoairError_Message.postUpdate( "PC control is not active" )
 			
 			createTimer(now.plusSeconds( 10 ),  [ |
-            error = "" + callScript( "comfoair_errorMsg" )
-            comfoairError_Message.postUpdate( error )
+				error = "" + callScript( "comfoair_errorMsg" )
+				comfoairError_Message.postUpdate( error )
 			])
 		}
-   }
+	}
 end
 
 
@@ -675,20 +675,20 @@ when
 	or
 	Item comfoairControl changed to 1
 then
-    var Number efficiency
-    
-    if( comfoairOutdoorIncomingTemperature.state instanceof DecimalType && comfoairIndoorOutgoingTemperature.state instanceof DecimalType && comfoairIndoorIncomingTemperature.state instanceof DecimalType && comfoairBypassMode.state == 0 ) {
-	    var Number tempOutIn = comfoairOutdoorIncomingTemperature.state as DecimalType
-	    var Number tempInOut = comfoairIndoorOutgoingTemperature.state as DecimalType
-	    var Number tempInIn = comfoairIndoorIncomingTemperature.state as DecimalType
-	    
-	    if( tempInOut != tempOutIn ) {
-		    efficiency = ( tempInIn - tempOutIn ) / ( tempInOut - tempOutIn ) * 100
-		    efficiency = Math::round( efficiency.doubleValue );
+	var Number efficiency
+
+	if( comfoairOutdoorIncomingTemperature.state instanceof DecimalType && comfoairIndoorOutgoingTemperature.state instanceof DecimalType && comfoairIndoorIncomingTemperature.state instanceof DecimalType && comfoairBypassMode.state == 0 ) {
+		var Number tempOutIn = comfoairOutdoorIncomingTemperature.state as DecimalType
+		var Number tempInOut = comfoairIndoorOutgoingTemperature.state as DecimalType
+		var Number tempInIn = comfoairIndoorIncomingTemperature.state as DecimalType
+
+		if( tempInOut != tempOutIn ) {
+			efficiency = ( tempInIn - tempOutIn ) / ( tempInOut - tempOutIn ) * 100
+			efficiency = Math::round( efficiency.doubleValue );
 		} else efficiency = null
-    } else efficiency = null
-    
-    comfoairEfficiency.postUpdate( efficiency )
+	} else efficiency = null
+
+	comfoairEfficiency.postUpdate( efficiency )
 end
 
 
@@ -735,9 +735,9 @@ end
 
 rule "changeSupply-ExhaustSwitch"
 when 
-    Item Delayed_Start changed to ON
-    or
-    Item comfoairFanMode changed
+	Item Delayed_Start changed to ON
+	or
+	Item comfoairFanMode changed
 then
 	if( comfoairFanMode.state instanceof DecimalType ) {
 		comfoairFanMode_Message.postUpdate( comfoairFanMode.state )
@@ -747,7 +747,7 @@ end
 
 rule "changeSupply-ExhaustMode"
 when
-    Item comfoairFanMode changed
+	Item comfoairFanMode changed
 then
 	if( comfoairControl.state instanceof Number && comfoairChimney.state instanceof Number ) {
 
@@ -817,14 +817,14 @@ end
 
 rule "changeAuto-Manual"
 when
-    Item comfoairMode changed
+	Item comfoairMode changed
 then
-    if( comfoairControl.state == 0 ) {
+	if( comfoairControl.state == 0 ) {
 		comfoairError_Message.postUpdate( "PC control is not active" )
 		
 		createTimer(now.plusSeconds( 10 ),  [ |
-      	var String error = "" + callScript( "comfoair_errorMsg" )
-      	comfoairError_Message.postUpdate( error )
+			var String error = "" + callScript( "comfoair_errorMsg" )
+			comfoairError_Message.postUpdate( error )
 		])
 	}
 end
@@ -855,19 +855,19 @@ then
 			])
 			
 			createTimer(now.plusSeconds( 10 ),  [ |
-            var String error = "" + callScript( "comfoair_errorMsg" )
-            comfoairError_Message.postUpdate( error )
+				var String error = "" + callScript( "comfoair_errorMsg" )
+				comfoairError_Message.postUpdate( error )
 			])
-      }
+		}
 	}
 end
 
 
 rule "changeVentilationLevelSwitch"
 when 
-    Item Delayed_Start changed to ON
-    or
-    Item comfoairFanLevel changed
+	Item Delayed_Start changed to ON
+	or
+	Item comfoairFanLevel changed
 then
 	if( comfoairFanLevel.state instanceof DecimalType ) {
 		comfoairFanLevel_Message.postUpdate( comfoairFanLevel.state )
@@ -896,8 +896,8 @@ then
 			])
 			
 			createTimer( now.plusSeconds( 10 ),  [ |
-            var String error = "" + callScript( "comfoair_errorMsg" )
-            comfoairError_Message.postUpdate( error )
+				var String error = "" + callScript( "comfoair_errorMsg" )
+				comfoairError_Message.postUpdate( error )
 			])
 	   }
 	}
@@ -906,9 +906,9 @@ end
 
 rule "changeComfortTemperatureSetpoint"
 when 
-    Item Delayed_Start changed to ON
-    or
-    Item comfoairTargetTemperature changed
+	Item Delayed_Start changed to ON
+	or
+	Item comfoairTargetTemperature changed
 then
 	if( comfoairTargetTemperature.state instanceof DecimalType ) {
 		comfoairTargetTemperature_Message.postUpdate( comfoairTargetTemperature.state )
@@ -927,7 +927,7 @@ then
 		var Number hour   = now.getHourOfDay
 		var Number minute = now.getMinuteOfHour
 	
-	    if( comfoairControl.state == 1 && comfoairMode.state == 1 ) {
+		if( comfoairControl.state == 1 && comfoairMode.state == 1 ) {
 			var Number currentLevel = comfoairFanLevel.state as DecimalType
 			var Number newLevel
 			
@@ -939,7 +939,7 @@ then
 				// All days a week
 				// if you want Monday to Friday remove day==6 and day==7
 				if( day == 1 || day == 2 || day == 3 || day == 4 || day == 5 || day == 6 || day == 7 ) {
-		        	
+
 					// Level 2 : 5:00 - 7:00, 16:00 - 23:00, level 1 : in the other time
 					if( ( hour >= 5 && hour < 7 )
 						||
@@ -950,7 +950,7 @@ then
 				
 				// Saterdey and Sunday
 				} else if( day == 6 || day == 7 ) {
-			        
+
 					if( ( hour >= 12 && hour < 14 )
 					) {
 						newLevel = 3
@@ -961,7 +961,7 @@ then
 
 				// All days a week
 				if( day == 1 || day == 2 || day == 3 || day == 4 || day == 5 || day == 6 || day == 7 ) {
-		        	
+
 					// Level 3 : 13:00 - 13:30
 					if( ( hour == 13 && minute < 30 )
 					) {
@@ -975,7 +975,7 @@ then
 				// All days a week
 				// podwyzszenie 0:00-2:00, 3:00-5:00, 7:00-8:00, 10:00-11:00, 13:00-15:00, 16:30- 18:30, 20:00-21:00, 22:00-23:00
 				if( day == 1 || day == 2 || day == 3 || day == 4 || day == 5 || day == 6 || day == 7 ) {
-		        	
+
 					// Level 2 : 6:00 - 8:00, 16:00 - 21:00, level 1 : in the other time
 					if( ( hour >= 6 && hour < 8 )
 						||
@@ -997,7 +997,7 @@ then
 
 				// All days a week
 				if( day == 1 || day == 2 || day == 3 || day == 4 || day == 5 || day == 6 || day == 7 ) {
-		        	
+
 					// Level 3 : 13:00 - 13:30
 					if( ( hour == 13 && minute < 30 )
 					) {
@@ -1011,7 +1011,7 @@ then
 				isAutoMode = true
 				comfoairFanMode.postUpdate( 0 )
 			}
-	        
+
 			logInfo( "comfoair", "ComfoAir - AUTO Mode" )
 
 		} else logInfo( "comfoair", "ComfoAir - MANUAL Mode" )
