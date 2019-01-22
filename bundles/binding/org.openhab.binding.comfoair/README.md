@@ -1,17 +1,42 @@
-# ComfoAir Binding modified
-Expanded ComfoAir binding v.1x for openHAB based on original [org.openhab.binding.comfoair](https://github.com/openhab/openhab1-addons/wiki/comfo-air-binding) v. 1.3.0 written by Holger Hees.
+# ComfoAir Binding
 
-## What's new in this binding ?
+The ComfoAir binding allows monitoring and control of a Zehnder ComfoAir 350 balanced ventilation system.
 
-Many new commands (read and write) have been added in this binding. The program code was also changed so the sending of the write commands is possible and did not cause problems with the operation of the device.<br/>
-Original binding provided 22 commands, including 5 write commands only (eg it allowed to control ventilation levels and reset errors).
-This new binding provides 160 commands, including 71 write commands. This gives you the ability to control all ComfoAir settings, available in menus 10 - 90, and even more. This allows for full control of the device.
+This binding was tested with the Zehnder ComfoAir 350 device. Most commands should work with: ComfoAir 550, WHR930 of StorkAir, G90-380 by Wernig and Santos 370 DC to Paul.
 
-This binding was tested with the Zehnder ComfoAir 350 ventilation system. As original binding it should work with ComfoAir 550, WHR930 of StorkAir, G90-380 by Wernig and Santos 370 DC to Paul.
+## Prerequisites.
+Computer communication with the ComfoAir unit is carried out via the RS232 port on the device. You can use the PC port:
+- raspberry pi: UART port with converter RS232 to UART
+- raspberry pi: USB port with converter RS232 to USB
+- PC: RS232 port
+- PC: USB port with converter RS232 to USB
 
-### List of commands (original and new ones).
+The connection should be made with a 3-wire cable connecting pins: GND, TX, RX of RS232 sockets, but RX and TX pins should be crossed (TX of ComfoAir to RX of PC, RX of ComfoAir to TX of PC).
 
-| Command | Read / Write | Possible value | Description |
+## Binding Configuration
+
+You can configure this binding in the file `services/comfoair.cfg`.
+
+| Property | Default | Required | Description |
+|----------|---------|:--------:|-------------|
+| port     |         |   Yes    | Serial port which is connected to the Zehnder ComfoAir system, for example `/dev/ttyS0` on Linux or `COM1` on Windows |
+| refresh  | 60000   |   No     | refresh inverval in milliseconds
+
+### Example
+```
+port=/dev/ttyS0
+```
+
+## Item Configuration
+
+The syntax of the binding configuration strings accepted is the following:
+```
+comfoair="<device-command>"
+```
+where `<device-command>` should be replaced with the ComfoAir command from the list below.
+
+### List of commands.
+| device-command | Read / Write | Possible value | Description |
 | :------ | :----------: | :------------: | :---------- |
 | activate | read - write | 0, 1 | ComfoAir control:<br/>0 – controled by CC Ease,<br/>1 – controled by PC (CC Ease is turned off) |
 | **Commands that take over<br/>the CC Ease functions** | | | |
@@ -193,52 +218,6 @@ Menu 90 | | | |
 | RF_value | read - write | 0 ÷ 100 % | Radio control RF – set point |
 | RF_negative | read - write | 0, 1 | Radio control RF<br/>0 – positive<br/>1 – negative
 
-
-
-## How to install.
-
-Download `org.openhab.binding.comfoair-1.13.0.jar` file from this repository.<br/>
-
-**Important !** If you use the original *binding.comfoair*, you must uninstall it before substituting the new .jar file (Paper UI > Add-ons > Bindings > ComfoAir - uninstall).
-
-The *binding.comfoair* installation can be done in two ways:
-1. Upload the `org.openhab.binding.comfoair-1.13.0.jar` file to the `openhab\addons` directory.
-- openhab: `\openHAB\addons`
-- openhabian: `/usr/share/openhab2/addons`
-2. Copy the `org.openhab.binding.comfoair-1.13.0.jar` file to the directory in which the original *binding.comfoair* is located:
-- openhab: `\openHAB\userdata\tmp\mvn\org\openhab\binding\org.openhab.binding.comfoair`
-- openhabian: `/var/lib/openhab2/tmp/mvn/org/openhab/binding/org.openhab.binding.comfoair/1.13.0`<br/><br/>
-Confirm overwriting of the original file.<br/>
-If the original file is in a version other than 1.13.0, the name of the copied file should be renamed to the original *binding.comfoair* .jar file name.
-
-Now you can install ComfoAir binding (Paper UI > Add-ons > Bindings > ComfoAir - install).
-
-## Binding Configuration
-
-You can configure this binding in the file `services/comfoair.cfg`.
-
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| port     |         |   Yes    | Serial port which is connected to the Zehnder ComfoAir system, for example `/dev/ttyS0` on Linux or `COM1` on Windows |
-| refresh  | 60000   |   No     | refresh inverval in milliseconds
-
-
-### Example
-
-```
-port=/dev/ttyS0
-```
-
-## Item Configuration
-
-The syntax of the binding configuration strings accepted is the following:
-
-```
-comfoair="<command>"
-```
-
-where `<command>` should be replaced with the ComfoAir command from the list above.
-
 ## Limitations
 
 - Either the ComfoAir binding or the CCEase Comfocontrol can be active, but not together.
@@ -252,7 +231,6 @@ where `<command>` should be replaced with the ComfoAir command from the list abo
 ```shell
 sudo usermod -a -G dialout openhab
 ```
-
 if `openhab` is your user.
 
 ## Examples
