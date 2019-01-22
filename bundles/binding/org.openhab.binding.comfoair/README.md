@@ -4,7 +4,8 @@ The ComfoAir binding allows monitoring and control of a Zehnder ComfoAir 350 bal
 
 This binding was tested with the Zehnder ComfoAir 350 device. Most commands should work with: ComfoAir 550, WHR930 of StorkAir, G90-380 by Wernig and Santos 370 DC to Paul.
 
-## Prerequisites.
+## Prerequisites
+
 Computer communication with the ComfoAir unit is carried out via the RS232 port on the device. You can use the PC port:
 - raspberry pi: UART port with converter RS232 to UART
 - raspberry pi: USB port with converter RS232 to USB
@@ -235,7 +236,7 @@ if `openhab` is your user.
 
 ## Examples
 
-items/comfoair.items
+`items/comfoair.items`:
 
 ```
 // Comfo Air
