@@ -11,6 +11,8 @@ package org.openhab.binding.comfoair.datatypes;
 import org.openhab.binding.comfoair.handling.ComfoAirCommandType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to handle boolean values which are handled as decimal 0/1 states
@@ -20,19 +22,28 @@ import org.openhab.core.types.State;
  */
 public class DataTypeBoolean implements ComfoAirDataType {
 
+    private static final Logger logger = LoggerFactory.getLogger(DataTypeBoolean.class);
+
     /**
      * {@inheritDoc}
      */
     @Override
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
-        int[] get_reply_data_pos = commandType.getGetReplyDataPos();
-        int get_reply_data_bits = commandType.getGetReplyDataBits();
 
-        if (get_reply_data_pos[0] < data.length) {
-            boolean result = (data[get_reply_data_pos[0]] & get_reply_data_bits) == get_reply_data_bits;
-            return (result) ? new DecimalType(1) : new DecimalType(0);
-        } else {
+        if (data == null || commandType == null) {
+            logger.error("Error of \"DataTypeBoolean\" class \"convertToState\" method parameter: null");
             return null;
+        } else {
+
+            int[] get_reply_data_pos = commandType.getGetReplyDataPos();
+            int get_reply_data_bits = commandType.getGetReplyDataBits();
+
+            if (get_reply_data_pos[0] < data.length) {
+                boolean result = (data[get_reply_data_pos[0]] & get_reply_data_bits) == get_reply_data_bits;
+                return (result) ? new DecimalType(1) : new DecimalType(0);
+            } else {
+                return null;
+            }
         }
     }
 
@@ -41,12 +52,19 @@ public class DataTypeBoolean implements ComfoAirDataType {
      */
     @Override
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
-        int[] template = commandType.getChangeDataTemplate();
 
-        template[commandType.getChangeDataPos()] = ((DecimalType) value).intValue() == 1
-                ? commandType.getPossibleValues()[0]
-                : 0x00;
+        if (value == null || commandType == null) {
+            logger.error("Error of \"DataTypeBoolean\" class \"convertFromState\" method parameter: null");
+            return null;
+        } else {
 
-        return template;
+            int[] template = commandType.getChangeDataTemplate();
+
+            template[commandType.getChangeDataPos()] = ((DecimalType) value).intValue() == 1
+                    ? commandType.getPossibleValues()[0]
+                    : 0x00;
+
+            return template;
+        }
     }
 }
