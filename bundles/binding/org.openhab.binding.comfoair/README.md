@@ -305,7 +305,7 @@ Number	comfoairEnthalpyMode			"Enthalpy [MAP(comfoair_on-off.map):%s]"	<climate>
 Number	comfoairFreezeMode			"Freeze [MAP(comfoair_freeze.map):%s]"		<climate>	(ComfoAir)			{comfoair="freeze_mode"}
 ```
 
-transform/comfoair_bypass.map
+`transform/comfoair_bypass.map`:
 
 ```
 1=Opened
@@ -314,7 +314,7 @@ undefined=unknown
 -=unknown
 ```
 
-transform/comfoair_on-off.map
+`transform/comfoair_on-off.map`:
 
 ```
 1=On
@@ -323,7 +323,7 @@ undefined=unknown
 -=unknown
 ```
 
-transform/comfoair_is-not.map
+`transform/comfoair_is-not.map`:
 
 ```
 1=Install
@@ -332,7 +332,7 @@ undefined=unknown
 -=unknown
 ```
 
-transform/comfoair_freeze.map
+`transform/comfoair_freeze.map`:
 
 ```
 1=Frozen
@@ -341,7 +341,7 @@ undefined=unknown
 -=unknown
 ```
 
-persistence/rrd4j.persist
+`persistence/rrd4j.persist`:
 
 ```
 Strategies {
@@ -356,7 +356,7 @@ Items {
 }
 ```
 
-sitemaps/comfoair.sitemap
+`sitemaps/comfoair.sitemap`:
 
 ```
 sitemap comfoair label="ComfoAir" {
@@ -402,7 +402,7 @@ sitemap comfoair label="ComfoAir" {
 
 ![comfoair sitemap](comfoair-sitemap.jpg)
 
-rules/comfoair.rules
+`rules/comfoair.rules`:
 
 ```Xtend
 import java.lang.Math
