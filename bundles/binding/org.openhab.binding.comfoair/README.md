@@ -7,7 +7,7 @@ This binding was tested with the Zehnder ComfoAir 350 device. Most commands shou
 ## Prerequisites
 
 Computer communication with the ComfoAir unit is carried out via the RS232 port on the device. You can use the PC port:
-- raspberry pi: UART port with converter RS232 to UART
+- raspberry pi: UART port with converter RS232 to UART (3.3V)
 - raspberry pi: USB port with converter RS232 to USB
 - PC: RS232 port
 - PC: USB port with converter RS232 to USB
