@@ -341,6 +341,16 @@ undefined=unknown
 -=unknown
 ```
 
+`transform/comfoair_enthalpy.map`:
+
+```
+2=Install without sensor
+1=Install with sensor
+0=Not install
+undefined=unknown
+-=unknown
+```
+
 `persistence/rrd4j.persist`:
 
 ```
