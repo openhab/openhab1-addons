@@ -101,4 +101,5 @@ public class DataTypeNumber implements ComfoAirDataType {
             return template;
         }
     }
+
 }

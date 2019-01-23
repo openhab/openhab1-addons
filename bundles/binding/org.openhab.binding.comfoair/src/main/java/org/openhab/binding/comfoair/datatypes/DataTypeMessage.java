@@ -106,4 +106,5 @@ public class DataTypeMessage implements ComfoAirDataType {
         }
         return -1;
     }
+
 }

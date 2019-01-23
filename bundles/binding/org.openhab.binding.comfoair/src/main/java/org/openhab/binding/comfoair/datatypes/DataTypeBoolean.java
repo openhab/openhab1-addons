@@ -67,4 +67,5 @@ public class DataTypeBoolean implements ComfoAirDataType {
             return template;
         }
     }
+
 }

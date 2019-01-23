@@ -11,6 +11,8 @@ package org.openhab.binding.comfoair.datatypes;
 import org.openhab.binding.comfoair.handling.ComfoAirCommandType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to handle volt values
@@ -20,16 +22,24 @@ import org.openhab.core.types.State;
  */
 public class DataTypeVolt implements ComfoAirDataType {
 
+    private static final Logger logger = LoggerFactory.getLogger(DataTypeVolt.class);
+
     /**
      * {@inheritDoc}
      */
     @Override
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
-        if (commandType.getGetReplyDataPos()[0] < data.length) {
-            return new DecimalType((double) data[commandType.getGetReplyDataPos()[0]] * 10 / 255);
-        } else {
+        if (data == null || commandType == null) {
+            logger.error("Error of \"DataTypeVolt\" class \"convertToState\" method parameter: null");
             return null;
+        } else {
+
+            if (commandType.getGetReplyDataPos()[0] < data.length) {
+                return new DecimalType((double) data[commandType.getGetReplyDataPos()[0]] * 10 / 255);
+            } else {
+                return null;
+            }
         }
     }
 
@@ -39,11 +49,17 @@ public class DataTypeVolt implements ComfoAirDataType {
     @Override
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
-        int[] template = commandType.getChangeDataTemplate();
+        if (value == null || commandType == null) {
+            logger.error("Error of \"DataTypeVolt\" class \"convertFromState\" method parameter: null");
+            return null;
+        } else {
 
-        template[commandType.getChangeDataPos()] = (int) (((DecimalType) value).doubleValue() * 255 / 10);
+            int[] template = commandType.getChangeDataTemplate();
 
-        return template;
+            template[commandType.getChangeDataPos()] = (int) (((DecimalType) value).doubleValue() * 255 / 10);
+
+            return template;
+        }
     }
 
 }
