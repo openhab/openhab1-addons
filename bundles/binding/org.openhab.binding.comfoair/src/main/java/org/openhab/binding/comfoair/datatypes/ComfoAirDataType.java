@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -22,7 +22,7 @@ public interface ComfoAirDataType {
 
     /**
      * Generate a openhab State object based on response data.
-     * 
+     *
      * @param data
      * @param commandType
      * @return converted State object
@@ -31,7 +31,7 @@ public interface ComfoAirDataType {
 
     /**
      * Generate byte array based on a openhab State.
-     * 
+     *
      * @param value
      * @param commandType
      * @return converted byte array
