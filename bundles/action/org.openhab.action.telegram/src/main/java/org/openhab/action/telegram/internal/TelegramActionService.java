@@ -9,6 +9,7 @@
 package org.openhab.action.telegram.internal;
 
 import java.util.Dictionary;
+import java.util.Objects;
 
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
@@ -62,8 +63,18 @@ public class TelegramActionService implements ActionService, ManagedService {
             for (String bot : bots) {
                 String chatIdKey = String.format("%s.chatId", bot);
                 String tokenKey = String.format("%s.token", bot);
-                if (config.get(chatIdKey) != null && config.get(tokenKey) != null) {
-                    Telegram.addToken(bot, (String) config.get(chatIdKey), (String) config.get(tokenKey));
+                String parseModeKey = String.format("%s.parseMode", bot);
+
+                String chatId = Objects.toString(config.get(chatIdKey), null);
+                String token = Objects.toString(config.get(tokenKey), null);
+                String parseMode = Objects.toString(config.get(parseModeKey), null);
+
+                if (chatId != null && token != null) {
+                    if (parseMode == null) {
+                        Telegram.addToken(bot, chatId, token);
+                    } else {
+                        Telegram.addToken(bot, chatId, token, parseMode);
+                    }
                     logger.info("Bot {} loaded from config file", bot);
                 } else {
                     logger.warn("Bot {} is misconfigured. Please check the configuration", bot);

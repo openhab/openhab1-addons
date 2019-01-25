@@ -42,11 +42,14 @@ The URL can be specified using the http, https, and file protocols.
 
 The action can be configured in `services/telegram.cfg`.
 
-| Property            | Default | Required | Description                           |
-|---------------------|---------|:--------:|---------------------------------------|
-| bots                |         | Yes      | Comma-separated list of `<bot-name>`s |
-| `<bot name>.chatId` |         | Yes      | chat id                               |
-| `<bot name>.token`  |         | Yes      | authentication token                  |
+| Property                | Default | Required | Description                                                                                  |
+|-------------------------|---------|:--------:|----------------------------------------------------------------------------------------------|
+| bots                    |         | Yes      | Comma-separated list of `<bot-name>`s                                                        |
+| `<bot name>.chatId`     |         | Yes      | chat id                                                                                      |
+| `<bot name>.token`      |         | Yes      | authentication token                                                                         |
+| `<bot name>.parseMode`  |         | No       | Support for formatted messages, values: `Markdown` or `HTML`. Default: no formatting is used |
+
+See https://core.telegram.org/bots/api#markdown-style for formatting options if `Markdown` or `HTML` is set as `parseMode`.
 
 ### Configuration example
 
@@ -55,6 +58,7 @@ bots=bot1,bot2
 
 bot1.chatId=22334455
 bot1.token=xxxxxxxxxxx
+bot1.parseMode=Markdown
 
 bot2.chatId=654321
 bot2.token=yyyyyyyyyyy
