@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * <li><code>{ velux="thing=scene;channel=silentMode#OpenWindows" }</code></li>
  * </ul>
  *
- * @author Guenther Schreiner
+ * @author Guenther Schreiner - Initial contribution
  * @since 1.13.0
  */
 public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider implements VeluxBindingProvider {
@@ -144,9 +144,6 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getBindingType() {
         logger.trace("getBindingType() called, returning {}.", VeluxBindingConstants.BINDING_ID);
@@ -283,6 +280,24 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
                 }
                 break;
 
+            case VeluxBindingConstants.THING_VELUX_ACTUATOR:
+                logger.trace("processBindingConfiguration() found THING_VELUX_ACTUATOR w/ channelValue={}.",
+                        thisBinding.channelValue);
+                if (thisBinding.channelValue.length() == 0) {
+                    throw new BindingConfigParseException(
+                            "Velux binding must contain a serial specified as channel subvalue.");
+                }
+                switch (thisBinding.channelIdentifier) {
+                    case VeluxBindingConstants.CHANNEL_ACTUATOR_SERIAL:
+                        config = new VeluxBindingConfig(VeluxItemType.ACTUATOR_SERIAL, thisBinding.channelValue);
+                        break;
+                    default:
+                        throw new BindingConfigParseException("Velux binding must contain one of "
+                                + VeluxItemType.getChannelIdentifiers(thisBinding.thingIdentifier)
+                                + " as channel keyword");
+                }
+                break;
+
             default:
                 throw new BindingConfigParseException("Velux binding must contain one of "
                         + VeluxItemType.getThingIdentifiers() + " as thing keyword");
@@ -310,7 +325,7 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
         } else if (super.bindingConfigs.containsKey(itemName)) {
             config = (VeluxBindingConfig) super.bindingConfigs.get(itemName);
         }
-        logger.trace("getConfigForItemName() returns {}.", config);
+        logger.trace("getConfigForItemName() returns {}.", config.getBindingConfig());
         return config;
     }
 
@@ -345,7 +360,3 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
     }
 
 }
-
-/**
- * end-of-internal/VeluxGenericBindingProvider.java
- */

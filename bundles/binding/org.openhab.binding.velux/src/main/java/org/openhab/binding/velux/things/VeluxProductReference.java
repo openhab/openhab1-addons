@@ -8,9 +8,8 @@
  */
 package org.openhab.binding.velux.things;
 
-import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCproductState;
-import org.openhab.binding.velux.things.VeluxProduct.ProductName;
-import org.openhab.binding.velux.things.VeluxProduct.ProductTypeId;
+import org.openhab.binding.velux.VeluxBindingConstants;
+import org.openhab.binding.velux.bridge.comm.BCgetScenes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,39 +21,40 @@ import org.slf4j.LoggerFactory;
  * @see VeluxProduct
  *
  * @author Guenther Schreiner - initial contribution.
+ * @since 1.13.0
  */
 public class VeluxProductReference {
     private final Logger logger = LoggerFactory.getLogger(VeluxProductReference.class);
 
     // Class internal
 
-    private ProductName name;
-    private ProductTypeId typeId;
+    private VeluxProductName name;
+    private VeluxProductType typeId;
 
     // Constructor
 
-    public VeluxProductReference(BCproductState productState) {
-        this.name = new ProductName(productState.getName());
-        this.typeId = ProductTypeId.get(productState.getTypeId());
-        if (this.typeId == null) {
-            logger.warn(
-                    "Please report this to maintainer: VeluxProductReference({}) has found an unregistered ProductTypeId.",
-                    productState.getTypeId());
-        }
+    public VeluxProductReference(VeluxProduct product) {
+        this.name = product.getProductName();
+        this.typeId = product.getProductType();
     }
 
-    public VeluxProductReference(VeluxProduct product) {
-        this.name = product.getName();
-        this.typeId = product.getTypeId();
+    public VeluxProductReference(VeluxProductName name, int type) {
+        this.name = name;
+        this.typeId = VeluxProductType.get(type);
+        if (this.typeId == null) {
+            logger.warn(
+                    "Please report this to maintainer of the {} binding: VeluxProductReference({}) has found an unregistered ProductTypeId.",
+                    VeluxBindingConstants.BINDING_ID, type);
+        }
     }
 
     // Class access methods
 
-    public ProductName getName() {
+    public VeluxProductName getProductName() {
         return this.name;
     }
 
-    public ProductTypeId getTypeId() {
+    public VeluxProductType getProductType() {
         return this.typeId;
     }
 
@@ -69,8 +69,18 @@ public class VeluxProductReference {
         return this.name.toString().concat("#").concat(this.typeId.toString());
     }
 
-}
+    @Deprecated
+    public VeluxProductReference(BCgetScenes.BCproductState productState) {
+    }
 
-/**
- * end-of-VeluxProductReference.java
- */
+    @Deprecated
+    public VeluxProduct.ProductName getName() {
+        return null;
+    }
+
+    @Deprecated
+    public VeluxProduct.ProductTypeId getTypeId() {
+        return null;
+    }
+
+}

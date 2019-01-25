@@ -25,7 +25,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCgetWLANConfig implements BridgeCommunicationProtocol<BCgetWLANConfig.Response> {
 
     public static String url = "/api/v1/settings";
@@ -41,6 +43,7 @@ public class BCgetWLANConfig implements BridgeCommunicationProtocol<BCgetWLANCon
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"wifi","params":{}}
      * </pre>
@@ -90,6 +93,7 @@ public class BCgetWLANConfig implements BridgeCommunicationProtocol<BCgetWLANCon
      * methods
      * <P>
      * Expected JSON (sample):
+     * 
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -174,6 +178,3 @@ public class BCgetWLANConfig implements BridgeCommunicationProtocol<BCgetWLANCon
     }
 
 }
-/**
- * end-of-bridge/comm/BCgetWLANConfig.java
- */

@@ -22,7 +22,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Response> {
 
     public static String url = "/api/v1/scenes";
@@ -49,6 +51,7 @@ public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Respon
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON (sample):
+     * 
      * <pre>
      * {"action":"run","params":{"id":9}}
      * </pre>
@@ -69,6 +72,7 @@ public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Respon
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
      * Expected JSON (sample):
+     * 
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -150,6 +154,3 @@ public class BCrunScene implements BridgeCommunicationProtocol<BCrunScene.Respon
     }
 
 }
-/**
- * end-of-bridge/comm/BCrunScene.java
- */

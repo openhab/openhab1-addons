@@ -1,0 +1,26 @@
+/**
+ * Copyright (c) 2010-2019 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.openhab.binding.velux.bridge.common;
+
+/**
+ * Specific bridge communication message supported by the Velux bridge.
+ * <P>
+ * Message semantic: Communication to authenticate itself, resulting in a return of current bridge state.
+ * <P>
+ * Note: even before the deauthentication, an authentication is intended.
+ * <P>
+ * Each protocol-specific implementation has to provide the common
+ * methods defined by {@link BridgeCommunicationProtocol}.
+ *
+ * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
+ */
+public abstract class Logout implements BridgeCommunicationProtocol {
+
+}
