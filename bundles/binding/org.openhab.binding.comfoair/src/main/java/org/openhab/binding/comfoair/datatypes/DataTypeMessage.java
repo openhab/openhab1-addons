@@ -31,7 +31,7 @@ public class DataTypeMessage implements ComfoAirDataType {
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
         if (data == null || commandType == null) {
-            logger.error("Error of \"DataTypeMessage\" class \"convertToState\" method parameter: null");
+            logger.debug("\"DataTypeMessage\" class \"convertToState\" method parameter: null");
             return null;
         } else {
 
