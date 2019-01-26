@@ -305,7 +305,7 @@ public class ComfoAirConnector {
                 requestData = buildRequestData(command, preRequestData);
 
                 if (requestData == null) {
-                    logger.warn(String.format("Unable to build data for write command: %02x", command.getReplyCmd()));
+                    logger.debug(String.format("Unable to build data for write command: %02x", command.getReplyCmd()));
                     return null;
                 }
             }
@@ -400,25 +400,25 @@ public class ComfoAirConnector {
                                 return replyData;
                             }
 
-                            logger.warn("Unable to handle data. Checksum verification failed");
+                            logger.debug("Unable to handle data. Checksum verification failed");
                         } else {
-                            logger.warn("Unable to handle data. Data size not valid");
+                            logger.debug("Unable to handle data. Data size not valid");
                         }
 
-                        logger.warn(String.format("skip CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
+                        logger.debug(String.format("skip CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
                                 dumpData(cleanedBlock));
                     }
                 }
 
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
             }
 
             try {
 
                 Thread.sleep(1000);
-                logger.warn("Retry cmd. Last call was not successful. Request: {} Response: {}", dumpData(requestBlock),
-                        (responseBlock.length > 0 ? dumpData(responseBlock) : "null"));
+                logger.debug("Retry cmd. Last call was not successful. Request: {} Response: {}",
+                        dumpData(requestBlock), (responseBlock.length > 0 ? dumpData(responseBlock) : "null"));
 
             } catch (InterruptedException e) {
                 // ignore interruption
@@ -427,7 +427,7 @@ public class ComfoAirConnector {
         } while (retry++ < 5);
 
         if (retry == 5) {
-            logger.error("Unable to send command. {} retries failed.", retry);
+            logger.warn("Unable to send command. {} retries failed.", retry);
         }
 
         return null;
