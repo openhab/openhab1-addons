@@ -108,6 +108,7 @@
                 <artifact><file>src/main/resources/conf/panasonictv.cfg</file><type>cfg</type><classifier>panasonictv</classifier></artifact>
                 <artifact><file>src/main/resources/conf/pebble.cfg</file><type>cfg</type><classifier>pebble</classifier></artifact>
                 <artifact><file>src/main/resources/conf/piface.cfg</file><type>cfg</type><classifier>piface</classifier></artifact>
+                <artifact><file>src/main/resources/conf/pilight.cfg</file><type>cfg</type><classifier>pilight</classifier></artifact>
                 <artifact><file>src/main/resources/conf/plex.cfg</file><type>cfg</type><classifier>plex</classifier></artifact>
                 <artifact><file>src/main/resources/conf/plugwise.cfg</file><type>cfg</type><classifier>plugwise</classifier></artifact>
                 <artifact><file>src/main/resources/conf/powermax.cfg</file><type>cfg</type><classifier>powermax</classifier></artifact>
