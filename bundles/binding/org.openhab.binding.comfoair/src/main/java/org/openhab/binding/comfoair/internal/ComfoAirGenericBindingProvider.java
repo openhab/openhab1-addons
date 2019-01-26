@@ -22,8 +22,6 @@ import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -43,8 +41,6 @@ import org.slf4j.LoggerFactory;
  * @since 1.3.0
  */
 public class ComfoAirGenericBindingProvider extends AbstractGenericBindingProvider implements ComfoAirBindingProvider {
-
-    static final Logger logger = LoggerFactory.getLogger(ComfoAirGenericBindingProvider.class);
 
     /**
      * {@inheritDoc}
