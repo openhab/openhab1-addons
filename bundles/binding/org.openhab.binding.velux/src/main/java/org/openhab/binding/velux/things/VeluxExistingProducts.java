@@ -73,9 +73,8 @@ public class VeluxExistingProducts {
         logger.trace("isRegistered(VeluxProduct {}) called.", product.toString());
         if (product.isV2()) {
             return isRegistered(product.getSerialNumber());
-        } else {
-            return isRegistered(product.getProductUniqueIndex());
         }
+        return isRegistered(product.getProductUniqueIndex());
     }
 
     public boolean isRegistered(ProductBridgeIndex bridgeProductIndex) {

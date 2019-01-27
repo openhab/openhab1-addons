@@ -119,7 +119,7 @@ public class SlipVeluxBridge extends VeluxBridge {
 
         /** Local handles */
         int retryCount = 0;
-        IOException lastIOE = null;
+        IOException lastIOE = new IOException("Unexpected I/O exception.");
 
         do {
             try {

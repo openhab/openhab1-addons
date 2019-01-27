@@ -100,10 +100,9 @@ public class KLF200Response {
                     Command.get(responseCommand).toString(), new CommandNumber(responseCommand).toString(),
                     thisResponseData.length, requiredResponseDataLength);
             return false;
-        } else {
-            logger.trace("isLengthValid() returns {}.", true);
-            return true;
         }
+        logger.trace("isLengthValid() returns {}.", true);
+        return true;
     }
 
     /**
@@ -124,10 +123,9 @@ public class KLF200Response {
             logger.warn("Gateway response with {} {} unexpected as query asked for {} {}.", idName, requestID, idName,
                     responseID);
             return false;
-        } else {
-            logger.trace("check4matchingAnyID() returns {}.", true);
-            return true;
         }
+        logger.trace("check4matchingAnyID() returns {}.", true);
+        return true;
     }
 
     /**

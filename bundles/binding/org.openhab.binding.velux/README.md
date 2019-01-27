@@ -301,12 +301,6 @@ Notes:
 - Velux bridges cannot be returned to version one of the firmware after being upgraded to version two.
 - Firmware updates are currently provided at [Velux download area](https://updates2.velux.com/).
 
-## Document Revision
-
-2018-02-14 Adapted to OpenHAB-v2.3.0-SNAPSHOT (v1 firmware only).
-2018-06-18 Adapted to OpenHAB-v2.4.0-SNAPSHOT (v1 firmware only).
-2018-11-09 Adapted to OpenHAB-1.13.0-SNAPSHOT (v1 and v2 supported, now part of openhab1-addons).
-2019-01-02 Adapted to OpenHAB-1.14.0-SNAPSHOT (v1 and v2 supported).
 
 ## Unknown Velux devices
 
@@ -315,9 +309,4 @@ All known <B>Velux</B> devices can be handled by this binding. However, there mi
 ```
 [ERROR] [g.velux.things.VeluxProductReference] - PLEASE REPORT THIS TO MAINTAINER: VeluxProductReference(3) has found an unregistered ProductTypeId.
 ```
-
-## Acknowledgements
-
-Many thanks to Velux for releasing the API documentation and supporting the new generic flexibility of the KLF200 device.
-
 
