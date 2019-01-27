@@ -8,12 +8,9 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCgetScenes;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.openhab.binding.velux.things.VeluxExistingScenes;
 import org.openhab.binding.velux.things.VeluxScene;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The {@link VeluxBridgeGetScenes} represents a complete set of transactions
@@ -30,34 +27,18 @@ import org.slf4j.LoggerFactory;
  * @see VeluxExistingScenes
  *
  * @author Guenther Schreiner - Initial contribution
+ * @since 1.13.0
  */
+@Deprecated
 public class VeluxBridgeGetScenes {
-    private final Logger logger = LoggerFactory.getLogger(VeluxBridgeGetScenes.class);
 
+    @Deprecated
     public boolean getScenes(VeluxBridgeProvider bridge) {
-        logger.trace("getScenes() called.");
+        return false;
+    }
 
-        BCgetScenes.Response response = bridge.bridgeCommunicate(new BCgetScenes());
-        if (response != null) {
-            for (BCgetScenes.BCscene scene : response.getScenes()) {
-                logger.trace("getScenes() found scene {}.", scene.getName());
-
-                VeluxScene veluxScene = new VeluxScene(scene);
-                logger.trace("getScenes() storing scene {}.", veluxScene);
-                if (!bridge.getExistingsScenes().isRegistered(veluxScene)) {
-                    bridge.getExistingsScenes().register(veluxScene);
-                }
-                logger.trace("getScenes() stored scene {}.", veluxScene);
-            }
-            logger.debug("getScenes() finally has found scenes {}.", bridge.getExistingsScenes());
-            return true;
-        } else {
-            logger.trace("getScenes() finished with failure.");
-            return false;
-        }
+    @Deprecated
+    public VeluxBridgeGetScenes() {
     }
 
 }
-/**
- * end-of-bridge/VeluxBridgeGetScenes.java
- */

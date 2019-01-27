@@ -22,7 +22,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentifyProduct.Response> {
     public static final int DEFAULT_IDENTIFY_TIME = 50;
 
@@ -60,6 +62,7 @@ public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentify
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON (sample):
+     * 
      * <pre>
      * {"action":"identify","params":{"id":23,"time":254}}
      * </pre>
@@ -80,6 +83,7 @@ public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentify
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
      * Expected JSON (sample):
+     * 
      * <pre>
      * {
      * "token": "NkR/AA5xXj7iL6NiIW8keA==",
@@ -161,6 +165,3 @@ public class BCidentifyProduct implements BridgeCommunicationProtocol<BCidentify
     }
 
 }
-/**
- * end-of-bridge/comm/BCidentifyProduct.java
- */

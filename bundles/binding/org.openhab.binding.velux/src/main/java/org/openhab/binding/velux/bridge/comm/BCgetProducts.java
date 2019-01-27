@@ -25,7 +25,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.Response> {
 
     public static String url = "/api/v1/products";
@@ -82,6 +84,7 @@ public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"get","params":{}}
      * </pre>
@@ -105,6 +108,7 @@ public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.
      * deserialization with including component access methods
      * <P>
      * Expected JSON (sample):
+     * 
      * <pre>
      * {
      * "token": "pESIc/9zDWa1CJR6hCDzLw==",
@@ -200,6 +204,3 @@ public class BCgetProducts implements BridgeCommunicationProtocol<BCgetProducts.
     }
 
 }
-/**
- * end-of-bridge/comm/BCgetProducts.java
- */

@@ -25,7 +25,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCgetFirmware implements BridgeCommunicationProtocol<BCgetFirmware.Response> {
 
     public static String url = "/api/v1/settings";
@@ -41,6 +43,7 @@ public class BCgetFirmware implements BridgeCommunicationProtocol<BCgetFirmware.
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"getFirmware","params":{}}
      * </pre>
@@ -164,6 +167,3 @@ public class BCgetFirmware implements BridgeCommunicationProtocol<BCgetFirmware.
     }
 
 }
-/**
- * end-of-bridge/comm/BCgetFirmware.java
- */

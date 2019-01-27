@@ -8,12 +8,9 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCgetProducts;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.openhab.binding.velux.things.VeluxExistingProducts;
 import org.openhab.binding.velux.things.VeluxProduct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The {@link VeluxBridgeGetProducts} represents a complete set of transactions
@@ -30,9 +27,10 @@ import org.slf4j.LoggerFactory;
  * @see VeluxExistingProducts
  *
  * @author Guenther Schreiner - Initial contribution
+ * @since 1.13.0
  */
+@Deprecated
 public class VeluxBridgeGetProducts {
-    private final Logger logger = LoggerFactory.getLogger(VeluxBridgeGetProducts.class);
 
     /**
      * Login into bridge, retrieve all products and logout from bridge based
@@ -46,28 +44,7 @@ public class VeluxBridgeGetProducts {
      */
 
     public boolean getProducts(VeluxBridgeProvider bridge) {
-        logger.trace("getProducts() called.");
-
-        BCgetProducts.Response response = bridge.bridgeCommunicate(new BCgetProducts());
-        if (response != null) {
-            for (BCgetProducts.BCproduct product : response.getDevices()) {
-                logger.trace("getProducts() found product {} (type {}).", product.getName(), product.getCategory());
-
-                VeluxProduct veluxProduct = new VeluxProduct(product);
-                logger.trace("getProducts() storing product {}.", veluxProduct);
-                if (!bridge.getExistingsProducts().isRegistered(veluxProduct)) {
-                    bridge.getExistingsProducts().register(veluxProduct);
-                }
-            }
-            logger.debug("getProducts() finally has found products {}.", bridge.getExistingsProducts());
-            return true;
-        } else {
-            logger.trace("getProducts() finished with failure.");
-            return false;
-        }
+        return false;
     }
 
 }
-/**
- * end-of-bridge/VeluxBridgeGetProducts.java
- */

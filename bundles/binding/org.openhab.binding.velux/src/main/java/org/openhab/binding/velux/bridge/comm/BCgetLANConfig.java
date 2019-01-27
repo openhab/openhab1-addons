@@ -25,7 +25,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfig.Response> {
 
     public static String url = "/api/v1/lan";
@@ -41,6 +43,7 @@ public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfi
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"get","params":{}}
      * </pre>
@@ -100,6 +103,7 @@ public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfi
      * Bridge I/O Response message used by {@link VeluxBridge} for unmarshelling with including component access methods
      * <P>
      * Expected JSON (sample):
+     * 
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -184,6 +188,3 @@ public class BCgetLANConfig implements BridgeCommunicationProtocol<BCgetLANConfi
     }
 
 }
-/**
- * end-of-bridge/comm/BCgetLANConfig.java
- */

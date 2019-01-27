@@ -25,7 +25,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDeviceStatus.Response> {
 
     public static String url = "/api/v1/device";
@@ -41,6 +43,7 @@ public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDevic
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"getDeviceStatus","params":{}}
      * </pre>
@@ -66,6 +69,7 @@ public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDevic
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
      * Expected JSON (sample):
+     * 
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -147,6 +151,3 @@ public class BCgetDeviceStatus implements BridgeCommunicationProtocol<BCgetDevic
     }
 
 }
-/**
- * end-of-bridge/comm/BCgetDeviceStatus.java
- */

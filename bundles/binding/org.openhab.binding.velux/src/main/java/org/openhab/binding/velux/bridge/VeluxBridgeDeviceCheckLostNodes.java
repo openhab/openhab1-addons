@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCcheckLostNodes;
+import org.openhab.binding.velux.bridge.common.CheckLostNodes;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,38 +19,37 @@ import org.slf4j.LoggerFactory;
  * <P>
  * It therefore provides a method
  * <UL>
- * <LI>{@link VeluxBridgeDeviceCheckLostNodes#retrieve} for starting the detection.
+ * <LI>{@link #initiate} for starting the detection.
  * </UL>
  * Any parameters are controlled by {@link VeluxBridgeConfiguration}.
  *
  * @author Guenther Schreiner - Initial contribution
+ * @since 1.13.0
  */
 public class VeluxBridgeDeviceCheckLostNodes {
     private final Logger logger = LoggerFactory.getLogger(VeluxBridgeDeviceCheckLostNodes.class);
+
+    // Class access methods
 
     /**
      * Login into bridge, query the bridge for device status and logout from bridge
      * based on a well-prepared environment of a {@link VeluxBridgeProvider}.
      *
      * @param bridge Initialized Velux bridge handler.
-     * @return <b>status</b> of type String describing the status of the device/bridge.
      */
-
-    public String retrieve(VeluxBridgeProvider bridge) {
-        logger.trace("retrieve() called.");
-
-        logger.trace("retrieve() About to query device status.");
-        BCcheckLostNodes.Response response = bridge.bridgeCommunicate(new BCcheckLostNodes());
-        if (response == null) {
-            logger.trace("retrieve() finished with failure.");
-            return null;
+    public void initiate(VeluxBridge bridge) {
+        logger.trace("initiate() called.");
+        CheckLostNodes bcp = bridge.bridgeAPI().checkLostNodes();
+        if (bridge.bridgeCommunicate(bcp) && bcp.isCommunicationSuccessful()) {
+            logger.trace("initiate() finished successfully.");
         } else {
-            logger.trace("retrieve() finished successfully with result {}.", response.getDeviceStatus());
-            return response.getDeviceStatus();
+            logger.trace("initiate() finished with failure.");
         }
+        return;
+    }
+
+    @Deprecated
+    public String retrieve(VeluxBridgeProvider bridge) {
+        return null;
     }
 }
-
-/**
- * end-of-bridge/VeluxBridgeDeviceCheckLostNodes.java
- */
