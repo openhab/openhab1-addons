@@ -130,7 +130,7 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
 
     /**
      * Activates the binding. Actually does nothing, because on activation
-     * OpenHAB always calls updated to indicate that the configuration is updated.
+     * openHAB always calls updated to indicate that the configuration is updated.
      * Activation is done there.
      */
     @Override
@@ -197,7 +197,7 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
         logger.trace("receiveCommand({},{}) called.", itemName, command.toString());
 
         if (this.eventPublisher == null) {
-            logger.error("receiveCommand(): eventPublisher is NULL. Should NEVER occur.");
+            logger.warn("receiveCommand(): eventPublisher is NULL. Should NEVER occur.");
             return;
         }
         super.receiveCommand(itemName, command);
@@ -207,7 +207,7 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
     public void internalReceiveCommand(String itemName, Command command) {
         logger.trace("internalReceiveCommand({},{}) called.", itemName, command.toString());
         if (this.eventPublisher == null) {
-            logger.error("internalReceiveCommand(): eventPublisher is NULL. Should NEVER occur.");
+            logger.warn("internalReceiveCommand(): eventPublisher is NULL. Should NEVER occur.");
             return;
         }
         VeluxBindingConfig itemConfig = this.bindingProvider.getConfigForItemName(itemName);

@@ -229,7 +229,7 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
             thisBridge = mySlipBridge;
         }
         if (thisBridge == null) {
-            logger.error("No valid bridgeProtocol selected, aborting this {} binding.",
+            logger.warn("No valid bridgeProtocol selected, aborting this {} binding.",
                     VeluxBindingConstants.BINDING_ID);
             return;
         }
