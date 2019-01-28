@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DataTypeVolt implements ComfoAirDataType {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataTypeVolt.class);
+    private Logger logger = LoggerFactory.getLogger(DataTypeVolt.class);
 
     /**
      * {@inheritDoc}

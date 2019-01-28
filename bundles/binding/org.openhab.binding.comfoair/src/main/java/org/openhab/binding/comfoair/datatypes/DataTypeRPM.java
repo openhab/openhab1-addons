@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DataTypeRPM implements ComfoAirDataType {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataTypeRPM.class);
+    private Logger logger = LoggerFactory.getLogger(DataTypeRPM.class);
 
     /**
      * {@inheritDoc}

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DataTypeTemperature implements ComfoAirDataType {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataTypeTemperature.class);
+    private Logger logger = LoggerFactory.getLogger(DataTypeTemperature.class);
 
     /**
      * {@inheritDoc}
