@@ -173,40 +173,39 @@ public class VeluxBridgeActuators {
      */
     public boolean updateOH(VeluxBindingProvider provider, EventPublisher eventPublisher) {
         logger.trace("updateOH() called.");
-
-        if (channel.existingProducts.isDirty()) {
-            logger.trace("updateOH(): existingProducts have changed.");
-
-            for (VeluxProduct product : channel.existingProducts.valuesOfModified()) {
-                logger.trace("updateOH(): actuator {} has changed values.", product.getProductName().toString());
-
-                for (String thisItemName : provider.getInBindingItemNames()) {
-                    VeluxBindingConfig thisItemConfig = provider.getConfigForItemName(thisItemName);
-                    if (thisItemConfig.getBindingItemType() != VeluxItemType.ACTUATOR_SERIAL) {
-                        continue;
-                    }
-                    if (product.getSerialNumber().equals(thisItemConfig.getBindingConfig())) {
-                        logger.trace("updateOH(): product {}/{} used within item {}.", product.getProductName(),
-                                product.getSerialNumber(), thisItemName);
-                        try {
-                            PercentType positionAsPercent = new VeluxProductPosition(product.getCurrentPosition())
-                                    .getPositionAsPercentType();
-                            if (positionAsPercent != null) {
-                                logger.debug("updateOH(): updating item {} to position {}%.", thisItemName,
-                                        positionAsPercent);
-                                eventPublisher.postUpdate(thisItemName, positionAsPercent);
-                            } else {
-                                logger.trace("updateOH(): update of item {} to position {} skipped.", thisItemName,
-                                        positionAsPercent);
-                            }
-                        } catch (Exception e) {
-                            logger.warn("updateOH(): getProducts() exception: {}.", e.getMessage());
+        if (!channel.existingProducts.isDirty()) {
+            logger.trace("updateOH() finished.");
+            return true;
+        }
+        logger.trace("updateOH(): existingProducts have changed.");
+        for (VeluxProduct product : channel.existingProducts.valuesOfModified()) {
+            logger.trace("updateOH(): actuator {} has changed values.", product.getProductName().toString());
+            for (String thisItemName : provider.getInBindingItemNames()) {
+                VeluxBindingConfig thisItemConfig = provider.getConfigForItemName(thisItemName);
+                if (thisItemConfig.getBindingItemType() != VeluxItemType.ACTUATOR_SERIAL) {
+                    continue;
+                }
+                if (product.getSerialNumber().equals(thisItemConfig.getBindingConfig())) {
+                    logger.trace("updateOH(): product {}/{} used within item {}.", product.getProductName(),
+                            product.getSerialNumber(), thisItemName);
+                    try {
+                        PercentType positionAsPercent = new VeluxProductPosition(product.getCurrentPosition())
+                                .getPositionAsPercentType();
+                        if (positionAsPercent != null) {
+                            logger.debug("updateOH(): updating item {} to position {}%.", thisItemName,
+                                    positionAsPercent);
+                            eventPublisher.postUpdate(thisItemName, positionAsPercent);
+                        } else {
+                            logger.trace("updateOH(): update of item {} to position {} skipped.", thisItemName,
+                                    positionAsPercent);
                         }
+                    } catch (Exception e) {
+                        logger.warn("updateOH(): getProducts() exception: {}.", e.getMessage());
                     }
                 }
             }
-            channel.existingProducts.resetDirtyFlag();
         }
+        channel.existingProducts.resetDirtyFlag();
         logger.trace("updateOH() finished.");
         return true;
     }

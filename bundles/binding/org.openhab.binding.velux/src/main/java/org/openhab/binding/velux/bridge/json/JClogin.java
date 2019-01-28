@@ -157,7 +157,6 @@ public class JClogin extends Login implements JsonBridgeCommunicationProtocol {
     public void setPassword(String thisPassword) {
         logger.trace("setPassword({}) called.", thisPassword);
         request.params.password = thisPassword;
-        return;
     }
 
     @Override

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.13.0
  */
 public class VeluxProductPosition {
-    private static final Logger LOGGERSTATIC = LoggerFactory.getLogger(VeluxProductPosition.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VeluxProductPosition.class);
 
     // Make sure that the calculation are done as non-integer
     private static final float ONE = 1;
@@ -58,26 +58,26 @@ public class VeluxProductPosition {
     // Constructor
 
     public VeluxProductPosition(PercentType position) {
-        LOGGERSTATIC.trace("VeluxProductPosition({} as PercentType) created.", position.intValue());
+        LOGGER.trace("VeluxProductPosition({} as PercentType) created.", position.intValue());
         this.position = position;
     }
 
     public VeluxProductPosition(int veluxPosition) {
-        LOGGERSTATIC.trace("VeluxProductPosition(constructur with {} as veluxPosition) called.", veluxPosition);
+        LOGGER.trace("VeluxProductPosition(constructur with {} as veluxPosition) called.", veluxPosition);
         if ((veluxPosition == VPP_VELUX_UNKNOWN) || (veluxPosition == VPP_VELUX_STOP) || (veluxPosition < VPP_VELUX_MIN)
                 || (veluxPosition > VPP_VELUX_MAX)) {
-            LOGGERSTATIC.trace("VeluxProductPosition() gives up.");
+            LOGGER.trace("VeluxProductPosition() gives up.");
             this.position = null;
         } else {
             float result = (ONE * veluxPosition - VPP_VELUX_MIN) / (VPP_VELUX_MAX - VPP_VELUX_MIN);
             result = VPP_OPENHAB_MIN + result * (VPP_OPENHAB_MAX - VPP_OPENHAB_MIN);
-            LOGGERSTATIC.trace("VeluxProductPosition() created with percent-type {}.", (int) result);
+            LOGGER.trace("VeluxProductPosition() created with percent-type {}.", (int) result);
             this.position = new PercentType((int) result);
         }
     }
 
     public VeluxProductPosition() {
-        LOGGERSTATIC.trace("VeluxProductPosition() as STOP position created.");
+        LOGGER.trace("VeluxProductPosition() as STOP position created.");
         this.position = null;
     }
 
@@ -113,7 +113,7 @@ public class VeluxProductPosition {
     // Helper methods
 
     public static int getRelativePositionAsVeluxType(boolean upwards, PercentType position) {
-        LOGGERSTATIC.trace("getRelativePositionAsVeluxType(upwards={},{}) created.", upwards, position);
+        LOGGER.trace("getRelativePositionAsVeluxType(upwards={},{}) created.", upwards, position);
         float result = (VPP_VELUX_PERCENTAGE_MAX + VPP_VELUX_PERCENTAGE_MIN) / 2;
         if (upwards) {
             result = result + (ONE * position.intValue() - VPP_OPENHAB_MIN) / (VPP_OPENHAB_MAX - VPP_OPENHAB_MIN)
@@ -122,7 +122,7 @@ public class VeluxProductPosition {
             result = result - (ONE * position.intValue() - VPP_OPENHAB_MIN) / (VPP_OPENHAB_MAX - VPP_OPENHAB_MIN)
                     * ((VPP_VELUX_PERCENTAGE_MAX - VPP_VELUX_PERCENTAGE_MIN) / 2);
         }
-        LOGGERSTATIC.trace("getRelativePositionAsVeluxType() returns {}.", (int) result);
+        LOGGER.trace("getRelativePositionAsVeluxType() returns {}.", (int) result);
         return (int) result;
     }
 
