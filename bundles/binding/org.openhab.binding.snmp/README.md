@@ -57,7 +57,7 @@ where:
 * `<address>` is the IP address[/Port] of the SNMP device. The Port is optional, the default value is 161
 * `<community>` is the SNMP community string
 * `<oid>` is the object ID to GET or SET
-* `<update>` the snmp binding queries the OID every `<update>` miliseconds
+* `<update>` is the amount of milliseconds the binding waits between periodic queries of the OID
 * `<value>` is the number to SET. This can only be an integer value.
 
 Here are some examples of valid binding configuration strings:
