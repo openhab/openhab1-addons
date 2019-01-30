@@ -187,6 +187,7 @@ public class SlipVeluxBridge extends VeluxBridge {
         logger.info("io(): socket I/O failed {} times.", bridgeInstance.veluxBridgeConfiguration().retries);
         logger.trace("io(): shutting down connection.");
         connectivity.close();
+        connectivity = null;
         logger.trace("io() finishes with failure by throwing exception.");
         throw lastIOE;
     }
