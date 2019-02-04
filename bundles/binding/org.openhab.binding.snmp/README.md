@@ -56,7 +56,7 @@ snmp="<[<address>:<community>:<oid>:0]"
 where:
 
 * `<address>` is the IP address[/Port] of the SNMP device. The Port is optional, the default value is 161
-* <protocol-version> where possible values for protocol-version are v1, v2c and v3 (v3 not supported by the binding at the moment, but possible in future enhancement).
+* `<protocol-version>` where possible values for protocol-version are v1, v2c and v3 (v3 not supported by the binding at the moment, but possible in future enhancement).
 * `<community>` is the SNMP community string
 * `<oid>` is the object ID to GET or SET
 * `<update>` is the amount of milliseconds the binding waits between periodic queries of the OID
