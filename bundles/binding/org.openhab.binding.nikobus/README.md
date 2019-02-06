@@ -2,7 +2,7 @@
 
 This binding allows openHAB to interact with the [Nikobus](http://www.niko.eu/enus/niko/products/home-automation-with-nikobus/) home automation system. 
 
-[![Demo Video Nikobus](http://img.youtube.com/vi/QiNb-8QxXpo/0.jpg)](http://www.youtube.com/watch?v=QiNb-8QxXpo)
+[![Demo Video Nikobus](https://img.youtube.com/vi/QiNb-8QxXpo/0.jpg)](http://www.youtube.com/watch?v=QiNb-8QxXpo)
 
 More specifically, it allows openHAB to:
 

@@ -4,15 +4,15 @@ Monitor and control Anel NET-PwrCtrl devices.
 
 | [Anel NET-PwrCtrl HUT](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [Anel NET-PwrCtrl IO](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [Anel NET-PwrCtrl HOME](http://anel-elektronik.de/SITE/produkte/home/home.htm) |
 | --- | --- | --- |
-| [![Anel NET-PwrCtrl HUT](http://anel-elektronik.de/SITE/image/leisten/HUT-120.gif)](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [![Anel NET-PwrCtrl PRO](http://anel-elektronik.de/SITE/image/leisten/PRO-120.gif)](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [![Anel NET-PwrCtrl HOME](http://anel-elektronik.de/SITE/image/leisten/HOME-DE-120.gif)](http://anel-elektronik.de/SITE/produkte/home/home.htm)
+| [![Anel NET-PwrCtrl HUT](https://anel-elektronik.de/SITE/image/leisten/HUT-120.gif)](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [![Anel NET-PwrCtrl PRO](https://anel-elektronik.de/SITE/image/leisten/PRO-120.gif)](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [![Anel NET-PwrCtrl HOME](https://anel-elektronik.de/SITE/image/leisten/HOME-DE-120.gif)](http://anel-elektronik.de/SITE/produkte/home/home.htm)
 
 NET-PwrCtrl devices are power sockets / relays that can be configured via browser but they can also be controlled over the network, e.g. with an Android or iPhone app - and also with openHAB via this binding.
 The NET-PwrCtrl HUT and NET-PwrCtrl IO also have 8 I/O pins which can either be used to directly switch the sockets, or they can be used as general input switches in openHAB.
 Here is a video demonstrating a switch and a dimmer (voice is German), explanation of the setup is given in the diagram below:
 
-[![Anel example](http://img.youtube.com/vi/31ycP53jZVs/0.jpg)](http://www.youtube.com/watch?v=31ycP53jZVs)
+[![Anel example](https://img.youtube.com/vi/31ycP53jZVs/0.jpg)](http://www.youtube.com/watch?v=31ycP53jZVs)
 
-[Anel demo setup](http://2.bp.blogspot.com/-XbiK9Fe1Ek0/VFPc2lwMKeI/AAAAAAAABDM/wEdTETUfo0w/s1600/Anel-demo-setup.png)
+[Anel demo setup](https://2.bp.blogspot.com/-XbiK9Fe1Ek0/VFPc2lwMKeI/AAAAAAAABDM/wEdTETUfo0w/s1600/Anel-demo-setup.png)
 
 **Note that the binding is still untested for other devices than the _NET-PwrCtrl HUT_, because I do not own any of the others. I suppose the binding works well with the _NET-PwrCtrl IO_ because it has the same features, but it may not yet work for the others!**
 
