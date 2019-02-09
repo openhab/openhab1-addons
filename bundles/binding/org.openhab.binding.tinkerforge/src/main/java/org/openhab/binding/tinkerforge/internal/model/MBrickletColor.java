@@ -28,12 +28,9 @@ import com.tinkerforge.BrickletColor;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletColor()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletColor>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletColor&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration&gt;"
  * @generated
  */
 public interface MBrickletColor extends MDevice<BrickletColor>, MSubDeviceHolder<BrickletColorDevice>,

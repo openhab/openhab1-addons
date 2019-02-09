@@ -19,8 +19,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration#isSlowI2C <em>Slow I2C</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration#isSlowI2C <em>Slow
+ * I2C</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFTemperatureConfiguration()

@@ -26,11 +26,9 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl#getRecalibrate
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl#getRecalibrate
  *        <em>Recalibrate</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl#getSensitivity
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletMultiTouchConfigurationImpl#getSensitivity
  *        <em>Sensitivity</em>}</li>
  *        </ul>
  *
@@ -236,7 +234,7 @@ public class BrickletMultiTouchConfigurationImpl extends MinimalEObjectImpl.Cont
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (recalibrate: ");
         result.append(recalibrate);
         result.append(", sensitivity: ");

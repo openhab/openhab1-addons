@@ -47,16 +47,16 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getTfConfig <em>Tf Config</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickButtonImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -927,7 +927,7 @@ public class JoystickButtonImpl extends MinimalEObjectImpl.Container implements 
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

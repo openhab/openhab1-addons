@@ -19,17 +19,15 @@ import com.tinkerforge.BrickletOLED128x64;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletOLED128x64()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
- *        org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletOLED128x64>
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletOLED128x64&gt;
  *        org.openhab.binding.tinkerforge.internal.model.MTextActor
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration&gt;"
  * @generated
  */
 public interface MBrickletOLED128x64
@@ -43,7 +41,7 @@ public interface MBrickletOLED128x64
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletOLED128x64_DeviceType()
      * @model default="bricklet_oled128x64" unique="false" changeable="false"

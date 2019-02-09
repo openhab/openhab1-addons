@@ -50,14 +50,14 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getTfConfig <em>Tf Config</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorIlluminanceImpl#getDeviceType <em>Device
@@ -1115,7 +1115,7 @@ public class ColorIlluminanceImpl extends MinimalEObjectImpl.Container implement
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

@@ -29,13 +29,10 @@ import com.tinkerforge.BrickletHallEffect;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletHallEffect()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletHallEffect>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletHallEffect&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.DigitalValue&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration&gt;"
  * @generated
  */
 public interface MBrickletHallEffect extends MDevice<BrickletHallEffect>, MSensor<HighLowValue>, CallbackListener,

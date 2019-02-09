@@ -68,10 +68,10 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl#getBrickd <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl#getTfConfig <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl#getMsubdevices <em>Msubdevices</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl#getMsubdevices
+ * <em>Msubdevices</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletPTCImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -1216,7 +1216,7 @@ public class MBrickletPTCImpl extends MinimalEObjectImpl.Container implements MB
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

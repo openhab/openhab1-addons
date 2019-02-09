@@ -1043,7 +1043,7 @@ public class MLCD20x4ButtonImpl extends MinimalEObjectImpl.Container implements 
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (sensorValue: ");
         result.append(sensorValue);
         result.append(", logger: ");

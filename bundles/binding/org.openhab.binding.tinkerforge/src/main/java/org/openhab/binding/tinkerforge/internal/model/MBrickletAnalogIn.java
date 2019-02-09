@@ -27,18 +27,15 @@ import com.tinkerforge.BrickletAnalogIn;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getDeviceType <em>Device Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getThreshold <em>Threshold</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getMovingAverage <em>Moving Average</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getMovingAverage <em>Moving
+ * Average</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn#getRange <em>Range</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAnalogIn()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAnalogIn>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAnalogIn&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

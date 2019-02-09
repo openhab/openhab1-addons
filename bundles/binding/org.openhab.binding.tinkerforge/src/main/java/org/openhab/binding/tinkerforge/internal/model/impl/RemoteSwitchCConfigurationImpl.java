@@ -291,7 +291,7 @@ public class RemoteSwitchCConfigurationImpl extends MinimalEObjectImpl.Container
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (systemCode: ");
         result.append(systemCode);
         result.append(", deviceCode: ");

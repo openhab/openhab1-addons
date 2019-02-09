@@ -46,8 +46,8 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getEnabledA <em>Enabled
@@ -58,13 +58,13 @@ import com.tinkerforge.TimeoutException;
  * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getConnectedUid <em>Connected
  * Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getPosition <em>Position</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getPosition
+ * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getDeviceIdentifier <em>Device
  * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getName <em>Name</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getBrickd <em>Brickd</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getBrickd
+ * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLinearPotiImpl#getTfConfig <em>Tf
@@ -1289,7 +1289,7 @@ public class MBrickletLinearPotiImpl extends MinimalEObjectImpl.Container implem
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

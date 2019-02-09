@@ -235,7 +235,7 @@ public class AmbientLightV2ConfigurationImpl extends TFBaseConfigurationImpl imp
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (illuminanceRange: ");
         result.append(illuminanceRange);
         result.append(", integrationTime: ");

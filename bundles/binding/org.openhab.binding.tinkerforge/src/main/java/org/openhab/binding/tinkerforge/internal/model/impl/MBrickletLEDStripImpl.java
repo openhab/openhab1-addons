@@ -1528,7 +1528,7 @@ public class MBrickletLEDStripImpl extends MinimalEObjectImpl.Container implemen
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (color: ");
         result.append(color);
         result.append(", logger: ");

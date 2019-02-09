@@ -19,8 +19,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration#getNoiseRejectionFilter
  * <em>Noise Rejection Filter</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration#getWireMode <em>Wire Mode</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration#getWireMode <em>Wire
+ * Mode</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFPTCBrickletConfiguration()

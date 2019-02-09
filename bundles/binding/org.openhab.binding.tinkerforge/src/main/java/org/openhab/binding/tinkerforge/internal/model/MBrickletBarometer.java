@@ -33,14 +33,10 @@ import com.tinkerforge.BrickletBarometer;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletBarometer()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletBarometer>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletBarometer&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

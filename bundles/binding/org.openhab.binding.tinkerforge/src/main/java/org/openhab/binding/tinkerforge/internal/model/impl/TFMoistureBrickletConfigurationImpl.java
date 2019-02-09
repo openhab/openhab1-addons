@@ -25,8 +25,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfigur
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFMoistureBrickletConfigurationImpl#getMovingAverage
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFMoistureBrickletConfigurationImpl#getMovingAverage
  *        <em>Moving Average</em>}</li>
  *        </ul>
  *
@@ -177,7 +176,7 @@ public class TFMoistureBrickletConfigurationImpl extends TFBaseConfigurationImpl
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (movingAverage: ");
         result.append(movingAverage);
         result.append(')');

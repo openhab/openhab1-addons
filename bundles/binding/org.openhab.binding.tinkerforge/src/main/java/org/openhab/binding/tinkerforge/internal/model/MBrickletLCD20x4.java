@@ -35,11 +35,9 @@ import com.tinkerforge.BrickletLCD20x4;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLCD20x4()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.MTinkerBrickletLCD20x4&gt;
  *        org.openhab.binding.tinkerforge.internal.model.MTextActor
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice>"
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice&gt;"
  * @generated
  */
 public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, MSubDeviceHolder<MLCDSubDevice> {
@@ -73,7 +71,7 @@ public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, 
      * @return the value of the '<em>Position Prefix</em>' attribute.
      * @see #setPositionPrefix(String)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLCD20x4_PositionPrefix()
-     * @model default="TFNUM<" unique="false"
+     * @model default="TFNUM&lt;" unique="false"
      * @generated
      */
     String getPositionPrefix();
@@ -103,7 +101,7 @@ public interface MBrickletLCD20x4 extends MDevice<BrickletLCD20x4>, MTextActor, 
      * @return the value of the '<em>Positon Suffix</em>' attribute.
      * @see #setPositonSuffix(String)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletLCD20x4_PositonSuffix()
-     * @model default=">" unique="false"
+     * @model default="&gt;" unique="false"
      * @generated
      */
     String getPositonSuffix();

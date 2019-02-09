@@ -1737,7 +1737,7 @@ public class RemoteSwitchBImpl extends MinimalEObjectImpl.Container implements R
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (sensorValue: ");
         result.append(sensorValue);
         result.append(", switchState: ");

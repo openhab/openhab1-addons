@@ -26,8 +26,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOSensorConfigurationImpl#isPullUpResistorEnabled
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFIOSensorConfigurationImpl#isPullUpResistorEnabled
  *        <em>Pull Up Resistor Enabled</em>}</li>
  *        </ul>
  *
@@ -177,7 +176,7 @@ public class TFIOSensorConfigurationImpl extends MinimalEObjectImpl.Container im
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (pullUpResistorEnabled: ");
         result.append(pullUpResistorEnabled);
         result.append(')');

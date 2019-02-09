@@ -43,16 +43,16 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getEnabledA <em>Enabled
  * A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getSubId <em>Sub Id</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getMbrick <em>Mbrick</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getSubId <em>Sub
+ * Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getMbrick
+ * <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getDigitalState <em>Digital
  * State</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderLaserImpl#getDeviceType <em>Device
@@ -820,7 +820,7 @@ public class LaserRangeFinderLaserImpl extends MinimalEObjectImpl.Container impl
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

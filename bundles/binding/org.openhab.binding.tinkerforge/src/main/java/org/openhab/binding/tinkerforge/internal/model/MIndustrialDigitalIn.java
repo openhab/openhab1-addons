@@ -27,10 +27,8 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMIndustrialDigitalIn()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDevice&lt;org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.DigitalValue&gt;"
  * @generated
  */
 public interface MIndustrialDigitalIn extends MSubDevice<MBrickletIndustrialDigitalIn4>, MSensor<HighLowValue> {

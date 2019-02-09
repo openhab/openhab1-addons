@@ -55,29 +55,23 @@ import com.tinkerforge.IPConnection;
  *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getTinkerforgeDevice
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getIpConnection
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getIpConnection
  *        <em>Ip Connection</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getConnectedUid
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getConnectedUid
  *        <em>Connected Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getPosition
  *        <em>Position</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getDeviceIdentifier
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getName
  *        <em>Name</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getBrickd
  *        <em>Brickd</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getMsubdevices
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getMsubdevices
  *        <em>Msubdevices</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getDeviceType
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDigitalOut4Impl#getDeviceType
  *        <em>Device Type</em>}</li>
  *        </ul>
  *
@@ -1092,7 +1086,7 @@ public class MBrickletIndustrialDigitalOut4Impl extends MinimalEObjectImpl.Conta
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

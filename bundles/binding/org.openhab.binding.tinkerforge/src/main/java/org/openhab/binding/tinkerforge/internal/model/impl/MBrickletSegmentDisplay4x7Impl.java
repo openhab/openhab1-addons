@@ -53,8 +53,7 @@ import com.tinkerforge.TimeoutException;
  *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getTinkerforgeDevice
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getIpConnection
  *        <em>Ip Connection</em>}</li>
@@ -62,8 +61,7 @@ import com.tinkerforge.TimeoutException;
  *        <em>Connected Uid</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getPosition
  *        <em>Position</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getDeviceIdentifier
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getDeviceIdentifier
  *        <em>Device Identifier</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSegmentDisplay4x7Impl#getName
  *        <em>Name</em>}</li>
@@ -1087,7 +1085,7 @@ public class MBrickletSegmentDisplay4x7Impl extends MinimalEObjectImpl.Container
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

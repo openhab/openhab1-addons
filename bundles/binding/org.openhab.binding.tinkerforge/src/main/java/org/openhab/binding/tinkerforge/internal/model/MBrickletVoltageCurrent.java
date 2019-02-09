@@ -33,12 +33,9 @@ import com.tinkerforge.BrickletVoltageCurrent;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletVoltageCurrent()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletVoltageCurrent>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletVoltageCurrent&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration&gt;"
  * @generated
  */
 public interface MBrickletVoltageCurrent extends MDevice<BrickletVoltageCurrent>,

@@ -31,12 +31,9 @@ import com.tinkerforge.BrickletMultiTouch;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletMultiTouch()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletMultiTouch>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletMultiTouch&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration&gt;"
  * @generated
  */
 public interface MBrickletMultiTouch extends MDevice<BrickletMultiTouch>, MSubDeviceHolder<MultiTouchDevice>,

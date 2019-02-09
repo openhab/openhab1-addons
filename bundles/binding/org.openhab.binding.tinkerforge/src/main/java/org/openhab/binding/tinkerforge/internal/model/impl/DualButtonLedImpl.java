@@ -54,8 +54,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDigitalState <em>Digital
  * State</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getTfConfig <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonLedImpl#getPosition <em>Position</em>}</li>
  * </ul>
  *
@@ -1077,7 +1077,7 @@ public class DualButtonLedImpl extends MinimalEObjectImpl.Container implements D
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

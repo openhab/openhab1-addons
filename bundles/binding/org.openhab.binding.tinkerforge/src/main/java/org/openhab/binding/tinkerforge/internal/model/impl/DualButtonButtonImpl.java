@@ -48,18 +48,18 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getTfConfig <em>Tf Config</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getDeviceType <em>Device
  * Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getPosition <em>Position</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.DualButtonButtonImpl#getPosition
+ * <em>Position</em>}</li>
  * </ul>
  *
  * @generated
@@ -1026,7 +1026,7 @@ public class DualButtonButtonImpl extends MinimalEObjectImpl.Container implement
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

@@ -47,8 +47,8 @@ import com.tinkerforge.IPConnection;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getEnabledA <em>Enabled
@@ -59,13 +59,13 @@ import com.tinkerforge.IPConnection;
  * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getConnectedUid <em>Connected
  * Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getPosition <em>Position</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getPosition
+ * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getDeviceIdentifier <em>Device
  * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getName <em>Name</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getBrickd <em>Brickd</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getBrickd
+ * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getDeviceType <em>Device
@@ -1095,7 +1095,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

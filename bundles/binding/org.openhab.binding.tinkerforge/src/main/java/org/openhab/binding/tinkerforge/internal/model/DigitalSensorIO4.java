@@ -31,10 +31,8 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDigitalSensorIO4()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.IO4Device
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.DigitalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration&gt;"
  * @generated
  */
 public interface DigitalSensorIO4 extends IO4Device, MSensor<HighLowValue>, MTFConfigConsumer<TFIOSensorConfiguration> {

@@ -26,14 +26,11 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeADevices
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeADevices
  *        <em>Type ADevices</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeBDevices
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeBDevices
  *        <em>Type BDevices</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeCDevices
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletRemoteSwitchConfigurationImpl#getTypeCDevices
  *        <em>Type CDevices</em>}</li>
  *        </ul>
  *
@@ -302,7 +299,7 @@ public class BrickletRemoteSwitchConfigurationImpl extends MinimalEObjectImpl.Co
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (typeADevices: ");
         result.append(typeADevices);
         result.append(", typeBDevices: ");

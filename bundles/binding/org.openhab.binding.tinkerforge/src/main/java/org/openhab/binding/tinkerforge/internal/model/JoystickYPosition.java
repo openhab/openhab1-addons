@@ -24,8 +24,7 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getJoystickYPosition()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.JoystickDevice
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;"
  * @generated
  */
 public interface JoystickYPosition extends JoystickDevice, MSensor<DecimalValue> {

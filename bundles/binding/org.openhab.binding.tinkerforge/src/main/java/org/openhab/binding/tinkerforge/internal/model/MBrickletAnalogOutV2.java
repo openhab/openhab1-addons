@@ -23,8 +23,8 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogOutV2#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogOutV2#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogOutV2#getMinValueDevice <em>Min Value
  * Device</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogOutV2#getMaxValueDevice <em>Max Value
@@ -32,12 +32,9 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAnalogOutV2()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAnalogOutV2>
- *        org.openhab.binding.tinkerforge.internal.model.SetPointActor
- *        <org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAnalogOutV2&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.SetPointActor&lt;org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration&gt;"
  * @generated
  */
 public interface MBrickletAnalogOutV2

@@ -25,16 +25,14 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellWeight#getDeviceType <em>Device Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellWeight#getThreshold <em>Threshold</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellWeight#getMovingAverage <em>Moving Average</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.LoadCellWeight#getMovingAverage <em>Moving
+ * Average</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLoadCellWeight()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.LoadCellDevice
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

@@ -26,8 +26,7 @@ import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfigurat
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl#getDisableElectrode
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MultiTouchDeviceConfigurationImpl#getDisableElectrode
  *        <em>Disable Electrode</em>}</li>
  *        </ul>
  *
@@ -179,7 +178,7 @@ public class MultiTouchDeviceConfigurationImpl extends MinimalEObjectImpl.Contai
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (disableElectrode: ");
         result.append(disableElectrode);
         result.append(')');

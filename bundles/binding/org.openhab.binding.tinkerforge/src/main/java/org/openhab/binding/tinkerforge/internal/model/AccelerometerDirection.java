@@ -23,20 +23,18 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDeviceType <em>Device Type</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getThreshold <em>Threshold</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDirection <em>Direction</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getThreshold
+ * <em>Threshold</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection#getDirection
+ * <em>Direction</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getAccelerometerDirection()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

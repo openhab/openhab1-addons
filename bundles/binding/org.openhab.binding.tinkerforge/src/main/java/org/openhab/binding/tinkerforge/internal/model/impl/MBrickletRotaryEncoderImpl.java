@@ -47,8 +47,8 @@ import com.tinkerforge.IPConnection;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getEnabledA <em>Enabled
@@ -64,8 +64,8 @@ import com.tinkerforge.IPConnection;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getDeviceIdentifier
  * <em>Device Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getName <em>Name</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getBrickd <em>Brickd</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getBrickd
+ * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletRotaryEncoderImpl#getDeviceType <em>Device
@@ -1076,7 +1076,7 @@ public class MBrickletRotaryEncoderImpl extends MinimalEObjectImpl.Container imp
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

@@ -36,7 +36,8 @@ import org.eclipse.emf.ecore.EReference;
  *        <!-- begin-model-doc -->
  *        *
  *        Copyright (c) 2010-2015, openHAB.org and others.
- *        * All rights reserved. This program and the accompanying materials
+ * 
+ *        All rights reserved. This program and the accompanying materials
  *        are made available under the terms of the Eclipse Public License v1.0
  *        which accompanies this distribution, and is available at
  *        http://www.eclipse.org/legal/epl-v10.html
@@ -45,7 +46,7 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package"
  *        annotation="http://www.eclipse.org/emf/2002/GenModel literalsInterface='true' loadInitialization='false'
  *        adapterFactory='false' updateClasspath='false' codeFormatting='true' commentFormatting='true'
- *        modelDirectory='/org.openhab.binding.tinkerforge/src/main/java'
+ *        modelDirectory='/org.openhab.binding.tinkerforge1/src/main/java'
  *        basePackage='org.openhab.binding.tinkerforge.internal'"
  * @generated
  */
@@ -29518,6 +29519,7 @@ public interface ModelPackage extends EPackage {
      * 
      * @see com.tinkerforge.IPConnection
      * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
+     * @since 1.3.0
      * @generated
      */
     int MIP_CONNECTION = 228;
@@ -30338,8 +30340,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.OHConfig#getConfigByTFId(java.lang.String, java.lang.String)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.OHConfig#getConfigByTFId(java.lang.String, java.lang.String)
      * <em>Get Config By TF Id</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -30473,8 +30474,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.Ecosystem#getDevices4GenericId(java.lang.String, java.lang.String)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.Ecosystem#getDevices4GenericId(java.lang.String, java.lang.String)
      * <em>Get Devices4 Generic Id</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -30729,8 +30729,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin#addSubDevice(java.lang.String, java.lang.String)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin#addSubDevice(java.lang.String, java.lang.String)
      * <em>Add Sub Device</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -31963,8 +31962,8 @@ public interface ModelPackage extends EPackage {
     EAttribute getDigitalActor_DigitalState();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActor#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue)
      * <em>Turn Digital</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32051,8 +32050,8 @@ public interface ModelPackage extends EPackage {
     EClass getProgrammableColorActor();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor#setSelectedColor(org.openhab.core.library.types.HSBType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor#setSelectedColor(org.openhab.core.library.types.HSBType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Set Selected Color</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32077,8 +32076,8 @@ public interface ModelPackage extends EPackage {
     EClass getSimpleColorActor();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.SimpleColorActor#setSelectedColor(org.openhab.core.library.types.HSBType)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.SimpleColorActor#setSelectedColor(org.openhab.core.library.types.HSBType)
      * <em>Set Selected Color</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32116,8 +32115,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MoveActor#move(org.openhab.core.library.types.UpDownType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MoveActor#move(org.openhab.core.library.types.UpDownType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Move</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32142,8 +32140,8 @@ public interface ModelPackage extends EPackage {
     EOperation getMoveActor__Stop();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MoveActor#moveon(org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MoveActor#moveon(org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Moveon</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32193,8 +32191,8 @@ public interface ModelPackage extends EPackage {
     EAttribute getDimmableActor_MaxValue();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#dimm(org.openhab.core.library.types.IncreaseDecreaseType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.DimmableActor#dimm(org.openhab.core.library.types.IncreaseDecreaseType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Dimm</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32232,8 +32230,8 @@ public interface ModelPackage extends EPackage {
     EAttribute getPercentTypeActor_PercentValue();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.PercentTypeActor#setValue(org.openhab.core.library.types.PercentType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.PercentTypeActor#setValue(org.openhab.core.library.types.PercentType, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Set Value</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32259,8 +32257,7 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the
-     * '
-     * {@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * '{@link org.openhab.binding.tinkerforge.internal.model.SetPointActor#setValue(java.math.BigDecimal, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Set Value</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -33444,8 +33441,8 @@ public interface ModelPackage extends EPackage {
     EAttribute getDigitalActorIO16_KeepOnReconnect();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue)
      * <em>Turn Digital</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -33532,8 +33529,8 @@ public interface ModelPackage extends EPackage {
     EClass getMSwitchActor();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.MSwitchActor#turnSwitch(org.openhab.binding.tinkerforge.internal.types.OnOffValue)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.MSwitchActor#turnSwitch(org.openhab.binding.tinkerforge.internal.types.OnOffValue)
      * <em>Turn Switch</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -33557,8 +33554,8 @@ public interface ModelPackage extends EPackage {
     EClass getProgrammableSwitchActor();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor#turnSwitch(org.openhab.binding.tinkerforge.internal.types.OnOffValue, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor#turnSwitch(org.openhab.binding.tinkerforge.internal.types.OnOffValue, org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Turn Switch</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -33958,8 +33955,8 @@ public interface ModelPackage extends EPackage {
     EAttribute getDigitalActorIO4_KeepOnReconnect();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4#turnDigital(org.openhab.binding.tinkerforge.internal.types.HighLowValue)
      * <em>Turn Digital</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -35640,8 +35637,8 @@ public interface ModelPackage extends EPackage {
     EClass getProgrammableActor();
 
     /**
-     * Returns the meta object for the '
-     * {@link org.openhab.binding.tinkerforge.internal.model.ProgrammableActor#action(org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
+     * Returns the meta object for the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.ProgrammableActor#action(org.openhab.binding.tinkerforge.internal.config.DeviceOptions)
      * <em>Action</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -38694,7 +38691,12 @@ public interface ModelPackage extends EPackage {
      * Returns the meta object for data type '{@link com.tinkerforge.IPConnection <em>MIP Connection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * <!-- begin-model-doc -->
+     * *
      * 
+     * @author Theo Weiss
+     * @since 1.3.0
+     *        <!-- end-model-doc -->
      * @return the meta object for data type '<em>MIP Connection</em>'.
      * @see com.tinkerforge.IPConnection
      * @model instanceClass="com.tinkerforge.IPConnection"
@@ -46349,6 +46351,7 @@ public interface ModelPackage extends EPackage {
          * 
          * @see com.tinkerforge.IPConnection
          * @see org.openhab.binding.tinkerforge.internal.model.impl.ModelPackageImpl#getMIPConnection()
+         * @since 1.3.0
          * @generated
          */
         EDataType MIP_CONNECTION = eINSTANCE.getMIPConnection();

@@ -1115,7 +1115,7 @@ public class VCDevicePowerImpl extends MinimalEObjectImpl.Container implements V
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (sensorValue: ");
         result.append(sensorValue);
         result.append(", logger: ");

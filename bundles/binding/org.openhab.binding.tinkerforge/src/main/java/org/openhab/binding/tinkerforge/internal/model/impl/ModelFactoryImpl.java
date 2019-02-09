@@ -3573,6 +3573,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @since 1.3.0
      * @generated
      */
     public IPConnection createMIPConnectionFromString(EDataType eDataType, String initialValue) {
@@ -3583,6 +3584,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @since 1.3.0
      * @generated
      */
     public String convertMIPConnectionToString(EDataType eDataType, Object instanceValue) {

@@ -23,8 +23,8 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ButtonConfigurationImpl#isTactile <em>Tactile</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ButtonConfigurationImpl#isTactile
+ * <em>Tactile</em>}</li>
  * </ul>
  *
  * @generated
@@ -172,7 +172,7 @@ public class ButtonConfigurationImpl extends MinimalEObjectImpl.Container implem
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (tactile: ");
         result.append(tactile);
         result.append(')');

@@ -19,14 +19,13 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MStepperChipTemperature#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MStepperChipTemperature#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperChipTemperature()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MStepperDevice
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;"
  * @generated
  */
 public interface MStepperChipTemperature extends MStepperDevice, MSensor<DecimalValue> {
@@ -40,7 +39,7 @@ public interface MStepperChipTemperature extends MStepperDevice, MSensor<Decimal
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperChipTemperature_DeviceType()
      * @model default="stepper_chip_temperature" unique="false" changeable="false"

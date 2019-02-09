@@ -26,8 +26,8 @@ import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFAnalogInConfigurationImpl#getMovingAverage
  * <em>Moving Average</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFAnalogInConfigurationImpl#getRange <em>Range</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFAnalogInConfigurationImpl#getRange
+ * <em>Range</em>}</li>
  * </ul>
  *
  * @generated
@@ -234,7 +234,7 @@ public class TFAnalogInConfigurationImpl extends TFBaseConfigurationImpl impleme
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (movingAverage: ");
         result.append(movingAverage);
         result.append(", range: ");

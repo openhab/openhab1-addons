@@ -29,11 +29,9 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMLCD20x4Button()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.SwitchState>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.SwitchState&gt;
  *        org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration&gt;"
  * @generated
  */
 public interface MLCD20x4Button extends MSensor<OnOffValue>, MLCDSubDevice, MTFConfigConsumer<ButtonConfiguration> {

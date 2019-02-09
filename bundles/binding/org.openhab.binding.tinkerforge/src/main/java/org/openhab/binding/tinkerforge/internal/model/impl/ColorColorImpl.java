@@ -54,13 +54,13 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getSensorValue <em>Sensor Value</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getTfConfig <em>Tf Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -994,7 +994,7 @@ public class ColorColorImpl extends MinimalEObjectImpl.Container implements Colo
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

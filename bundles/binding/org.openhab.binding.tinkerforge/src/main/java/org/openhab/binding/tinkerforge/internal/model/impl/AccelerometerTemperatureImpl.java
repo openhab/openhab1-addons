@@ -47,12 +47,12 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getLogger
  * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getUid <em>Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#isPoll <em>Poll</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#isPoll
+ * <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getEnabledA <em>Enabled
  * A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getSubId <em>Sub Id</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getSubId <em>Sub
+ * Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getMbrick
  * <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerTemperatureImpl#getSensorValue <em>Sensor
@@ -782,7 +782,7 @@ public class AccelerometerTemperatureImpl extends MinimalEObjectImpl.Container i
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

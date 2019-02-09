@@ -21,15 +21,13 @@ import com.tinkerforge.BrickletRotaryEncoder;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletRotaryEncoder()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletRotaryEncoder>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletRotaryEncoder&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice&gt;"
  * @generated
  */
 public interface MBrickletRotaryEncoder extends MDevice<BrickletRotaryEncoder>, MSubDeviceHolder<RotaryEncoderDevice> {

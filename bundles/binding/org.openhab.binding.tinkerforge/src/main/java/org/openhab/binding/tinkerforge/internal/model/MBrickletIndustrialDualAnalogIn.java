@@ -28,12 +28,9 @@ import com.tinkerforge.BrickletIndustrialDualAnalogIn;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletIndustrialDualAnalogIn()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIndustrialDualAnalogIn>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletIndustrialDualAnalogIn&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel&gt;"
  * @generated
  */
 public interface MBrickletIndustrialDualAnalogIn

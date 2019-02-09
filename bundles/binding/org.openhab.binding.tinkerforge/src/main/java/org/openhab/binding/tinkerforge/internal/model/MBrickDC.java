@@ -42,14 +42,11 @@ import com.tinkerforge.BrickDC;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickDC()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
  *        org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor
- *        org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC>
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.MTinkerBrickDC&gt;
  *        org.openhab.binding.tinkerforge.internal.model.MoveActor
- *        org.openhab.binding.tinkerforge.internal.model.SetPointActor
- *        <org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.SetPointActor&lt;org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

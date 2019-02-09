@@ -64,13 +64,13 @@ import com.tinkerforge.TimeoutException;
  * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getBrickd <em>Brickd</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getSensorValue <em>Sensor Value</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getSensorValue <em>Sensor
+ * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getTfConfig <em>Tf Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletCO2Impl#getThreshold <em>Threshold</em>}</li>
  * </ul>
  *
@@ -1347,7 +1347,7 @@ public class MBrickletCO2Impl extends MinimalEObjectImpl.Container implements MB
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

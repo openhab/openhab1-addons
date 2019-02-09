@@ -46,8 +46,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getLogger
  * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getUid <em>Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#isPoll <em>Poll</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#isPoll
+ * <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getEnabledA <em>Enabled
  * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getTinkerforgeDevice
@@ -60,8 +60,8 @@ import com.tinkerforge.TimeoutException;
  * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getDeviceIdentifier
  * <em>Device Identifier</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getName <em>Name</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getName
+ * <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getBrickd
  * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSolidStateRelayImpl#getSwitchState <em>Switch
@@ -1125,7 +1125,7 @@ public class MBrickletSolidStateRelayImpl extends MinimalEObjectImpl.Container i
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

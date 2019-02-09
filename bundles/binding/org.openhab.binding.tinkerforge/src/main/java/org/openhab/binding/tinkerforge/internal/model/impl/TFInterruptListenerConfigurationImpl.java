@@ -26,8 +26,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfigu
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFInterruptListenerConfigurationImpl#getDebouncePeriod
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFInterruptListenerConfigurationImpl#getDebouncePeriod
  *        <em>Debounce Period</em>}</li>
  *        </ul>
  *
@@ -177,7 +176,7 @@ public class TFInterruptListenerConfigurationImpl extends MinimalEObjectImpl.Con
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (debouncePeriod: ");
         result.append(debouncePeriod);
         result.append(')');

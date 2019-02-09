@@ -47,8 +47,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.JoystickYPositionImpl#getSensorValue <em>Sensor
@@ -806,7 +806,7 @@ public class JoystickYPositionImpl extends MinimalEObjectImpl.Container implemen
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

@@ -49,8 +49,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getDigitalState <em>Digital State</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getDigitalState <em>Digital
+ * State</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorLedImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  *
@@ -810,7 +810,7 @@ public class ColorLedImpl extends MinimalEObjectImpl.Container implements ColorL
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

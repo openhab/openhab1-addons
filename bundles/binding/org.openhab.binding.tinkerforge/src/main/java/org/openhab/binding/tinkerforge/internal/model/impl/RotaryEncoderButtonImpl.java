@@ -46,15 +46,15 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getEnabledA <em>Enabled
  * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getSubId <em>Sub Id</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getMbrick <em>Mbrick</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getMbrick
+ * <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderButtonImpl#getTfConfig <em>Tf
@@ -930,7 +930,7 @@ public class RotaryEncoderButtonImpl extends MinimalEObjectImpl.Container implem
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

@@ -53,16 +53,16 @@ import com.tinkerforge.IPConnection;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getIpConnection <em>Ip
  * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getConnectedUid <em>Connected
  * Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getPosition <em>Position</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getPosition
+ * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getDeviceIdentifier <em>Device
  * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getName <em>Name</em>}</li>
@@ -71,8 +71,8 @@ import com.tinkerforge.IPConnection;
  * <em>Msubdevices</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getTfConfig <em>Tf Config</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletJoystickImpl#getDeviceType <em>Device
  * Type</em>}</li>
  * </ul>
@@ -1276,7 +1276,7 @@ public class MBrickletJoystickImpl extends MinimalEObjectImpl.Container implemen
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

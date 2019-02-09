@@ -51,16 +51,16 @@ import com.tinkerforge.IPConnection;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getIpConnection <em>Ip
  * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getConnectedUid <em>Connected
  * Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getPosition <em>Position</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getPosition
+ * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getDeviceIdentifier <em>Device
  * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLoadCellImpl#getName <em>Name</em>}</li>
@@ -1075,7 +1075,7 @@ public class MBrickletLoadCellImpl extends MinimalEObjectImpl.Container implemen
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

@@ -2721,7 +2721,7 @@ public class MBrickDCImpl extends MinimalEObjectImpl.Container implements MBrick
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (sensorValue: ");
         result.append(sensorValue);
         result.append(", switchState: ");

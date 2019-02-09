@@ -25,10 +25,8 @@ import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getDualButtonButton()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.DualButtonDevice
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.SwitchState>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.SwitchState&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration&gt;"
  * @generated
  */
 public interface DualButtonButton

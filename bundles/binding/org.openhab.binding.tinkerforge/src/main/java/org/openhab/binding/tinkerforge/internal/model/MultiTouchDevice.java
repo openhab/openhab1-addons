@@ -28,12 +28,9 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMultiTouchDevice()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.DigitalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSubDevice&lt;org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.DigitalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration&gt;"
  * @generated
  */
 public interface MultiTouchDevice extends MSubDevice<MBrickletMultiTouch>, MSensor<HighLowValue>,

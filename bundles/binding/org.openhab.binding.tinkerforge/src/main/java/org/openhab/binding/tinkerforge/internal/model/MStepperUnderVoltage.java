@@ -19,14 +19,13 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MStepperUnderVoltage#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MStepperUnderVoltage#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperUnderVoltage()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MStepperDevice
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>"
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;"
  * @generated
  */
 public interface MStepperUnderVoltage extends MStepperDevice, MSensor<DecimalValue> {
@@ -40,7 +39,7 @@ public interface MStepperUnderVoltage extends MStepperDevice, MSensor<DecimalVal
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMStepperUnderVoltage_DeviceType()
      * @model default="stepper_under_voltage" unique="false" changeable="false"

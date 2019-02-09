@@ -29,8 +29,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * <em>Data Rate</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl#getFullScale
  * <em>Full Scale</em>}</li>
- * <li>
- * {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl#getFilterBandwidth
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletAccelerometerConfigurationImpl#getFilterBandwidth
  * <em>Filter Bandwidth</em>}</li>
  * </ul>
  *
@@ -298,7 +297,7 @@ public class BrickletAccelerometerConfigurationImpl extends MinimalEObjectImpl.C
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (dataRate: ");
         result.append(dataRate);
         result.append(", fullScale: ");

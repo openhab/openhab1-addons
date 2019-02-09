@@ -25,8 +25,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfig
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFDistanceUSBrickletConfigurationImpl#getMovingAverage
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFDistanceUSBrickletConfigurationImpl#getMovingAverage
  *        <em>Moving Average</em>}</li>
  *        </ul>
  *
@@ -178,7 +177,7 @@ public class TFDistanceUSBrickletConfigurationImpl extends TFBaseConfigurationIm
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (movingAverage: ");
         result.append(movingAverage);
         result.append(')');

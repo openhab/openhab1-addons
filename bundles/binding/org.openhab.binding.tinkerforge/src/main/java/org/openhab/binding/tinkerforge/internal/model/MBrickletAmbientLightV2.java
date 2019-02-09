@@ -25,10 +25,10 @@ import com.tinkerforge.BrickletAmbientLightV2;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getDeviceType <em>Device Type</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getThreshold <em>Threshold</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getThreshold
+ * <em>Threshold</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIlluminanceRange <em>Illuminance
  * Range</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2#getIntegrationTime <em>Integration
@@ -36,12 +36,9 @@ import com.tinkerforge.BrickletAmbientLightV2;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAmbientLightV2()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAmbientLightV2>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAmbientLightV2&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

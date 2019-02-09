@@ -63,8 +63,7 @@ import com.tinkerforge.TimeoutException;
  *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getTinkerforgeDevice
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getIpConnection
  *        <em>Ip Connection</em>}</li>
@@ -86,11 +85,9 @@ import com.tinkerforge.TimeoutException;
  *        <em>Device Type</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getAveraging
  *        <em>Averaging</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getVoltageConversionTime
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getVoltageConversionTime
  *        <em>Voltage Conversion Time</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getCurrentConversionTime
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletVoltageCurrentImpl#getCurrentConversionTime
  *        <em>Current Conversion Time</em>}</li>
  *        </ul>
  *
@@ -1412,7 +1409,7 @@ public class MBrickletVoltageCurrentImpl extends MinimalEObjectImpl.Container im
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

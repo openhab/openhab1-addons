@@ -21,22 +21,19 @@ import com.tinkerforge.BrickletAccelerometer;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getDataRate <em>Data Rate</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFullScale <em>Full Scale</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFullScale <em>Full
+ * Scale</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer#getFilterBandwidth <em>Filter
  * Bandwidth</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletAccelerometer()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAccelerometer>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder
- *        <org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration>"
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletAccelerometer&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder&lt;org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration&gt;"
  * @generated
  */
 public interface MBrickletAccelerometer extends MDevice<BrickletAccelerometer>, MSubDeviceHolder<AccelerometerDevice>,

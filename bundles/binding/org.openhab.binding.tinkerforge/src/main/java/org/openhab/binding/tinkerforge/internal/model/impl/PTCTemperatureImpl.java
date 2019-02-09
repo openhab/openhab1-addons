@@ -50,20 +50,20 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getTfConfig <em>Tf Config</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getDeviceType <em>Device Type</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getThreshold <em>Threshold</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCTemperatureImpl#getThreshold
+ * <em>Threshold</em>}</li>
  * </ul>
  *
  * @generated
@@ -1057,7 +1057,7 @@ public class PTCTemperatureImpl extends MinimalEObjectImpl.Container implements 
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

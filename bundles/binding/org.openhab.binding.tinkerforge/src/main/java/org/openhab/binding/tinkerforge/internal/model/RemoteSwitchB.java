@@ -32,11 +32,9 @@ import org.openhab.binding.tinkerforge.internal.types.PercentValue;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getRemoteSwitchB()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.PercentValue>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.PercentValue&gt;
  *        org.openhab.binding.tinkerforge.internal.model.RemoteSwitch
- *        org.openhab.binding.tinkerforge.internal.model.DimmableActor
- *        <org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration>
+ *        org.openhab.binding.tinkerforge.internal.model.DimmableActor&lt;org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration&gt;
  *        org.openhab.binding.tinkerforge.internal.model.PercentTypeActor"
  * @generated
  */

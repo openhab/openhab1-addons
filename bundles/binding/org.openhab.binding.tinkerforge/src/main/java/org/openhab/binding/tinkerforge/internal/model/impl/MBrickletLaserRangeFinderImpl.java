@@ -56,10 +56,10 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getLogger
  * <em>Logger</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getUid <em>Uid</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#isPoll <em>Poll</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getUid
+ * <em>Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#isPoll
+ * <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getEnabledA <em>Enabled
  * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getTinkerforgeDevice
@@ -72,8 +72,8 @@ import com.tinkerforge.TimeoutException;
  * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getDeviceIdentifier
  * <em>Device Identifier</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getName <em>Name</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getName
+ * <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getBrickd
  * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getMsubdevices
@@ -86,8 +86,8 @@ import com.tinkerforge.TimeoutException;
  * <em>Distance Average Length</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getVelocityAverageLength
  * <em>Velocity Average Length</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getMode <em>Mode</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getMode
+ * <em>Mode</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletLaserRangeFinderImpl#getEnableLaserOnStartup
  * <em>Enable Laser On Startup</em>}</li>
  * </ul>
@@ -1483,7 +1483,7 @@ public class MBrickletLaserRangeFinderImpl extends MinimalEObjectImpl.Container 
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

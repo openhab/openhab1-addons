@@ -58,8 +58,7 @@ import com.tinkerforge.TimeoutException;
  *        <em>Poll</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSoundIntensityImpl#getEnabledA
  *        <em>Enabled A</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSoundIntensityImpl#getTinkerforgeDevice
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSoundIntensityImpl#getTinkerforgeDevice
  *        <em>Tinkerforge Device</em>}</li>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletSoundIntensityImpl#getIpConnection
  *        <em>Ip Connection</em>}</li>
@@ -1366,7 +1365,7 @@ public class MBrickletSoundIntensityImpl extends MinimalEObjectImpl.Container im
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

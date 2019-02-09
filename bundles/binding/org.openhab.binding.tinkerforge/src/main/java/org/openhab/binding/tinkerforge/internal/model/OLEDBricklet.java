@@ -19,10 +19,10 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionPrefix <em>Position Prefix</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionSuffix <em>Position Suffix</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionPrefix <em>Position
+ * Prefix</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getPositionSuffix <em>Position
+ * Suffix</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#getContrast <em>Contrast</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.OLEDBricklet#isInvert <em>Invert</em>}</li>
  * </ul>
@@ -41,11 +41,11 @@ public interface OLEDBricklet extends EObject {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Position Prefix</em>' attribute.
      * @see #setPositionPrefix(String)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getOLEDBricklet_PositionPrefix()
-     * @model default="TFNUM<" unique="false"
+     * @model default="TFNUM&lt;" unique="false"
      * @generated
      */
     String getPositionPrefix();
@@ -55,7 +55,7 @@ public interface OLEDBricklet extends EObject {
      * <em>Position Prefix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Position Prefix</em>' attribute.
      * @see #getPositionPrefix()
      * @generated
@@ -71,11 +71,11 @@ public interface OLEDBricklet extends EObject {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Position Suffix</em>' attribute.
      * @see #setPositionSuffix(String)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getOLEDBricklet_PositionSuffix()
-     * @model default=">" unique="false"
+     * @model default="&gt;" unique="false"
      * @generated
      */
     String getPositionSuffix();
@@ -85,7 +85,7 @@ public interface OLEDBricklet extends EObject {
      * <em>Position Suffix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Position Suffix</em>' attribute.
      * @see #getPositionSuffix()
      * @generated
@@ -101,7 +101,7 @@ public interface OLEDBricklet extends EObject {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Contrast</em>' attribute.
      * @see #setContrast(short)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getOLEDBricklet_Contrast()
@@ -115,7 +115,7 @@ public interface OLEDBricklet extends EObject {
      * <em>Contrast</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Contrast</em>' attribute.
      * @see #getContrast()
      * @generated
@@ -131,7 +131,7 @@ public interface OLEDBricklet extends EObject {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Invert</em>' attribute.
      * @see #setInvert(boolean)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getOLEDBricklet_Invert()
@@ -145,7 +145,7 @@ public interface OLEDBricklet extends EObject {
      * <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Invert</em>' attribute.
      * @see #isInvert()
      * @generated
@@ -155,7 +155,7 @@ public interface OLEDBricklet extends EObject {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @model
      * @generated
      */
@@ -164,7 +164,7 @@ public interface OLEDBricklet extends EObject {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @model columnFromUnique="false" columnToUnique="false" rowFromUnique="false" rowToUnique="false"
      * @generated
      */
@@ -173,7 +173,7 @@ public interface OLEDBricklet extends EObject {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @model lineUnique="false" positionUnique="false" textUnique="false"
      * @generated
      */
@@ -182,7 +182,7 @@ public interface OLEDBricklet extends EObject {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @model angleUnique="false"
      * @generated
      */
@@ -191,7 +191,7 @@ public interface OLEDBricklet extends EObject {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @model minUnique="false" maxUnique="false" valueUnique="false"
      * @generated
      */

@@ -25,16 +25,14 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance#getDeviceType <em>Device
  * Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance#getThreshold <em>Threshold</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance#getThreshold
+ * <em>Threshold</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLaserRangeFinderDistance()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

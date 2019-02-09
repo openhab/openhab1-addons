@@ -51,16 +51,16 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getEnabledA <em>Enabled
  * A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getSubId <em>Sub Id</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getMbrick <em>Mbrick</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getSubId <em>Sub
+ * Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getMbrick
+ * <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.AccelerometerDirectionImpl#getTfConfig <em>Tf
@@ -1149,7 +1149,7 @@ public class AccelerometerDirectionImpl extends MinimalEObjectImpl.Container imp
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

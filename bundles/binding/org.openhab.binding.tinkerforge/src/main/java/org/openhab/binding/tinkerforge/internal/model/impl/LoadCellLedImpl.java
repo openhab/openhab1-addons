@@ -51,8 +51,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDigitalState <em>Digital
  * State</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellLedImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -813,7 +813,7 @@ public class LoadCellLedImpl extends MinimalEObjectImpl.Container implements Loa
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

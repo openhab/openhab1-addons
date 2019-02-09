@@ -24,8 +24,8 @@ import org.openhab.core.library.types.PercentType;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.PercentTypeActor#getPercentValue <em>Percent Value</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.PercentTypeActor#getPercentValue <em>Percent
+ * Value</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getPercentTypeActor()

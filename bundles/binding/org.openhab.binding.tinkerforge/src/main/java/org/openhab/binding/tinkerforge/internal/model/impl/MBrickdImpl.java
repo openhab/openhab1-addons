@@ -1490,7 +1490,7 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", ipConnection: ");

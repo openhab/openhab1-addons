@@ -20,13 +20,11 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getVoltageCurrentDevice()
- * @model interface="true" abstract="true" superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent>
+ * @model interface="true" abstract="true"
+ *        superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDevice&lt;org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration&gt;"
  * @generated
  */
 public interface VoltageCurrentDevice extends MSensor<DecimalValue>, MSubDevice<MBrickletVoltageCurrent>,

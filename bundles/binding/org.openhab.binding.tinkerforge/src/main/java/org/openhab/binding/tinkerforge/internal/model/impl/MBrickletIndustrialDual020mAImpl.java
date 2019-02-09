@@ -51,10 +51,10 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getLogger
  * <em>Logger</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getUid <em>Uid</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#isPoll <em>Poll</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getUid
+ * <em>Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#isPoll
+ * <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getEnabledA
  * <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletIndustrialDual020mAImpl#getTinkerforgeDevice
@@ -1211,7 +1211,7 @@ public class MBrickletIndustrialDual020mAImpl extends MinimalEObjectImpl.Contain
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

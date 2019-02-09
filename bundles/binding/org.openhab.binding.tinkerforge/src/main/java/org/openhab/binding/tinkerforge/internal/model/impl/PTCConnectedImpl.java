@@ -47,10 +47,10 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getEnabledA <em>Enabled A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getSensorValue <em>Sensor Value</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getSensorValue <em>Sensor
+ * Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.PTCConnectedImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -766,7 +766,7 @@ public class PTCConnectedImpl extends MinimalEObjectImpl.Container implements PT
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

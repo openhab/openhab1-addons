@@ -33,7 +33,8 @@ import org.eclipse.emf.ecore.EObject;
 public interface OHConfig extends EObject {
     /**
      * Returns the value of the '<em><b>Oh Tf Devices</b></em>' containment reference list.
-     * The list contents are of type {@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice}&lt;?, ?>.
+     * The list contents are of type
+     * {@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice}<code>&lt;?, ?&gt;</code>.
      * It is bidirectional and its opposite is
      * '{@link org.openhab.binding.tinkerforge.internal.model.OHTFDevice#getOhConfig <em>Oh Config</em>}'.
      * <!-- begin-user-doc -->

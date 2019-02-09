@@ -25,16 +25,13 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>
- * {@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getDistanceAverageLength
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getDistanceAverageLength
  * <em>Distance Average Length</em>}</li>
- * <li>
- * {@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getVelocityAverageLength
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getVelocityAverageLength
  * <em>Velocity Average Length</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getMode
  * <em>Mode</em>}</li>
- * <li>
- * {@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getEnableLaserOnStartup
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LaserRangeFinderConfigurationImpl#getEnableLaserOnStartup
  * <em>Enable Laser On Startup</em>}</li>
  * </ul>
  *
@@ -362,7 +359,7 @@ public class LaserRangeFinderConfigurationImpl extends MinimalEObjectImpl.Contai
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (distanceAverageLength: ");
         result.append(distanceAverageLength);
         result.append(", velocityAverageLength: ");

@@ -47,16 +47,16 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getEnabledA <em>Enabled
  * A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getSubId <em>Sub Id</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getMbrick <em>Mbrick</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getSubId <em>Sub
+ * Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getMbrick
+ * <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.ColorColorTemperatureImpl#getTfConfig <em>Tf
@@ -995,7 +995,7 @@ public class ColorColorTemperatureImpl extends MinimalEObjectImpl.Container impl
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

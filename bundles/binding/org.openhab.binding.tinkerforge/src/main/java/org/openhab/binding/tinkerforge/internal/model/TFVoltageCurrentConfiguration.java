@@ -22,11 +22,9 @@ package org.openhab.binding.tinkerforge.internal.model;
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getAveraging
  *        <em>Averaging</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getVoltageConversionTime
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getVoltageConversionTime
  *        <em>Voltage Conversion Time</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getCurrentConversionTime
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration#getCurrentConversionTime
  *        <em>Current Conversion Time</em>}</li>
  *        </ul>
  *

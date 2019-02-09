@@ -23,18 +23,15 @@ import com.tinkerforge.BrickletThermocouple;
  * The following features are supported:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletThermocouple#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletThermocouple#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.MBrickletThermocouple#getThreshold <em>Threshold</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletThermocouple()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletThermocouple>
- *        org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletThermocouple&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */
@@ -49,7 +46,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletThermocouple_DeviceType()
      * @model default="bricklet_thermocouple" unique="false" changeable="false"
@@ -66,7 +63,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Threshold</em>' attribute.
      * @see #setThreshold(BigDecimal)
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletThermocouple_Threshold()
@@ -80,7 +77,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
      * <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @param value the new value of the '<em>Threshold</em>' attribute.
      * @see #getThreshold()
      * @generated
@@ -90,7 +87,7 @@ public interface MBrickletThermocouple extends MDevice<BrickletThermocouple>, MS
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @model annotation="http://www.eclipse.org/emf/2002/GenModel body=''"
      * @generated
      */

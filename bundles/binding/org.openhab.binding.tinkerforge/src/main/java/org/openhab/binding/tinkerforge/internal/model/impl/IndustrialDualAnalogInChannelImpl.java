@@ -54,8 +54,8 @@ import com.tinkerforge.TimeoutException;
  * <em>Sensor Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getLogger
  * <em>Logger</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getUid <em>Uid</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getUid
+ * <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#isPoll
  * <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.IndustrialDualAnalogInChannelImpl#getEnabledA
@@ -1181,7 +1181,7 @@ public class IndustrialDualAnalogInChannelImpl extends MinimalEObjectImpl.Contai
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (sensorValue: ");
         result.append(sensorValue);
         result.append(", logger: ");

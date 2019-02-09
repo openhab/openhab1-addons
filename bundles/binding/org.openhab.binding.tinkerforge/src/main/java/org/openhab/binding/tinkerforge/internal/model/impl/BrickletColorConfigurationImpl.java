@@ -25,8 +25,8 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorConfigurationImpl#getGain <em>Gain</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorConfigurationImpl#getGain
+ * <em>Gain</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletColorConfigurationImpl#getIntegrationTime
  * <em>Integration Time</em>}</li>
  * </ul>
@@ -235,7 +235,7 @@ public class BrickletColorConfigurationImpl extends MinimalEObjectImpl.Container
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (gain: ");
         result.append(gain);
         result.append(", integrationTime: ");

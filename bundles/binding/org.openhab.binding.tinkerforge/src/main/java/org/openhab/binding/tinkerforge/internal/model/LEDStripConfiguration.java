@@ -24,8 +24,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <em>Clockfrequency</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getColorMapping <em>Color
  * Mapping</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getSubDevices <em>Sub Devices</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration#getSubDevices <em>Sub
+ * Devices</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getLEDStripConfiguration()

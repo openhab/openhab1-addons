@@ -29,10 +29,9 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMTemperatureIRDevice()
- * @model interface="true" abstract="true" superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
- *        org.openhab.binding.tinkerforge.internal.model.MSubDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR>
+ * @model interface="true" abstract="true"
+ *        superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDevice&lt;org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR&gt;
  *        org.openhab.binding.tinkerforge.internal.model.CallbackListener"
  * @generated
  */

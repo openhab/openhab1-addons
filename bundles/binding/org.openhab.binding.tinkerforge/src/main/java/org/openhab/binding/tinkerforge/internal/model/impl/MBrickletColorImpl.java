@@ -58,8 +58,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getIpConnection <em>Ip
@@ -73,10 +73,10 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getBrickd <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getTfConfig <em>Tf Config</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getGain <em>Gain</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletColorImpl#getIntegrationTime <em>Integration
  * Time</em>}</li>
@@ -1369,7 +1369,7 @@ public class MBrickletColorImpl extends MinimalEObjectImpl.Container implements 
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

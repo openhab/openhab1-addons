@@ -28,11 +28,9 @@ import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfigurat
  *        <ul>
  *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFVoltageCurrentConfigurationImpl#getAveraging
  *        <em>Averaging</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFVoltageCurrentConfigurationImpl#getVoltageConversionTime
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFVoltageCurrentConfigurationImpl#getVoltageConversionTime
  *        <em>Voltage Conversion Time</em>}</li>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFVoltageCurrentConfigurationImpl#getCurrentConversionTime
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFVoltageCurrentConfigurationImpl#getCurrentConversionTime
  *        <em>Current Conversion Time</em>}</li>
  *        </ul>
  *
@@ -302,7 +300,7 @@ public class TFVoltageCurrentConfigurationImpl extends MinimalEObjectImpl.Contai
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (averaging: ");
         result.append(averaging);
         result.append(", voltageConversionTime: ");

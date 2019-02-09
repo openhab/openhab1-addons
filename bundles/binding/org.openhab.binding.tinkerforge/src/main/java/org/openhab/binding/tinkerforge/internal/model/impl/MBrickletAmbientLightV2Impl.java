@@ -52,8 +52,8 @@ import com.tinkerforge.TimeoutException;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getEnabledA <em>Enabled
@@ -68,10 +68,10 @@ import com.tinkerforge.TimeoutException;
  * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getDeviceIdentifier
  * <em>Device Identifier</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getName <em>Name</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getBrickd <em>Brickd</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getName
+ * <em>Name</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getBrickd
+ * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getSensorValue <em>Sensor
  * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAmbientLightV2Impl#getTfConfig <em>Tf
@@ -95,7 +95,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -106,7 +106,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -117,7 +117,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -128,7 +128,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -139,7 +139,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -150,7 +150,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -161,7 +161,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -172,7 +172,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -183,7 +183,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getTinkerforgeDevice() <em>Tinkerforge Device</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTinkerforgeDevice()
      * @generated
      * @ordered
@@ -194,7 +194,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -205,7 +205,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -216,7 +216,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -227,7 +227,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -238,7 +238,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPosition()
      * @generated
      * @ordered
@@ -249,7 +249,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPosition()
      * @generated
      * @ordered
@@ -260,7 +260,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -271,7 +271,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -282,7 +282,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getName()
      * @generated
      * @ordered
@@ -293,7 +293,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getName()
      * @generated
      * @ordered
@@ -304,7 +304,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSensorValue()
      * @generated
      * @ordered
@@ -315,7 +315,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTfConfig()
      * @generated
      * @ordered
@@ -326,7 +326,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getCallbackPeriod()
      * @generated
      * @ordered
@@ -337,7 +337,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getCallbackPeriod() <em>Callback Period</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getCallbackPeriod()
      * @generated
      * @ordered
@@ -348,7 +348,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -359,7 +359,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -370,7 +370,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getThreshold()
      * @generated
      * @ordered
@@ -381,7 +381,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getThreshold() <em>Threshold</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getThreshold()
      * @generated
      * @ordered
@@ -392,7 +392,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getIlluminanceRange() <em>Illuminance Range</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIlluminanceRange()
      * @generated
      * @ordered
@@ -403,7 +403,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getIlluminanceRange() <em>Illuminance Range</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIlluminanceRange()
      * @generated
      * @ordered
@@ -414,7 +414,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The default value of the '{@link #getIntegrationTime() <em>Integration Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIntegrationTime()
      * @generated
      * @ordered
@@ -425,7 +425,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
      * The cached value of the '{@link #getIntegrationTime() <em>Integration Time</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIntegrationTime()
      * @generated
      * @ordered
@@ -437,7 +437,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MBrickletAmbientLightV2Impl() {
@@ -447,7 +447,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -458,7 +458,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -469,7 +469,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -479,12 +479,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__LOGGER,
                     oldLogger, logger));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -495,7 +495,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -505,12 +505,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__UID, oldUid,
                     uid));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -521,7 +521,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -531,12 +531,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__POLL,
                     oldPoll, poll));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -547,7 +547,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -557,12 +557,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -573,7 +573,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -584,12 +584,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
                     tinkerforgeDevice));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -600,7 +600,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -610,12 +610,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__IP_CONNECTION, oldIpConnection, ipConnection));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -626,7 +626,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -636,12 +636,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__CONNECTED_UID, oldConnectedUid, connectedUid));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -652,7 +652,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -662,12 +662,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__POSITION,
                     oldPosition, position));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -678,7 +678,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -688,12 +688,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -704,7 +704,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -714,12 +714,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__NAME,
                     oldName, name));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -732,7 +732,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickd basicGetBrickd() {
@@ -744,7 +744,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs) {
@@ -755,7 +755,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -776,12 +776,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__BRICKD,
                     newBrickd, newBrickd));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -792,7 +792,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -802,12 +802,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__SENSOR_VALUE,
                     oldSensorValue, sensorValue));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -818,7 +818,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetTfConfig(AmbientLightV2Configuration newTfConfig, NotificationChain msgs) {
@@ -831,14 +831,14 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
                 msgs = notification;
             else
                 msgs.add(notification);
-            }
+        }
         return msgs;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -857,12 +857,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -873,7 +873,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -883,12 +883,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__CALLBACK_PERIOD, oldCallbackPeriod, callbackPeriod));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -899,7 +899,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -910,7 +910,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -920,12 +920,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__THRESHOLD,
                     oldThreshold, threshold));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -936,7 +936,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -946,12 +946,12 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__ILLUMINANCE_RANGE, oldIlluminanceRange, illuminanceRange));
-        }
+    }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -962,7 +962,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -972,7 +972,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_AMBIENT_LIGHT_V2__INTEGRATION_TIME, oldIntegrationTime, integrationTime));
-        }
+    }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1085,7 +1085,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1102,7 +1102,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1119,7 +1119,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1134,7 +1134,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1185,7 +1185,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1249,7 +1249,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1313,7 +1313,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1364,7 +1364,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1399,7 +1399,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1434,7 +1434,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1465,7 +1465,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1490,7 +1490,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1498,7 +1498,7 @@ public class MBrickletAmbientLightV2Impl extends MinimalEObjectImpl.Container im
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

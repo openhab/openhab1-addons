@@ -24,8 +24,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>
- * {@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletIndustrialDualAnalogInConfigurationImpl#getSampleRate
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.BrickletIndustrialDualAnalogInConfigurationImpl#getSampleRate
  * <em>Sample Rate</em>}</li>
  * </ul>
  *
@@ -176,7 +175,7 @@ public class BrickletIndustrialDualAnalogInConfigurationImpl extends TFBaseConfi
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (sampleRate: ");
         result.append(sampleRate);
         result.append(')');

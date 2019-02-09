@@ -27,13 +27,13 @@ package org.openhab.binding.tinkerforge.internal.model;
  * <em>Deacceleration</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getMotorCurrent <em>Motor
  * Current</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getStepMode <em>Step Mode</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getStepMode <em>Step
+ * Mode</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getDecay <em>Decay</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#isSyncRect <em>Sync Rect</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getTimeBase <em>Time Base</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#isSyncRect <em>Sync
+ * Rect</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration#getTimeBase <em>Time
+ * Base</em>}</li>
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getTFBrickStepperConfiguration()

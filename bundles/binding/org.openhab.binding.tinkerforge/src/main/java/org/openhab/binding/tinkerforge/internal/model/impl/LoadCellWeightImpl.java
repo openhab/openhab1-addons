@@ -52,20 +52,20 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getTfConfig <em>Tf Config</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getDeviceType <em>Device Type</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getThreshold <em>Threshold</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getThreshold
+ * <em>Threshold</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.LoadCellWeightImpl#getMovingAverage <em>Moving
  * Average</em>}</li>
  * </ul>
@@ -1149,7 +1149,7 @@ public class LoadCellWeightImpl extends MinimalEObjectImpl.Container implements 
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

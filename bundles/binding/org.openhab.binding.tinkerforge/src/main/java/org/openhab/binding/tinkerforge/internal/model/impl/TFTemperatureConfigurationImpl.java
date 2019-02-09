@@ -173,7 +173,7 @@ public class TFTemperatureConfigurationImpl extends TFBaseConfigurationImpl impl
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (slowI2C: ");
         result.append(slowI2C);
         result.append(')');

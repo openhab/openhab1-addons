@@ -58,8 +58,8 @@ import com.tinkerforge.TimeoutException;
  * <ul>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getSensorValue <em>Sensor
  * Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getLogger <em>Logger</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getLogger
+ * <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#isPoll <em>Poll</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getEnabledA <em>Enabled
@@ -75,8 +75,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getDeviceIdentifier
  * <em>Device Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getName <em>Name</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getBrickd <em>Brickd</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getBrickd
+ * <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getTfConfig <em>Tf
  * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletAnalogOutV2Impl#getMinValue <em>Min
@@ -1723,7 +1723,7 @@ public class MBrickletAnalogOutV2Impl extends MinimalEObjectImpl.Container imple
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (sensorValue: ");
         result.append(sensorValue);
         result.append(", logger: ");

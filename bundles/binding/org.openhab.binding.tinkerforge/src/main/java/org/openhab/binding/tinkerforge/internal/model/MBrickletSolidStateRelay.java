@@ -24,8 +24,7 @@ import com.tinkerforge.BrickletSolidStateRelay;
  * </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletSolidStateRelay()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletSolidStateRelay>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletSolidStateRelay&gt;
  *        org.openhab.binding.tinkerforge.internal.model.MSwitchActor"
  * @generated
  */

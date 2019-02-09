@@ -59,8 +59,8 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getTfConfig <em>Tf Config</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getDeviceType <em>Device Type</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.RotaryEncoderImpl#getDeviceType <em>Device
+ * Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -1014,7 +1014,7 @@ public class RotaryEncoderImpl extends MinimalEObjectImpl.Container implements R
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

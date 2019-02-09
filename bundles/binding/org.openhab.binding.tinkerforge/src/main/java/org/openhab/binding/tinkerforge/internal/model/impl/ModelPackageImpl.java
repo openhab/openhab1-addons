@@ -1927,6 +1927,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @since 1.3.0
      * @generated
      */
     private EDataType mipConnectionEDataType = null;
@@ -2498,7 +2499,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
     /**
      * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
-     * 
+     *
      * <p>
      * This method is used to initialize {@link ModelPackage#eINSTANCE} when that field is accessed.
      * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
@@ -2515,9 +2516,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
             return (ModelPackage) EPackage.Registry.INSTANCE.getEPackage(ModelPackage.eNS_URI);
 
         // Obtain or create and register package
-        ModelPackageImpl theModelPackage = (ModelPackageImpl) (EPackage.Registry.INSTANCE
-                .get(eNS_URI) instanceof ModelPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI)
-                        : new ModelPackageImpl());
+        Object registeredModelPackage = EPackage.Registry.INSTANCE.get(eNS_URI);
+        ModelPackageImpl theModelPackage = registeredModelPackage instanceof ModelPackageImpl
+                ? (ModelPackageImpl) registeredModelPackage
+                : new ModelPackageImpl();
 
         isInited = true;
 
@@ -9716,6 +9718,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @since 1.3.0
      * @generated
      */
     @Override

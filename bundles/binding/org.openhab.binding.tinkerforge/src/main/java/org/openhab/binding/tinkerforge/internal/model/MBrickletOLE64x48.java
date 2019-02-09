@@ -24,11 +24,9 @@ import com.tinkerforge.BrickletOLED64x48;
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletOLE64x48()
  * @model superTypes="org.openhab.binding.tinkerforge.internal.model.OLEDBricklet
- *        org.openhab.binding.tinkerforge.internal.model.MDevice
- *        <org.openhab.binding.tinkerforge.internal.model.TinkerBrickletOLED64x48>
+ *        org.openhab.binding.tinkerforge.internal.model.MDevice&lt;org.openhab.binding.tinkerforge.internal.model.TinkerBrickletOLED64x48&gt;
  *        org.openhab.binding.tinkerforge.internal.model.MTextActor
- *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer
- *        <org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer&lt;org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration&gt;"
  * @generated
  */
 public interface MBrickletOLE64x48
@@ -42,7 +40,7 @@ public interface MBrickletOLE64x48
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     *
+     * 
      * @return the value of the '<em>Device Type</em>' attribute.
      * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMBrickletOLE64x48_DeviceType()
      * @model default="bricklet_oled64x48" unique="false" changeable="false"

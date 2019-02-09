@@ -50,22 +50,22 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSubId <em>Sub Id</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getCallbackPeriod <em>Callback
  * Period</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getTfConfig <em>Tf Config</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getDeviceType <em>Device
  * Type</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getThreshold <em>Threshold</em>}
- * </li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSensorNum <em>Sensor Num</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getThreshold
+ * <em>Threshold</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.Dual020mADeviceImpl#getSensorNum <em>Sensor
+ * Num</em>}</li>
  * </ul>
  *
  * @generated
@@ -1119,7 +1119,7 @@ public class Dual020mADeviceImpl extends MinimalEObjectImpl.Container implements
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
         result.append(logger);
         result.append(", uid: ");

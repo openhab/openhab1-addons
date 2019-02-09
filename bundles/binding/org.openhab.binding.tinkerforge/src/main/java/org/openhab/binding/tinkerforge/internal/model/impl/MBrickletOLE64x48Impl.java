@@ -51,29 +51,29 @@ import com.tinkerforge.TimeoutException;
  * Prefix</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getPositionSuffix <em>Position
  * Suffix</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getContrast <em>Contrast</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getContrast
+ * <em>Contrast</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#isInvert <em>Invert</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getEnabledA <em>Enabled A</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getEnabledA <em>Enabled
+ * A</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getIpConnection <em>Ip
  * Connection</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getConnectedUid <em>Connected
  * Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getPosition <em>Position</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getPosition
+ * <em>Position</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getDeviceIdentifier <em>Device
  * Identifier</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getName <em>Name</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getBrickd <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getText <em>Text</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getTfConfig <em>Tf Config</em>}
- * </li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getTfConfig <em>Tf
+ * Config</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletOLE64x48Impl#getDeviceType <em>Device
  * Type</em>}</li>
  * </ul>
@@ -85,7 +85,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getPositionPrefix() <em>Position Prefix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionPrefix()
      * @generated
      * @ordered
@@ -96,7 +96,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getPositionPrefix() <em>Position Prefix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionPrefix()
      * @generated
      * @ordered
@@ -107,7 +107,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getPositionSuffix() <em>Position Suffix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionSuffix()
      * @generated
      * @ordered
@@ -118,7 +118,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getPositionSuffix() <em>Position Suffix</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPositionSuffix()
      * @generated
      * @ordered
@@ -129,7 +129,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getContrast() <em>Contrast</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getContrast()
      * @generated
      * @ordered
@@ -140,7 +140,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getContrast() <em>Contrast</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getContrast()
      * @generated
      * @ordered
@@ -151,7 +151,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #isInvert() <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isInvert()
      * @generated
      * @ordered
@@ -166,7 +166,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #isInvert() <em>Invert</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isInvert()
      * @generated
      * @ordered
@@ -177,7 +177,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -188,7 +188,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -199,7 +199,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -210,7 +210,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -221,7 +221,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -232,7 +232,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -243,7 +243,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -254,7 +254,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -265,7 +265,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getTinkerforgeDevice() <em>Tinkerforge Device</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTinkerforgeDevice()
      * @generated
      * @ordered
@@ -276,7 +276,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -287,7 +287,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getIpConnection()
      * @generated
      * @ordered
@@ -298,7 +298,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -309,7 +309,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getConnectedUid() <em>Connected Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getConnectedUid()
      * @generated
      * @ordered
@@ -320,7 +320,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPosition()
      * @generated
      * @ordered
@@ -331,7 +331,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getPosition() <em>Position</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getPosition()
      * @generated
      * @ordered
@@ -342,7 +342,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -353,7 +353,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getDeviceIdentifier() <em>Device Identifier</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceIdentifier()
      * @generated
      * @ordered
@@ -364,7 +364,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getName()
      * @generated
      * @ordered
@@ -375,7 +375,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getName()
      * @generated
      * @ordered
@@ -386,7 +386,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getText() <em>Text</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getText()
      * @generated
      * @ordered
@@ -397,7 +397,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getText() <em>Text</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getText()
      * @generated
      * @ordered
@@ -408,7 +408,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getTfConfig()
      * @generated
      * @ordered
@@ -419,7 +419,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -430,7 +430,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -440,7 +440,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MBrickletOLE64x48Impl() {
@@ -450,7 +450,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -461,7 +461,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -472,23 +472,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -499,22 +498,21 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__UID, oldUid, uid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -525,23 +523,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -552,23 +549,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -579,23 +575,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setTinkerforgeDevice(BrickletOLED64x48 newTinkerforgeDevice) {
         BrickletOLED64x48 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__TINKERFORGE_DEVICE,
                     oldTinkerforgeDevice, tinkerforgeDevice));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -606,23 +601,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setIpConnection(IPConnection newIpConnection) {
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__IP_CONNECTION,
                     oldIpConnection, ipConnection));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -633,23 +627,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setConnectedUid(String newConnectedUid) {
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -660,23 +653,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPosition(char newPosition) {
         char oldPosition = position;
         position = newPosition;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__POSITION,
                     oldPosition, position));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -687,23 +679,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setDeviceIdentifier(int newDeviceIdentifier) {
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__DEVICE_IDENTIFIER,
                     oldDeviceIdentifier, deviceIdentifier));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -714,50 +705,47 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__NAME, oldName,
                     name));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLE6_4X48__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLE6_4X48__BRICKD)
             return null;
-        }
         return (MBrickd) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickd basicGetBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLE6_4X48__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_OLE6_4X48__BRICKD)
             return null;
-        }
         return (MBrickd) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs) {
@@ -768,38 +756,33 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MBRICKLET_OLE6_4X48__BRICKD && newBrickd != null)) {
-            if (EcoreUtil.isAncestor(this, newBrickd)) {
+            if (EcoreUtil.isAncestor(this, newBrickd))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newBrickd != null) {
+            if (newBrickd != null)
                 msgs = ((InternalEObject) newBrickd).eInverseAdd(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class,
                         msgs);
-            }
             msgs = basicSetBrickd(newBrickd, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__BRICKD, newBrickd,
                     newBrickd));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -810,23 +793,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setText(String newText) {
         String oldText = text;
         text = newText;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__TEXT, oldText,
                     text));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -837,7 +819,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetTfConfig(BrickletOLEDConfiguration newTfConfig, NotificationChain msgs) {
@@ -846,11 +828,10 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
         if (eNotificationRequired()) {
             ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
                     ModelPackage.MBRICKLET_OLE6_4X48__TF_CONFIG, oldTfConfig, newTfConfig);
-            if (msgs == null) {
+            if (msgs == null)
                 msgs = notification;
-            } else {
+            else
                 msgs.add(notification);
-            }
         }
         return msgs;
     }
@@ -858,35 +839,31 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setTfConfig(BrickletOLEDConfiguration newTfConfig) {
         if (newTfConfig != tfConfig) {
             NotificationChain msgs = null;
-            if (tfConfig != null) {
+            if (tfConfig != null)
                 msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_OLE6_4X48__TF_CONFIG, null, msgs);
-            }
-            if (newTfConfig != null) {
+            if (newTfConfig != null)
                 msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
                         EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_OLE6_4X48__TF_CONFIG, null, msgs);
-            }
             msgs = basicSetTfConfig(newTfConfig, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__TF_CONFIG,
                     newTfConfig, newTfConfig));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -897,7 +874,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -908,23 +885,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPositionPrefix(String newPositionPrefix) {
         String oldPositionPrefix = positionPrefix;
         positionPrefix = newPositionPrefix;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__POSITION_PREFIX,
                     oldPositionPrefix, positionPrefix));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -935,23 +911,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPositionSuffix(String newPositionSuffix) {
         String oldPositionSuffix = positionSuffix;
         positionSuffix = newPositionSuffix;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__POSITION_SUFFIX,
                     oldPositionSuffix, positionSuffix));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -962,23 +937,22 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setContrast(short newContrast) {
         short oldContrast = contrast;
         contrast = newContrast;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__CONTRAST,
                     oldContrast, contrast));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -989,17 +963,16 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setInvert(boolean newInvert) {
         boolean oldInvert = invert;
         invert = newInvert;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_OLE6_4X48__INVERT, oldInvert,
                     invert));
-        }
     }
 
     /**
@@ -1075,7 +1048,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1088,7 +1061,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1175,16 +1148,15 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MBRICKLET_OLE6_4X48__BRICKD:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -1193,7 +1165,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1210,7 +1182,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1225,7 +1197,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1260,9 +1232,8 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
             case ModelPackage.MBRICKLET_OLE6_4X48__NAME:
                 return getName();
             case ModelPackage.MBRICKLET_OLE6_4X48__BRICKD:
-                if (resolve) {
+                if (resolve)
                     return getBrickd();
-                }
                 return basicGetBrickd();
             case ModelPackage.MBRICKLET_OLE6_4X48__TEXT:
                 return getText();
@@ -1277,7 +1248,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1341,7 +1312,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1405,7 +1376,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1458,7 +1429,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1519,7 +1490,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1580,7 +1551,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1623,7 +1594,7 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -1664,16 +1635,15 @@ public class MBrickletOLE64x48Impl extends MinimalEObjectImpl.Container implemen
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (positionPrefix: ");
         result.append(positionPrefix);
         result.append(", positionSuffix: ");

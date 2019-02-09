@@ -292,7 +292,7 @@ public class TFThermocoupleConfigurationImpl extends TFBaseConfigurationImpl imp
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (averaging: ");
         result.append(averaging);
         result.append(", thermocoupleType: ");

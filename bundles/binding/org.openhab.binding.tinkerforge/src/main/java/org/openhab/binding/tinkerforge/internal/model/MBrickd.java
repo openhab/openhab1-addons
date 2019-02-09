@@ -349,7 +349,8 @@ public interface MBrickd extends EObject {
 
     /**
      * Returns the value of the '<em><b>Mdevices</b></em>' containment reference list.
-     * The list contents are of type {@link org.openhab.binding.tinkerforge.internal.model.MDevice}&lt;?>.
+     * The list contents are of type
+     * {@link org.openhab.binding.tinkerforge.internal.model.MDevice}<code>&lt;?&gt;</code>.
      * It is bidirectional and its opposite is '{@link org.openhab.binding.tinkerforge.internal.model.MDevice#getBrickd
      * <em>Brickd</em>}'.
      * <!-- begin-user-doc -->

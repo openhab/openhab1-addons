@@ -39,14 +39,11 @@ import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
  *        </ul>
  *
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getMServo()
- * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor
- *        <org.openhab.binding.tinkerforge.internal.model.MDecimalValue>
+ * @model superTypes="org.openhab.binding.tinkerforge.internal.model.MSensor&lt;org.openhab.binding.tinkerforge.internal.model.MDecimalValue&gt;
  *        org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor
- *        org.openhab.binding.tinkerforge.internal.model.MSubDevice
- *        <org.openhab.binding.tinkerforge.internal.model.MBrickServo>
+ *        org.openhab.binding.tinkerforge.internal.model.MSubDevice&lt;org.openhab.binding.tinkerforge.internal.model.MBrickServo&gt;
  *        org.openhab.binding.tinkerforge.internal.model.MoveActor
- *        org.openhab.binding.tinkerforge.internal.model.SetPointActor
- *        <org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration>"
+ *        org.openhab.binding.tinkerforge.internal.model.SetPointActor&lt;org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration&gt;"
  * @generated
  */
 public interface MServo extends MSensor<DecimalValue>, ProgrammableSwitchActor, MSubDevice<MBrickServo>, MoveActor,

@@ -377,8 +377,7 @@ public class OHTFDeviceImpl<TFC extends TFConfig, IDS extends Enum> extends Mini
     public boolean isValidSubId(final String subId) {
         EList<IDS> _subDeviceIds = this.getSubDeviceIds();
         for (final IDS sid : _subDeviceIds) {
-            String _string = sid.toString();
-            boolean _equalsIgnoreCase = _string.equalsIgnoreCase(subId);
+            boolean _equalsIgnoreCase = sid.toString().equalsIgnoreCase(subId);
             if (_equalsIgnoreCase) {
                 return true;
             }
@@ -578,7 +577,7 @@ public class OHTFDeviceImpl<TFC extends TFConfig, IDS extends Enum> extends Mini
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (uid: ");
         result.append(uid);
         result.append(", subid: ");

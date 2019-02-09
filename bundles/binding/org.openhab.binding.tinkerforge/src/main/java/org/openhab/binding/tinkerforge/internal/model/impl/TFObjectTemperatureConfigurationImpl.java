@@ -25,8 +25,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfigu
  *        The following features are implemented:
  *        </p>
  *        <ul>
- *        <li>
- *        {@link org.openhab.binding.tinkerforge.internal.model.impl.TFObjectTemperatureConfigurationImpl#getEmissivity
+ *        <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.TFObjectTemperatureConfigurationImpl#getEmissivity
  *        <em>Emissivity</em>}</li>
  *        </ul>
  *
@@ -176,7 +175,7 @@ public class TFObjectTemperatureConfigurationImpl extends TFBaseConfigurationImp
         if (eIsProxy())
             return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
+        StringBuilder result = new StringBuilder(super.toString());
         result.append(" (emissivity: ");
         result.append(emissivity);
         result.append(')');

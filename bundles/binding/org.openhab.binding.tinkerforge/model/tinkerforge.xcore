@@ -8,7 +8,7 @@
  */
 
 
-@GenModel(literalsInterface="true", loadInitialization="false", adapterFactory="false", updateClasspath="false", codeFormatting="true", commentFormatting="true", modelDirectory="/org.openhab.binding.tinkerforge/src/main/java")
+@GenModel(literalsInterface="true", loadInitialization="false", adapterFactory="false", updateClasspath="false", codeFormatting="true", commentFormatting="true", modelDirectory="/org.openhab.binding.tinkerforge1/src/main/java")
 package org.openhab.binding.tinkerforge.internal.model
 
 import com.tinkerforge.Device
