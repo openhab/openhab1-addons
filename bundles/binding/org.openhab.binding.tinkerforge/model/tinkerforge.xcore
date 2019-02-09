@@ -1096,12 +1096,11 @@ class MBrickletOLE64x48 extends OLEDBricklet, MDevice<TinkerBrickletOLED64x48>, 
     readonly String deviceType = "bricklet_oled64x48"
 }
 
-//todo andre
 class MBrickletRGBLEDButton extends MSensor<SwitchState>, MDevice<TinkerBrickletRGBLEDButton>, MSubDeviceHolder<MRGBLEDButtonLED>{    
     readonly String deviceType = "button"        
 }
 
-class MRGBLEDButtonLED extends MSubDevice<MBrickletRGBLEDButton>{
+class MRGBLEDButtonLED extends SimpleColorActor, MSubDevice<MBrickletRGBLEDButton>{
     readonly String deviceType = "led"    
 }
 

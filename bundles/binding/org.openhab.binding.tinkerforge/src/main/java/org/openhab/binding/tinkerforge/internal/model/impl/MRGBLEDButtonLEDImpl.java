@@ -2,6 +2,7 @@
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,12 +14,21 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletRGBLEDButton;
 import org.openhab.binding.tinkerforge.internal.model.MRGBLEDButtonLED;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
+import org.openhab.core.library.types.HSBType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tinkerforge.BrickletRGBLEDButton;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * The following features are implemented:
  * </p>
  * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MRGBLEDButtonLEDImpl#getColor <em>Color</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MRGBLEDButtonLEDImpl#getLogger <em>Logger</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MRGBLEDButtonLEDImpl#getUid <em>Uid</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MRGBLEDButtonLEDImpl#isPoll <em>Poll</em>}</li>
@@ -42,6 +53,28 @@ import org.slf4j.LoggerFactory;
  * @generated
  */
 public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implements MRGBLEDButtonLED {
+    /**
+     * The default value of the '{@link #getColor() <em>Color</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getColor()
+     * @generated
+     * @ordered
+     */
+    protected static final HSBValue COLOR_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getColor() <em>Color</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getColor()
+     * @generated
+     * @ordered
+     */
+    protected HSBValue color = COLOR_EDEFAULT;
+
     /**
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -193,6 +226,33 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
     @Override
     protected EClass eStaticClass() {
         return ModelPackage.Literals.MRGBLED_BUTTON_LED;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public HSBValue getColor() {
+        return color;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setColor(HSBValue newColor) {
+        HSBValue oldColor = color;
+        color = newColor;
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MRGBLED_BUTTON_LED__COLOR, oldColor,
+                    color));
+        }
     }
 
     /**
@@ -419,9 +479,6 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
     public void init() {
         setEnabledA(new AtomicBoolean());
         logger = LoggerFactory.getLogger(MRGBLEDButtonLEDImpl.class);
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        // throw new UnsupportedOperationException();
     }
 
     /**
@@ -432,9 +489,23 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public void enable() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        // throw new UnsupportedOperationException();
+        setColor(new HSBValue(HSBType.BLACK));
+
+        try {
+            BrickletRGBLEDButton.Color color = getMbrick().getTinkerforgeDevice().getColor();
+            setColor(getHSBValueFromBrickletColor(color));
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+        }
+    }
+
+    /*
+     * @generated NOT
+     */
+    private static HSBValue getHSBValueFromBrickletColor(BrickletRGBLEDButton.Color color) {
+        return new HSBValue(new HSBType(new Color(color.red, color.green, color.blue)));
     }
 
     /**
@@ -445,9 +516,32 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
      */
     @Override
     public void disable() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        // throw new UnsupportedOperationException();
+
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void setSelectedColor(HSBType color) {
+        Color rgb = color.toColor();
+        int red = rgb.getRed();
+        int green = rgb.getGreen();
+        int blue = rgb.getBlue();
+
+        logger.debug("rgb is: {}:{}:{}", red, green, blue);
+
+        try {
+            getMbrick().getTinkerforgeDevice().setColor(red, green, blue);
+            setColor(new HSBValue(color));
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+        }
     }
 
     /**
@@ -508,6 +602,8 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
+            case ModelPackage.MRGBLED_BUTTON_LED__COLOR:
+                return getColor();
             case ModelPackage.MRGBLED_BUTTON_LED__LOGGER:
                 return getLogger();
             case ModelPackage.MRGBLED_BUTTON_LED__UID:
@@ -538,6 +634,9 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
+            case ModelPackage.MRGBLED_BUTTON_LED__COLOR:
+                setColor((HSBValue) newValue);
+                return;
             case ModelPackage.MRGBLED_BUTTON_LED__LOGGER:
                 setLogger((Logger) newValue);
                 return;
@@ -569,6 +668,9 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
+            case ModelPackage.MRGBLED_BUTTON_LED__COLOR:
+                setColor(COLOR_EDEFAULT);
+                return;
             case ModelPackage.MRGBLED_BUTTON_LED__LOGGER:
                 setLogger(LOGGER_EDEFAULT);
                 return;
@@ -600,6 +702,8 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
+            case ModelPackage.MRGBLED_BUTTON_LED__COLOR:
+                return COLOR_EDEFAULT == null ? color != null : !COLOR_EDEFAULT.equals(color);
             case ModelPackage.MRGBLED_BUTTON_LED__LOGGER:
                 return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
             case ModelPackage.MRGBLED_BUTTON_LED__UID:
@@ -625,6 +729,105 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
      * @generated
      */
     @Override
+    public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+        if (baseClass == MBaseDevice.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.MRGBLED_BUTTON_LED__LOGGER:
+                    return ModelPackage.MBASE_DEVICE__LOGGER;
+                case ModelPackage.MRGBLED_BUTTON_LED__UID:
+                    return ModelPackage.MBASE_DEVICE__UID;
+                case ModelPackage.MRGBLED_BUTTON_LED__POLL:
+                    return ModelPackage.MBASE_DEVICE__POLL;
+                case ModelPackage.MRGBLED_BUTTON_LED__ENABLED_A:
+                    return ModelPackage.MBASE_DEVICE__ENABLED_A;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MSubDevice.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.MRGBLED_BUTTON_LED__SUB_ID:
+                    return ModelPackage.MSUB_DEVICE__SUB_ID;
+                case ModelPackage.MRGBLED_BUTTON_LED__MBRICK:
+                    return ModelPackage.MSUB_DEVICE__MBRICK;
+                default:
+                    return -1;
+            }
+        }
+        return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+        if (baseClass == MBaseDevice.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.MBASE_DEVICE__LOGGER:
+                    return ModelPackage.MRGBLED_BUTTON_LED__LOGGER;
+                case ModelPackage.MBASE_DEVICE__UID:
+                    return ModelPackage.MRGBLED_BUTTON_LED__UID;
+                case ModelPackage.MBASE_DEVICE__POLL:
+                    return ModelPackage.MRGBLED_BUTTON_LED__POLL;
+                case ModelPackage.MBASE_DEVICE__ENABLED_A:
+                    return ModelPackage.MRGBLED_BUTTON_LED__ENABLED_A;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MSubDevice.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.MSUB_DEVICE__SUB_ID:
+                    return ModelPackage.MRGBLED_BUTTON_LED__SUB_ID;
+                case ModelPackage.MSUB_DEVICE__MBRICK:
+                    return ModelPackage.MRGBLED_BUTTON_LED__MBRICK;
+                default:
+                    return -1;
+            }
+        }
+        return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
+        if (baseClass == MBaseDevice.class) {
+            switch (baseOperationID) {
+                case ModelPackage.MBASE_DEVICE___INIT:
+                    return ModelPackage.MRGBLED_BUTTON_LED___INIT;
+                case ModelPackage.MBASE_DEVICE___ENABLE:
+                    return ModelPackage.MRGBLED_BUTTON_LED___ENABLE;
+                case ModelPackage.MBASE_DEVICE___DISABLE:
+                    return ModelPackage.MRGBLED_BUTTON_LED___DISABLE;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MSubDevice.class) {
+            switch (baseOperationID) {
+                default:
+                    return -1;
+            }
+        }
+        return super.eDerivedOperationID(baseOperationID, baseClass);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
         switch (operationID) {
             case ModelPackage.MRGBLED_BUTTON_LED___INIT:
@@ -635,6 +838,9 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
                 return null;
             case ModelPackage.MRGBLED_BUTTON_LED___DISABLE:
                 disable();
+                return null;
+            case ModelPackage.MRGBLED_BUTTON_LED___SET_SELECTED_COLOR__HSBTYPE:
+                setSelectedColor((HSBType) arguments.get(0));
                 return null;
         }
         return super.eInvoke(operationID, arguments);
@@ -653,7 +859,9 @@ public class MRGBLEDButtonLEDImpl extends MinimalEObjectImpl.Container implement
         }
 
         StringBuilder result = new StringBuilder(super.toString());
-        result.append(" (logger: ");
+        result.append(" (color: ");
+        result.append(color);
+        result.append(", logger: ");
         result.append(logger);
         result.append(", uid: ");
         result.append(uid);

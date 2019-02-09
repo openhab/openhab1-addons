@@ -18,7 +18,7 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @model
  * @generated
  */
-public interface MRGBLEDButtonLED extends MSubDevice<MBrickletRGBLEDButton> {
+public interface MRGBLEDButtonLED extends SimpleColorActor, MSubDevice<MBrickletRGBLEDButton> {
     /**
      * Returns the value of the '<em><b>Device Type</b></em>' attribute.
      * The default value is <code>"led"</code>.

@@ -26740,6 +26740,16 @@ public interface ModelPackage extends EPackage {
     int MRGBLED_BUTTON_LED = 154;
 
     /**
+     * The feature id for the '<em><b>Color</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MRGBLED_BUTTON_LED__COLOR = SIMPLE_COLOR_ACTOR__COLOR;
+
+    /**
      * The feature id for the '<em><b>Logger</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -26747,7 +26757,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED__LOGGER = MSUB_DEVICE__LOGGER;
+    int MRGBLED_BUTTON_LED__LOGGER = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Uid</b></em>' attribute.
@@ -26757,7 +26767,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED__UID = MSUB_DEVICE__UID;
+    int MRGBLED_BUTTON_LED__UID = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Poll</b></em>' attribute.
@@ -26767,7 +26777,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED__POLL = MSUB_DEVICE__POLL;
+    int MRGBLED_BUTTON_LED__POLL = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Enabled A</b></em>' attribute.
@@ -26777,7 +26787,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED__ENABLED_A = MSUB_DEVICE__ENABLED_A;
+    int MRGBLED_BUTTON_LED__ENABLED_A = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 3;
 
     /**
      * The feature id for the '<em><b>Sub Id</b></em>' attribute.
@@ -26787,7 +26797,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED__SUB_ID = MSUB_DEVICE__SUB_ID;
+    int MRGBLED_BUTTON_LED__SUB_ID = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 4;
 
     /**
      * The feature id for the '<em><b>Mbrick</b></em>' container reference.
@@ -26797,7 +26807,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED__MBRICK = MSUB_DEVICE__MBRICK;
+    int MRGBLED_BUTTON_LED__MBRICK = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 5;
 
     /**
      * The feature id for the '<em><b>Device Type</b></em>' attribute.
@@ -26807,7 +26817,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED__DEVICE_TYPE = MSUB_DEVICE_FEATURE_COUNT + 0;
+    int MRGBLED_BUTTON_LED__DEVICE_TYPE = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 6;
 
     /**
      * The number of structural features of the '<em>MRGBLED Button LED</em>' class.
@@ -26817,7 +26827,17 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED_FEATURE_COUNT = MSUB_DEVICE_FEATURE_COUNT + 1;
+    int MRGBLED_BUTTON_LED_FEATURE_COUNT = SIMPLE_COLOR_ACTOR_FEATURE_COUNT + 7;
+
+    /**
+     * The operation id for the '<em>Set Selected Color</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int MRGBLED_BUTTON_LED___SET_SELECTED_COLOR__HSBTYPE = SIMPLE_COLOR_ACTOR___SET_SELECTED_COLOR__HSBTYPE;
 
     /**
      * The operation id for the '<em>Init</em>' operation.
@@ -26827,7 +26847,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED___INIT = MSUB_DEVICE___INIT;
+    int MRGBLED_BUTTON_LED___INIT = SIMPLE_COLOR_ACTOR_OPERATION_COUNT + 0;
 
     /**
      * The operation id for the '<em>Enable</em>' operation.
@@ -26837,7 +26857,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED___ENABLE = MSUB_DEVICE___ENABLE;
+    int MRGBLED_BUTTON_LED___ENABLE = SIMPLE_COLOR_ACTOR_OPERATION_COUNT + 1;
 
     /**
      * The operation id for the '<em>Disable</em>' operation.
@@ -26847,7 +26867,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED___DISABLE = MSUB_DEVICE___DISABLE;
+    int MRGBLED_BUTTON_LED___DISABLE = SIMPLE_COLOR_ACTOR_OPERATION_COUNT + 2;
 
     /**
      * The number of operations of the '<em>MRGBLED Button LED</em>' class.
@@ -26857,7 +26877,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MRGBLED_BUTTON_LED_OPERATION_COUNT = MSUB_DEVICE_OPERATION_COUNT + 0;
+    int MRGBLED_BUTTON_LED_OPERATION_COUNT = SIMPLE_COLOR_ACTOR_OPERATION_COUNT + 3;
 
     /**
      * The meta object id for the '{@link org.openhab.binding.tinkerforge.internal.model.impl.MLCD20x4BacklightImpl

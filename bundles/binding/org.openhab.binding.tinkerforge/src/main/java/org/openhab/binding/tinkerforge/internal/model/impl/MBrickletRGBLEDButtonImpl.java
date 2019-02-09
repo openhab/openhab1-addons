@@ -787,9 +787,9 @@ public class MBrickletRGBLEDButtonImpl extends MinimalEObjectImpl.Container impl
     @Override
     public void enable() {
         tinkerforgeDevice = new BrickletRGBLEDButton(uid, ipConnection);
+        // no need to poll this device
+        setPoll(false);
         tinkerforgeDevice.addButtonStateChangedListener(buttonStateChangedListener);
-
-        // todo andre: anything to do here?
     }
 
     /**
@@ -812,10 +812,11 @@ public class MBrickletRGBLEDButtonImpl extends MinimalEObjectImpl.Container impl
      */
     @Override
     public void fetchSensorValue() {
+        // fetch is called after startup and sets an initial value
         OnOffValue value = OnOffValue.UNDEF;
         try {
-            value = tinkerforgeDevice.getButtonState() == BrickletRGBLEDButton.BUTTON_STATE_PRESSED ? OnOffValue.ON
-                    : OnOffValue.OFF;
+            int state = tinkerforgeDevice.getButtonState();
+            value = state == BrickletRGBLEDButton.BUTTON_STATE_PRESSED ? OnOffValue.ON : OnOffValue.OFF;
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
         } catch (NotConnectedException e) {
