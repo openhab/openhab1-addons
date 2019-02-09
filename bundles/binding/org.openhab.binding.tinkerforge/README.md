@@ -58,6 +58,7 @@ The TinkerForge auto reconnect feature is supported. Furthermore even if the ini
     - [Piezo Speaker Bricklet](#piezo-speaker-bricklet)
     - [PTC Bricklet](#ptc-bricklet)
     - [Remote Switch Bricklet](#remote-switch-bricklet)
+	- [RGB LED Button Bricklet](#rgb-led-button-bricklet)
     - [Rotary Encoder Bricklet](#rotary-encoder-bricklet)
     - [Segment Display 4x7 Bricklet](#segment-display-4x7-bricklet)
     - [Solid State Relay Bricklet](#solid-state-relay-bricklet)
@@ -254,6 +255,8 @@ The following table shows the TinkerForge device, its device type, its subid and
 |PTC Bricklet subdevice||ptc_resistance|x|
 |Remote Switch Bricklet|bricklet_remote_switch|configurable||
 |Remote Switch Bricklet sub devices|remote_switch_a or remote_switch_b or remote_switch_c|from configuration||
+|RGB LED Button Bricklet|||x|
+|RGB LED Button Bricklet subdevice||led||
 |Rotary Encoder Bricklet||||
 |Rotary Encoder Bricklet subdevice|encoder|rotary_encoder|x|
 |Rotary Encoder Bricklet subdevice|button|rotary_encoder_button|x|
@@ -3001,6 +3004,21 @@ sitemap tf label="RemoteSwitch"
 
 ---
 [Table of Contents](#table-of-contents)
+
+### RGB LED Button Bricklet
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/de/shop/rgb-led-button-bricklet.html)
+
+#### Binding properties:
+
+* There is one sub device: led.
+* no configuration in tinkerforge.cfg needed
+
+##### Items file entry (e.g. tinkerforge.items):
+```
+Switch led_button  "RGB LED Button" (gTF)  { tinkerforge="uid=Dqp" } 
+Color  led_color   "Color"          (gTF)  { tinkerforge="uid=Dqp, subid=led"}
+``` 
 
 ### Rotary Encoder Bricklet
 
