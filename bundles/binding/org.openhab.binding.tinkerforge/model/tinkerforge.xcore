@@ -1100,7 +1100,7 @@ class MBrickletRGBLEDButton extends MSensor<SwitchState>, MDevice<TinkerBricklet
     readonly String deviceType = "button"        
 }
 
-class MRGBLEDButtonLED extends SimpleColorActor, MSubDevice<MBrickletRGBLEDButton>{
+class MRGBLEDButtonLED extends SimpleColorActor, MSwitchActor, MSubDevice<MBrickletRGBLEDButton>{
     readonly String deviceType = "led"    
 }
 

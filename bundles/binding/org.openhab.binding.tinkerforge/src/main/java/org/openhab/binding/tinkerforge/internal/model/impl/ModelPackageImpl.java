@@ -12669,6 +12669,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mBrickletRGBLEDButtonEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getSimpleColorActor());
         mrgbledButtonLEDEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSwitchActor());
+        mrgbledButtonLEDEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMSubDevice());
         g2 = createEGenericType(this.getMBrickletRGBLEDButton());
         g1.getETypeArguments().add(g2);
