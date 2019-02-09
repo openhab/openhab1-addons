@@ -77,6 +77,7 @@ import com.tinkerforge.BrickletOLED128x64;
 import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
+import com.tinkerforge.BrickletRGBLEDButton;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletRotaryEncoder;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
@@ -1641,6 +1642,30 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mBrickletRGBLEDButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mrgbledButtonLEDEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mlcd20x4BacklightEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass mTextActorEClass = null;
 
     /**
@@ -1650,14 +1675,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass mlcdSubDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mlcd20x4BacklightEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2339,6 +2356,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType tinkerBrickletAnalogOutV2EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletRGBLEDButtonEDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -9226,6 +9251,66 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletRGBLEDButton() {
+        return mBrickletRGBLEDButtonEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletRGBLEDButton_DeviceType() {
+        return (EAttribute) mBrickletRGBLEDButtonEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMRGBLEDButtonLED() {
+        return mrgbledButtonLEDEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMRGBLEDButtonLED_DeviceType() {
+        return (EAttribute) mrgbledButtonLEDEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMLCD20x4Backlight() {
+        return mlcd20x4BacklightEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMLCD20x4Backlight_DeviceType() {
+        return (EAttribute) mlcd20x4BacklightEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EClass getMTextActor() {
         return mTextActorEClass;
@@ -9261,28 +9346,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     @Override
     public EClass getMLCDSubDevice() {
         return mlcdSubDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMLCD20x4Backlight() {
-        return mlcd20x4BacklightEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMLCD20x4Backlight_DeviceType() {
-        return (EAttribute) mlcd20x4BacklightEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -10286,6 +10349,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getTinkerBrickletRGBLEDButton() {
+        return tinkerBrickletRGBLEDButtonEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getHSBType() {
         return hsbTypeEDataType;
@@ -11093,6 +11166,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mBrickletOLE64x48EClass = createEClass(MBRICKLET_OLE6_4X48);
         createEAttribute(mBrickletOLE64x48EClass, MBRICKLET_OLE6_4X48__DEVICE_TYPE);
 
+        mBrickletRGBLEDButtonEClass = createEClass(MBRICKLET_RGBLED_BUTTON);
+        createEAttribute(mBrickletRGBLEDButtonEClass, MBRICKLET_RGBLED_BUTTON__DEVICE_TYPE);
+
+        mrgbledButtonLEDEClass = createEClass(MRGBLED_BUTTON_LED);
+        createEAttribute(mrgbledButtonLEDEClass, MRGBLED_BUTTON_LED__DEVICE_TYPE);
+
         mlcd20x4BacklightEClass = createEClass(MLCD2_0X4_BACKLIGHT);
         createEAttribute(mlcd20x4BacklightEClass, MLCD2_0X4_BACKLIGHT__DEVICE_TYPE);
 
@@ -11368,6 +11447,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletUVLightEDataType = createEDataType(TINKER_BRICKLET_UV_LIGHT);
         tinkerBrickletCO2EDataType = createEDataType(TINKER_BRICKLET_CO2);
         tinkerBrickletAnalogOutV2EDataType = createEDataType(TINKER_BRICKLET_ANALOG_OUT_V2);
+        tinkerBrickletRGBLEDButtonEDataType = createEDataType(TINKER_BRICKLET_RGBLED_BUTTON);
         hsbTypeEDataType = createEDataType(HSB_TYPE);
         upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
         percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -12575,6 +12655,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getBrickletOLEDConfiguration());
         g1.getETypeArguments().add(g2);
         mBrickletOLE64x48EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getSwitchState());
+        g1.getETypeArguments().add(g2);
+        mBrickletRGBLEDButtonEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletRGBLEDButton());
+        g1.getETypeArguments().add(g2);
+        mBrickletRGBLEDButtonEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDeviceHolder());
+        g2 = createEGenericType(this.getMRGBLEDButtonLED());
+        g1.getETypeArguments().add(g2);
+        mBrickletRGBLEDButtonEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDevice());
+        g2 = createEGenericType(this.getMBrickletRGBLEDButton());
+        g1.getETypeArguments().add(g2);
+        mrgbledButtonLEDEClass.getEGenericSuperTypes().add(g1);
         mlcd20x4BacklightEClass.getESuperTypes().add(this.getMInSwitchActor());
         mlcd20x4BacklightEClass.getESuperTypes().add(this.getMLCDSubDevice());
         g1 = createEGenericType(this.getMSensor());
@@ -14114,6 +14210,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 "bricklet_oled64x48", 0, 1, MBrickletOLE64x48.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
                 !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+        initEClass(mBrickletRGBLEDButtonEClass, MBrickletRGBLEDButton.class, "MBrickletRGBLEDButton", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletRGBLEDButton_DeviceType(), theEcorePackage.getEString(), "deviceType", "button", 0,
+                1, MBrickletRGBLEDButton.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mrgbledButtonLEDEClass, MRGBLEDButtonLED.class, "MRGBLEDButtonLED", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMRGBLEDButtonLED_DeviceType(), theEcorePackage.getEString(), "deviceType", "led", 0, 1,
+                MRGBLEDButtonLED.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
         initEClass(mlcd20x4BacklightEClass, MLCD20x4Backlight.class, "MLCD20x4Backlight", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMLCD20x4Backlight_DeviceType(), theEcorePackage.getEString(), "deviceType", "backlight", 0, 1,
@@ -14862,6 +14970,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEDataType(tinkerBrickletCO2EDataType, BrickletCO2.class, "TinkerBrickletCO2", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletAnalogOutV2EDataType, BrickletAnalogOutV2.class, "TinkerBrickletAnalogOutV2",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletRGBLEDButtonEDataType, BrickletRGBLEDButton.class, "TinkerBrickletRGBLEDButton",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE,

@@ -72,6 +72,7 @@ import com.tinkerforge.BrickletUVLight
 import com.tinkerforge.BrickletCO2
 import com.tinkerforge.BrickStepper
 import com.tinkerforge.BrickletAnalogOutV2
+import com.tinkerforge.BrickletRGBLEDButton
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -144,6 +145,7 @@ type TinkerBrickletThermocouple wraps BrickletThermocouple
 type TinkerBrickletUVLight wraps BrickletUVLight
 type TinkerBrickletCO2 wraps BrickletCO2
 type TinkerBrickletAnalogOutV2 wraps BrickletAnalogOutV2
+type TinkerBrickletRGBLEDButton wraps BrickletRGBLEDButton
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -1092,6 +1094,15 @@ class MBrickletOLED128x64 extends OLEDBricklet, MDevice<TinkerBrickletOLED128x64
 class MBrickletOLE64x48 extends OLEDBricklet, MDevice<TinkerBrickletOLED64x48>, MTextActor,
     MTFConfigConsumer<BrickletOLEDConfiguration> {
     readonly String deviceType = "bricklet_oled64x48"
+}
+
+//todo andre
+class MBrickletRGBLEDButton extends MSensor<SwitchState>, MDevice<TinkerBrickletRGBLEDButton>, MSubDeviceHolder<MRGBLEDButtonLED>{    
+    readonly String deviceType = "button"        
+}
+
+class MRGBLEDButtonLED extends MSubDevice<MBrickletRGBLEDButton>{
+    readonly String deviceType = "led"    
 }
 
 class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{

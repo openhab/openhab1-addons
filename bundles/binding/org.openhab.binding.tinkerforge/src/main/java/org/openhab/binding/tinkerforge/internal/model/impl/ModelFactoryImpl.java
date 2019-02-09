@@ -72,6 +72,7 @@ import com.tinkerforge.BrickletOLED128x64;
 import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
+import com.tinkerforge.BrickletRGBLEDButton;
 import com.tinkerforge.BrickletRemoteSwitch;
 import com.tinkerforge.BrickletRotaryEncoder;
 import com.tinkerforge.BrickletSegmentDisplay4x7;
@@ -355,6 +356,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMBrickletOLED128x64();
             case ModelPackage.MBRICKLET_OLE6_4X48:
                 return createMBrickletOLE64x48();
+            case ModelPackage.MBRICKLET_RGBLED_BUTTON:
+                return createMBrickletRGBLEDButton();
+            case ModelPackage.MRGBLED_BUTTON_LED:
+                return createMRGBLEDButtonLED();
             case ModelPackage.MLCD2_0X4_BACKLIGHT:
                 return createMLCD20x4Backlight();
             case ModelPackage.MLCD2_0X4_BUTTON:
@@ -637,6 +642,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletCO2FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_ANALOG_OUT_V2:
                 return createTinkerBrickletAnalogOutV2FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_RGBLED_BUTTON:
+                return createTinkerBrickletRGBLEDButtonFromString(eDataType, initialValue);
             case ModelPackage.HSB_TYPE:
                 return createHSBTypeFromString(eDataType, initialValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -856,6 +863,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletCO2ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_ANALOG_OUT_V2:
                 return convertTinkerBrickletAnalogOutV2ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_RGBLED_BUTTON:
+                return convertTinkerBrickletRGBLEDButtonToString(eDataType, instanceValue);
             case ModelPackage.HSB_TYPE:
                 return convertHSBTypeToString(eDataType, instanceValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -2699,7 +2708,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
+    public MBrickletRGBLEDButton createMBrickletRGBLEDButton() {
+        MBrickletRGBLEDButtonImpl mBrickletRGBLEDButton = new MBrickletRGBLEDButtonImpl();
+        return mBrickletRGBLEDButton;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MRGBLEDButtonLED createMRGBLEDButtonLED() {
+        MRGBLEDButtonLEDImpl mrgbledButtonLED = new MRGBLEDButtonLEDImpl();
+        return mrgbledButtonLED;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public MLCD20x4Backlight createMLCD20x4Backlight() {
         MLCD20x4BacklightImpl mlcd20x4Backlight = new MLCD20x4BacklightImpl();
         return mlcd20x4Backlight;
@@ -4617,6 +4647,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletAnalogOutV2ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletRGBLEDButton createTinkerBrickletRGBLEDButtonFromString(EDataType eDataType, String initialValue) {
+        return (BrickletRGBLEDButton) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletRGBLEDButtonToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

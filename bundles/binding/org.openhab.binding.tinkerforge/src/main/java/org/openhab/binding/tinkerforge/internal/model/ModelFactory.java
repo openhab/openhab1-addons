@@ -1525,6 +1525,26 @@ public interface ModelFactory extends EFactory {
     MBrickletOLE64x48 createMBrickletOLE64x48();
 
     /**
+     * Returns a new object of class '<em>MBricklet RGBLED Button</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet RGBLED Button</em>'.
+     * @generated
+     */
+    MBrickletRGBLEDButton createMBrickletRGBLEDButton();
+
+    /**
+     * Returns a new object of class '<em>MRGBLED Button LED</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MRGBLED Button LED</em>'.
+     * @generated
+     */
+    MRGBLEDButtonLED createMRGBLEDButtonLED();
+
+    /**
      * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
