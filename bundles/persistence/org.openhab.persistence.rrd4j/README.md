@@ -2,7 +2,7 @@
 
 The [rrd4j](https://github.com/rrd4j/rrd4j) Persistence service is based on a round-robin database.
 
-In contrast to a "normal" database such as db4o, a round-robin database does not grow in size - it has a fixed allocated size, which is used. This is accomplished by doing data compression, which means that the older the data is, the less values are available. So while you might have a value every minute for the last 24 hours, you might only have one every day for the last year.
+In contrast to a "normal" database such as db4o, a round-robin database does not grow in size - it has a fixed allocated size, which is used. This is accomplished by doing data compression, which means that the older the data is, the less values are available. So while you might have a value every minute for the last 8 hours, you might only have one every day for the last year.
 
 This service cannot be directly queried, because of the data compression. You could not provide precise answers for all questions. 
 
@@ -26,7 +26,7 @@ This service can be configured in the file `services/rrd4j.cfg`.
 
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
-| `<dsname>`.def |   |           | `<dstype>,<heartbeat>,[<min>|U],[<max>|U],<step>`.  For example, `COUNTER,900,0,U,300` |
+| `<dsname>`.def | |        | `<dstype>,<heartbeat>,[<min>\|U],[<max>\|U],<step>`. For example, `COUNTER,900,0,U,300` |
 | `<dsname>`.archives | |        | `<consolidationfunction>,<xff>,<steps>,<rows>`. For example, `AVERAGE,0.5,1,365:AVERAGE,0.5,7,300` |
 | `<dsname>`.items  |     |      | `<list of items for this dsname>`. For example, `Item1,Item2` |
 
@@ -39,7 +39,10 @@ where:
 - See [Step\(s\)](#steps) for an explanation of `<step>`, `<consolidationfunction>`, `<xff>`, `<steps>`, and `<rows>`.
 - `<list of items for this dsname>` is explained in
 
-Round-robin databases (RRDs) have fixed-length so-called "archives" for storing values. One RRD can have (in general) several datasources and each datasource can have several archives. openHAB only supports one datasource per RRD, which is named DATASOURCE_STATE.
+Round-robin databases (RRDs) have fixed-length so-called "archives" for storing values. 
+One RRD can have (in general) several datasources and each datasource can have several archives. 
+openHAB only supports one datasource per RRD (i.e. per stored item), which is named DATASOURCE_STATE.
+The setup of multiple configurations (with differing .def ,.archives and .items settings) can be used if each item is member of exact one setup only (see example below).
 
 ### Datasource types
 
@@ -63,38 +66,57 @@ Sets the timeintervall(seconds) between consecutive readings.
 - Steps or Granularity (set in `.archives=<consolidationfunction>,<xff>,<steps>,<rows>`
 
 Steps are the number of consecutive readings that are used the create a single entry into the database for this timeintervall.
-The timeintervall covered is calculated by (step x step) seconds.
+The timeintervall covered is calculated by (step x steps) seconds.
 
 Now for the archives: As already said, each datasource can have several archives.
 Think of an archive as a drawer with a fixed number of boxes in it.
-Each (step x step) seconds (the step is globally defined for the RRD, 60s in our example) the most-left box is emptied, the content of all boxes is moved one box to the left and new content is added to the most right box.
+Each (step x steps) seconds (the step is globally defined for the RRD, 60s in our example) the most-left box is emptied, the content of all boxes is moved one box to the left and new content is added to the most right box.
 The "steps" value is defined per archive it is the third parameter in the archive definition.
 The number of boxes is defined as the fourth parameter.
 
 The purpose to have several archives is raised if a different granularity is needed while displaying data for different timespans.
-In the above examples data for each second are saved for the last hour (granularity 1), looking at the last four hours a granularity of 10 (i.e. 10 readings are consolidated to one reading) is used and so forth.
+In the example below data for each minute are saved for the last 8 hours (granularity 1), looking at the last 24 hours a granularity of 10 (i.e. 10 readings are consolidated to one reading) is used and so forth.
 For the first archive (and maybe the only one) a steps-size of one should be used.
 This way a sample is taken after each step.
-In this special case the selection of the consolidation function is of no effect (a single reading is equal to the MAX, MIN, AVERAGE and LAST of this reading).
   
 ### Example
 
-So in the above examples, we have 480 boxes, which each represent the value of one minute (Step is set to 60s, Granularity = 1).
-If more than one value is added to the database within (step x step) seconds (and thus more than one value would be stored in one box), the "consolidation function" is used.
+So in the example shown below, we have 480 boxes, which each represent the value of one minute (Step is set to 60s, Granularity = 1).
+If more than one value is added to the database within (step x steps) seconds (and thus more than one value would be stored in one box), the "consolidation function" is used.
 openHAB uses AVERAGE as default for numeric values, so if you add 20 and 21 within one minute, 20.5 would be stored.
 480 minutes is 8 hours, so we have a 8h with the granularity of one minute.
 
-The same goes for the next archives, for larger time spans, the stored values are less "exact". However, usually you are not interested in the exact temperature for a selected minute two years ago.
+The next archive has 144 boxes, which each represent the value of ten minutes (Step is set to 60s, Granularity = 10).
+1440 minutes is 24 hours, so we have a full day with with the granularity of 10 minutes.
+
+The same goes for following archives, for larger time spans, the stored values are less "exact". 
+However, usually you are not interested in the exact values for a selected minute some time ago.
+
+Note that the period covered for each archive starts with the actual time backwards! 
+No value is stored beyond the timeframe covered by the largest archive!
 
 services/rrd4j.cfg:
 
 ```
-ctr5min.def=COUNTER,900,0,U,300
-ctr5min.archives=AVERAGE,0.5,1,365:AVERAGE,0.5,7,300
-ctr5min.items=Item1,Item2
+ctr24h.def=COUNTER,900,0,U,60
+ctr24h.archives=AVERAGE,0.5,1,480:AVERAGE,0.5,10,144
+ctr24h.items=Item1,Item2
+ctr7d.def=COUNTER,900,0,U,60
+ctr7d.archives=AVERAGE,0.5,1,480:AVERAGE,0.5,10,144:AVERAGE,0.5,60,672
+ctr7d.items=Item3,Item4
 ```
+In case no rrd4j.cfg is created the following default configuration will be used for all items persisted (i.e. all items with an allocated strategy in the rrd4j.persist file).
 
-All item- and event-related configuration is done in the file `persistence/rrd4j.persist`.
+Default rrd4j.cfg
+
+```
+defaultNumeric.def=GAUGE,60,U,U,60
+defaultNumeric.archives=AVERAGE,0.5,1,480:AVERAGE,0.5,4,360:AVERAGE,0.5,14,644:AVERAGE,0.5,60,720:AVERAGE,0.5,720,730:AVERAGE,0.5,10080,520
+```
+The Datasource type is GAUGE, the heartbeat is 60s, MIN and MAX are unlimited and the step size is 60s.
+The archives are (no of boxes / granularity [minutes]): 480 / 1 (8 hrs), 360 / 4 ( 24 hrs), 644 / 14 (6.26 days), 720 / 60 (30 days), 730 / 720 (365 days), 520 / 10080 (10 years).
+
+All item- and event-related configuration is done in the file `persistence/rrd4j.persist`, i.e. openHAB will persit items that are setup in this file with a strategy. 
 
 **IMPORTANT**
 
