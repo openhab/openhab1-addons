@@ -1,5 +1,4 @@
 # ComfoAir Binding
-
 This binding should be compatible with the Zehnder ComfoAir 350 ventilation system. ComfoAir 550 is untested but should supposedly use the same protocol. The same is true for the device WHR930 of StorkAir, G90-380 by Wernig and Santos 370 DC to Paul.
 
 ## Binding Configuration
@@ -255,7 +254,7 @@ then
             else msg = msg + days.intValue + " Tage"
         }
 
-        postUpdate(Lueftung_Filterlaufzeit_Message,msg)
+        Lueftung_Filterlaufzeit_Message.postUpdate(msg)
     }
 end
 
@@ -291,7 +290,7 @@ then
         msg = "Alles in Ordnung"
     }
 
-    postUpdate(Lueftung_Status_Message,msg)
+    Lueftung_Status_Message.postUpdate(msg)
 end
 
 rule "Aussentemperatur Meldung"
@@ -304,7 +303,7 @@ when
 then
     if( (Lueftung_Aussenlufttemperatur.state instanceof DecimalType) && (Lueftung_Fortlufttemperatur.state instanceof DecimalType) ){
 
-        postUpdate(Lueftung_Aussentemperatur_Message,"→ " + Lueftung_Aussenlufttemperatur.state.format("%.1f") +"°C, ← " + Lueftung_Fortlufttemperatur.state.format("%.1f") + "°C")
+        Lueftung_Aussentemperatur_Message.postUpdate("→ " + Lueftung_Aussenlufttemperatur.state.format("%.1f") +"°C, ← " + Lueftung_Fortlufttemperatur.state.format("%.1f") + "°C")
     }
 end
 
@@ -318,7 +317,7 @@ when
 then
     if( (Lueftung_Zulufttemperatur.state instanceof DecimalType) && (Lueftung_Ablufttemperatur.state instanceof DecimalType) ){
 
-        postUpdate(Lueftung_Innentemperatur_Message,"→ " + Lueftung_Zulufttemperatur.state.format("%.1f") +"°C, ← " + Lueftung_Ablufttemperatur.state.format("%.1f") + "°C")
+        Lueftung_Innentemperatur_Message.postUpdate("→ " + Lueftung_Zulufttemperatur.state.format("%.1f") +"°C, ← " + Lueftung_Ablufttemperatur.state.format("%.1f") + "°C")
     }
 end
 
@@ -331,8 +330,7 @@ when
     Item Lueftung_Abluft changed
 then
     if( (Lueftung_Zuluft.state instanceof DecimalType) && (Lueftung_Abluft.state instanceof DecimalType) ){
-
-        postUpdate(Lueftung_Ventilator_Message,"→ " + (Lueftung_Zuluft.state as DecimalType) +"%, ← " + (Lueftung_Abluft.state as DecimalType) + "%")
+        Lueftung_Ventilator_Message.postUpdate("→ " + (Lueftung_Zuluft.state as DecimalType) +"%, ← " + (Lueftung_Abluft.state as DecimalType) + "%")
     }
 end
 
@@ -341,7 +339,6 @@ when
     Item Lueftung_Fehlermeldung changed
 then
     if( (Lueftung_Fehlermeldung.state as StringType) != "Ok" ){
-
         send("test@gmail.com", "Lüftung hat einen Fehler gemeldet")
     }
 end
@@ -353,23 +350,19 @@ when
     Item Lueftung_FilterfehlerE changed
 then
     if( (Lueftung_FilterfehlerI.state as DecimalType) == 1 || (Lueftung_FilterfehlerE.state as DecimalType) == 1 ){
-
         send("test@gmail.com", "Lüftungsfilter muss gewechselt werden")
-        }
+    }
 end
 
 rule "Manueller Eingriff"
 when
     Item Lueftung_Fan_Level changed
 then
-
     if( autoChangeInProgress ){
-
         autoChangeInProgress = false
     }
     else{
-
-        postUpdate(Lueftung_Auto_Mode,0)
+        Lueftung_Auto_Mode.postUpdate(0)
     }
 end
 
@@ -418,7 +411,6 @@ then
                 &&
                 aussenTemperatur >= raumTemperatur
             ){
-
                 newLevel = 1
             }
             else if(
@@ -428,30 +420,25 @@ then
                 &&
                 currentLevel == 1
             ){
-
                 newLevel = 1
             }
         }
         else if( Fenster_OG_Schlafzimmer.state == CLOSED || Fenster_OG_Ankleide.state == OPEN ) {
-
             newLevel = 2
         }
 
         if( newLevel != currentLevel ){
-
             if( newLevel == 1 ){
-
                 logInfo("airflow.rules", "auto slowdown start")
-                    send("test@gmail.com", "Lüftung verlangsamt")
+                send("test@gmail.com", "Lüftung verlangsamt")
             }
             else if( currentLevel == 1 ){
-
-                    logInfo("airflow.rules", "auto slowdown end")
+                logInfo("airflow.rules", "auto slowdown end")
                 send("test@gmail.com", "Lüftung wieder normal")
             }
 
             autoChangeInProgress=true
-            sendCommand(Lueftung_Fan_Level,newLevel)
+            Lueftung_Fan_Level.sendCommand(newLevel)
         }
     }
 end
