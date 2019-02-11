@@ -19,14 +19,15 @@ public class TinkerforgeErrorHandler {
 
     public static String TF_TIMEOUT_EXCEPTION = "Tinkerforge timeout occurred";
     public static String TF_NOT_CONNECTION_EXCEPTION = "Tinkerforge \"not connected\" occurred";
-    public static final String TF_NOT_CRYPTO_EXCEPTION = "Tinkerforge authorization failed";;
+    public static String TF_STREAM_OUT_OF_SYNC_EXCPETION = "Tinkerforge reading stream from device failed";
+    public static final String TF_NOT_CRYPTO_EXCEPTION = "Tinkerforge authorization failed";
 
     /**
      * Logs errors from devices using the device specific logger.
-     * 
+     *
      * @param mBaseDevice The device to log errors for as {@code MBaseDevice}.
-     * @param message The log message as {@code String}.
-     * @param e The throwable to log as {@code Throwable}
+     * @param message     The log message as {@code String}.
+     * @param e           The throwable to log as {@code Throwable}
      */
     public static void handleError(MBaseDevice mBaseDevice, String message, Throwable e) {
         mBaseDevice.getLogger().error("Tinkerforge Error: {} : {}", message, e.getMessage());
@@ -34,10 +35,10 @@ public class TinkerforgeErrorHandler {
 
     /**
      * Logs errors using the given logger.
-     * 
-     * @param logger The logger to use as {@code Logger}.
+     *
+     * @param logger  The logger to use as {@code Logger}.
      * @param message The message to log as {@code String}.
-     * @param e The throwable to log as {@code Throwable}
+     * @param e       The throwable to log as {@code Throwable}
      */
     public static void handleError(Logger logger, String message, Throwable e) {
         logger.error("Tinkerforge Error: {} : {}", message, e.getMessage());

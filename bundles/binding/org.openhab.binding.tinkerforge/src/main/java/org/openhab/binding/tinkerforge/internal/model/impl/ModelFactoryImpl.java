@@ -69,6 +69,7 @@ import com.tinkerforge.BrickletLoadCellV2;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletNFC;
 import com.tinkerforge.BrickletOLED128x64;
 import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
@@ -371,6 +372,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMLCD20x4Backlight();
             case ModelPackage.MLCD2_0X4_BUTTON:
                 return createMLCD20x4Button();
+            case ModelPackage.MBRICKLET_NFC:
+                return createMBrickletNFC();
             case ModelPackage.OHTF_DEVICE:
                 return createOHTFDevice();
             case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE:
@@ -653,6 +656,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletAnalogOutV2FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_RGBLED_BUTTON:
                 return createTinkerBrickletRGBLEDButtonFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_NFC:
+                return createTinkerBrickletNFCFromString(eDataType, initialValue);
             case ModelPackage.HSB_TYPE:
                 return createHSBTypeFromString(eDataType, initialValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -876,6 +881,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletAnalogOutV2ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_RGBLED_BUTTON:
                 return convertTinkerBrickletRGBLEDButtonToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_NFC:
+                return convertTinkerBrickletNFCToString(eDataType, instanceValue);
             case ModelPackage.HSB_TYPE:
                 return convertHSBTypeToString(eDataType, instanceValue);
             case ModelPackage.UP_DOWN_TYPE:
@@ -2789,6 +2796,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MLCD20x4Button createMLCD20x4Button() {
         MLCD20x4ButtonImpl mlcd20x4Button = new MLCD20x4ButtonImpl();
         return mlcd20x4Button;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletNFC createMBrickletNFC() {
+        MBrickletNFCImpl mBrickletNFC = new MBrickletNFCImpl();
+        return mBrickletNFC;
     }
 
     /**
@@ -4731,6 +4749,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletRGBLEDButtonToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletNFC createTinkerBrickletNFCFromString(EDataType eDataType, String initialValue) {
+        return (BrickletNFC) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletNFCToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

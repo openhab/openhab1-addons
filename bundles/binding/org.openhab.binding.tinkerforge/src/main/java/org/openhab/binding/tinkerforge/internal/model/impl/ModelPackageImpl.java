@@ -74,6 +74,7 @@ import com.tinkerforge.BrickletLoadCellV2;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
+import com.tinkerforge.BrickletNFC;
 import com.tinkerforge.BrickletOLED128x64;
 import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
@@ -1731,6 +1732,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mBrickletNFCEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcSubDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EEnum dcDriveModeEEnum = null;
 
     /**
@@ -2413,6 +2430,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType tinkerBrickletRGBLEDButtonEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletNFCEDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -9596,6 +9621,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletNFC() {
+        return mBrickletNFCEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMNFCSubDevice() {
+        return mnfcSubDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getSwitchState() {
         return switchStateEDataType;
@@ -10578,6 +10623,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getTinkerBrickletNFC() {
+        return tinkerBrickletNFCEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getHSBType() {
         return hsbTypeEDataType;
@@ -11419,6 +11474,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__DEVICE_TYPE);
         createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__BUTTON_NUM);
 
+        mBrickletNFCEClass = createEClass(MBRICKLET_NFC);
+
+        mnfcSubDeviceEClass = createEClass(MNFC_SUB_DEVICE);
+
         tfConfigEClass = createEClass(TF_CONFIG);
 
         ohtfDeviceEClass = createEClass(OHTF_DEVICE);
@@ -11689,6 +11748,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletCO2EDataType = createEDataType(TINKER_BRICKLET_CO2);
         tinkerBrickletAnalogOutV2EDataType = createEDataType(TINKER_BRICKLET_ANALOG_OUT_V2);
         tinkerBrickletRGBLEDButtonEDataType = createEDataType(TINKER_BRICKLET_RGBLED_BUTTON);
+        tinkerBrickletNFCEDataType = createEDataType(TINKER_BRICKLET_NFC);
         hsbTypeEDataType = createEDataType(HSB_TYPE);
         upDownTypeEDataType = createEDataType(UP_DOWN_TYPE);
         percentValueEDataType = createEDataType(PERCENT_VALUE);
@@ -12956,6 +13016,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getButtonConfiguration());
         g1.getETypeArguments().add(g2);
         mlcd20x4ButtonEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletNFC());
+        g1.getETypeArguments().add(g2);
+        mBrickletNFCEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDeviceHolder());
+        g2 = createEGenericType(this.getMNFCSubDevice());
+        g1.getETypeArguments().add(g2);
+        mBrickletNFCEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDevice());
+        g2 = createEGenericType(this.getMBrickletNFC());
+        g1.getETypeArguments().add(g2);
+        mnfcSubDeviceEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getOHTFDevice());
         g2 = createEGenericType(ohtfSubDeviceAdminDeviceEClass_TFC);
         g1.getETypeArguments().add(g2);
@@ -14558,6 +14630,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 MLCD20x4Button.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
                 !IS_DERIVED, IS_ORDERED);
 
+        initEClass(mBrickletNFCEClass, MBrickletNFC.class, "MBrickletNFC", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(mnfcSubDeviceEClass, MNFCSubDevice.class, "MNFCSubDevice", IS_ABSTRACT, IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+
         initEClass(tfConfigEClass, TFConfig.class, "TFConfig", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(ohtfDeviceEClass, OHTFDevice.class, "OHTFDevice", !IS_ABSTRACT, !IS_INTERFACE,
@@ -15296,6 +15374,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletRGBLEDButtonEDataType, BrickletRGBLEDButton.class, "TinkerBrickletRGBLEDButton",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletNFCEDataType, BrickletNFC.class, "TinkerBrickletNFC", IS_SERIALIZABLE,
+                !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(hsbTypeEDataType, HSBType.class, "HSBType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(upDownTypeEDataType, UpDownType.class, "UpDownType", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);

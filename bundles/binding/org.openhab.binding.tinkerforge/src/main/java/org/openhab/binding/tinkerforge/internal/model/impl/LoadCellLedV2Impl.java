@@ -54,7 +54,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -65,7 +65,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -76,7 +76,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -87,7 +87,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -98,7 +98,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -109,7 +109,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -120,7 +120,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -131,7 +131,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -142,7 +142,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -153,7 +153,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -164,7 +164,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The default value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDigitalState()
      * @generated
      * @ordered
@@ -175,7 +175,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The cached value of the '{@link #getDigitalState() <em>Digital State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDigitalState()
      * @generated
      * @ordered
@@ -186,7 +186,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -197,7 +197,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -209,7 +209,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected LoadCellLedV2Impl() {
@@ -219,7 +219,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -230,7 +230,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -241,23 +241,22 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED_V2__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -268,22 +267,21 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED_V2__UID, oldUid, uid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -294,22 +292,21 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED_V2__POLL, oldPoll, poll));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -320,23 +317,22 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED_V2__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -347,50 +343,47 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED_V2__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public MBrickletLoadCellV2 getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED_V2__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED_V2__MBRICK)
             return null;
-        }
         return (MBrickletLoadCellV2) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickletLoadCellV2 basicGetMbrick() {
-        if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED_V2__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED_V2__MBRICK)
             return null;
-        }
         return (MBrickletLoadCellV2) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetMbrick(MBrickletLoadCellV2 newMbrick, NotificationChain msgs) {
@@ -401,38 +394,33 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMbrick(MBrickletLoadCellV2 newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.LOAD_CELL_LED_V2__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED_V2__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -443,23 +431,22 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setDigitalState(HighLowValue newDigitalState) {
         HighLowValue oldDigitalState = digitalState;
         digitalState = newDigitalState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LOAD_CELL_LED_V2__DIGITAL_STATE,
                     oldDigitalState, digitalState));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -549,16 +536,15 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.LOAD_CELL_LED_V2__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletLoadCellV2) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -567,7 +553,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -582,7 +568,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -598,7 +584,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -615,9 +601,8 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
             case ModelPackage.LOAD_CELL_LED_V2__SUB_ID:
                 return getSubId();
             case ModelPackage.LOAD_CELL_LED_V2__MBRICK:
-                if (resolve) {
+                if (resolve)
                     return getMbrick();
-                }
                 return basicGetMbrick();
             case ModelPackage.LOAD_CELL_LED_V2__DIGITAL_STATE:
                 return getDigitalState();
@@ -630,7 +615,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -664,7 +649,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -698,7 +683,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -728,7 +713,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -747,7 +732,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -766,7 +751,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -787,7 +772,7 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -815,14 +800,13 @@ public class LoadCellLedV2Impl extends MinimalEObjectImpl.Container implements L
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");

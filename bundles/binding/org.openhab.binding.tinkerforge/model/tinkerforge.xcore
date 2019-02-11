@@ -74,6 +74,7 @@ import com.tinkerforge.BrickletCO2
 import com.tinkerforge.BrickStepper
 import com.tinkerforge.BrickletAnalogOutV2
 import com.tinkerforge.BrickletRGBLEDButton
+import com.tinkerforge.BrickletNFC
 import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
@@ -148,6 +149,7 @@ type TinkerBrickletUVLight wraps BrickletUVLight
 type TinkerBrickletCO2 wraps BrickletCO2
 type TinkerBrickletAnalogOutV2 wraps BrickletAnalogOutV2
 type TinkerBrickletRGBLEDButton wraps BrickletRGBLEDButton
+type TinkerBrickletNFC wraps BrickletNFC
 type HSBType wraps HSBType
 type UpDownType wraps UpDownType
 type PercentValue wraps PercentValue
@@ -1142,6 +1144,14 @@ class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{
 class MLCD20x4Button extends MSensor<SwitchState>, MLCDSubDevice, MTFConfigConsumer<ButtonConfiguration>{
 	readonly String deviceType = "lcd_button"
 	short buttonNum
+}
+
+class MBrickletNFC extends MDevice<TinkerBrickletNFC>, MSubDeviceHolder<MNFCSubDevice> {
+    
+}
+
+interface MNFCSubDevice extends MSubDevice<MBrickletNFC>{
+    
 }
 
 // configuration model

@@ -1595,6 +1595,16 @@ public interface ModelFactory extends EFactory {
     MLCD20x4Button createMLCD20x4Button();
 
     /**
+     * Returns a new object of class '<em>MBricklet NFC</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet NFC</em>'.
+     * @generated
+     */
+    MBrickletNFC createMBrickletNFC();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
