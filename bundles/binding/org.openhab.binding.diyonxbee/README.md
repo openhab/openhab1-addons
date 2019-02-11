@@ -27,15 +27,17 @@ A binding beginning with `<` defines an input, while a binding beginning with `>
 
 ### diyonxbee.cfg
 
-    serialPort=/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A702NX9M-if00-port0                                                                                
-    baudRate=9600                                                                                                                                            
+```
+serialPort=/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A702NX9M-if00-port0
+baudRate=9600
+```
 
 ### Items
-
-    Number  Living_Temperature      "Temperatur [%.1f °C]"          <temperature>   (GF_Living)     { diyonxbee="<0013A20040B40F18:Temperature" }
-    Switch  Living_Motion           "Bewegung [MAP(de.map):%s]"     <present>       (GF_Living,GPresence)   { diyonxbee="<0013A20040B40F18:MOTION" }
-    Color   Living_Stripe           "Living RGB Stripe"          <lights>   (GF_Living)     { diyonxbee="<0013A20040B40F18:Stripe" }
-
+```
+Number  Living_Temperature      "Temperatur [%.1f °C]"          <temperature>   (GF_Living)     { diyonxbee="<0013A20040B40F18:Temperature" }
+Switch  Living_Motion           "Bewegung [MAP(de.map):%s]"     <present>       (GF_Living,GPresence)   { diyonxbee="<0013A20040B40F18:MOTION" }
+Color   Living_Stripe           "Living RGB Stripe"          <lights>   (GF_Living)     { diyonxbee="<0013A20040B40F18:Stripe" }
+```
 
 ## Notes
 
@@ -47,8 +49,10 @@ even without using the XBee (any serial console will do).
 For the pure sensors, the Arduino has to send lines conaining key=value. From the
 example item configuration above, a valid message would be:
 
-    Temperature=21.3
-    MOTION=ON
+```
+Temperature=21.3
+MOTION=ON
+```
 
 For the actors, the Arduino has to send the received command back to the sender;
 this ensures that the openHAB item state is only updated when the command was
