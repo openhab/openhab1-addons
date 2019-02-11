@@ -73,6 +73,7 @@ import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLaserRangeFinder;
 import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletLoadCell;
+import com.tinkerforge.BrickletLoadCellV2;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
@@ -1076,6 +1077,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
                 logger.debug("addDevice BrickletLoadCell");
                 mDevice = factory.createMBrickletLoadCell();
                 mDevice.setDeviceIdentifier(BrickletLoadCell.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletLoadCellV2.DEVICE_IDENTIFIER) {
+                logger.debug("addDevice BrickletLoadCellV2");
+                mDevice = factory.createMBrickletLoadCellV2();
+                mDevice.setDeviceIdentifier(BrickletLoadCellV2.DEVICE_IDENTIFIER);
             } else if (deviceIdentifier == BrickletColor.DEVICE_IDENTIFIER) {
                 logger.debug("addDevice BrickletColor");
                 mDevice = factory.createMBrickletColor();

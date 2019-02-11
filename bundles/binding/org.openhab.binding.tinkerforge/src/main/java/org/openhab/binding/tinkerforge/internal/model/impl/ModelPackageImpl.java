@@ -70,6 +70,7 @@ import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLaserRangeFinder;
 import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletLoadCell;
+import com.tinkerforge.BrickletLoadCellV2;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
@@ -1554,7 +1555,23 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mBrickletLoadCellV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass loadCellDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellDeviceV2EClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1570,7 +1587,23 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass loadCellWeightV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass loadCellLedEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellLedV2EClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2268,6 +2301,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType tinkerBrickletLoadCellEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletLoadCellV2EDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -8723,9 +8764,39 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletLoadCellV2() {
+        return mBrickletLoadCellV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLoadCellV2_DeviceType() {
+        return (EAttribute) mBrickletLoadCellV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EClass getLoadCellDevice() {
         return loadCellDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellDeviceV2() {
+        return loadCellDeviceV2EClass;
     }
 
     /**
@@ -8800,6 +8871,66 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getLoadCellWeightV2() {
+        return loadCellWeightV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeightV2_DeviceType() {
+        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeightV2_Threshold() {
+        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeightV2_MovingAverage() {
+        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getLoadCellWeightV2__Init() {
+        return loadCellWeightV2EClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getLoadCellWeightV2__Tare() {
+        return loadCellWeightV2EClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EClass getLoadCellLed() {
         return loadCellLedEClass;
@@ -8814,6 +8945,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     @Override
     public EAttribute getLoadCellLed_DeviceType() {
         return (EAttribute) loadCellLedEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellLedV2() {
+        return loadCellLedV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellLedV2_DeviceType() {
+        return (EAttribute) loadCellLedV2EClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -10281,6 +10432,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getTinkerBrickletLoadCellV2() {
+        return tinkerBrickletLoadCellV2EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getTinkerBrickletColor() {
         return tinkerBrickletColorEDataType;
@@ -10768,7 +10929,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mBrickletLoadCellEClass = createEClass(MBRICKLET_LOAD_CELL);
         createEAttribute(mBrickletLoadCellEClass, MBRICKLET_LOAD_CELL__DEVICE_TYPE);
 
+        mBrickletLoadCellV2EClass = createEClass(MBRICKLET_LOAD_CELL_V2);
+        createEAttribute(mBrickletLoadCellV2EClass, MBRICKLET_LOAD_CELL_V2__DEVICE_TYPE);
+
         loadCellDeviceEClass = createEClass(LOAD_CELL_DEVICE);
+
+        loadCellDeviceV2EClass = createEClass(LOAD_CELL_DEVICE_V2);
 
         loadCellWeightEClass = createEClass(LOAD_CELL_WEIGHT);
         createEAttribute(loadCellWeightEClass, LOAD_CELL_WEIGHT__DEVICE_TYPE);
@@ -10777,8 +10943,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEOperation(loadCellWeightEClass, LOAD_CELL_WEIGHT___INIT);
         createEOperation(loadCellWeightEClass, LOAD_CELL_WEIGHT___TARE);
 
+        loadCellWeightV2EClass = createEClass(LOAD_CELL_WEIGHT_V2);
+        createEAttribute(loadCellWeightV2EClass, LOAD_CELL_WEIGHT_V2__DEVICE_TYPE);
+        createEAttribute(loadCellWeightV2EClass, LOAD_CELL_WEIGHT_V2__THRESHOLD);
+        createEAttribute(loadCellWeightV2EClass, LOAD_CELL_WEIGHT_V2__MOVING_AVERAGE);
+        createEOperation(loadCellWeightV2EClass, LOAD_CELL_WEIGHT_V2___INIT);
+        createEOperation(loadCellWeightV2EClass, LOAD_CELL_WEIGHT_V2___TARE);
+
         loadCellLedEClass = createEClass(LOAD_CELL_LED);
         createEAttribute(loadCellLedEClass, LOAD_CELL_LED__DEVICE_TYPE);
+
+        loadCellLedV2EClass = createEClass(LOAD_CELL_LED_V2);
+        createEAttribute(loadCellLedV2EClass, LOAD_CELL_LED_V2__DEVICE_TYPE);
 
         mBrickletColorEClass = createEClass(MBRICKLET_COLOR);
         createEAttribute(mBrickletColorEClass, MBRICKLET_COLOR__DEVICE_TYPE);
@@ -11499,6 +11675,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletAmbientLightV2EDataType = createEDataType(TINKER_BRICKLET_AMBIENT_LIGHT_V2);
         tinkerBrickletDustDetectorEDataType = createEDataType(TINKER_BRICKLET_DUST_DETECTOR);
         tinkerBrickletLoadCellEDataType = createEDataType(TINKER_BRICKLET_LOAD_CELL);
+        tinkerBrickletLoadCellV2EDataType = createEDataType(TINKER_BRICKLET_LOAD_CELL_V2);
         tinkerBrickletColorEDataType = createEDataType(TINKER_BRICKLET_COLOR);
         tinkerBrickletIndustrialDualAnalogInEDataType = createEDataType(TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN);
         tinkerBrickletAnalogInV2EDataType = createEDataType(TINKER_BRICKLET_ANALOG_IN_V2);
@@ -11736,10 +11913,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getLoadCellDevice());
         g1.getETypeArguments().add(g2);
         mBrickletLoadCellEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletLoadCellV2());
+        g1.getETypeArguments().add(g2);
+        mBrickletLoadCellV2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDeviceHolder());
+        g2 = createEGenericType(this.getLoadCellDeviceV2());
+        g1.getETypeArguments().add(g2);
+        mBrickletLoadCellV2EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMSubDevice());
         g2 = createEGenericType(this.getMBrickletLoadCell());
         g1.getETypeArguments().add(g2);
         loadCellDeviceEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDevice());
+        g2 = createEGenericType(this.getMBrickletLoadCellV2());
+        g1.getETypeArguments().add(g2);
+        loadCellDeviceV2EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getLoadCellDevice());
         loadCellWeightEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMSensor());
@@ -11752,8 +11941,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         loadCellWeightEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getCallbackListener());
         loadCellWeightEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getLoadCellDeviceV2());
+        loadCellWeightV2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getMDecimalValue());
+        g1.getETypeArguments().add(g2);
+        loadCellWeightV2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTFConfigConsumer());
+        g2 = createEGenericType(this.getLoadCellConfiguration());
+        g1.getETypeArguments().add(g2);
+        loadCellWeightV2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getCallbackListener());
+        loadCellWeightV2EClass.getEGenericSuperTypes().add(g1);
         loadCellLedEClass.getESuperTypes().add(this.getLoadCellDevice());
         loadCellLedEClass.getESuperTypes().add(this.getDigitalActor());
+        loadCellLedV2EClass.getESuperTypes().add(this.getLoadCellDeviceV2());
+        loadCellLedV2EClass.getESuperTypes().add(this.getDigitalActor());
         g1 = createEGenericType(this.getMDevice());
         g2 = createEGenericType(this.getTinkerBrickletColor());
         g1.getETypeArguments().add(g2);
@@ -13245,7 +13448,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 "bricklet_loadcell", 0, 1, MBrickletLoadCell.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
                 !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+        initEClass(mBrickletLoadCellV2EClass, MBrickletLoadCellV2.class, "MBrickletLoadCellV2", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletLoadCellV2_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_loadcell", 0, 1, MBrickletLoadCellV2.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         initEClass(loadCellDeviceEClass, LoadCellDevice.class, "LoadCellDevice", IS_ABSTRACT, IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(loadCellDeviceV2EClass, LoadCellDeviceV2.class, "LoadCellDeviceV2", IS_ABSTRACT, IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(loadCellWeightEClass, LoadCellWeight.class, "LoadCellWeight", !IS_ABSTRACT, !IS_INTERFACE,
@@ -13264,10 +13476,32 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         initEOperation(getLoadCellWeight__Tare(), null, "tare", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+        initEClass(loadCellWeightV2EClass, LoadCellWeightV2.class, "LoadCellWeightV2", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getLoadCellWeightV2_DeviceType(), theEcorePackage.getEString(), "deviceType", "loadcell_weight",
+                0, 1, LoadCellWeightV2.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getLoadCellWeightV2_Threshold(), theEcorePackage.getEBigDecimal(), "threshold", "0", 0, 1,
+                LoadCellWeightV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getLoadCellWeightV2_MovingAverage(), theEcorePackage.getEShort(), "movingAverage", "4", 0, 1,
+                LoadCellWeightV2.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEOperation(getLoadCellWeightV2__Init(), null, "init", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        initEOperation(getLoadCellWeightV2__Tare(), null, "tare", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
         initEClass(loadCellLedEClass, LoadCellLed.class, "LoadCellLed", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getLoadCellLed_DeviceType(), theEcorePackage.getEString(), "deviceType", "loadcell_led", 0, 1,
                 LoadCellLed.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEClass(loadCellLedV2EClass, LoadCellLedV2.class, "LoadCellLedV2", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getLoadCellLedV2_DeviceType(), theEcorePackage.getEString(), "deviceType", "loadcell_led", 0, 1,
+                LoadCellLedV2.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
                 !IS_DERIVED, IS_ORDERED);
 
         initEClass(mBrickletColorEClass, MBrickletColor.class, "MBrickletColor", !IS_ABSTRACT, !IS_INTERFACE,
@@ -15033,6 +15267,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEDataType(tinkerBrickletDustDetectorEDataType, BrickletDustDetector.class, "TinkerBrickletDustDetector",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletLoadCellEDataType, BrickletLoadCell.class, "TinkerBrickletLoadCell",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletLoadCellV2EDataType, BrickletLoadCellV2.class, "TinkerBrickletLoadCellV2",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletColorEDataType, BrickletColor.class, "TinkerBrickletColor", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);

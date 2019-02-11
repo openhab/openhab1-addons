@@ -59,6 +59,7 @@ import com.tinkerforge.BrickletRotaryEncoder
 import com.tinkerforge.BrickletAmbientLightV2
 import com.tinkerforge.BrickletDustDetector
 import com.tinkerforge.BrickletLoadCell
+import com.tinkerforge.BrickletLoadCellV2
 import com.tinkerforge.BrickletColor
 import com.tinkerforge.BrickletIndustrialDualAnalogIn
 import com.tinkerforge.BrickletAnalogIn
@@ -133,6 +134,7 @@ type TinkerBrickletRotaryEncoder wraps BrickletRotaryEncoder
 type TinkerBrickletAmbientLightV2 wraps BrickletAmbientLightV2
 type TinkerBrickletDustDetector wraps BrickletDustDetector
 type TinkerBrickletLoadCell wraps BrickletLoadCell
+type TinkerBrickletLoadCellV2 wraps BrickletLoadCellV2
 type TinkerBrickletColor wraps BrickletColor
 type TinkerBrickletIndustrialDualAnalogIn wraps BrickletIndustrialDualAnalogIn
 type TinkerBrickletAnalogInV2 wraps BrickletAnalogInV2
@@ -409,7 +411,15 @@ class MBrickletLoadCell extends MDevice<TinkerBrickletLoadCell>,
     readonly String deviceType = "bricklet_loadcell"
 }
 
+class MBrickletLoadCellV2 extends MDevice<TinkerBrickletLoadCellV2>,
+        MSubDeviceHolder<LoadCellDeviceV2> {
+    readonly String deviceType = "bricklet_loadcell"
+}
+
 interface LoadCellDevice extends MSubDevice<MBrickletLoadCell> {
+}
+
+interface LoadCellDeviceV2 extends MSubDevice<MBrickletLoadCellV2> {
 }
 
 class LoadCellWeight extends LoadCellDevice, MSensor<MDecimalValue>, MTFConfigConsumer<LoadCellConfiguration>,
@@ -421,8 +431,21 @@ class LoadCellWeight extends LoadCellDevice, MSensor<MDecimalValue>, MTFConfigCo
     op void tare(){}
 }
 
+class LoadCellWeightV2 extends LoadCellDeviceV2, MSensor<MDecimalValue>, MTFConfigConsumer<LoadCellConfiguration>,
+        CallbackListener {
+     readonly String deviceType = "loadcell_weight"
+    BigDecimal threshold = "0"
+    short movingAverage = "4"
+    op void init(){}
+    op void tare(){}
+}
+
 class LoadCellLed extends LoadCellDevice, DigitalActor {
 	readonly String deviceType = "loadcell_led"
+}
+
+class LoadCellLedV2 extends LoadCellDeviceV2, DigitalActor {
+    readonly String deviceType = "loadcell_led"
 }
 
 class MBrickletColor extends MDevice<TinkerBrickletColor>,

@@ -65,6 +65,7 @@ import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLaserRangeFinder;
 import com.tinkerforge.BrickletLinearPoti;
 import com.tinkerforge.BrickletLoadCell;
+import com.tinkerforge.BrickletLoadCellV2;
 import com.tinkerforge.BrickletMoisture;
 import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
@@ -162,10 +163,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createLaserRangeFinderVelocity();
             case ModelPackage.MBRICKLET_LOAD_CELL:
                 return createMBrickletLoadCell();
+            case ModelPackage.MBRICKLET_LOAD_CELL_V2:
+                return createMBrickletLoadCellV2();
             case ModelPackage.LOAD_CELL_WEIGHT:
                 return createLoadCellWeight();
+            case ModelPackage.LOAD_CELL_WEIGHT_V2:
+                return createLoadCellWeightV2();
             case ModelPackage.LOAD_CELL_LED:
                 return createLoadCellLed();
+            case ModelPackage.LOAD_CELL_LED_V2:
+                return createLoadCellLedV2();
             case ModelPackage.MBRICKLET_COLOR:
                 return createMBrickletColor();
             case ModelPackage.COLOR_COLOR:
@@ -618,6 +625,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletDustDetectorFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
                 return createTinkerBrickletLoadCellFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_LOAD_CELL_V2:
+                return createTinkerBrickletLoadCellV2FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_COLOR:
                 return createTinkerBrickletColorFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN:
@@ -839,6 +848,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletDustDetectorToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_LOAD_CELL:
                 return convertTinkerBrickletLoadCellToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_LOAD_CELL_V2:
+                return convertTinkerBrickletLoadCellV2ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_COLOR:
                 return convertTinkerBrickletColorToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL_ANALOG_IN:
@@ -2602,6 +2613,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public MBrickletLoadCellV2 createMBrickletLoadCellV2() {
+        MBrickletLoadCellV2Impl mBrickletLoadCellV2 = new MBrickletLoadCellV2Impl();
+        return mBrickletLoadCellV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public LoadCellWeight createLoadCellWeight() {
         LoadCellWeightImpl loadCellWeight = new LoadCellWeightImpl();
@@ -2614,10 +2636,32 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public LoadCellWeightV2 createLoadCellWeightV2() {
+        LoadCellWeightV2Impl loadCellWeightV2 = new LoadCellWeightV2Impl();
+        return loadCellWeightV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public LoadCellLed createLoadCellLed() {
         LoadCellLedImpl loadCellLed = new LoadCellLedImpl();
         return loadCellLed;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LoadCellLedV2 createLoadCellLedV2() {
+        LoadCellLedV2Impl loadCellLedV2 = new LoadCellLedV2Impl();
+        return loadCellLedV2;
     }
 
     /**
@@ -4405,6 +4449,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletLoadCellToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletLoadCellV2 createTinkerBrickletLoadCellV2FromString(EDataType eDataType, String initialValue) {
+        return (BrickletLoadCellV2) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletLoadCellV2ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

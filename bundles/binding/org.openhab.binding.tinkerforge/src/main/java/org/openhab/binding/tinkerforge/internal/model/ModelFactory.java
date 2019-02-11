@@ -1435,6 +1435,16 @@ public interface ModelFactory extends EFactory {
     MBrickletLoadCell createMBrickletLoadCell();
 
     /**
+     * Returns a new object of class '<em>MBricklet Load Cell V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Load Cell V2</em>'.
+     * @generated
+     */
+    MBrickletLoadCellV2 createMBrickletLoadCellV2();
+
+    /**
      * Returns a new object of class '<em>Load Cell Weight</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1445,6 +1455,16 @@ public interface ModelFactory extends EFactory {
     LoadCellWeight createLoadCellWeight();
 
     /**
+     * Returns a new object of class '<em>Load Cell Weight V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Load Cell Weight V2</em>'.
+     * @generated
+     */
+    LoadCellWeightV2 createLoadCellWeightV2();
+
+    /**
      * Returns a new object of class '<em>Load Cell Led</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1453,6 +1473,16 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     LoadCellLed createLoadCellLed();
+
+    /**
+     * Returns a new object of class '<em>Load Cell Led V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Load Cell Led V2</em>'.
+     * @generated
+     */
+    LoadCellLedV2 createLoadCellLedV2();
 
     /**
      * Returns a new object of class '<em>MBricklet Moisture</em>'.
