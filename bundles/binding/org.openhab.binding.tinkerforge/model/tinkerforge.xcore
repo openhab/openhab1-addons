@@ -296,6 +296,13 @@ interface SimpleColorActor extends ColorActor {
     op void setSelectedColor(HSBType color)
 }
 
+interface SwitchableColorActor extends MSensor<HSBValue> {
+    SwitchState switchState
+    
+    op void turnSwitch(SwitchState state)
+    op void setSelectedColor(HSBType color)  
+}
+
 interface MoveActor {
     DirectionValue direction
     op void move(UpDownType direction, DeviceOptions opts)
@@ -1100,8 +1107,9 @@ class MBrickletRGBLEDButton extends MSensor<SwitchState>, MDevice<TinkerBricklet
     readonly String deviceType = "button"        
 }
 
-class MRGBLEDButtonLED extends SimpleColorActor, MSwitchActor, MSubDevice<MBrickletRGBLEDButton>{
-    readonly String deviceType = "led"    
+class MRGBLEDButtonLED extends SwitchableColorActor, MSubDevice<MBrickletRGBLEDButton>{
+    readonly String deviceType = "led"  
+    HSBType lastSelectedColor
 }
 
 class MLCD20x4Backlight extends MInSwitchActor, MLCDSubDevice{

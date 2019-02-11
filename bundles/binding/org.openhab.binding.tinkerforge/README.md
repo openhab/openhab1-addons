@@ -3012,6 +3012,7 @@ Technical description see [Tinkerforge Website](https://www.tinkerforge.com/de/s
 #### Binding properties:
 
 * There is one sub device: led.
+   * the led will accept commands from type *OnOffType* and *HSBType* 
 * no configuration in tinkerforge.cfg needed
 
 ##### Items file entry (e.g. tinkerforge.items):

@@ -1650,6 +1650,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass switchableColorActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass mrgbledButtonLEDEClass = null;
 
     /**
@@ -9271,6 +9279,46 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getSwitchableColorActor() {
+        return switchableColorActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getSwitchableColorActor_SwitchState() {
+        return (EAttribute) switchableColorActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getSwitchableColorActor__TurnSwitch__OnOffValue() {
+        return switchableColorActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getSwitchableColorActor__SetSelectedColor__HSBType() {
+        return switchableColorActorEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getMRGBLEDButtonLED() {
         return mrgbledButtonLEDEClass;
     }
@@ -9283,6 +9331,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      */
     public EAttribute getMRGBLEDButtonLED_DeviceType() {
         return (EAttribute) mrgbledButtonLEDEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMRGBLEDButtonLED_LastSelectedColor() {
+        return (EAttribute) mrgbledButtonLEDEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -10633,6 +10691,11 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         simpleColorActorEClass = createEClass(SIMPLE_COLOR_ACTOR);
         createEOperation(simpleColorActorEClass, SIMPLE_COLOR_ACTOR___SET_SELECTED_COLOR__HSBTYPE);
 
+        switchableColorActorEClass = createEClass(SWITCHABLE_COLOR_ACTOR);
+        createEAttribute(switchableColorActorEClass, SWITCHABLE_COLOR_ACTOR__SWITCH_STATE);
+        createEOperation(switchableColorActorEClass, SWITCHABLE_COLOR_ACTOR___TURN_SWITCH__ONOFFVALUE);
+        createEOperation(switchableColorActorEClass, SWITCHABLE_COLOR_ACTOR___SET_SELECTED_COLOR__HSBTYPE);
+
         moveActorEClass = createEClass(MOVE_ACTOR);
         createEAttribute(moveActorEClass, MOVE_ACTOR__DIRECTION);
         createEOperation(moveActorEClass, MOVE_ACTOR___MOVE__UPDOWNTYPE_DEVICEOPTIONS);
@@ -11171,6 +11234,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         mrgbledButtonLEDEClass = createEClass(MRGBLED_BUTTON_LED);
         createEAttribute(mrgbledButtonLEDEClass, MRGBLED_BUTTON_LED__DEVICE_TYPE);
+        createEAttribute(mrgbledButtonLEDEClass, MRGBLED_BUTTON_LED__LAST_SELECTED_COLOR);
 
         mlcd20x4BacklightEClass = createEClass(MLCD2_0X4_BACKLIGHT);
         createEAttribute(mlcd20x4BacklightEClass, MLCD2_0X4_BACKLIGHT__DEVICE_TYPE);
@@ -11544,6 +11608,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mlcdSubDeviceEClass.getEGenericSuperTypes().add(g1);
         programmableColorActorEClass.getESuperTypes().add(this.getColorActor());
         simpleColorActorEClass.getESuperTypes().add(this.getColorActor());
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getHSBValue());
+        g1.getETypeArguments().add(g2);
+        switchableColorActorEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMTFConfigConsumer());
         g2 = createEGenericType(dimmableActorEClass_TC);
         g1.getETypeArguments().add(g2);
@@ -12667,9 +12735,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getMRGBLEDButtonLED());
         g1.getETypeArguments().add(g2);
         mBrickletRGBLEDButtonEClass.getEGenericSuperTypes().add(g1);
-        g1 = createEGenericType(this.getSimpleColorActor());
-        mrgbledButtonLEDEClass.getEGenericSuperTypes().add(g1);
-        g1 = createEGenericType(this.getMSwitchActor());
+        g1 = createEGenericType(this.getSwitchableColorActor());
         mrgbledButtonLEDEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMSubDevice());
         g2 = createEGenericType(this.getMBrickletRGBLEDButton());
@@ -12997,6 +13063,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 IS_GENERATED_INSTANCE_CLASS);
 
         op = initEOperation(getSimpleColorActor__SetSelectedColor__HSBType(), null, "setSelectedColor", 0, 1,
+                !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        initEClass(switchableColorActorEClass, SwitchableColorActor.class, "SwitchableColorActor", IS_ABSTRACT,
+                IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getSwitchableColorActor_SwitchState(), this.getSwitchState(), "switchState", null, 0, 1,
+                SwitchableColorActor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        op = initEOperation(getSwitchableColorActor__TurnSwitch__OnOffValue(), null, "turnSwitch", 0, 1, !IS_UNIQUE,
+                IS_ORDERED);
+        addEParameter(op, this.getSwitchState(), "state", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getSwitchableColorActor__SetSelectedColor__HSBType(), null, "setSelectedColor", 0, 1,
                 !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, this.getHSBType(), "color", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
@@ -14224,6 +14304,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMRGBLEDButtonLED_DeviceType(), theEcorePackage.getEString(), "deviceType", "led", 0, 1,
                 MRGBLEDButtonLED.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMRGBLEDButtonLED_LastSelectedColor(), this.getHSBType(), "lastSelectedColor", null, 0, 1,
+                MRGBLEDButtonLED.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
                 !IS_DERIVED, IS_ORDERED);
 
         initEClass(mlcd20x4BacklightEClass, MLCD20x4Backlight.class, "MLCD20x4Backlight", !IS_ABSTRACT, !IS_INTERFACE,

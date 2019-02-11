@@ -52,6 +52,7 @@ import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
 import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
 import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.model.SwitchableColorActor;
 import org.openhab.binding.tinkerforge.internal.model.TFConfig;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -200,8 +201,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * is no brickd found a new Brickd object is created, added to the Ecosystem an the IpConnection
      * to the Tinkerforge brickd is established and a device enumeration is triggert.
      *
-     * @param host The host name or ip address of the TinkerForge brickd as String.
-     * @param port The port of the TinkerForge brickd as int.
+     * @param host    The host name or ip address of the TinkerForge brickd as String.
+     * @param port    The port of the TinkerForge brickd as int.
      * @param authkey
      */
     private void connectBrickd(String host, int port, String authkey) {
@@ -275,8 +276,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * always enabled.
      *
      * @param device A device object as {@link MBaseDevice}.
-     * @param uid The device uid as String.
-     * @param subId The device subid as String or <code>null</code> if the device is not a sub device.
+     * @param uid    The device uid as String.
+     * @param subId  The device subid as String or <code>null</code> if the device is not a sub device.
      */
     @SuppressWarnings("unchecked")
     private synchronized void addMDevice(MBaseDevice device, String uid, String subId) {
@@ -331,7 +332,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
      * Notifications from {@link MSubDeviceHolder} for adding sub devices.
      *
      * @param notification The {@link Notification} for add and remove events to the {@link Ecosystem}
-     *            .
+     *                         .
      */
     private void initializeTFDevices(Notification notification) {
         logger.trace("{} notifier {}", LoggerConstants.TFINIT, notification.getNotifier());
@@ -480,7 +481,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     /**
      * Processes changed device values to post them to the openHAB event bus.
      *
-     * @param device The {@link MBaseDevice} device, which has a changed value.
+     * @param device       The {@link MBaseDevice} device, which has a changed value.
      * @param notification The {@link Notification} about changes to the {@link Ecosystem}.
      */
     private void processValue(MBaseDevice device, Notification notification) {
@@ -499,7 +500,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     /**
      * Searches the name of an item which is bound to the device with the given uid and subid.
      *
-     * @param uid The device uid as {@code String}.
+     * @param uid   The device uid as {@code String}.
      * @param subId The device subid as {@code String} or {@code null} if it is not a sub device.
      * @return The name of the item which is bound to the device as {@code String} or {@code null} if
      *         no item was found.
@@ -531,7 +532,7 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     /**
      * Searches the provider which is bound to the device with the given uid and subid.
      *
-     * @param uid The device uid as {@code String}.
+     * @param uid   The device uid as {@code String}.
      * @param subId The device subid as {@code String} or {@code null} if it is not a sub device.
      * @return The {@code TinkerforgeBindingProvider} which is bound to the device as {@code Item} or
      *         {@code null} if no item was found.
@@ -597,11 +598,11 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
     /**
      * Triggers an update of state values for all devices.
      *
-     * @param provider The {@code TinkerforgeBindingProvider} which is bound to the device as
-     *            {@code Item}
-     * @param itemName The name of the {@code Item} as String
+     * @param provider          The {@code TinkerforgeBindingProvider} which is bound to the device as
+     *                              {@code Item}
+     * @param itemName          The name of the {@code Item} as String
      * @param only_poll_enabled Fetch only the values of devices which do not support callback
-     *            listeners. These devices are marked with poll "true" flag.
+     *                              listeners. These devices are marked with poll "true" flag.
      */
     protected void updateItemValues(TinkerforgeBindingProvider provider, String itemName, boolean only_poll_enabled) {
         if (tinkerforgeEcosystem == null) {
@@ -696,7 +697,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                     logger.debug("Rollershutter or dimmer found {} {}", itemName);
                 } else if (itemType.isAssignableFrom(ContactItem.class)) {
                     value = ((PercentValue) sensorValue).toBigDecimal().compareTo(BigDecimal.ZERO) == -1
-                            ? OpenClosedType.OPEN : OpenClosedType.CLOSED;
+                            ? OpenClosedType.OPEN
+                            : OpenClosedType.CLOSED;
                     logger.debug("contact found {}", itemName);
                 } else {
                     continue;
@@ -778,6 +780,9 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                                 OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF : OnOffValue.ON;
                                 ((ProgrammableSwitchActor) mDevice).turnSwitch(state,
                                         provider.getDeviceOptions(itemName));
+                            } else if (mDevice instanceof SwitchableColorActor) {
+                                OnOffValue state = cmd == OnOffType.OFF ? OnOffValue.OFF : OnOffValue.ON;
+                                ((SwitchableColorActor) mDevice).turnSwitch(state);
                             } else {
                                 logger.error("{} received OnOff command for non-SwitchActor", LoggerConstants.COMMAND);
                             }
@@ -797,6 +802,8 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                                 } else if (mDevice instanceof SimpleColorActor) {
                                     logger.debug("{} found SimpleColorActor {}", itemName);
                                     ((SimpleColorActor) mDevice).setSelectedColor((HSBType) command);
+                                } else if (mDevice instanceof SwitchableColorActor) {
+                                    ((SwitchableColorActor) mDevice).setSelectedColor((HSBType) command);
                                 }
                             } else if (command instanceof PercentType) {
                                 if (mDevice instanceof SetPointActor) {
