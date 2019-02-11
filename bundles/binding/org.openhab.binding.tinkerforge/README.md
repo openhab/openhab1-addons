@@ -52,6 +52,7 @@ The TinkerForge auto reconnect feature is supported. Furthermore even if the ini
     - [LED Strip Bricklet](#led-strip-bricklet)
     - [Linear Poti Bricklet](#linear-poti-bricklet)
     - [Load Cell Bricklet](#load-cell-bricklet)
+	- [Load Cell Bricklet V2](#load-cell-bricklet-v2)
     - [Motion Detector Bricklet](#motion-detector-bricklet)
     - [Multi Touch Bricklet](#multi-touch-bricklet)
     - [Moisture Bricklet](#moisture-bricklet)
@@ -2606,6 +2607,15 @@ end
 ---
 [Table of Contents](#table-of-contents)
 
+### Load Cell Bricklet V2
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc/Hardware/Bricklets/Load_Cell_V2.html)
+
+For OpenHab documentation see the [Load Cell Bricklet](#load-cell-bricklet)
+
+---
+[Table of Contents](#table-of-contents)
+
 ### Motion Detector Bricklet
 
 Technical description see [Tinkerforge Website](http://www.tinkerforge.com/en/doc/Hardware/Bricklets/Motion_Detector.html)
@@ -3023,6 +3033,9 @@ Technical description see [Tinkerforge Website](https://www.tinkerforge.com/de/s
 Switch led_button  "RGB LED Button" (gTF)  { tinkerforge="uid=Dqp" } 
 Color  led_color   "Color"          (gTF)  { tinkerforge="uid=Dqp, subid=led"}
 ``` 
+
+---
+[Table of Contents](#table-of-contents)
 
 ### Rotary Encoder Bricklet
 
