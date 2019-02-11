@@ -244,6 +244,9 @@ The following table shows the TinkerForge device, its device type, its subid and
 |Load Cell Bricklet|bricklet_loadcell|||
 |Load Cell Bricklet subdevice|weight|loadcell_weight|x|
 |Load Cell Bricklet subdevice|led|loadcell_led|x|
+|Load Cell Bricklet V2|bricklet_loadcell|||
+|Load Cell Bricklet V2 subdevice|weight|loadcell_weight|x|
+|Load Cell Bricklet V2 subdevice|led|loadcell_led|x|
 |Motion Detector Bricklet|motion_detector||x|
 |Multi Touch Bricklet|bricklet_multitouch|||
 |Multi Touch Bricklet electrodes|electrode|electrode[0-11]|x|

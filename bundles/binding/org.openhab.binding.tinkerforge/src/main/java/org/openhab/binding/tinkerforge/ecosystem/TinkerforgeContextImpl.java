@@ -10,6 +10,7 @@ package org.openhab.binding.tinkerforge.ecosystem;
 
 import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
 import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellWeightV2;
 import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
@@ -134,6 +135,10 @@ public class TinkerforgeContextImpl implements TinkerforgeContext {
         if (mDevice instanceof LoadCellWeight) {
             logger.trace("load cell tare action");
             ((LoadCellWeight) mDevice).tare();
+            return true;
+        } else if (mDevice instanceof LoadCellWeightV2) {
+            logger.trace("load cell tare action");
+            ((LoadCellWeightV2) mDevice).tare();
             return true;
         } else {
             logger.error("no Load Cell Bricklet found for uid {}", uid);
