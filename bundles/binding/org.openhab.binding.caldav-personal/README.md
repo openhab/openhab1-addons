@@ -38,11 +38,13 @@ Used to execute commands through an event, triggered at the start or the end of 
 The event summary is free selectable. The event description must fullfill special syntax.
 Syntax is `<BEGIN|END>:<Item-Name>:<Command>`.
 Each item trigger must be a single line without linebreaks. Every line which starts with "BEGIN" will be executed at the begin of the event. Each line with an "END" will be executed at the end of the event. You can define multiple lines, which must not be ordered. For example:
-<pre>BEGIN:Heater_Livingroom:22
+```
+BEGIN:Heater_Livingroom:22
 BEGIN:Heater_Corridor:22
 END:Heater_Livingroom:16
 END:Heater_Corridor:16
-END:Notification_Dummy:Heizung heruntergefahren</pre>
+END:Notification_Dummy:Heizung heruntergefahren
+```
 
 Additionaly you can define an item to listen to upcoming changes of an item (which will be triggered through an event). Two types are available the command which will be set and the trigger time.
 Syntax is `caldavCommand="itemName:<Item-Name to listen to> type:<VALUE|DATE>"`
@@ -59,7 +61,9 @@ openhab.cfg
 
 ## Default item
 Since 1.9.0, the CalDAV Command binding also supports a default item which may optionally be added to openhab.cfg:
-<pre>caldavCommand:defaultItemOnBegin=&lt;item&gt;</pre>
+```
+caldavCommand:defaultItemOnBegin=&lt;item&gt;
+```
 If the command calendar contains items whose description does not follow the `BEGIN/END:<item>:<value>` pattern AND a default item is specified, then the respective lines are interpreted as `BEGIN:<defaultItemOnBegin>:<line>`
 
 This is really nice to use in combination with a rule such as used for [voice control](https://github.com/openhab/openhab/wiki/Controlling-openHAB-with-your-voice) - set the default item to: `caldavCommand:defaultItemOnBegin=VoiceCommand`
@@ -124,23 +128,29 @@ You've got the option to show just specific events.
 # Tested calDAV Servers with examples
 As far as i know are these
 ## ownCloud (my reference implementation)
-    caldavio:openhab_tasks:url=http://server.de/owncloud/remote.php/caldav/calendars/openHAB/tasks
-    caldavio:openhab_tasks:username=username
-    caldavio:openhab_tasks:password=password
-    caldavio:openhab_tasks:reloadInterval=10
-    caldavio:openhab_tasks:preloadTime=20000
+```
+caldavio:openhab_tasks:url=http://server.de/owncloud/remote.php/caldav/calendars/openHAB/tasks
+caldavio:openhab_tasks:username=username
+caldavio:openhab_tasks:password=password
+caldavio:openhab_tasks:reloadInterval=10
+caldavio:openhab_tasks:preloadTime=20000
+```
 ## baikal
-    caldavio:kalendername:url=https://server_ip/baikal/cal.php/calendars/username/kalender_id  
-    caldavio:kalendername:username=username  
-    caldavio:kalendername:password=password  
-    caldavio:kalendername:reloadInterval=10  
-    caldavio:kalendername:preloadTime=20000
+```
+caldavio:kalendername:url=https://server_ip/baikal/cal.php/calendars/username/kalender_id  
+caldavio:kalendername:username=username  
+caldavio:kalendername:password=password  
+caldavio:kalendername:reloadInterval=10  
+caldavio:kalendername:preloadTime=20000
+```
 ## google (performance issue, because the timestamp of files is not correct)
-    caldavio:openhab_tasks:url=https://www.google.com/calendar/dav/email@gmail.com/events
-    caldavio:openhab_tasks:username=email@gmail.com
-    caldavio:openhab_tasks:password=password
-    caldavio:openhab_tasks:reloadInterval=10
-    caldavio:openhab_tasks:preloadTime=20000
+```
+caldavio:openhab_tasks:url=https://www.google.com/calendar/dav/email@gmail.com/events
+caldavio:openhab_tasks:username=email@gmail.com
+caldavio:openhab_tasks:password=password
+caldavio:openhab_tasks:reloadInterval=10
+caldavio:openhab_tasks:preloadTime=20000
+```
 ## (zarafa?)
 
 ## Locate URL
@@ -151,9 +161,11 @@ http://www.ict4g.net/adolfo/notes/2015/07/04/determingurlofcaldav.html
 If 2-factor authentication has been enabled, create an application password using https://support.google.com/accounts/answer/185833?hl=en Use this password instead of your account password.
 
 # Persistence
-    caldav-persistence:calendarId=history
-    caldav-persistence:duration=10
-    caldav-persistence:singleEvents=false
+```
+caldav-persistence:calendarId=history
+caldav-persistence:duration=10
+caldav-persistence:singleEvents=false
+```
 Saves the events to the calendar named history with a length of 10 minutes
 
 # Presence Simulation
@@ -176,60 +188,64 @@ In every case, the binding org.openhab.io.caldav-<version>.jar is needed. For ex
 
 openhab.cfg
 
-    ################################ CalDav Binding #######################################
-    #
-    #caldavio:<calendar-id>:url=
-    #caldavio:<calendar-id>:username=
-    #caldavio:<calendar-id>:password=
-    #caldavio:<calendar-id>:reloadInterval=<minutes>
-    #caldavio:<calendar-id>:preloadTime=<minutes>
-    #caldavio:timeZone=<e. g. Europe/Berlin>
+```
+################################ CalDav Binding #######################################
+#
+#caldavio:<calendar-id>:url=
+#caldavio:<calendar-id>:username=
+#caldavio:<calendar-id>:password=
+#caldavio:<calendar-id>:reloadInterval=<minutes>
+#caldavio:<calendar-id>:preloadTime=<minutes>
+#caldavio:timeZone=<e. g. Europe/Berlin>
 
-    # Dienstlicher/privater Kalender
-    caldavio:dienstlich:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/pers%C3%B6nlich
-    caldavio:dienstlich:username=user
-    caldavio:dienstlich:password=password
-    caldavio:dienstlich:reloadInterval=60
-    caldavio:dienstlich:preloadTime=2880
-    caldavio:timeZone=Europe/Berlin
+# Dienstlicher/privater Kalender
+caldavio:dienstlich:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/pers%C3%B6nlich
+caldavio:dienstlich:username=user
+caldavio:dienstlich:password=password
+caldavio:dienstlich:reloadInterval=60
+caldavio:dienstlich:preloadTime=2880
+caldavio:timeZone=Europe/Berlin
 
-    # Müllkalender
-    caldavio:muell:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/m%C3%BCll
-    caldavio:muell:username=user
-    caldavio:muell:password=password
-    caldavio:muell:reloadInterval=1440
-    caldavio:muell:preloadTime=2880
-    caldavio:timeZone=Europe/Berlin
+# Müllkalender
+caldavio:muell:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/m%C3%BCll
+caldavio:muell:username=user
+caldavio:muell:password=password
+caldavio:muell:reloadInterval=1440
+caldavio:muell:preloadTime=2880
+caldavio:timeZone=Europe/Berlin
 
-    # Command-kalender``
-    caldavio:command:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/command
-    caldavio:command:username=user
-    caldavio:command:password=password
-    caldavio:command:reloadInterval=10
-    caldavio:command:preloadTime=1440
-    caldavio:timeZone=Europe/Berlin
+# Command-kalender``
+caldavio:command:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/command
+caldavio:command:username=user
+caldavio:command:password=password
+caldavio:command:reloadInterval=10
+caldavio:command:preloadTime=1440
+caldavio:timeZone=Europe/Berlin
 
-    # Additionally needed binding: org.openhab.binding.caldav-command-<version>.jar
-    # used to execute commands by a triggered event
-    # multiple calendars (calerdar-id) can be seperated by commas
-    #caldavCommand:readCalendars=<calendar-id>
-    caldavCommand:readCalendars=command
+# Additionally needed binding: org.openhab.binding.caldav-command-<version>.jar
+# used to execute commands by a triggered event
+# multiple calendars (calerdar-id) can be seperated by commas
+#caldavCommand:readCalendars=<calendar-id>
+caldavCommand:readCalendars=command
 
-    # Additionally needed binding: org.openhab.binding.caldav-personal-<version>.jar
-    # used to record and simulate presence and to show upcoming/active events
-    # multiple calendars (calerdar-id) can be seperated by commas
-    #caldavPersonal:usedCalendars=<calendar-id>
-    caldavPersonal:usedCalendars=dienstlich,muell
+# Additionally needed binding: org.openhab.binding.caldav-personal-<version>.jar
+# used to record and simulate presence and to show upcoming/active events
+# multiple calendars (calerdar-id) can be seperated by commas
+#caldavPersonal:usedCalendars=<calendar-id>
+caldavPersonal:usedCalendars=dienstlich,muell
 
-    # If one of these identifiers can be found inside the place of the event, 
-    # this event will not be used for presence
-    #caldavPersonal:homeIdentifiers=<values seperated by commas>
+# If one of these identifiers can be found inside the place of the event, 
+# this event will not be used for presence
+#caldavPersonal:homeIdentifiers=<values seperated by commas>
+```
 
 The items-File:
 
-    String OfficeCalName0	"Termin jetzt [%s]"		<calendar>	{ caldavPersonal="calendar:dienstlich type:ACTIVE eventNr:1 value:NAME" } //eventNr for concurrent events
-    DateTime OfficeCalTime0	"Beginn [%1$tT, %1$td.%1$tm.%1$tY]"			<calendar>	{ caldavPersonal="calendar:dienstlich type:ACTIVE eventNr:1 value:START" } //eventNr for concurrent events
-    String OfficeCalName1	"nächster Termin [%s]"	<calendar>	{ caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:1 value:NAME" }
-    DateTime OfficeCalTime1	"Beginn [%1$tT, %1$td.%1$tm.%1$tY]"			<calendar>	{ caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:1 value:START" }
-    String OfficeCalName2	"übernächster Termin [%s]" <calendar> { caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:2 value:NAME" }
-    DateTime OfficeCalTime2	"Beginn [%1$tT, %1$td.%1$tm.%1$tY]" 			<calendar> { caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:2 value:START" }
+```
+String OfficeCalName0	"Termin jetzt [%s]"		<calendar>	{ caldavPersonal="calendar:dienstlich type:ACTIVE eventNr:1 value:NAME" } //eventNr for concurrent events
+DateTime OfficeCalTime0	"Beginn [%1$tT, %1$td.%1$tm.%1$tY]"			<calendar>	{ caldavPersonal="calendar:dienstlich type:ACTIVE eventNr:1 value:START" } //eventNr for concurrent events
+String OfficeCalName1	"nächster Termin [%s]"	<calendar>	{ caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:1 value:NAME" }
+DateTime OfficeCalTime1	"Beginn [%1$tT, %1$td.%1$tm.%1$tY]"			<calendar>	{ caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:1 value:START" }
+String OfficeCalName2	"übernächster Termin [%s]" <calendar> { caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:2 value:NAME" }
+DateTime OfficeCalTime2	"Beginn [%1$tT, %1$td.%1$tm.%1$tY]" 			<calendar> { caldavPersonal="calendar:dienstlich type:UPCOMING eventNr:2 value:START" }
+```
