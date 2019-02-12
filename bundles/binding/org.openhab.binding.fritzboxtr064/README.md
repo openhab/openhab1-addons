@@ -12,6 +12,21 @@ It has been tested on:
 * 7490
 * 7590 (v6.92)
 
+> There are 3 openHAB FRITZ!Box bindings available right now.
+> * [Fritz!Box Binding](https://www.openhab.org/v2.4/addons/bindings/fritzbox1/) (openHAB 1.x)
+> * [Fritzbox Binding (using TR064 protocol)](https://www.openhab.org/v2.4/addons/bindings/fritzboxtr0641/) (openHAB 1.x)
+> * [AVM FRITZ! Binding](https://www.openhab.org/v2.4/addons/bindings/avmfritz/) (openHAB 2.x)
+>
+> This is due to the fact that transitioning from OH1 to OH2 is still ongoing and the functionality of the openHAB 1.x bindings is being consolidated into a new openHAB 2.x binding.
+> The openHAB 2.x binding is not yet feature completed, but will supersede the openHAB 1.x bindings in the future.
+>
+> Both openHAB 1.x bindings offer a similar feature set, but use a different access mechanism to the FRITZ!Box.
+> The "Fritz!Box" binding uses a telnet connection to access certain features of the box and "Fritzbox (using TR064 protocol)" uses the TR064 protocol via HTTP SOAP requests on ports 49000/49443.
+> Both features need to be activated on the FRITZ!Box first, before the access works and actions can be triggered.
+>
+> NOTE: There is no restriction in using OpenHAB 1.x bindings on an openHAB 2.x server.
+> Just follow the instructions on the binding pages to configure the 1.x binding on a 2.x server.
+
 ## Features
 
 * detect if MAC is online in network (presence detection)
