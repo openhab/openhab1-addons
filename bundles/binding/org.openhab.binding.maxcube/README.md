@@ -47,7 +47,7 @@ Contact Office_Window "Office Window [MAP(en.map):%s]" (MyGroup) { maxcube="JEQ0
 For a heating thermostat, an identical configuration will provide the setpoint temperature of the heating thermostat (4.5° corresponds to OFF shown on the thermostat display). To show the temperature setpoint you need to use a number item.
 
 ```
-    Number Heating_Max "Heating Thermostat [%.1f °C]" (MyGroup) { maxcube="JEQ0336148" }
+Number Heating_Max "Heating Thermostat [%.1f °C]" (MyGroup) { maxcube="JEQ0336148" }
 ```
 
 The above examples would be shown as 
@@ -85,7 +85,7 @@ rule "Bedtime"
 when
    Time cron "0 0 23 * * ?"
 then
-   sendCommand (Heating_Max_Valve, 15 )
+   Heating_Max_Valve.sendCommand( 15 )
 end
 ```
 
