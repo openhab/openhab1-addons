@@ -20,6 +20,7 @@ public class TinkerforgeErrorHandler {
     public static String TF_TIMEOUT_EXCEPTION = "Tinkerforge timeout occurred";
     public static String TF_NOT_CONNECTION_EXCEPTION = "Tinkerforge \"not connected\" occurred";
     public static String TF_STREAM_OUT_OF_SYNC_EXCPETION = "Tinkerforge reading stream from device failed";
+    public static String TF_NDEF_PARSE_EXCEPTION = "Tinkerforge failed to parse the NDEF message";
     public static final String TF_NOT_CRYPTO_EXCEPTION = "Tinkerforge authorization failed";
 
     /**

@@ -24,7 +24,7 @@ import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
-import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
+import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord.NDEFParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -713,44 +713,28 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
         @Override
         public void readerStateChanged(int state, boolean idle) {
             if (state == BrickletNFC.READER_STATE_IDLE) {
-                // tag id anfordern
                 requestTagID();
             } else if (state == BrickletNFC.READER_STATE_REQUEST_TAG_ID_READY) {
-                // tag id ready, get the tag id
                 readTagID();
-                // if nfc forum 1-4 dann request ndef
                 requestNDEF();
             } else if (state == BrickletNFC.READER_STATE_REQUEST_NDEF_READY) {
-                // read ndef here
                 readNDEF();
-                // start scan again
-                requestTagID();
+                requestTagIDAfterWait();
             } else if (state == BrickletNFC.READER_STATE_REQUEST_TAG_ID_ERROR) {
-                // kein tag gefunden, oder kein tag zu passendem typ gefunden
-                System.out.println("Request tag ID error");
-                // start scan again
                 requestTagID();
             } else if (state == BrickletNFC.READER_STATE_REQUEST_NDEF_ERROR) {
-                // fehler beim ndef lesen
-                System.out.println("Request ndef error");
-                // start scan again
                 requestTagID();
             }
         }
     };
 
-    private static String ndefToHex(int[] data) {
-        StringBuilder tag = new StringBuilder();
-        int i = 0;
-        for (int v : data) {
-            if (i < data.length - 1) {
-                tag.append(String.format("0x%X ", v));
-            } else {
-                tag.append(String.format("0x%X", v));
-            }
-            i++;
+    private void requestTagIDAfterWait() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            logger.error("waiting was interrupted: {}", e.getMessage());
         }
-        return tag.toString();
+        requestTagID();
     }
 
     private void readNDEF() {
@@ -758,20 +742,19 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
             // tinkerforge creates buffer for each read request
             int[] buffer = tinkerforgeDevice.readerReadNDEF();
             if (buffer == null) {
-                logger.error("nothing in there");
+                logger.error("read empty buffer");
             } else {
-                String hex = ndefToHex(buffer);
-                System.out.println("NDEF: " + hex);
-
                 NDEFRecord record = NDEFRecord.fromBuffer(buffer);
+                logger.debug(record.toString());
             }
-            // todo handle data here
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
         } catch (NotConnectedException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
         } catch (StreamOutOfSyncException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_STREAM_OUT_OF_SYNC_EXCPETION, e);
+        } catch (NDEFParseException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NDEF_PARSE_EXCEPTION, e);
         }
     }
 
@@ -788,19 +771,22 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
     private void requestTagID() {
         try {
             tinkerforgeDevice.readerRequestTagID();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
         }
     }
 
     private void readTagID() {
         try {
             ReaderGetTagID ret = tinkerforgeDevice.readerGetTagID();
-            NFCTagInfo info = NFCTagInfo.fromReaderGetTagID(ret);
-            System.out.format("Found tag of type %d with ID [%s]\n", ret.tagType, info.getTagIdAsHex());
-        } catch (Exception e) {
-            return;
+            // NFCTagInfo info = NFCTagInfo.fromReaderGetTagID(ret);
+            // System.out.format("Found tag of type %d with ID [%s]\n", ret.tagType, info.getTagIdAsHex());
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
         }
     }
 
