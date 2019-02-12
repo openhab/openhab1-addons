@@ -239,7 +239,7 @@ rule "Query full status after power on (from standby)"
 when
     Item livingroomSpa20Power changed from OFF to ON
 then
-    sendCommand(livingroomSpa20, "INIT")  // Query all variables
+    livingroomSpa20.sendCommand("INIT")  // Query all variables
 end
 
 /*
@@ -254,8 +254,8 @@ when
 then
     // Do not use item livingroomSpa20CurrentInput directly since it
     // displays command name (SYNCINPUT) briefly as the value of item
-    sendCommand(livingroomSpa20, "SYNCINPUT")
-    sendCommand(livingroomSpa20, "SYNCSURR")
+    livingroomSpa20.sendCommand("SYNCINPUT")
+    livingroomSpa20.sendCommand("SYNCSURR")
 end
 ```
 
