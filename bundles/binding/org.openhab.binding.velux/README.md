@@ -180,7 +180,7 @@ rule "PushButton of group gV"
         // Foreach-Switch-is-ON
         gV.allMembers.filter( s | s.state == ON).forEach[i|
             // switching OFF
-                sendCommand(i, OFF)
+                i.sendCommand(OFF)
         ]
     end
 ```
