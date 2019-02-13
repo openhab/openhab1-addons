@@ -115,6 +115,36 @@ public interface ModelFactory extends EFactory {
     DualButtonButton createDualButtonButton();
 
     /**
+     * Returns a new object of class '<em>MBricklet Dual Button V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Dual Button V2</em>'.
+     * @generated
+     */
+    MBrickletDualButtonV2 createMBrickletDualButtonV2();
+
+    /**
+     * Returns a new object of class '<em>Dual Button Button V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Dual Button Button V2</em>'.
+     * @generated
+     */
+    DualButtonButtonV2 createDualButtonButtonV2();
+
+    /**
+     * Returns a new object of class '<em>Dual Button Led V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Dual Button Led V2</em>'.
+     * @generated
+     */
+    DualButtonLedV2 createDualButtonLedV2();
+
+    /**
      * Returns a new object of class '<em>MBricklet Accelerometer</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

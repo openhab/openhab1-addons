@@ -51,6 +51,7 @@ import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
+import com.tinkerforge.BrickletDualButtonV2;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletDustDetector;
 import com.tinkerforge.BrickletHallEffect;
@@ -149,6 +150,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMBrickletPiezoSpeaker();
             case ModelPackage.DUAL_BUTTON_BUTTON:
                 return createDualButtonButton();
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2:
+                return createMBrickletDualButtonV2();
+            case ModelPackage.DUAL_BUTTON_BUTTON_V2:
+                return createDualButtonButtonV2();
+            case ModelPackage.DUAL_BUTTON_LED_V2:
+                return createDualButtonLedV2();
             case ModelPackage.MBRICKLET_ACCELEROMETER:
                 return createMBrickletAccelerometer();
             case ModelPackage.ACCELEROMETER_DIRECTION:
@@ -625,6 +632,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletLinearPotiFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
                 return createTinkerBrickletDualButtonFromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON_V2:
+                return createTinkerBrickletDualButtonV2FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_PTC:
                 return createTinkerBrickletPTCFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A:
@@ -856,6 +865,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletLinearPotiToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON:
                 return convertTinkerBrickletDualButtonToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_DUAL_BUTTON_V2:
+                return convertTinkerBrickletDualButtonV2ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_PTC:
                 return convertTinkerBrickletPTCToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_INDUSTRIAL_DUAL020M_A:
@@ -1025,6 +1036,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public DualButtonButton createDualButtonButton() {
         DualButtonButtonImpl dualButtonButton = new DualButtonButtonImpl();
         return dualButtonButton;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletDualButtonV2 createMBrickletDualButtonV2() {
+        MBrickletDualButtonV2Impl mBrickletDualButtonV2 = new MBrickletDualButtonV2Impl();
+        return mBrickletDualButtonV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public DualButtonButtonV2 createDualButtonButtonV2() {
+        DualButtonButtonV2Impl dualButtonButtonV2 = new DualButtonButtonV2Impl();
+        return dualButtonButtonV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public DualButtonLedV2 createDualButtonLedV2() {
+        DualButtonLedV2Impl dualButtonLedV2 = new DualButtonLedV2Impl();
+        return dualButtonLedV2;
     }
 
     /**
@@ -4384,6 +4428,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertTinkerBrickletDualButtonToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletDualButtonV2 createTinkerBrickletDualButtonV2FromString(EDataType eDataType, String initialValue) {
+        return (BrickletDualButtonV2) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletDualButtonV2ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

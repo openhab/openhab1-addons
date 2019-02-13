@@ -56,6 +56,7 @@ import com.tinkerforge.BrickletColor;
 import com.tinkerforge.BrickletDistanceIR;
 import com.tinkerforge.BrickletDistanceUS;
 import com.tinkerforge.BrickletDualButton;
+import com.tinkerforge.BrickletDualButtonV2;
 import com.tinkerforge.BrickletDualRelay;
 import com.tinkerforge.BrickletDustDetector;
 import com.tinkerforge.BrickletHallEffect;
@@ -1050,6 +1051,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
                 logger.debug("addDevice BrickletDualButton");
                 mDevice = factory.createMBrickletDualButton();
                 mDevice.setDeviceIdentifier(BrickletDualButton.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletDualButtonV2.DEVICE_IDENTIFIER) {
+                logger.debug("addDevice BrickletDualButtonV2");
+                mDevice = factory.createMBrickletDualButtonV2();
+                mDevice.setDeviceIdentifier(BrickletDualButtonV2.DEVICE_IDENTIFIER);
             } else if (deviceIdentifier == BrickletPTC.DEVICE_IDENTIFIER) {
                 logger.debug("addDevice BrickletPTC");
                 mDevice = factory.createMBrickletPTC();

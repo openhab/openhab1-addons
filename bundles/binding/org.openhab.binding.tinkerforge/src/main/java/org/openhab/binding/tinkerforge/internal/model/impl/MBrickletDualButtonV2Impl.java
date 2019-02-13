@@ -1,15 +1,11 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -23,12 +19,13 @@ import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 import org.openhab.binding.tinkerforge.internal.LoggerConstants;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
+import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonV2;
 import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
-import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDeviceV2;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedV2;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
-import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButtonV2;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
@@ -36,45 +33,47 @@ import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tinkerforge.BrickletDualButton;
+import com.tinkerforge.BrickletDualButtonV2;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.NotConnectedException;
+import com.tinkerforge.TimeoutException;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MBricklet Dual Button</b></em>'.
+ * An implementation of the model object '<em><b>MBricklet Dual Button V2</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getLogger
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getLogger
  * <em>Logger</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getUid <em>Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getEnabledA <em>Enabled
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getUid <em>Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#isPoll <em>Poll</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getEnabledA <em>Enabled
  * A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getTinkerforgeDevice
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getTinkerforgeDevice
  * <em>Tinkerforge Device</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getIpConnection <em>Ip
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getIpConnection <em>Ip
  * Connection</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getConnectedUid <em>Connected
- * Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getPosition
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getConnectedUid
+ * <em>Connected Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getPosition
  * <em>Position</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getDeviceIdentifier <em>Device
- * Identifier</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getName <em>Name</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getBrickd
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getDeviceIdentifier
+ * <em>Device Identifier</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getName <em>Name</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getBrickd
  * <em>Brickd</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getMsubdevices
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getMsubdevices
  * <em>Msubdevices</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonImpl#getDeviceType <em>Device
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletDualButtonV2Impl#getDeviceType <em>Device
  * Type</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implements MBrickletDualButton {
+public class MBrickletDualButtonV2Impl extends MinimalEObjectImpl.Container implements MBrickletDualButtonV2 {
     /**
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -172,7 +171,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @generated
      * @ordered
      */
-    protected BrickletDualButton tinkerforgeDevice;
+    protected BrickletDualButtonV2 tinkerforgeDevice;
 
     /**
      * The default value of the '{@link #getIpConnection() <em>Ip Connection</em>}' attribute.
@@ -293,7 +292,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @generated
      * @ordered
      */
-    protected EList<DualButtonDevice> msubdevices;
+    protected EList<DualButtonDeviceV2> msubdevices;
 
     /**
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -305,6 +304,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @ordered
      */
     protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_dualbutton";
+
+    private Timer enableCallbackTimer;
 
     /**
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
@@ -323,7 +324,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      *
      * @generated
      */
-    protected MBrickletDualButtonImpl() {
+    protected MBrickletDualButtonV2Impl() {
         super();
     }
 
@@ -335,7 +336,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      */
     @Override
     protected EClass eStaticClass() {
-        return ModelPackage.Literals.MBRICKLET_DUAL_BUTTON;
+        return ModelPackage.Literals.MBRICKLET_DUAL_BUTTON_V2;
     }
 
     /**
@@ -360,8 +361,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         Logger oldLogger = logger;
         logger = newLogger;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER, oldLogger,
-                    logger));
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__LOGGER,
+                    oldLogger, logger));
         }
     }
 
@@ -387,7 +388,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         String oldUid = uid;
         uid = newUid;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__UID, oldUid,
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__UID, oldUid,
                     uid));
         }
     }
@@ -414,7 +415,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         boolean oldPoll = poll;
         poll = newPoll;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__POLL, oldPoll,
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POLL, oldPoll,
                     poll));
         }
     }
@@ -441,7 +442,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A,
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__ENABLED_A,
                     oldEnabledA, enabledA));
         }
     }
@@ -453,7 +454,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @generated
      */
     @Override
-    public BrickletDualButton getTinkerforgeDevice() {
+    public BrickletDualButtonV2 getTinkerforgeDevice() {
         return tinkerforgeDevice;
     }
 
@@ -464,12 +465,13 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @generated
      */
     @Override
-    public void setTinkerforgeDevice(BrickletDualButton newTinkerforgeDevice) {
-        BrickletDualButton oldTinkerforgeDevice = tinkerforgeDevice;
+    public void setTinkerforgeDevice(BrickletDualButtonV2 newTinkerforgeDevice) {
+        BrickletDualButtonV2 oldTinkerforgeDevice = tinkerforgeDevice;
         tinkerforgeDevice = newTinkerforgeDevice;
         if (eNotificationRequired()) {
             eNotify(new ENotificationImpl(this, Notification.SET,
-                    ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE, oldTinkerforgeDevice, tinkerforgeDevice));
+                    ModelPackage.MBRICKLET_DUAL_BUTTON_V2__TINKERFORGE_DEVICE, oldTinkerforgeDevice,
+                    tinkerforgeDevice));
         }
     }
 
@@ -495,7 +497,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         IPConnection oldIpConnection = ipConnection;
         ipConnection = newIpConnection;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION,
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__IP_CONNECTION,
                     oldIpConnection, ipConnection));
         }
     }
@@ -522,7 +524,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         String oldConnectedUid = connectedUid;
         connectedUid = newConnectedUid;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID,
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__CONNECTED_UID,
                     oldConnectedUid, connectedUid));
         }
     }
@@ -549,7 +551,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         char oldPosition = position;
         position = newPosition;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION,
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POSITION,
                     oldPosition, position));
         }
     }
@@ -576,8 +578,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         int oldDeviceIdentifier = deviceIdentifier;
         deviceIdentifier = newDeviceIdentifier;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER,
-                    oldDeviceIdentifier, deviceIdentifier));
+            eNotify(new ENotificationImpl(this, Notification.SET,
+                    ModelPackage.MBRICKLET_DUAL_BUTTON_V2__DEVICE_IDENTIFIER, oldDeviceIdentifier, deviceIdentifier));
         }
     }
 
@@ -603,7 +605,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         String oldName = name;
         name = newName;
         if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__NAME, oldName,
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__NAME, oldName,
                     name));
         }
     }
@@ -616,7 +618,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public MBrickd getBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD) {
             return null;
         }
         return (MBrickd) eContainer();
@@ -629,7 +631,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @generated
      */
     public MBrickd basicGetBrickd() {
-        if (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD) {
+        if (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD) {
             return null;
         }
         return (MBrickd) eInternalContainer();
@@ -642,7 +644,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @generated
      */
     public NotificationChain basicSetBrickd(MBrickd newBrickd, NotificationChain msgs) {
-        msgs = eBasicSetContainer((InternalEObject) newBrickd, ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD, msgs);
+        msgs = eBasicSetContainer((InternalEObject) newBrickd, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD, msgs);
         return msgs;
     }
 
@@ -655,7 +657,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public void setBrickd(MBrickd newBrickd) {
         if (newBrickd != eInternalContainer()
-                || (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD && newBrickd != null)) {
+                || (eContainerFeatureID() != ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD && newBrickd != null)) {
             if (EcoreUtil.isAncestor(this, newBrickd)) {
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
             }
@@ -672,8 +674,8 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
                 msgs.dispatch();
             }
         } else if (eNotificationRequired()) {
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD, newBrickd,
-                    newBrickd));
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD,
+                    newBrickd, newBrickd));
         }
     }
 
@@ -684,10 +686,10 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
      * @generated
      */
     @Override
-    public EList<DualButtonDevice> getMsubdevices() {
+    public EList<DualButtonDeviceV2> getMsubdevices() {
         if (msubdevices == null) {
-            msubdevices = new EObjectContainmentWithInverseEList<DualButtonDevice>(DualButtonDevice.class, this,
-                    ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
+            msubdevices = new EObjectContainmentWithInverseEList<DualButtonDeviceV2>(DualButtonDeviceV2.class, this,
+                    ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES, ModelPackage.MSUB_DEVICE__MBRICK) {
                 private static final long serialVersionUID = 1L;
 
                 @Override
@@ -711,13 +713,14 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      *
      * @generated NOT
      */
     @Override
     public void initSubDevices() {
-        DualButtonButton leftButton = ModelFactory.eINSTANCE.createDualButtonButton();
+        DualButtonButtonV2 leftButton = ModelFactory.eINSTANCE.createDualButtonButtonV2();
         leftButton.setPosition(DualButtonDevicePosition.LEFT);
         leftButton.setUid(getUid());
         String subIdLeftButton = "dualbutton_leftbutton";
@@ -726,7 +729,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         leftButton.init();
         leftButton.setMbrick(this);
 
-        DualButtonButton rightButton = ModelFactory.eINSTANCE.createDualButtonButton();
+        DualButtonButtonV2 rightButton = ModelFactory.eINSTANCE.createDualButtonButtonV2();
         rightButton.setPosition(DualButtonDevicePosition.RIGHT);
         rightButton.setUid(getUid());
         String subIdRightButton = "dualbutton_rightbutton";
@@ -735,7 +738,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         rightButton.init();
         rightButton.setMbrick(this);
 
-        DualButtonLed leftLed = ModelFactory.eINSTANCE.createDualButtonLed();
+        DualButtonLedV2 leftLed = ModelFactory.eINSTANCE.createDualButtonLedV2();
         leftLed.setPosition(DualButtonDevicePosition.LEFT);
         leftLed.setUid(getUid());
         String subidLeftLed = "dualbutton_leftled";
@@ -744,7 +747,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         leftLed.init();
         leftLed.setMbrick(this);
 
-        DualButtonLed rightLed = ModelFactory.eINSTANCE.createDualButtonLed();
+        DualButtonLedV2 rightLed = ModelFactory.eINSTANCE.createDualButtonLedV2();
         rightLed.setPosition(DualButtonDevicePosition.RIGHT);
         rightLed.setUid(getUid());
         String subIdRightLed = "dualbutton_rightled";
@@ -755,33 +758,86 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      *
      * @generated NOT
      */
     @Override
     public void init() {
         setEnabledA(new AtomicBoolean());
-        logger = LoggerFactory.getLogger(MBrickletDualButtonImpl.class);
+        logger = LoggerFactory.getLogger(MBrickletDualButtonV2Impl.class);
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      *
      * @generated NOT
      */
     @Override
     public void enable() {
-        tinkerforgeDevice = new BrickletDualButton(getUid(), getIpConnection());
+        enableCallbackTimer = null;
+        tinkerforgeDevice = new BrickletDualButtonV2(getUid(), getIpConnection());
+        // Callbacks must be enabled, or we dont get any button states from the listener.
+        // So if enabling of button state failes, we try forever to enable it.
+        enableCallbacks();
+    }
+
+    private void enableCallbacks() {
+        if (tinkerforgeDevice == null) {
+            return;
+        }
+        boolean hasError = false;
+        try {
+            tinkerforgeDevice.setStateChangedCallbackConfiguration(true);
+            disableReconnect();
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+            hasError = true;
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+            hasError = true;
+        }
+
+        if (hasError) {
+            logger.error("Could not enable callbacks for BrickletDualButtonV2 with id {}", getUid());
+            scheduleReconnect();
+        }
+    }
+
+    private void disableReconnect() {
+        if (enableCallbackTimer != null) {
+            enableCallbackTimer.cancel();
+            enableCallbackTimer = null;
+        }
+    }
+
+    private void scheduleReconnect() {
+        if (enableCallbackTimer != null) {
+            return;
+        }
+
+        enableCallbackTimer = new Timer(true);
+        enableCallbackTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                enableCallbacks();
+            }
+        }, 1000, 1000);
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      *
      * @generated NOT
      */
     @Override
     public void disable() {
+        if (enableCallbackTimer != null) {
+            enableCallbackTimer.cancel();
+        }
         tinkerforgeDevice = null;
     }
 
@@ -795,12 +851,12 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD:
                 if (eInternalContainer() != null) {
                     msgs = eBasicRemoveFromContainer(msgs);
                 }
                 return basicSetBrickd((MBrickd) otherEnd, msgs);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES:
                 return ((InternalEList<InternalEObject>) (InternalEList<?>) getMsubdevices()).basicAdd(otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -815,9 +871,9 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD:
                 return basicSetBrickd(null, msgs);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES:
                 return ((InternalEList<?>) getMsubdevices()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -832,7 +888,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
         switch (eContainerFeatureID()) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD:
                 return eInternalContainer().eInverseRemove(this, ModelPackage.MBRICKD__MDEVICES, MBrickd.class, msgs);
         }
         return super.eBasicRemoveFromContainerFeature(msgs);
@@ -847,34 +903,34 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__LOGGER:
                 return getLogger();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__UID:
                 return getUid();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POLL:
                 return isPoll();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__ENABLED_A:
                 return getEnabledA();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__TINKERFORGE_DEVICE:
                 return getTinkerforgeDevice();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__IP_CONNECTION:
                 return getIpConnection();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__CONNECTED_UID:
                 return getConnectedUid();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POSITION:
                 return getPosition();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__DEVICE_IDENTIFIER:
                 return getDeviceIdentifier();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__NAME:
                 return getName();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD:
                 if (resolve) {
                     return getBrickd();
                 }
                 return basicGetBrickd();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES:
                 return getMsubdevices();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_TYPE:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__DEVICE_TYPE:
                 return getDeviceType();
         }
         return super.eGet(featureID, resolve, coreType);
@@ -890,42 +946,42 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__LOGGER:
                 setLogger((Logger) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__UID:
                 setUid((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POLL:
                 setPoll((Boolean) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__ENABLED_A:
                 setEnabledA((AtomicBoolean) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
-                setTinkerforgeDevice((BrickletDualButton) newValue);
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__TINKERFORGE_DEVICE:
+                setTinkerforgeDevice((BrickletDualButtonV2) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__IP_CONNECTION:
                 setIpConnection((IPConnection) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__CONNECTED_UID:
                 setConnectedUid((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POSITION:
                 setPosition((Character) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__DEVICE_IDENTIFIER:
                 setDeviceIdentifier((Integer) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__NAME:
                 setName((String) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD:
                 setBrickd((MBrickd) newValue);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES:
                 getMsubdevices().clear();
-                getMsubdevices().addAll((Collection<? extends DualButtonDevice>) newValue);
+                getMsubdevices().addAll((Collection<? extends DualButtonDeviceV2>) newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -940,40 +996,40 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__LOGGER:
                 setLogger(LOGGER_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__UID:
                 setUid(UID_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POLL:
                 setPoll(POLL_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__ENABLED_A:
                 setEnabledA(ENABLED_A_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
-                setTinkerforgeDevice((BrickletDualButton) null);
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__TINKERFORGE_DEVICE:
+                setTinkerforgeDevice((BrickletDualButtonV2) null);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__IP_CONNECTION:
                 setIpConnection(IP_CONNECTION_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__CONNECTED_UID:
                 setConnectedUid(CONNECTED_UID_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POSITION:
                 setPosition(POSITION_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__DEVICE_IDENTIFIER:
                 setDeviceIdentifier(DEVICE_IDENTIFIER_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__NAME:
                 setName(NAME_EDEFAULT);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD:
                 setBrickd((MBrickd) null);
                 return;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES:
                 getMsubdevices().clear();
                 return;
         }
@@ -989,33 +1045,33 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__LOGGER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__LOGGER:
                 return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__UID:
                 return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POLL:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POLL:
                 return poll != POLL_EDEFAULT;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__ENABLED_A:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__ENABLED_A:
                 return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__TINKERFORGE_DEVICE:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__TINKERFORGE_DEVICE:
                 return tinkerforgeDevice != null;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__IP_CONNECTION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__IP_CONNECTION:
                 return IP_CONNECTION_EDEFAULT == null ? ipConnection != null
                         : !IP_CONNECTION_EDEFAULT.equals(ipConnection);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__CONNECTED_UID:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__CONNECTED_UID:
                 return CONNECTED_UID_EDEFAULT == null ? connectedUid != null
                         : !CONNECTED_UID_EDEFAULT.equals(connectedUid);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__POSITION:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__POSITION:
                 return position != POSITION_EDEFAULT;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_IDENTIFIER:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__DEVICE_IDENTIFIER:
                 return deviceIdentifier != DEVICE_IDENTIFIER_EDEFAULT;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__NAME:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__BRICKD:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__BRICKD:
                 return basicGetBrickd() != null;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
-            case ModelPackage.MBRICKLET_DUAL_BUTTON__DEVICE_TYPE:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__DEVICE_TYPE:
                 return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
         }
         return super.eIsSet(featureID);
@@ -1031,7 +1087,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
         if (baseClass == MSubDeviceHolder.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES:
+                case ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES:
                     return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
                 default:
                     return -1;
@@ -1051,7 +1107,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         if (baseClass == MSubDeviceHolder.class) {
             switch (baseFeatureID) {
                 case ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES:
-                    return ModelPackage.MBRICKLET_DUAL_BUTTON__MSUBDEVICES;
+                    return ModelPackage.MBRICKLET_DUAL_BUTTON_V2__MSUBDEVICES;
                 default:
                     return -1;
             }
@@ -1070,7 +1126,7 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         if (baseClass == MSubDeviceHolder.class) {
             switch (baseOperationID) {
                 case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES:
-                    return ModelPackage.MBRICKLET_DUAL_BUTTON___INIT_SUB_DEVICES;
+                    return ModelPackage.MBRICKLET_DUAL_BUTTON_V2___INIT_SUB_DEVICES;
                 default:
                     return -1;
             }
@@ -1087,16 +1143,16 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
     @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
         switch (operationID) {
-            case ModelPackage.MBRICKLET_DUAL_BUTTON___INIT_SUB_DEVICES:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2___INIT_SUB_DEVICES:
                 initSubDevices();
                 return null;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON___INIT:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2___INIT:
                 init();
                 return null;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON___ENABLE:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2___ENABLE:
                 enable();
                 return null;
-            case ModelPackage.MBRICKLET_DUAL_BUTTON___DISABLE:
+            case ModelPackage.MBRICKLET_DUAL_BUTTON_V2___DISABLE:
                 disable();
                 return null;
         }
@@ -1142,4 +1198,4 @@ public class MBrickletDualButtonImpl extends MinimalEObjectImpl.Container implem
         return result.toString();
     }
 
-} // MBrickletDualButtonImpl
+} // MBrickletDualButtonV2Impl

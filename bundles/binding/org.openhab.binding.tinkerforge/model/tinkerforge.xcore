@@ -52,6 +52,7 @@ import com.tinkerforge.BrickletLEDStrip
 import com.tinkerforge.BrickletJoystick
 import com.tinkerforge.BrickletLinearPoti
 import com.tinkerforge.BrickletDualButton
+import com.tinkerforge.BrickletDualButtonV2
 import com.tinkerforge.BrickletPTC
 import com.tinkerforge.BrickletIndustrialDual020mA
 import com.tinkerforge.BrickletSolidStateRelay
@@ -130,6 +131,7 @@ type TinkerBrickletLEDStrip wraps BrickletLEDStrip
 type BrickletJoystick wraps BrickletJoystick
 type TinkerBrickletLinearPoti wraps BrickletLinearPoti
 type TinkerBrickletDualButton wraps BrickletDualButton
+type TinkerBrickletDualButtonV2 wraps BrickletDualButtonV2
 type TinkerBrickletPTC wraps BrickletPTC
 type TinkerBrickletIndustrialDual020mA wraps BrickletIndustrialDual020mA
 type TinkerBrickletSolidStateRelay wraps BrickletSolidStateRelay
@@ -353,6 +355,27 @@ class DualButtonButton extends DualButtonDevice, MSensor<SwitchState>,
 	MTFConfigConsumer<ButtonConfiguration> {
 	String deviceType = "dualbutton_button"
 	DualButtonDevicePosition position
+}
+
+class MBrickletDualButtonV2 extends MDevice<TinkerBrickletDualButtonV2>,
+    MSubDeviceHolder<DualButtonDeviceV2>{
+    readonly String deviceType = "bricklet_dualbutton"
+}
+
+interface DualButtonDeviceV2 extends MSubDevice<MBrickletDualButtonV2>{
+
+}
+
+class DualButtonButtonV2 extends DualButtonDeviceV2, MSensor<SwitchState>,
+    MTFConfigConsumer<ButtonConfiguration> {
+    String deviceType = "dualbutton_button"
+    DualButtonDevicePosition position
+}
+
+class DualButtonLedV2 extends DualButtonDeviceV2, DigitalActor,
+    MTFConfigConsumer<DualButtonLEDConfiguration> {
+    String deviceType = "dualbutton_led"
+    DualButtonDevicePosition position
 }
 
 class MBrickletAccelerometer extends MDevice<TinkerBrickletAccelerometer>,
@@ -1174,7 +1197,6 @@ interface MNFCTagInfoListener{
     op void handleTagInfo(NFCTagInfo tagInfo)    
 }
 
-//todo andre
 interface MNFCSubDevice extends MSubDevice<MBrickletNFC>{
 
 }
