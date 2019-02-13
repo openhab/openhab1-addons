@@ -2,7 +2,11 @@
 
 The [rrd4j](https://github.com/rrd4j/rrd4j) Persistence service is based on a round-robin database.
 
-In contrast to a "normal" database such as db4o, a round-robin database does not grow in size - it has a fixed allocated size, which is used. This is accomplished by doing data compression, which means that the older the data is, the less values are available. So while you might have a value every minute for the last 8 hours, you might only have one every day for the last year.
+In contrast to a "normal" database such as db4o, a round-robin database does not grow in size - it has a fixed allocated size, which is used. 
+This is accomplished by saving a fixed amount of datapoints and by doing data compression, which means that the older the data is, the less values are available. 
+The data is kept in several "archives", each holding the data for its set timeframe in the set granulation.
+The start point for all archives is the actually saved datapoint.
+So while you might have a value every minute for the last 8 hours, you might only have one every day for the last year.
 
 This service cannot be directly queried, because of the data compression. You could not provide precise answers for all questions. 
 
@@ -42,7 +46,7 @@ where:
 Round-robin databases (RRDs) have fixed-length so-called "archives" for storing values. 
 One RRD can have (in general) several datasources and each datasource can have several archives. 
 openHAB only supports one datasource per RRD (i.e. per stored item), which is named DATASOURCE_STATE.
-The setup of multiple configurations (with differing .def ,.archives and .items settings) can be used if each item is member of exact one setup only (see example below).
+Multiple configurations (with differing .items settings) can be used (see example below).
 
 ### Datasource types
 
@@ -61,16 +65,16 @@ Each datasource also has a value for heartbeat, minimum and maximum. This heartb
 
 Step (set in `.def=<dstype>,<heartbeat>,[<min>|U],[<max>|U],<step>` with step in seconds)
 
-Sets the timeintervall(seconds) between consecutive readings.
+Sets the time intervall(seconds) between consecutive readings.
 
 - Steps or Granularity (set in `.archives=<consolidationfunction>,<xff>,<steps>,<rows>`
 
-Steps are the number of consecutive readings that are used the create a single entry into the database for this timeintervall.
-The timeintervall covered is calculated by (step x steps) seconds.
+Steps are the number of consecutive readings that are used the create a single entry into the database for this time intervall.
+The time intervall covered is calculated by (step x steps) seconds.
 
 Now for the archives: As already said, each datasource can have several archives.
 Think of an archive as a drawer with a fixed number of boxes in it.
-Each (step x steps) seconds (the step is globally defined for the RRD, 60s in our example) the most-left box is emptied, the content of all boxes is moved one box to the left and new content is added to the most right box.
+Each (step x steps) seconds (the step is globally defined for the RRD, 60s in our example) the leftmost box is emptied, the content of all boxes is moved one box to the left and new content is added to the rightmost box.
 The "steps" value is defined per archive it is the third parameter in the archive definition.
 The number of boxes is defined as the fourth parameter.
 
@@ -92,9 +96,6 @@ The next archive has 144 boxes, which each represent the value of ten minutes (S
 The same goes for following archives, for larger time spans, the stored values are less "exact". 
 However, usually you are not interested in the exact values for a selected minute some time ago.
 
-Note that the period covered for each archive starts with the actual time backwards! 
-No value is stored beyond the timeframe covered by the largest archive!
-
 services/rrd4j.cfg:
 
 ```
@@ -114,9 +115,18 @@ defaultNumeric.def=GAUGE,60,U,U,60
 defaultNumeric.archives=AVERAGE,0.5,1,480:AVERAGE,0.5,4,360:AVERAGE,0.5,14,644:AVERAGE,0.5,60,720:AVERAGE,0.5,720,730:AVERAGE,0.5,10080,520
 ```
 The Datasource type is GAUGE, the heartbeat is 60s, MIN and MAX are unlimited and the step size is 60s.
-The archives are (no of boxes / granularity [minutes]): 480 / 1 (8 hrs), 360 / 4 ( 24 hrs), 644 / 14 (6.26 days), 720 / 60 (30 days), 730 / 720 (365 days), 520 / 10080 (10 years).
+The archives are:
 
-All item- and event-related configuration is done in the file `persistence/rrd4j.persist`, i.e. openHAB will persit items that are setup in this file with a strategy. 
+| Archive | Boxes | Granularity [min] | Period covered |
+|:---------:|:---------:|:--------:|:-------------:|
+| 1 | 480 | 1 | 8 hrs |
+| 2 | 360 | 4 | 24 hrs |
+| 3 | 644 | 14 | 6.26 days |
+| 4 | 720 | 60 | 30 days |
+| 5 | 730 | 720 | 365 days |
+| 6 | 520 | 10080 | 10 years |
+
+All item- and event-related configuration is done in the file `persistence/rrd4j.persist`, i.e. openHAB will persist items that are setup in this file with a strategy. 
 
 **IMPORTANT**
 
