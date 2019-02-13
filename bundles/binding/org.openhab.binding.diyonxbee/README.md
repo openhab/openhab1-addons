@@ -33,6 +33,7 @@ baudRate=9600
 ```
 
 ### Items
+
 ```
 Number  Living_Temperature      "Temperatur [%.1f °C]"          <temperature>   (GF_Living)     { diyonxbee="<0013A20040B40F18:Temperature" }
 Switch  Living_Motion           "Bewegung [MAP(de.map):%s]"     <present>       (GF_Living,GPresence)   { diyonxbee="<0013A20040B40F18:MOTION" }
