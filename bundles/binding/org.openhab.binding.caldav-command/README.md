@@ -53,7 +53,7 @@ Furthermore a switch can be defined to disable the automatic execution (through 
 Syntax is `caldavCommand="itemName:<Item-Name to listen to> type:<DISABLE>"`
 
 openhab.cfg
-`caldavCommand:readCalendars=<calendar-id>` (multiple calendars can be seperated by commas)
+`caldavCommand:readCalendars=<calendar-id>` (multiple calendars can be separated by commas)
 
 ## Description of type
 * VALUE: the value which will send to the command (can be of any type, depends on command in event and accepted commands of item)
@@ -88,8 +88,8 @@ Binding file: org.openhab.binding.caldav-personal-version.jar
 * Used to show upcoming/active events in openhab.
 
 ### openhab.cfg
-* `caldavPersonal:usedCalendars=<calendar-id>` (multiple calendars can be seperated by commas)
-* `caldavPersonal:homeIdentifiers=<values seperated by commans>` (if one of these identifiers can be found inside the place of the event, this event will not be used for presence)
+* `caldavPersonal:usedCalendars=<calendar-id>` (multiple calendars can be separated by commas)
+* `caldavPersonal:homeIdentifiers=<values separated by commans>` (if one of these identifiers can be found inside the place of the event, this event will not be used for presence)
 
 ### items
 * `caldavPersonal="calendar:'<calendar-ids, comma separated>' type:'<UPCOMING|ACTIVE|EVENT>' eventNr:'<event-nr, first one is 1>' value:'<NAME|DESCRIPTION|PLACE|START|END|TIME>"'`
@@ -227,19 +227,19 @@ caldavio:timeZone=Europe/Berlin
 
 # Additionally needed binding: org.openhab.binding.caldav-command-<version>.jar
 # used to execute commands by a triggered event
-# multiple calendars (calerdar-id) can be seperated by commas
+# multiple calendars (calerdar-id) can be separated by commas
 #caldavCommand:readCalendars=<calendar-id>
 caldavCommand:readCalendars=command
 
 # Additionally needed binding: org.openhab.binding.caldav-personal-<version>.jar
 # used to record and simulate presence and to show upcoming/active events
-# multiple calendars (calerdar-id) can be seperated by commas
+# multiple calendars (calerdar-id) can be separated by commas
 #caldavPersonal:usedCalendars=<calendar-id>
 caldavPersonal:usedCalendars=dienstlich
 
 # If one of these identifiers can be found inside the place of the event, 
 # this event will not be used for presence
-#caldavPersonal:homeIdentifiers=<values seperated by commas>
+#caldavPersonal:homeIdentifiers=<values separated by commas>
 ```
 
 The items-File:
