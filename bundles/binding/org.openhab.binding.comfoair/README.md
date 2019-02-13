@@ -1,4 +1,5 @@
 # ComfoAir Binding
+
 This binding should be compatible with the Zehnder ComfoAir 350 ventilation system. ComfoAir 550 is untested but should supposedly use the same protocol. The same is true for the device WHR930 of StorkAir, G90-380 by Wernig and Santos 370 DC to Paul.
 
 ## Binding Configuration
