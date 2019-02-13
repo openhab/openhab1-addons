@@ -65,6 +65,7 @@ The following table defines the allowable values for `<value-key>`.
 
 
 ## Examples
+
 ```
 String StationType		"StationType: [%s]"		{ davis="station_type" }
 Number Receivers		"Receivers: [%.0f]"		{ davis="receivers" }
