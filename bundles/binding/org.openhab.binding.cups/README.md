@@ -42,19 +42,21 @@ Each item binding should have this format:
 
 ## Examples
 
-- Number  Print_Jobs_Queued   "Unfinished print jobs"   (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
-
+```
 - Number  Print_Jobs_Completed   "Completed print jobs"   (FF_Office)   { cups="http://127.0.0.1:631/printers/MX-870" }
+```
 
 ### Example Use Case
 
 The CUPS Binding can be used to switch on a printer if there are print jobs in the queue and switch it off if the queue is empty.
 
 #### Items
+
 ```
 Number Print_Jobs_Queued  "Unfinished print jobs"  (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
 Switch Printer            "Printer"
 ```
+
 #### Rules
 
 ```
