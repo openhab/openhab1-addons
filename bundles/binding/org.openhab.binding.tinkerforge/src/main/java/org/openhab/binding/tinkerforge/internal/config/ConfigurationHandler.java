@@ -61,6 +61,7 @@ import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NFCConfiguration;
 import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
 import org.openhab.binding.tinkerforge.internal.model.OHConfig;
 import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
@@ -204,7 +205,8 @@ public class ConfigurationHandler {
         bricklet_thermocouple,
         bricklet_uvlight,
         bricklet_co2,
-        bricklet_analog_out_v2
+        bricklet_analog_out_v2,
+        bricklet_nfc
     }
 
     public ConfigurationHandler() {
@@ -736,6 +738,12 @@ public class ConfigurationHandler {
             ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
             ohtfDevice.setTfConfig(configuration);
             fillupConfig(ohtfDevice, deviceConfig);
+        } else if (deviceType.equals(TypeKey.bricklet_nfc.name())) {
+            NFCConfiguration configuration = modelFactory.createNFCConfiguration();
+            OHTFDevice<NFCConfiguration, NoSubIds> ohtfDevice = modelFactory.createOHTFDevice();
+            ohtfDevice.getSubDeviceIds().addAll(Arrays.asList(NoSubIds.values()));
+            ohtfDevice.setTfConfig(configuration);
+            fillupConfig(ohtfDevice, deviceConfig);
         } else {
             logger.debug("{} setting no tfConfig device_type {}", LoggerConstants.CONFIG, deviceType);
             logger.trace("{} deviceType {}", LoggerConstants.CONFIG, deviceType);
@@ -748,7 +756,7 @@ public class ConfigurationHandler {
     /**
      * Fills in the configuration into the configuration object and adds it to the {@link OHConfig}.
      *
-     * @param ohtfDevice The device specific configuration object {@link OHTFDevice}.
+     * @param ohtfDevice   The device specific configuration object {@link OHTFDevice}.
      * @param deviceConfig The device configuration as {@code Map} of {@code Strings}.
      * @throws ConfigurationException
      */
@@ -846,7 +854,7 @@ public class ConfigurationHandler {
     /**
      * Checks if the {@code deviceType} is known by the {@link Ecosystem}.
      *
-     * @param ohId The name of the device found in openhab.cfg as {@code String}.
+     * @param ohId       The name of the device found in openhab.cfg as {@code String}.
      * @param deviceType The device type found in openhab.cfg as {@code String}.
      * @throws ConfigurationException
      */

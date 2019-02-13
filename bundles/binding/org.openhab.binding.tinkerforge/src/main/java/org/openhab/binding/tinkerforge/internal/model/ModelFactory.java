@@ -995,6 +995,16 @@ public interface ModelFactory extends EFactory {
     BrickletOLEDConfiguration createBrickletOLEDConfiguration();
 
     /**
+     * Returns a new object of class '<em>NFC Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>NFC Configuration</em>'.
+     * @generated
+     */
+    NFCConfiguration createNFCConfiguration();
+
+    /**
      * Returns a new object of class '<em>MServo</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1633,6 +1643,16 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     MNFCID createMNFCID();
+
+    /**
+     * Returns a new object of class '<em>MNFC Trigger</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFC Trigger</em>'.
+     * @generated
+     */
+    MNFCTrigger createMNFCTrigger();
 
     /**
      * Returns the package supported by this factory.

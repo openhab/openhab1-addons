@@ -27,11 +27,14 @@ import org.openhab.binding.tinkerforge.internal.model.MNFCNDEFRecordListener;
 import org.openhab.binding.tinkerforge.internal.model.MNFCSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MNFCTagInfoListener;
 import org.openhab.binding.tinkerforge.internal.model.MNFCText;
+import org.openhab.binding.tinkerforge.internal.model.MNFCTrigger;
 import org.openhab.binding.tinkerforge.internal.model.MNFCUri;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
 import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NFCConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord.NDEFParseException;
 import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
@@ -71,6 +74,15 @@ import com.tinkerforge.TimeoutException;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getBrickd <em>Brickd</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getMsubdevices
  * <em>Msubdevices</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getTfConfig <em>Tf Config</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getDeviceType <em>Device
+ * Type</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getTextSubId <em>Text Sub
+ * Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getUriSubId <em>Uri Sub Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getIdSubId <em>Id Sub Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MBrickletNFCImpl#getTriggerSubId <em>Trigger Sub
+ * Id</em>}</li>
  * </ul>
  *
  * @generated
@@ -296,8 +308,131 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
      */
     protected EList<MNFCSubDevice> msubdevices;
 
+    /**
+     * The cached value of the '{@link #getTfConfig() <em>Tf Config</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getTfConfig()
+     * @generated
+     * @ordered
+     */
+    protected NFCConfiguration tfConfig;
+
+    /**
+     * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getDeviceType()
+     * @generated
+     * @ordered
+     */
+    protected static final String DEVICE_TYPE_EDEFAULT = "bricklet_nfc";
+
+    /**
+     * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getDeviceType()
+     * @generated
+     * @ordered
+     */
+    protected String deviceType = DEVICE_TYPE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getTextSubId() <em>Text Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getTextSubId()
+     * @generated
+     * @ordered
+     */
+    protected static final String TEXT_SUB_ID_EDEFAULT = "text";
+
+    /**
+     * The cached value of the '{@link #getTextSubId() <em>Text Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getTextSubId()
+     * @generated
+     * @ordered
+     */
+    protected String textSubId = TEXT_SUB_ID_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getUriSubId() <em>Uri Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getUriSubId()
+     * @generated
+     * @ordered
+     */
+    protected static final String URI_SUB_ID_EDEFAULT = "uri";
+
+    /**
+     * The cached value of the '{@link #getUriSubId() <em>Uri Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getUriSubId()
+     * @generated
+     * @ordered
+     */
+    protected String uriSubId = URI_SUB_ID_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getIdSubId() <em>Id Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getIdSubId()
+     * @generated
+     * @ordered
+     */
+    protected static final String ID_SUB_ID_EDEFAULT = "id";
+
+    /**
+     * The cached value of the '{@link #getIdSubId() <em>Id Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getIdSubId()
+     * @generated
+     * @ordered
+     */
+    protected String idSubId = ID_SUB_ID_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getTriggerSubId() <em>Trigger Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getTriggerSubId()
+     * @generated
+     * @ordered
+     */
+    protected static final String TRIGGER_SUB_ID_EDEFAULT = "trigger";
+
+    /**
+     * The cached value of the '{@link #getTriggerSubId() <em>Trigger Sub Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getTriggerSubId()
+     * @generated
+     * @ordered
+     */
+    protected String triggerSubId = TRIGGER_SUB_ID_EDEFAULT;
+
     private List<MNFCNDEFRecordListener> recordListeners = new ArrayList<>();
     private List<MNFCTagInfoListener> tagInfoListeners = new ArrayList<>();
+
+    private volatile boolean scanTriggered = false;
 
     /**
      * <!-- begin-user-doc -->
@@ -682,6 +817,121 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      *
+     * @generated
+     */
+    @Override
+    public NFCConfiguration getTfConfig() {
+        return tfConfig;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    public NotificationChain basicSetTfConfig(NFCConfiguration newTfConfig, NotificationChain msgs) {
+        NFCConfiguration oldTfConfig = tfConfig;
+        tfConfig = newTfConfig;
+        if (eNotificationRequired()) {
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
+                    ModelPackage.MBRICKLET_NFC__TF_CONFIG, oldTfConfig, newTfConfig);
+            if (msgs == null) {
+                msgs = notification;
+            } else {
+                msgs.add(notification);
+            }
+        }
+        return msgs;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public void setTfConfig(NFCConfiguration newTfConfig) {
+        if (newTfConfig != tfConfig) {
+            NotificationChain msgs = null;
+            if (tfConfig != null) {
+                msgs = ((InternalEObject) tfConfig).eInverseRemove(this,
+                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_NFC__TF_CONFIG, null, msgs);
+            }
+            if (newTfConfig != null) {
+                msgs = ((InternalEObject) newTfConfig).eInverseAdd(this,
+                        EOPPOSITE_FEATURE_BASE - ModelPackage.MBRICKLET_NFC__TF_CONFIG, null, msgs);
+            }
+            msgs = basicSetTfConfig(newTfConfig, msgs);
+            if (msgs != null) {
+                msgs.dispatch();
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MBRICKLET_NFC__TF_CONFIG, newTfConfig,
+                    newTfConfig));
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getTextSubId() {
+        return textSubId;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getUriSubId() {
+        return uriSubId;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getIdSubId() {
+        return idSubId;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated
+     */
+    @Override
+    public String getTriggerSubId() {
+        return triggerSubId;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
      * @generated NOT
      */
     @Override
@@ -726,6 +976,37 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
         tagInfoListeners.remove(listener);
     }
 
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public boolean triggerScan() {
+        if (getTfConfig().isTriggeredScan()) {
+            return triggerScanIfReady();
+        } else {
+            logger.error(
+                    "to start the scan with a switch, you have to set 'triggeredScan' to 'true' in the tinkerforge.cfg");
+        }
+        return false;
+    }
+
+    private boolean triggerScanIfReady() {
+        try {
+            scanTriggered = true;
+            tinkerforgeDevice.setMode(BrickletNFC.MODE_READER);
+            return true;
+        } catch (TimeoutException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
+        } catch (NotConnectedException e) {
+            TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
+        }
+        scanTriggered = false;
+        return false;
+    }
+
     private void notifyNDEFRecordListeners(NDEFRecord record) {
         for (MNFCNDEFRecordListener listener : recordListeners) {
             listener.handleNDEFRecord(record);
@@ -746,34 +1027,34 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
      */
     @Override
     public void initSubDevices() {
-        // TODO init subdevices?
-        // sub device for id, url, text?
-        // TODO password, button for trigger?
-
         ModelFactory factory = ModelFactory.eINSTANCE;
         MNFCID nfcid = factory.createMNFCID();
-        String nfcidSubId = "id";
         nfcid.setUid(uid);
-        nfcid.setSubId(nfcidSubId);
-        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, nfcidSubId);
+        nfcid.setSubId(idSubId);
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, idSubId);
         nfcid.init();
         nfcid.setMbrick(this);
 
         MNFCText nfcText = factory.createMNFCText();
-        String nfcTextSubId = "text";
         nfcText.setUid(uid);
-        nfcText.setSubId(nfcTextSubId);
-        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, nfcTextSubId);
+        nfcText.setSubId(textSubId);
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, textSubId);
         nfcText.init();
         nfcText.setMbrick(this);
 
         MNFCUri nfcUri = factory.createMNFCUri();
-        String nfcUriSubId = "uri";
         nfcUri.setUid(uid);
-        nfcUri.setSubId(nfcUriSubId);
-        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, nfcUriSubId);
+        nfcUri.setSubId(uriSubId);
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, uriSubId);
         nfcUri.init();
         nfcUri.setMbrick(this);
+
+        MNFCTrigger nfcTrigger = factory.createMNFCTrigger();
+        nfcTrigger.setUid(uid);
+        nfcTrigger.setSubId(triggerSubId);
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, triggerSubId);
+        nfcTrigger.init();
+        nfcTrigger.setMbrick(this);
     }
 
     /**
@@ -800,8 +1081,10 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
         tinkerforgeDevice.addReaderStateChangedListener(readerStateChangedListener);
 
         try {
+            tinkerforgeDevice.setDetectionLEDConfig(BrickletNFC.DETECTION_LED_CONFIG_OFF);
+            // After setting the mode to reader, the nfc device will go to idle and begin with the scanning if
+            // triggerScan is set to false
             tinkerforgeDevice.setMode(BrickletNFC.MODE_READER);
-            tinkerforgeDevice.setDetectionLEDConfig(BrickletNFC.DETECTION_LED_CONFIG_SHOW_DETECTION);
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
         } catch (NotConnectedException e) {
@@ -813,13 +1096,18 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
         @Override
         public void readerStateChanged(int state, boolean idle) {
             if (state == BrickletNFC.READER_STATE_IDLE) {
-                requestTagID();
+                if (!getTfConfig().isTriggeredScan() || scanTriggered) {
+                    scanTriggered = false;
+                    requestTagID();
+                }
             } else if (state == BrickletNFC.READER_STATE_REQUEST_TAG_ID_READY) {
                 readTagID();
                 requestNDEF();
             } else if (state == BrickletNFC.READER_STATE_REQUEST_NDEF_READY) {
                 readNDEF();
-                requestTagIDAfterWait();
+                if (!getTfConfig().isTriggeredScan()) {
+                    requestTagIDAfterWait();
+                }
             } else if (state == BrickletNFC.READER_STATE_REQUEST_TAG_ID_ERROR) {
                 requestTagID();
             } else if (state == BrickletNFC.READER_STATE_REQUEST_NDEF_ERROR) {
@@ -830,7 +1118,7 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
 
     private void requestTagIDAfterWait() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(getTfConfig().getDelayAfterScan());
         } catch (InterruptedException e) {
             logger.error("waiting was interrupted: {}", e.getMessage());
         }
@@ -845,6 +1133,7 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
                 logger.error("read empty buffer");
             } else {
                 NDEFRecord record = NDEFRecord.fromBuffer(buffer);
+                tinkerforgeDevice.setDetectionLEDConfig(BrickletNFC.DETECTION_LED_CONFIG_OFF);
                 logger.trace("found NDEF Record from type '{}'", record.getType());
                 notifyNDEFRecordListeners(record);
             }
@@ -869,14 +1158,17 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
         }
     }
 
-    private void requestTagID() {
+    private boolean requestTagID() {
         try {
+            tinkerforgeDevice.setDetectionLEDConfig(BrickletNFC.DETECTION_LED_CONFIG_ON);
             tinkerforgeDevice.readerRequestTagID();
+            return true;
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
         } catch (NotConnectedException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_NOT_CONNECTION_EXCEPTION, e);
         }
+        return false;
     }
 
     private void readTagID() {
@@ -937,6 +1229,8 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
                 return basicSetBrickd(null, msgs);
             case ModelPackage.MBRICKLET_NFC__MSUBDEVICES:
                 return ((InternalEList<?>) getMsubdevices()).basicRemove(otherEnd, msgs);
+            case ModelPackage.MBRICKLET_NFC__TF_CONFIG:
+                return basicSetTfConfig(null, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -992,6 +1286,18 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
                 return basicGetBrickd();
             case ModelPackage.MBRICKLET_NFC__MSUBDEVICES:
                 return getMsubdevices();
+            case ModelPackage.MBRICKLET_NFC__TF_CONFIG:
+                return getTfConfig();
+            case ModelPackage.MBRICKLET_NFC__DEVICE_TYPE:
+                return getDeviceType();
+            case ModelPackage.MBRICKLET_NFC__TEXT_SUB_ID:
+                return getTextSubId();
+            case ModelPackage.MBRICKLET_NFC__URI_SUB_ID:
+                return getUriSubId();
+            case ModelPackage.MBRICKLET_NFC__ID_SUB_ID:
+                return getIdSubId();
+            case ModelPackage.MBRICKLET_NFC__TRIGGER_SUB_ID:
+                return getTriggerSubId();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -1043,6 +1349,9 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
                 getMsubdevices().clear();
                 getMsubdevices().addAll((Collection<? extends MNFCSubDevice>) newValue);
                 return;
+            case ModelPackage.MBRICKLET_NFC__TF_CONFIG:
+                setTfConfig((NFCConfiguration) newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -1092,6 +1401,9 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
             case ModelPackage.MBRICKLET_NFC__MSUBDEVICES:
                 getMsubdevices().clear();
                 return;
+            case ModelPackage.MBRICKLET_NFC__TF_CONFIG:
+                setTfConfig((NFCConfiguration) null);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -1131,6 +1443,19 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
                 return basicGetBrickd() != null;
             case ModelPackage.MBRICKLET_NFC__MSUBDEVICES:
                 return msubdevices != null && !msubdevices.isEmpty();
+            case ModelPackage.MBRICKLET_NFC__TF_CONFIG:
+                return tfConfig != null;
+            case ModelPackage.MBRICKLET_NFC__DEVICE_TYPE:
+                return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
+            case ModelPackage.MBRICKLET_NFC__TEXT_SUB_ID:
+                return TEXT_SUB_ID_EDEFAULT == null ? textSubId != null : !TEXT_SUB_ID_EDEFAULT.equals(textSubId);
+            case ModelPackage.MBRICKLET_NFC__URI_SUB_ID:
+                return URI_SUB_ID_EDEFAULT == null ? uriSubId != null : !URI_SUB_ID_EDEFAULT.equals(uriSubId);
+            case ModelPackage.MBRICKLET_NFC__ID_SUB_ID:
+                return ID_SUB_ID_EDEFAULT == null ? idSubId != null : !ID_SUB_ID_EDEFAULT.equals(idSubId);
+            case ModelPackage.MBRICKLET_NFC__TRIGGER_SUB_ID:
+                return TRIGGER_SUB_ID_EDEFAULT == null ? triggerSubId != null
+                        : !TRIGGER_SUB_ID_EDEFAULT.equals(triggerSubId);
         }
         return super.eIsSet(featureID);
     }
@@ -1147,6 +1472,14 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
             switch (derivedFeatureID) {
                 case ModelPackage.MBRICKLET_NFC__MSUBDEVICES:
                     return ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MTFConfigConsumer.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.MBRICKLET_NFC__TF_CONFIG:
+                    return ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG;
                 default:
                     return -1;
             }
@@ -1170,6 +1503,14 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
                     return -1;
             }
         }
+        if (baseClass == MTFConfigConsumer.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.MTF_CONFIG_CONSUMER__TF_CONFIG:
+                    return ModelPackage.MBRICKLET_NFC__TF_CONFIG;
+                default:
+                    return -1;
+            }
+        }
         return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
     }
 
@@ -1185,6 +1526,12 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
             switch (baseOperationID) {
                 case ModelPackage.MSUB_DEVICE_HOLDER___INIT_SUB_DEVICES:
                     return ModelPackage.MBRICKLET_NFC___INIT_SUB_DEVICES;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MTFConfigConsumer.class) {
+            switch (baseOperationID) {
                 default:
                     return -1;
             }
@@ -1213,6 +1560,8 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
             case ModelPackage.MBRICKLET_NFC___REMOVE_TAG_INFO_LISTENER__MNFCTAGINFOLISTENER:
                 removeTagInfoListener((MNFCTagInfoListener) arguments.get(0));
                 return null;
+            case ModelPackage.MBRICKLET_NFC___TRIGGER_SCAN:
+                return triggerScan();
             case ModelPackage.MBRICKLET_NFC___INIT_SUB_DEVICES:
                 initSubDevices();
                 return null;
@@ -1262,6 +1611,16 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
         result.append(deviceIdentifier);
         result.append(", name: ");
         result.append(name);
+        result.append(", deviceType: ");
+        result.append(deviceType);
+        result.append(", textSubId: ");
+        result.append(textSubId);
+        result.append(", uriSubId: ");
+        result.append(uriSubId);
+        result.append(", idSubId: ");
+        result.append(idSubId);
+        result.append(", triggerSubId: ");
+        result.append(triggerSubId);
         result.append(')');
         return result.toString();
     }

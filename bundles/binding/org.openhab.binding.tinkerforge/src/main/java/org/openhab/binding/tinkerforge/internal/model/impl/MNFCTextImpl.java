@@ -20,6 +20,7 @@ import org.openhab.binding.tinkerforge.internal.model.MNFCText;
 import org.openhab.binding.tinkerforge.internal.model.MSensor;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.NFCConfiguration;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord.SmartPosterRecord;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord.TextRecord;
@@ -43,7 +44,6 @@ import org.slf4j.LoggerFactory;
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTextImpl#getMbrick <em>Mbrick</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTextImpl#getSensorValue <em>Sensor
  * Value</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTextImpl#getDeviceType <em>Device Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -53,7 +53,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -64,7 +64,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -75,7 +75,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -86,7 +86,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -97,7 +97,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -108,7 +108,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -119,7 +119,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -130,7 +130,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -141,7 +141,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -152,7 +152,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -163,39 +163,19 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSensorValue()
      * @generated
      * @ordered
      */
     protected StringValue sensorValue;
 
-    /**
-     * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @see #getDeviceType()
-     * @generated
-     * @ordered
-     */
-    protected static final String DEVICE_TYPE_EDEFAULT = "text";
-
-    /**
-     * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @see #getDeviceType()
-     * @generated
-     * @ordered
-     */
-    protected String deviceType = DEVICE_TYPE_EDEFAULT;
+    private NFCConfiguration nfcConfiguration;
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MNFCTextImpl() {
@@ -205,7 +185,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -216,7 +196,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -227,22 +207,21 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TEXT__LOGGER, oldLogger, logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -253,22 +232,21 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TEXT__UID, oldUid, uid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -279,22 +257,21 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TEXT__POLL, oldPoll, poll));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -305,23 +282,22 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TEXT__ENABLED_A, oldEnabledA,
                     enabledA));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -332,49 +308,46 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TEXT__SUB_ID, oldSubId, subId));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public MBrickletNFC getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MNFC_TEXT__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MNFC_TEXT__MBRICK)
             return null;
-        }
         return (MBrickletNFC) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickletNFC basicGetMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MNFC_TEXT__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MNFC_TEXT__MBRICK)
             return null;
-        }
         return (MBrickletNFC) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetMbrick(MBrickletNFC newMbrick, NotificationChain msgs) {
@@ -385,38 +358,33 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMbrick(MBrickletNFC newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MNFC_TEXT__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TEXT__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -427,28 +395,16 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSensorValue(StringValue newSensorValue) {
         StringValue oldSensorValue = sensorValue;
         sensorValue = newSensorValue;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TEXT__SENSOR_VALUE, oldSensorValue,
                     sensorValue));
-        }
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated
-     */
-    @Override
-    public String getDeviceType() {
-        return deviceType;
     }
 
     /**
@@ -471,7 +427,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     @Override
     public void handleNDEFRecord(NDEFRecord record) {
         Optional<String> textValue = getOptionalTextFromRecord(record);
-        if (!setTextValueIfPresent(textValue)) {
+        if (!setTextValueIfPresent(textValue) && nfcConfiguration.isResetOldValues()) {
             // resets the current state
             setSensorValue(new StringValue(""));
         }
@@ -520,6 +476,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
      */
     @Override
     public void enable() {
+        nfcConfiguration = getMbrick().getTfConfig();
         setPoll(false);
         getMbrick().addNDEFRecordListener(this);
     }
@@ -533,21 +490,21 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     @Override
     public void disable() {
         getMbrick().removeNDEFRecordListener(this);
+        nfcConfiguration = null;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MNFC_TEXT__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletNFC) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -556,7 +513,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -571,7 +528,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -587,7 +544,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -604,14 +561,11 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
             case ModelPackage.MNFC_TEXT__SUB_ID:
                 return getSubId();
             case ModelPackage.MNFC_TEXT__MBRICK:
-                if (resolve) {
+                if (resolve)
                     return getMbrick();
-                }
                 return basicGetMbrick();
             case ModelPackage.MNFC_TEXT__SENSOR_VALUE:
                 return getSensorValue();
-            case ModelPackage.MNFC_TEXT__DEVICE_TYPE:
-                return getDeviceType();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -619,7 +573,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
@@ -654,7 +608,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -688,7 +642,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -708,8 +662,6 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
                 return basicGetMbrick() != null;
             case ModelPackage.MNFC_TEXT__SENSOR_VALUE:
                 return sensorValue != null;
-            case ModelPackage.MNFC_TEXT__DEVICE_TYPE:
-                return DEVICE_TYPE_EDEFAULT == null ? deviceType != null : !DEVICE_TYPE_EDEFAULT.equals(deviceType);
         }
         return super.eIsSet(featureID);
     }
@@ -717,7 +669,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -742,7 +694,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -767,7 +719,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -794,7 +746,7 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -822,14 +774,13 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuilder result = new StringBuilder(super.toString());
         result.append(" (logger: ");
@@ -844,8 +795,6 @@ public class MNFCTextImpl extends MinimalEObjectImpl.Container implements MNFCTe
         result.append(subId);
         result.append(", sensorValue: ");
         result.append(sensorValue);
-        result.append(", deviceType: ");
-        result.append(deviceType);
         result.append(')');
         return result.toString();
     }

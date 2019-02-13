@@ -1152,11 +1152,18 @@ class MLCD20x4Button extends MSensor<SwitchState>, MLCDSubDevice, MTFConfigConsu
 	short buttonNum
 }
 
-class MBrickletNFC extends MDevice<TinkerBrickletNFC>, MSubDeviceHolder<MNFCSubDevice> {
+class MBrickletNFC extends MDevice<TinkerBrickletNFC>, MSubDeviceHolder<MNFCSubDevice>, MTFConfigConsumer<NFCConfiguration> {
+    readonly String deviceType = "bricklet_nfc"
+    readonly String textSubId = "text"
+    readonly String uriSubId = "uri"
+    readonly String idSubId = "id"
+    readonly String triggerSubId = "trigger"
+    
     op void addNDEFRecordListener(MNFCNDEFRecordListener listener)
     op void removeNDEFRecordListener(MNFCNDEFRecordListener listener)
     op void addTagInfoListener(MNFCTagInfoListener listener)
-    op void removeTagInfoListener(MNFCTagInfoListener listener)       
+    op void removeTagInfoListener(MNFCTagInfoListener listener)  
+    op boolean triggerScan()     
 }
 
 interface MNFCNDEFRecordListener{
@@ -1173,15 +1180,19 @@ interface MNFCSubDevice extends MSubDevice<MBrickletNFC>{
 }
 
 class MNFCText extends MNFCSubDevice, MSensor<StringValue>, MNFCNDEFRecordListener{
-    readonly String deviceType = "text"    
+ 
 }
 
 class MNFCUri extends MNFCSubDevice, MSensor<StringValue>, MNFCNDEFRecordListener{
-    readonly String deviceType = "uri"        
+      
 }
 
 class MNFCID extends MNFCSubDevice, MSensor<StringValue>, MNFCTagInfoListener{
-    readonly String deviceType = "id"     
+  
+}
+
+class MNFCTrigger extends MSwitchActor, MNFCSubDevice, MNFCNDEFRecordListener{
+    
 }
 
 // configuration model
@@ -1395,6 +1406,12 @@ class BrickletAccelerometerConfiguration extends TFConfig {
 class BrickletOLEDConfiguration extends TFConfig {
     Short contrast
     boolean invert
+}
+
+class NFCConfiguration extends TFConfig{
+    boolean resetOldValues = "true"
+    boolean triggeredScan = "false"
+    int delayAfterScan = "3000"
 }
 
 enum NoSubIds {

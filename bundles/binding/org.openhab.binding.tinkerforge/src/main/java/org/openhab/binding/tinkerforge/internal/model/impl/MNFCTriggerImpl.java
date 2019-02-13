@@ -13,43 +13,68 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletNFC;
-import org.openhab.binding.tinkerforge.internal.model.MNFCID;
-import org.openhab.binding.tinkerforge.internal.model.MNFCTagInfoListener;
-import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MNFCNDEFRecordListener;
+import org.openhab.binding.tinkerforge.internal.model.MNFCSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MNFCTrigger;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.model.NFCConfiguration;
-import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
-import org.openhab.binding.tinkerforge.internal.types.StringValue;
+import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>MNFCID</b></em>'.
+ * An implementation of the model object '<em><b>MNFC Trigger</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCIDImpl#getLogger <em>Logger</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCIDImpl#getUid <em>Uid</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCIDImpl#isPoll <em>Poll</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCIDImpl#getEnabledA <em>Enabled A</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCIDImpl#getSubId <em>Sub Id</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCIDImpl#getMbrick <em>Mbrick</em>}</li>
- * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCIDImpl#getSensorValue <em>Sensor Value</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTriggerImpl#getSwitchState <em>Switch
+ * State</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTriggerImpl#getLogger <em>Logger</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTriggerImpl#getUid <em>Uid</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTriggerImpl#isPoll <em>Poll</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTriggerImpl#getEnabledA <em>Enabled A</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTriggerImpl#getSubId <em>Sub Id</em>}</li>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.MNFCTriggerImpl#getMbrick <em>Mbrick</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
+public class MNFCTriggerImpl extends MinimalEObjectImpl.Container implements MNFCTrigger {
+    /**
+     * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getSwitchState()
+     * @generated
+     * @ordered
+     */
+    protected static final OnOffValue SWITCH_STATE_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @see #getSwitchState()
+     * @generated
+     * @ordered
+     */
+    protected OnOffValue switchState = SWITCH_STATE_EDEFAULT;
+
     /**
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -60,7 +85,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getLogger()
      * @generated
      * @ordered
@@ -71,7 +96,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -82,7 +107,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getUid()
      * @generated
      * @ordered
@@ -93,7 +118,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -104,7 +129,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #isPoll()
      * @generated
      * @ordered
@@ -115,7 +140,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -126,7 +151,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -137,7 +162,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getSubId()
      * @generated
      * @ordered
@@ -148,51 +173,40 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @see #getSubId()
      * @generated
      * @ordered
      */
     protected String subId = SUB_ID_EDEFAULT;
 
-    /**
-     * The cached value of the '{@link #getSensorValue() <em>Sensor Value</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @see #getSensorValue()
-     * @generated
-     * @ordered
-     */
-    protected StringValue sensorValue;
-
     private NFCConfiguration nfcConfiguration;
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
-    protected MNFCIDImpl() {
+    protected MNFCTriggerImpl() {
         super();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     protected EClass eStaticClass() {
-        return ModelPackage.Literals.MNFCID;
+        return ModelPackage.Literals.MNFC_TRIGGER;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -203,21 +217,23 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFCID__LOGGER, oldLogger, logger));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TRIGGER__LOGGER, oldLogger,
+                    logger));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -228,21 +244,22 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFCID__UID, oldUid, uid));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TRIGGER__UID, oldUid, uid));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -253,21 +270,22 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFCID__POLL, oldPoll, poll));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TRIGGER__POLL, oldPoll, poll));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -278,22 +296,23 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFCID__ENABLED_A, oldEnabledA,
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TRIGGER__ENABLED_A, oldEnabledA,
                     enabledA));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
@@ -304,102 +323,112 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFCID__SUB_ID, oldSubId, subId));
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TRIGGER__SUB_ID, oldSubId, subId));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public MBrickletNFC getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MNFCID__MBRICK)
+        if (eContainerFeatureID() != ModelPackage.MNFC_TRIGGER__MBRICK) {
             return null;
+        }
         return (MBrickletNFC) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public MBrickletNFC basicGetMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MNFCID__MBRICK)
+        if (eContainerFeatureID() != ModelPackage.MNFC_TRIGGER__MBRICK) {
             return null;
+        }
         return (MBrickletNFC) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     public NotificationChain basicSetMbrick(MBrickletNFC newMbrick, NotificationChain msgs) {
-        msgs = eBasicSetContainer((InternalEObject) newMbrick, ModelPackage.MNFCID__MBRICK, msgs);
+        msgs = eBasicSetContainer((InternalEObject) newMbrick, ModelPackage.MNFC_TRIGGER__MBRICK, msgs);
         return msgs;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void setMbrick(MBrickletNFC newMbrick) {
         if (newMbrick != eInternalContainer()
-                || (eContainerFeatureID() != ModelPackage.MNFCID__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick))
+                || (eContainerFeatureID() != ModelPackage.MNFC_TRIGGER__MBRICK && newMbrick != null)) {
+            if (EcoreUtil.isAncestor(this, newMbrick)) {
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null)
+            if (eInternalContainer() != null) {
                 msgs = eBasicRemoveFromContainer(msgs);
-            if (newMbrick != null)
+            }
+            if (newMbrick != null) {
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
+            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null)
+            if (msgs != null) {
                 msgs.dispatch();
-        } else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFCID__MBRICK, newMbrick, newMbrick));
+            }
+        } else if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TRIGGER__MBRICK, newMbrick,
+                    newMbrick));
+        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public StringValue getSensorValue() {
-        return sensorValue;
+    public OnOffValue getSwitchState() {
+        return switchState;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
-    public void setSensorValue(StringValue newSensorValue) {
-        StringValue oldSensorValue = sensorValue;
-        sensorValue = newSensorValue;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFCID__SENSOR_VALUE, oldSensorValue,
-                    sensorValue));
+    public void setSwitchState(OnOffValue newSwitchState) {
+        OnOffValue oldSwitchState = switchState;
+        switchState = newSwitchState;
+        if (eNotificationRequired()) {
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MNFC_TRIGGER__SWITCH_STATE,
+                    oldSwitchState, switchState));
+        }
     }
 
     /**
@@ -409,8 +438,11 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * @generated NOT
      */
     @Override
-    public void fetchSensorValue() {
-
+    public void handleNDEFRecord(NDEFRecord record) {
+        // after a scan was triggered, we set the switch state back to off
+        if (nfcConfiguration.isTriggeredScan() && switchState == OnOffValue.ON) {
+            setSwitchState(OnOffValue.OFF);
+        }
     }
 
     /**
@@ -420,8 +452,27 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      * @generated NOT
      */
     @Override
-    public void handleTagInfo(NFCTagInfo tagInfo) {
-        setSensorValue(new StringValue(tagInfo.getTagIdAsHex()));
+    public void turnSwitch(OnOffValue state) {
+        if (state == OnOffValue.ON) {
+            if (getMbrick().triggerScan()) {
+                setSwitchState(OnOffValue.ON);
+            } else {
+                setSwitchState(OnOffValue.OFF);
+            }
+        } else {
+            setSwitchState(OnOffValue.OFF);
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void fetchSwitchState() {
+        setSwitchState(switchState);
     }
 
     /**
@@ -433,7 +484,7 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     @Override
     public void init() {
         setEnabledA(new AtomicBoolean());
-        logger = LoggerFactory.getLogger(MNFCIDImpl.class);
+        logger = LoggerFactory.getLogger(MNFCTriggerImpl.class);
     }
 
     /**
@@ -444,9 +495,10 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      */
     @Override
     public void enable() {
-        nfcConfiguration = getMbrick().getTfConfig();
+        setSwitchState(OnOffValue.OFF);
         setPoll(false);
-        getMbrick().addTagInfoListener(this);
+        nfcConfiguration = getMbrick().getTfConfig();
+        getMbrick().addNDEFRecordListener(this);
     }
 
     /**
@@ -457,22 +509,23 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
      */
     @Override
     public void disable() {
-        getMbrick().removeTagInfoListener(this);
+        getMbrick().removeNDEFRecordListener(this);
         nfcConfiguration = null;
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MNFCID__MBRICK:
-                if (eInternalContainer() != null)
+            case ModelPackage.MNFC_TRIGGER__MBRICK:
+                if (eInternalContainer() != null) {
                     msgs = eBasicRemoveFromContainer(msgs);
+                }
                 return basicSetMbrick((MBrickletNFC) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -481,13 +534,13 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.MNFCID__MBRICK:
+            case ModelPackage.MNFC_TRIGGER__MBRICK:
                 return basicSetMbrick(null, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -496,13 +549,13 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
         switch (eContainerFeatureID()) {
-            case ModelPackage.MNFCID__MBRICK:
+            case ModelPackage.MNFC_TRIGGER__MBRICK:
                 return eInternalContainer().eInverseRemove(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
         }
@@ -512,28 +565,29 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case ModelPackage.MNFCID__LOGGER:
+            case ModelPackage.MNFC_TRIGGER__SWITCH_STATE:
+                return getSwitchState();
+            case ModelPackage.MNFC_TRIGGER__LOGGER:
                 return getLogger();
-            case ModelPackage.MNFCID__UID:
+            case ModelPackage.MNFC_TRIGGER__UID:
                 return getUid();
-            case ModelPackage.MNFCID__POLL:
+            case ModelPackage.MNFC_TRIGGER__POLL:
                 return isPoll();
-            case ModelPackage.MNFCID__ENABLED_A:
+            case ModelPackage.MNFC_TRIGGER__ENABLED_A:
                 return getEnabledA();
-            case ModelPackage.MNFCID__SUB_ID:
+            case ModelPackage.MNFC_TRIGGER__SUB_ID:
                 return getSubId();
-            case ModelPackage.MNFCID__MBRICK:
-                if (resolve)
+            case ModelPackage.MNFC_TRIGGER__MBRICK:
+                if (resolve) {
                     return getMbrick();
+                }
                 return basicGetMbrick();
-            case ModelPackage.MNFCID__SENSOR_VALUE:
-                return getSensorValue();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -541,32 +595,32 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case ModelPackage.MNFCID__LOGGER:
+            case ModelPackage.MNFC_TRIGGER__SWITCH_STATE:
+                setSwitchState((OnOffValue) newValue);
+                return;
+            case ModelPackage.MNFC_TRIGGER__LOGGER:
                 setLogger((Logger) newValue);
                 return;
-            case ModelPackage.MNFCID__UID:
+            case ModelPackage.MNFC_TRIGGER__UID:
                 setUid((String) newValue);
                 return;
-            case ModelPackage.MNFCID__POLL:
+            case ModelPackage.MNFC_TRIGGER__POLL:
                 setPoll((Boolean) newValue);
                 return;
-            case ModelPackage.MNFCID__ENABLED_A:
+            case ModelPackage.MNFC_TRIGGER__ENABLED_A:
                 setEnabledA((AtomicBoolean) newValue);
                 return;
-            case ModelPackage.MNFCID__SUB_ID:
+            case ModelPackage.MNFC_TRIGGER__SUB_ID:
                 setSubId((String) newValue);
                 return;
-            case ModelPackage.MNFCID__MBRICK:
+            case ModelPackage.MNFC_TRIGGER__MBRICK:
                 setMbrick((MBrickletNFC) newValue);
-                return;
-            case ModelPackage.MNFCID__SENSOR_VALUE:
-                setSensorValue((StringValue) newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -575,32 +629,32 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-            case ModelPackage.MNFCID__LOGGER:
+            case ModelPackage.MNFC_TRIGGER__SWITCH_STATE:
+                setSwitchState(SWITCH_STATE_EDEFAULT);
+                return;
+            case ModelPackage.MNFC_TRIGGER__LOGGER:
                 setLogger(LOGGER_EDEFAULT);
                 return;
-            case ModelPackage.MNFCID__UID:
+            case ModelPackage.MNFC_TRIGGER__UID:
                 setUid(UID_EDEFAULT);
                 return;
-            case ModelPackage.MNFCID__POLL:
+            case ModelPackage.MNFC_TRIGGER__POLL:
                 setPoll(POLL_EDEFAULT);
                 return;
-            case ModelPackage.MNFCID__ENABLED_A:
+            case ModelPackage.MNFC_TRIGGER__ENABLED_A:
                 setEnabledA(ENABLED_A_EDEFAULT);
                 return;
-            case ModelPackage.MNFCID__SUB_ID:
+            case ModelPackage.MNFC_TRIGGER__SUB_ID:
                 setSubId(SUB_ID_EDEFAULT);
                 return;
-            case ModelPackage.MNFCID__MBRICK:
+            case ModelPackage.MNFC_TRIGGER__MBRICK:
                 setMbrick((MBrickletNFC) null);
-                return;
-            case ModelPackage.MNFCID__SENSOR_VALUE:
-                setSensorValue((StringValue) null);
                 return;
         }
         super.eUnset(featureID);
@@ -609,26 +663,26 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case ModelPackage.MNFCID__LOGGER:
+            case ModelPackage.MNFC_TRIGGER__SWITCH_STATE:
+                return SWITCH_STATE_EDEFAULT == null ? switchState != null : !SWITCH_STATE_EDEFAULT.equals(switchState);
+            case ModelPackage.MNFC_TRIGGER__LOGGER:
                 return LOGGER_EDEFAULT == null ? logger != null : !LOGGER_EDEFAULT.equals(logger);
-            case ModelPackage.MNFCID__UID:
+            case ModelPackage.MNFC_TRIGGER__UID:
                 return UID_EDEFAULT == null ? uid != null : !UID_EDEFAULT.equals(uid);
-            case ModelPackage.MNFCID__POLL:
+            case ModelPackage.MNFC_TRIGGER__POLL:
                 return poll != POLL_EDEFAULT;
-            case ModelPackage.MNFCID__ENABLED_A:
+            case ModelPackage.MNFC_TRIGGER__ENABLED_A:
                 return ENABLED_A_EDEFAULT == null ? enabledA != null : !ENABLED_A_EDEFAULT.equals(enabledA);
-            case ModelPackage.MNFCID__SUB_ID:
+            case ModelPackage.MNFC_TRIGGER__SUB_ID:
                 return SUB_ID_EDEFAULT == null ? subId != null : !SUB_ID_EDEFAULT.equals(subId);
-            case ModelPackage.MNFCID__MBRICK:
+            case ModelPackage.MNFC_TRIGGER__MBRICK:
                 return basicGetMbrick() != null;
-            case ModelPackage.MNFCID__SENSOR_VALUE:
-                return sensorValue != null;
         }
         return super.eIsSet(featureID);
     }
@@ -636,20 +690,42 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-        if (baseClass == MSensor.class) {
+        if (baseClass == MBaseDevice.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.MNFCID__SENSOR_VALUE:
-                    return ModelPackage.MSENSOR__SENSOR_VALUE;
+                case ModelPackage.MNFC_TRIGGER__LOGGER:
+                    return ModelPackage.MBASE_DEVICE__LOGGER;
+                case ModelPackage.MNFC_TRIGGER__UID:
+                    return ModelPackage.MBASE_DEVICE__UID;
+                case ModelPackage.MNFC_TRIGGER__POLL:
+                    return ModelPackage.MBASE_DEVICE__POLL;
+                case ModelPackage.MNFC_TRIGGER__ENABLED_A:
+                    return ModelPackage.MBASE_DEVICE__ENABLED_A;
                 default:
                     return -1;
             }
         }
-        if (baseClass == MNFCTagInfoListener.class) {
+        if (baseClass == MSubDevice.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.MNFC_TRIGGER__SUB_ID:
+                    return ModelPackage.MSUB_DEVICE__SUB_ID;
+                case ModelPackage.MNFC_TRIGGER__MBRICK:
+                    return ModelPackage.MSUB_DEVICE__MBRICK;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MNFCSubDevice.class) {
+            switch (derivedFeatureID) {
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MNFCNDEFRecordListener.class) {
             switch (derivedFeatureID) {
                 default:
                     return -1;
@@ -661,20 +737,42 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-        if (baseClass == MSensor.class) {
+        if (baseClass == MBaseDevice.class) {
             switch (baseFeatureID) {
-                case ModelPackage.MSENSOR__SENSOR_VALUE:
-                    return ModelPackage.MNFCID__SENSOR_VALUE;
+                case ModelPackage.MBASE_DEVICE__LOGGER:
+                    return ModelPackage.MNFC_TRIGGER__LOGGER;
+                case ModelPackage.MBASE_DEVICE__UID:
+                    return ModelPackage.MNFC_TRIGGER__UID;
+                case ModelPackage.MBASE_DEVICE__POLL:
+                    return ModelPackage.MNFC_TRIGGER__POLL;
+                case ModelPackage.MBASE_DEVICE__ENABLED_A:
+                    return ModelPackage.MNFC_TRIGGER__ENABLED_A;
                 default:
                     return -1;
             }
         }
-        if (baseClass == MNFCTagInfoListener.class) {
+        if (baseClass == MSubDevice.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.MSUB_DEVICE__SUB_ID:
+                    return ModelPackage.MNFC_TRIGGER__SUB_ID;
+                case ModelPackage.MSUB_DEVICE__MBRICK:
+                    return ModelPackage.MNFC_TRIGGER__MBRICK;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MNFCSubDevice.class) {
+            switch (baseFeatureID) {
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MNFCNDEFRecordListener.class) {
             switch (baseFeatureID) {
                 default:
                     return -1;
@@ -686,23 +784,39 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
-        if (baseClass == MSensor.class) {
+        if (baseClass == MBaseDevice.class) {
             switch (baseOperationID) {
-                case ModelPackage.MSENSOR___FETCH_SENSOR_VALUE:
-                    return ModelPackage.MNFCID___FETCH_SENSOR_VALUE;
+                case ModelPackage.MBASE_DEVICE___INIT:
+                    return ModelPackage.MNFC_TRIGGER___INIT;
+                case ModelPackage.MBASE_DEVICE___ENABLE:
+                    return ModelPackage.MNFC_TRIGGER___ENABLE;
+                case ModelPackage.MBASE_DEVICE___DISABLE:
+                    return ModelPackage.MNFC_TRIGGER___DISABLE;
                 default:
                     return -1;
             }
         }
-        if (baseClass == MNFCTagInfoListener.class) {
+        if (baseClass == MSubDevice.class) {
             switch (baseOperationID) {
-                case ModelPackage.MNFC_TAG_INFO_LISTENER___HANDLE_TAG_INFO__NFCTAGINFO:
-                    return ModelPackage.MNFCID___HANDLE_TAG_INFO__NFCTAGINFO;
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MNFCSubDevice.class) {
+            switch (baseOperationID) {
+                default:
+                    return -1;
+            }
+        }
+        if (baseClass == MNFCNDEFRecordListener.class) {
+            switch (baseOperationID) {
+                case ModelPackage.MNFCNDEF_RECORD_LISTENER___HANDLE_NDEF_RECORD__NDEFRECORD:
+                    return ModelPackage.MNFC_TRIGGER___HANDLE_NDEF_RECORD__NDEFRECORD;
                 default:
                     return -1;
             }
@@ -713,26 +827,29 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
         switch (operationID) {
-            case ModelPackage.MNFCID___HANDLE_TAG_INFO__NFCTAGINFO:
-                handleTagInfo((NFCTagInfo) arguments.get(0));
+            case ModelPackage.MNFC_TRIGGER___HANDLE_NDEF_RECORD__NDEFRECORD:
+                handleNDEFRecord((NDEFRecord) arguments.get(0));
                 return null;
-            case ModelPackage.MNFCID___FETCH_SENSOR_VALUE:
-                fetchSensorValue();
-                return null;
-            case ModelPackage.MNFCID___INIT:
+            case ModelPackage.MNFC_TRIGGER___INIT:
                 init();
                 return null;
-            case ModelPackage.MNFCID___ENABLE:
+            case ModelPackage.MNFC_TRIGGER___ENABLE:
                 enable();
                 return null;
-            case ModelPackage.MNFCID___DISABLE:
+            case ModelPackage.MNFC_TRIGGER___DISABLE:
                 disable();
+                return null;
+            case ModelPackage.MNFC_TRIGGER___TURN_SWITCH__ONOFFVALUE:
+                turnSwitch((OnOffValue) arguments.get(0));
+                return null;
+            case ModelPackage.MNFC_TRIGGER___FETCH_SWITCH_STATE:
+                fetchSwitchState();
                 return null;
         }
         return super.eInvoke(operationID, arguments);
@@ -741,16 +858,19 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * 
+     *
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy())
+        if (eIsProxy()) {
             return super.toString();
+        }
 
         StringBuilder result = new StringBuilder(super.toString());
-        result.append(" (logger: ");
+        result.append(" (switchState: ");
+        result.append(switchState);
+        result.append(", logger: ");
         result.append(logger);
         result.append(", uid: ");
         result.append(uid);
@@ -760,10 +880,8 @@ public class MNFCIDImpl extends MinimalEObjectImpl.Container implements MNFCID {
         result.append(enabledA);
         result.append(", subId: ");
         result.append(subId);
-        result.append(", sensorValue: ");
-        result.append(sensorValue);
         result.append(')');
         return result.toString();
     }
 
-} // MNFCIDImpl
+} // MNFCTriggerImpl

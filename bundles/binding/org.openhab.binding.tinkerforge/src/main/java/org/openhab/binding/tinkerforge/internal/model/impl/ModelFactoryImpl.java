@@ -383,6 +383,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMNFCUri();
             case ModelPackage.MNFCID:
                 return createMNFCID();
+            case ModelPackage.MNFC_TRIGGER:
+                return createMNFCTrigger();
             case ModelPackage.OHTF_DEVICE:
                 return createOHTFDevice();
             case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE:
@@ -459,6 +461,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createBrickletAccelerometerConfiguration();
             case ModelPackage.BRICKLET_OLED_CONFIGURATION:
                 return createBrickletOLEDConfiguration();
+            case ModelPackage.NFC_CONFIGURATION:
+                return createNFCConfiguration();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -2069,6 +2073,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public NFCConfiguration createNFCConfiguration() {
+        NFCConfigurationImpl nfcConfiguration = new NFCConfigurationImpl();
+        return nfcConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public AccelerometerCoordinate createAccelerometerCoordinateFromString(EDataType eDataType, String initialValue) {
         AccelerometerCoordinate result = AccelerometerCoordinate.get(initialValue);
         if (result == null)
@@ -2861,6 +2876,17 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MNFCID createMNFCID() {
         MNFCIDImpl mnfcid = new MNFCIDImpl();
         return mnfcid;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCTrigger createMNFCTrigger() {
+        MNFCTriggerImpl mnfcTrigger = new MNFCTriggerImpl();
+        return mnfcTrigger;
     }
 
     /**
