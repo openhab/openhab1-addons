@@ -39,6 +39,7 @@ Item bindings can be either inbound or outbound.
 ## Examples
 
 ### Inbound (readonly) item bindings
+
 ```
 // the temperature/humidity at the indoor unit
 Number  DaikinTempIn      "Temp Inside [%.1f °C]"      { daikin="<name>:tempin" }
@@ -49,6 +50,7 @@ Number  DaikinTempOut     "Temp Outside [%.1f °C]"     { daikin="<name>:tempout
 ```
 
 ### Outbound (command) item bindings
+
 ```
 // power
 Switch  DaikinPower  "Power"           { daikin="<name>:power" }
@@ -70,6 +72,7 @@ Number DaikinTimer  "Timer [%.0f]"      { daikin="<name>:timer" }
 ```
 
 ### Sitemap Examples
+
 ```
 Text item=DaikinTempOut
 Switch item=DaikinPower
