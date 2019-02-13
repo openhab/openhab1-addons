@@ -38,6 +38,7 @@ Used to execute commands through an event, triggered at the start or the end of 
 The event summary is free selectable. The event description must fullfill special syntax.
 Syntax is `<BEGIN|END>:<Item-Name>:<Command>`.
 Each item trigger must be a single line without linebreaks. Every line which starts with "BEGIN" will be executed at the begin of the event. Each line with an "END" will be executed at the end of the event. You can define multiple lines, which must not be ordered. For example:
+
 ```
 BEGIN:Heater_Livingroom:22
 BEGIN:Heater_Corridor:22
@@ -61,6 +62,7 @@ openhab.cfg
 
 ## Default item
 Since 1.9.0, the CalDAV Command binding also supports a default item which may optionally be added to openhab.cfg:
+
 ```
 caldavCommand:defaultItemOnBegin=&lt;item&gt;
 ```
@@ -128,6 +130,7 @@ You've got the option to show just specific events.
 # Tested calDAV Servers with examples
 As far as i know are these
 ## ownCloud (my reference implementation)
+
 ```
 caldavio:openhab_tasks:url=http://server.de/owncloud/remote.php/caldav/calendars/openHAB/tasks
 caldavio:openhab_tasks:username=username
@@ -135,7 +138,9 @@ caldavio:openhab_tasks:password=password
 caldavio:openhab_tasks:reloadInterval=10
 caldavio:openhab_tasks:preloadTime=20000
 ```
+
 ## baikal
+
 ```
 caldavio:kalendername:url=https://server_ip/baikal/cal.php/calendars/username/kalender_id  
 caldavio:kalendername:username=username  
@@ -143,7 +148,9 @@ caldavio:kalendername:password=password
 caldavio:kalendername:reloadInterval=10  
 caldavio:kalendername:preloadTime=20000
 ```
+
 ## google (performance issue, because the timestamp of files is not correct)
+
 ```
 caldavio:openhab_tasks:url=https://www.google.com/calendar/dav/email@gmail.com/events
 caldavio:openhab_tasks:username=email@gmail.com
@@ -151,7 +158,6 @@ caldavio:openhab_tasks:password=password
 caldavio:openhab_tasks:reloadInterval=10
 caldavio:openhab_tasks:preloadTime=20000
 ```
-## (zarafa?)
 
 ## Locate URL
 This site may help to find the Calendar URL (i.e. Google Shared Calendars):
@@ -161,11 +167,13 @@ http://www.ict4g.net/adolfo/notes/2015/07/04/determingurlofcaldav.html
 If 2-factor authentication has been enabled, create an application password using https://support.google.com/accounts/answer/185833?hl=en Use this password instead of your account password.
 
 # Persistence
+
 ```
 caldav-persistence:calendarId=history
 caldav-persistence:duration=10
 caldav-persistence:singleEvents=false
 ```
+
 Saves the events to the calendar named history with a length of 10 minutes
 
 # Presence Simulation
@@ -190,13 +198,6 @@ openhab.cfg
 
 ```
 ################################ CalDav Binding #######################################
-#
-#caldavio:<calendar-id>:url=
-#caldavio:<calendar-id>:username=
-#caldavio:<calendar-id>:password=
-#caldavio:<calendar-id>:reloadInterval=<minutes>
-#caldavio:<calendar-id>:preloadTime=<minutes>
-#caldavio:timeZone=<e. g. Europe/Berlin>
 
 # Dienstlicher/privater Kalender
 caldavio:dienstlich:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/pers%C3%B6nlich
@@ -206,15 +207,7 @@ caldavio:dienstlich:reloadInterval=60
 caldavio:dienstlich:preloadTime=2880
 caldavio:timeZone=Europe/Berlin
 
-# Müllkalender
-caldavio:muell:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/m%C3%BCll
-caldavio:muell:username=user
-caldavio:muell:password=password
-caldavio:muell:reloadInterval=1440
-caldavio:muell:preloadTime=2880
-caldavio:timeZone=Europe/Berlin
-
-# Command-kalender``
+# Command-kalender
 caldavio:command:url=http://192.168.2.5/owncloud/remote.php/caldav/calendars/user/command
 caldavio:command:username=user
 caldavio:command:password=password
@@ -232,7 +225,7 @@ caldavCommand:readCalendars=command
 # used to record and simulate presence and to show upcoming/active events
 # multiple calendars (calerdar-id) can be seperated by commas
 #caldavPersonal:usedCalendars=<calendar-id>
-caldavPersonal:usedCalendars=dienstlich,muell
+caldavPersonal:usedCalendars=dienstlich
 
 # If one of these identifiers can be found inside the place of the event, 
 # this event will not be used for presence
