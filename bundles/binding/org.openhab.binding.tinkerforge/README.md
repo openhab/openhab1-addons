@@ -35,6 +35,7 @@ The TinkerForge auto reconnect feature is supported. Furthermore even if the ini
     - [Distance IR Bricklet](#distance-ir-bricklet)
     - [Distance US Bricklet](#distance-us-bricklet)
     - [Dual Button Bricklet](#dual-button-bricklet)
+	- [Dual Button Bricklet V2](#dual-button-bricklet-v2)
     - [Dual Relay Bricklet](#dual-relay-bricklet)
     - [Dust Detector Bricklet](#dust-detector-bricklet)
     - [Hall Effect Bricklet](#hall-effect-bricklet)
@@ -212,6 +213,11 @@ The following table shows the TinkerForge device, its device type, its subid and
 |Dual Button Bricklet subdevice||dualbutton_rightled|x|
 |Dual Button Bricklet subdevice||dualbutton_leftbutton|x|
 |Dual Button Bricklet subdevice||dualbutton_rightbutton|x|
+|Dual Button Bricklet V2||||
+|Dual Button Bricklet V2 subdevice||dualbutton_leftled|x|
+|Dual Button Bricklet V2 subdevice||dualbutton_rightled|x|
+|Dual Button Bricklet V2 subdevice||dualbutton_leftbutton|x|
+|Dual Button Bricklet V2 subdevice||dualbutton_rightbutton|x|
 |Dual Relay Bricklet sub devices|dual_relay|relay[1-2]||
 |Dust Detector Bricklet|bricklet_dustdetector||x|
 |Hall Effect Bricklet|bricklet_halleffect||x|
@@ -1299,6 +1305,16 @@ sitemap tf label="DualButton"
 
 ---
 [Table of Contents](#table-of-contents)
+
+### Dual Button Bricklet V2
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc/Hardware/Bricklets/Dual_Button_V2.html)
+
+The Dual Button Bricklet V2 has the same behavior as [Dual Button Bricklet](#dual-button-bricklet)
+
+---
+[Table of Contents](#table-of-contents)
+
 
 ### Dual Relay Bricklet
 
