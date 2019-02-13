@@ -56,6 +56,7 @@ The TinkerForge auto reconnect feature is supported. Furthermore even if the ini
     - [Motion Detector Bricklet](#motion-detector-bricklet)
     - [Multi Touch Bricklet](#multi-touch-bricklet)
     - [Moisture Bricklet](#moisture-bricklet)
+	- [NFC Bricklet](#nfc-bricklet)
     - [Piezo Speaker Bricklet](#piezo-speaker-bricklet)
     - [PTC Bricklet](#ptc-bricklet)
     - [Remote Switch Bricklet](#remote-switch-bricklet)
@@ -252,6 +253,11 @@ The following table shows the TinkerForge device, its device type, its subid and
 |Multi Touch Bricklet|bricklet_multitouch|||
 |Multi Touch Bricklet electrodes|electrode|electrode[0-11]|x|
 |Moisture Bricklet|bricklet_moisture||x|
+|NFC Bricklet|bricklet_nfc|||
+|NFC Bricklet subdevice||id|x|
+|NFC Bricklet subdevice||text|x|
+|NFC Bricklet subdevice||uri|x|
+|NFC Bricklet subdevice||trigger|x|
 |Pieco Speaker Bricklet||||
 |PTC Bricklet|bricklet_ptc|||
 |PTC Bricklet subdevice||ptc_temperature|x|
@@ -2801,6 +2807,75 @@ Number Moisture                 "Moisture [%.1f]"  { tinkerforge="uid=<your_uid>
 ```
 Text item=Moisture
 ```
+
+---
+[Table of Contents](#table-of-contents)
+
+### NFC Bricklet
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc/Hardware/Bricklets/NFC.html)
+
+#### Binding properties:
+
+The binding supports two modes:
+* continuous scan for tags
+* triggered scan for tags
+
+With the *continuous scan* the NFC Bricklet will permanently scan for NFC Tags. If none was found, the scan is immediately started again.
+If a NFC Tag was found, the bricklet will wait a certain time (*delayAfterScan*), till the next scan is started.
+
+With the *triggered scan* the NFC Bricklet will start the scanning for tags, when the NFC Bricklet subdevice *trigger* received the OnOffType *ON*.
+If no tag was found, the scan is triggered again immediately. If a tag was found, the nfc reader stops scanning.
+After that, the switch must be triggered to start the scanning again.
+
+| property | description | values |
+|----------|--------------|--------|
+| uid | tinkerforge uid | get value from brickv |
+| type | openHAB type name | bricklet_nfc |
+| delayAfterScan | The delay after a nfc tag was read and the next autoscan is triggered.  |  any time in ms e.g. 3000(default) |
+| resetOldValues | Resets the values of all subdevices, when a new tag is read. | True(default), False |
+| triggeredScan | If set to true, the scan for tags is triggered via *ON* command. Otherwise it is scanned permanently for tags. | False(default), True |
+
+| subdevice | description | 
+|-----------|-------------|
+| id      | the tag id 
+| text    | the text from a text record
+| uri     | the complete uri from an uri record including the URIIdentifierCode e.g. 'https://www.someurl.com'
+| trigger | switch type, which triggers the scan process if *triggeredScan* scan is set to True in the config
+
+
+##### tinkerforge.cfg
+
+The following tinkerforge.cfg shows all default configuration values. The values are not required and just show the default configuration.
+```
+hosts=192.168.1.216
+
+tinkerforge:nfc.uid=<uid>
+tinkerforge:nfc.type=bricklet_nfc
+tinkerforge:nfc.delayAfterScan=3000
+tinkerforge:nfc.resetOldValues=True
+tinkerforge:nfc.triggeredScan=False
+```
+
+#### tinkerforge.items
+```
+Group  gTF         "Tinkerforge"   <firstfloor>    ["FirstFloor"]
+
+String nfc_id      "NFC Tag ID [%s]" (gTF) { tinkerforge="uid=<uid>, subid=id"}
+String nfc_text    "NFC Text [%s]"   (gTF) { tinkerforge="uid=<uid>, subid=text"}
+String nfc_uri     "NFC Uri [%s]"    (gTF) { tinkerforge="uid=<uid>, subid=uri"}
+Switch nfc_trigger "NFC Trigger"     (gTF) { tinkerforge="uid=<uid>, subid=trigger"}
+```
+
+#### Limitations
+* Only *NFC FORUM TAG 2* was tested
+* NDEF Message can be from type *SmartPoster ('Sp')*, *URI ('U')* or *Text ('T')*
+* ActionRecord in SmartPoster Record is ignored at the moment
+* Authentication is not supported
+* ID Flag in the NDEF Header is not supported yet
+* only short records are supported
+* only *NFC_FORUM_WELL_KNOWN_TYPE* is supported
+* writing nfc messages is not supported
 
 ---
 [Table of Contents](#table-of-contents)
