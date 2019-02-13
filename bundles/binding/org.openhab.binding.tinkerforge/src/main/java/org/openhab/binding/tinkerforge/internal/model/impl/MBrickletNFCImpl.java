@@ -3,7 +3,9 @@
 package org.openhab.binding.tinkerforge.internal.model.impl;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -16,15 +18,23 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
+import org.openhab.binding.tinkerforge.internal.LoggerConstants;
 import org.openhab.binding.tinkerforge.internal.TinkerforgeErrorHandler;
 import org.openhab.binding.tinkerforge.internal.model.MBrickd;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletNFC;
+import org.openhab.binding.tinkerforge.internal.model.MNFCID;
+import org.openhab.binding.tinkerforge.internal.model.MNFCNDEFRecordListener;
 import org.openhab.binding.tinkerforge.internal.model.MNFCSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MNFCTagInfoListener;
+import org.openhab.binding.tinkerforge.internal.model.MNFCText;
+import org.openhab.binding.tinkerforge.internal.model.MNFCUri;
 import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
 import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
 import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord.NDEFParseException;
+import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,6 +295,9 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
      * @ordered
      */
     protected EList<MNFCSubDevice> msubdevices;
+
+    private List<MNFCNDEFRecordListener> recordListeners = new ArrayList<>();
+    private List<MNFCTagInfoListener> tagInfoListeners = new ArrayList<>();
 
     /**
      * <!-- begin-user-doc -->
@@ -672,8 +685,95 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
      * @generated NOT
      */
     @Override
+    public void addNDEFRecordListener(MNFCNDEFRecordListener listener) {
+        if (!recordListeners.contains(listener)) {
+            recordListeners.add(listener);
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void removeNDEFRecordListener(MNFCNDEFRecordListener listener) {
+        recordListeners.remove(listener);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void addTagInfoListener(MNFCTagInfoListener listener) {
+        if (!tagInfoListeners.contains(listener)) {
+            tagInfoListeners.add(listener);
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
+    public void removeTagInfoListener(MNFCTagInfoListener listener) {
+        tagInfoListeners.remove(listener);
+    }
+
+    private void notifyNDEFRecordListeners(NDEFRecord record) {
+        for (MNFCNDEFRecordListener listener : recordListeners) {
+            listener.handleNDEFRecord(record);
+        }
+    }
+
+    private void notifyNFCTagInfoListeners(NFCTagInfo tagInfo) {
+        for (MNFCTagInfoListener listener : tagInfoListeners) {
+            listener.handleTagInfo(tagInfo);
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    @Override
     public void initSubDevices() {
-        // TODO init subdevices
+        // TODO init subdevices?
+        // sub device for id, url, text?
+        // TODO password, button for trigger?
+
+        ModelFactory factory = ModelFactory.eINSTANCE;
+        MNFCID nfcid = factory.createMNFCID();
+        String nfcidSubId = "id";
+        nfcid.setUid(uid);
+        nfcid.setSubId(nfcidSubId);
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, nfcidSubId);
+        nfcid.init();
+        nfcid.setMbrick(this);
+
+        MNFCText nfcText = factory.createMNFCText();
+        String nfcTextSubId = "text";
+        nfcText.setUid(uid);
+        nfcText.setSubId(nfcTextSubId);
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, nfcTextSubId);
+        nfcText.init();
+        nfcText.setMbrick(this);
+
+        MNFCUri nfcUri = factory.createMNFCUri();
+        String nfcUriSubId = "uri";
+        nfcUri.setUid(uid);
+        nfcUri.setSubId(nfcUriSubId);
+        logger.debug("{} addSubDevice {}", LoggerConstants.TFINIT, nfcUriSubId);
+        nfcUri.init();
+        nfcUri.setMbrick(this);
     }
 
     /**
@@ -745,7 +845,8 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
                 logger.error("read empty buffer");
             } else {
                 NDEFRecord record = NDEFRecord.fromBuffer(buffer);
-                logger.debug(record.toString());
+                logger.trace("found NDEF Record from type '{}'", record.getType());
+                notifyNDEFRecordListeners(record);
             }
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
@@ -781,8 +882,9 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
     private void readTagID() {
         try {
             ReaderGetTagID ret = tinkerforgeDevice.readerGetTagID();
-            // NFCTagInfo info = NFCTagInfo.fromReaderGetTagID(ret);
-            // System.out.format("Found tag of type %d with ID [%s]\n", ret.tagType, info.getTagIdAsHex());
+            NFCTagInfo tagInfo = NFCTagInfo.fromReaderGetTagID(ret);
+            logger.trace("found tag with id '{}'", tagInfo.getTagIdAsHex());
+            notifyNFCTagInfoListeners(tagInfo);
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);
         } catch (NotConnectedException e) {
@@ -1099,6 +1201,18 @@ public class MBrickletNFCImpl extends MinimalEObjectImpl.Container implements MB
     @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
         switch (operationID) {
+            case ModelPackage.MBRICKLET_NFC___ADD_NDEF_RECORD_LISTENER__MNFCNDEFRECORDLISTENER:
+                addNDEFRecordListener((MNFCNDEFRecordListener) arguments.get(0));
+                return null;
+            case ModelPackage.MBRICKLET_NFC___REMOVE_NDEF_RECORD_LISTENER__MNFCNDEFRECORDLISTENER:
+                removeNDEFRecordListener((MNFCNDEFRecordListener) arguments.get(0));
+                return null;
+            case ModelPackage.MBRICKLET_NFC___ADD_TAG_INFO_LISTENER__MNFCTAGINFOLISTENER:
+                addTagInfoListener((MNFCTagInfoListener) arguments.get(0));
+                return null;
+            case ModelPackage.MBRICKLET_NFC___REMOVE_TAG_INFO_LISTENER__MNFCTAGINFOLISTENER:
+                removeTagInfoListener((MNFCTagInfoListener) arguments.get(0));
+                return null;
             case ModelPackage.MBRICKLET_NFC___INIT_SUB_DEVICES:
                 initSubDevices();
                 return null;

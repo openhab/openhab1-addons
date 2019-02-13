@@ -60,6 +60,7 @@ import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
+import org.openhab.binding.tinkerforge.internal.types.StringValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.binding.tinkerforge.internal.types.UnDefValue;
 import org.openhab.core.binding.AbstractActiveBinding;
@@ -714,6 +715,13 @@ public class TinkerforgeBinding extends AbstractActiveBinding<TinkerforgeBinding
                 if (itemType.isAssignableFrom(ColorItem.class)) {
                     logger.trace("found item to update for HSBValue {}", itemName);
                     value = ((HSBValue) sensorValue).getHsbValue();
+                }
+            } else if (sensorValue instanceof StringValue) {
+                if (itemType.isAssignableFrom(StringItem.class)) {
+                    logger.trace("found item to update for StringValue {}", itemName);
+                    value = ((StringValue) sensorValue).getStringType();
+                } else {
+                    continue;
                 }
             } else if (sensorValue == UnDefValue.UNDEF || sensorValue == null) {
                 value = UnDefType.UNDEF;

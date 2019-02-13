@@ -20,12 +20,15 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
 import org.openhab.binding.tinkerforge.internal.model.*;
+import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
+import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
 import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
+import org.openhab.binding.tinkerforge.internal.types.StringValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -374,6 +377,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMLCD20x4Button();
             case ModelPackage.MBRICKLET_NFC:
                 return createMBrickletNFC();
+            case ModelPackage.MNFC_TEXT:
+                return createMNFCText();
+            case ModelPackage.MNFC_URI:
+                return createMNFCUri();
+            case ModelPackage.MNFCID:
+                return createMNFCID();
             case ModelPackage.OHTF_DEVICE:
                 return createOHTFDevice();
             case ModelPackage.OHTF_SUB_DEVICE_ADMIN_DEVICE:
@@ -672,6 +681,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createIncreaseDecreaseTypeFromString(eDataType, initialValue);
             case ModelPackage.DIRECTION_VALUE:
                 return createDirectionValueFromString(eDataType, initialValue);
+            case ModelPackage.STRING_VALUE:
+                return createStringValueFromString(eDataType, initialValue);
+            case ModelPackage.NDEF_RECORD:
+                return createNDEFRecordFromString(eDataType, initialValue);
+            case ModelPackage.NFC_TAG_INFO:
+                return createNFCTagInfoFromString(eDataType, initialValue);
             case ModelPackage.ENUM:
                 return createEnumFromString(eDataType, initialValue);
             default:
@@ -897,6 +912,12 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertIncreaseDecreaseTypeToString(eDataType, instanceValue);
             case ModelPackage.DIRECTION_VALUE:
                 return convertDirectionValueToString(eDataType, instanceValue);
+            case ModelPackage.STRING_VALUE:
+                return convertStringValueToString(eDataType, instanceValue);
+            case ModelPackage.NDEF_RECORD:
+                return convertNDEFRecordToString(eDataType, instanceValue);
+            case ModelPackage.NFC_TAG_INFO:
+                return convertNFCTagInfoToString(eDataType, instanceValue);
             case ModelPackage.ENUM:
                 return convertEnumToString(eDataType, instanceValue);
             default:
@@ -2807,6 +2828,39 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MBrickletNFC createMBrickletNFC() {
         MBrickletNFCImpl mBrickletNFC = new MBrickletNFCImpl();
         return mBrickletNFC;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCText createMNFCText() {
+        MNFCTextImpl mnfcText = new MNFCTextImpl();
+        return mnfcText;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCUri createMNFCUri() {
+        MNFCUriImpl mnfcUri = new MNFCUriImpl();
+        return mnfcUri;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCID createMNFCID() {
+        MNFCIDImpl mnfcid = new MNFCIDImpl();
+        return mnfcid;
     }
 
     /**
@@ -4909,6 +4963,66 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertDirectionValueToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public StringValue createStringValueFromString(EDataType eDataType, String initialValue) {
+        return (StringValue) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertStringValueToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public NDEFRecord createNDEFRecordFromString(EDataType eDataType, String initialValue) {
+        return (NDEFRecord) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertNDEFRecordToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public NFCTagInfo createNFCTagInfoFromString(EDataType eDataType, String initialValue) {
+        return (NFCTagInfo) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertNFCTagInfoToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

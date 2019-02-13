@@ -33,6 +33,7 @@ import org.openhab.binding.tinkerforge.internal.types.HighLowValue
 import org.openhab.binding.tinkerforge.internal.types.PercentValue
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue
 import org.openhab.binding.tinkerforge.internal.types.HSBValue
+import org.openhab.binding.tinkerforge.internal.types.StringValue
 import com.tinkerforge.BrickletIO16
 import com.tinkerforge.BrickletRemoteSwitch
 import com.tinkerforge.BrickletMotionDetector
@@ -79,6 +80,8 @@ import org.openhab.core.library.types.HSBType
 import org.openhab.core.library.types.UpDownType
 import org.openhab.core.library.types.PercentType
 import org.openhab.core.library.types.IncreaseDecreaseType
+import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord
+import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo
 import java.math.BigDecimal
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions
 
@@ -157,6 +160,9 @@ type DeviceOptions wraps DeviceOptions
 type PercentType wraps PercentType
 type IncreaseDecreaseType wraps IncreaseDecreaseType
 type DirectionValue wraps DirectionValue
+type StringValue wraps StringValue
+type NDEFRecord wraps NDEFRecord
+type NFCTagInfo wraps NFCTagInfo
 type Enum wraps Enum
 
 class Ecosystem {
@@ -1147,11 +1153,35 @@ class MLCD20x4Button extends MSensor<SwitchState>, MLCDSubDevice, MTFConfigConsu
 }
 
 class MBrickletNFC extends MDevice<TinkerBrickletNFC>, MSubDeviceHolder<MNFCSubDevice> {
-    
+    op void addNDEFRecordListener(MNFCNDEFRecordListener listener)
+    op void removeNDEFRecordListener(MNFCNDEFRecordListener listener)
+    op void addTagInfoListener(MNFCTagInfoListener listener)
+    op void removeTagInfoListener(MNFCTagInfoListener listener)       
 }
 
+interface MNFCNDEFRecordListener{
+    op void handleNDEFRecord(NDEFRecord record)    
+}
+
+interface MNFCTagInfoListener{
+    op void handleTagInfo(NFCTagInfo tagInfo)    
+}
+
+//todo andre
 interface MNFCSubDevice extends MSubDevice<MBrickletNFC>{
-    
+
+}
+
+class MNFCText extends MNFCSubDevice, MSensor<StringValue>, MNFCNDEFRecordListener{
+    readonly String deviceType = "text"    
+}
+
+class MNFCUri extends MNFCSubDevice, MSensor<StringValue>, MNFCNDEFRecordListener{
+    readonly String deviceType = "uri"        
+}
+
+class MNFCID extends MNFCSubDevice, MSensor<StringValue>, MNFCTagInfoListener{
+    readonly String deviceType = "id"     
 }
 
 // configuration model

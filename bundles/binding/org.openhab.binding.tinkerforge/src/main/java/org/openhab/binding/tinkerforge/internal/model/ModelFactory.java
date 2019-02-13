@@ -1605,6 +1605,36 @@ public interface ModelFactory extends EFactory {
     MBrickletNFC createMBrickletNFC();
 
     /**
+     * Returns a new object of class '<em>MNFC Text</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFC Text</em>'.
+     * @generated
+     */
+    MNFCText createMNFCText();
+
+    /**
+     * Returns a new object of class '<em>MNFC Uri</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFC Uri</em>'.
+     * @generated
+     */
+    MNFCUri createMNFCUri();
+
+    /**
+     * Returns a new object of class '<em>MNFCID</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFCID</em>'.
+     * @generated
+     */
+    MNFCID createMNFCID();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

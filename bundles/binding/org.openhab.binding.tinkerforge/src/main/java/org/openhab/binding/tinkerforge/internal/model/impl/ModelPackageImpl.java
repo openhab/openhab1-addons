@@ -24,6 +24,8 @@ import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
+import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
 import org.openhab.binding.tinkerforge.internal.model.*;
 import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
 import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
@@ -31,6 +33,7 @@ import org.openhab.binding.tinkerforge.internal.types.HSBValue;
 import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
 import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
 import org.openhab.binding.tinkerforge.internal.types.PercentValue;
+import org.openhab.binding.tinkerforge.internal.types.StringValue;
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
 import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.IncreaseDecreaseType;
@@ -1740,7 +1743,47 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mnfcndefRecordListenerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcTagInfoListenerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass mnfcSubDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcTextEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcUriEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcidEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2494,6 +2537,30 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType directionValueEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType stringValueEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType ndefRecordEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType nfcTagInfoEDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -9631,8 +9698,148 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EOperation getMBrickletNFC__AddNDEFRecordListener__MNFCNDEFRecordListener() {
+        return mBrickletNFCEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletNFC__RemoveNDEFRecordListener__MNFCNDEFRecordListener() {
+        return mBrickletNFCEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletNFC__AddTagInfoListener__MNFCTagInfoListener() {
+        return mBrickletNFCEClass.getEOperations().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMBrickletNFC__RemoveTagInfoListener__MNFCTagInfoListener() {
+        return mBrickletNFCEClass.getEOperations().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMNFCNDEFRecordListener() {
+        return mnfcndefRecordListenerEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMNFCNDEFRecordListener__HandleNDEFRecord__NDEFRecord() {
+        return mnfcndefRecordListenerEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMNFCTagInfoListener() {
+        return mnfcTagInfoListenerEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMNFCTagInfoListener__HandleTagInfo__NFCTagInfo() {
+        return mnfcTagInfoListenerEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getMNFCSubDevice() {
         return mnfcSubDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMNFCText() {
+        return mnfcTextEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMNFCText_DeviceType() {
+        return (EAttribute) mnfcTextEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMNFCUri() {
+        return mnfcUriEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMNFCUri_DeviceType() {
+        return (EAttribute) mnfcUriEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMNFCID() {
+        return mnfcidEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMNFCID_DeviceType() {
+        return (EAttribute) mnfcidEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -10710,6 +10917,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getStringValue() {
+        return stringValueEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getNDEFRecord() {
+        return ndefRecordEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getNFCTagInfo() {
+        return nfcTagInfoEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     @Override
     public EDataType getEnum() {
         return enumEDataType;
@@ -11475,8 +11712,27 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEAttribute(mlcd20x4ButtonEClass, MLCD2_0X4_BUTTON__BUTTON_NUM);
 
         mBrickletNFCEClass = createEClass(MBRICKLET_NFC);
+        createEOperation(mBrickletNFCEClass, MBRICKLET_NFC___ADD_NDEF_RECORD_LISTENER__MNFCNDEFRECORDLISTENER);
+        createEOperation(mBrickletNFCEClass, MBRICKLET_NFC___REMOVE_NDEF_RECORD_LISTENER__MNFCNDEFRECORDLISTENER);
+        createEOperation(mBrickletNFCEClass, MBRICKLET_NFC___ADD_TAG_INFO_LISTENER__MNFCTAGINFOLISTENER);
+        createEOperation(mBrickletNFCEClass, MBRICKLET_NFC___REMOVE_TAG_INFO_LISTENER__MNFCTAGINFOLISTENER);
+
+        mnfcndefRecordListenerEClass = createEClass(MNFCNDEF_RECORD_LISTENER);
+        createEOperation(mnfcndefRecordListenerEClass, MNFCNDEF_RECORD_LISTENER___HANDLE_NDEF_RECORD__NDEFRECORD);
+
+        mnfcTagInfoListenerEClass = createEClass(MNFC_TAG_INFO_LISTENER);
+        createEOperation(mnfcTagInfoListenerEClass, MNFC_TAG_INFO_LISTENER___HANDLE_TAG_INFO__NFCTAGINFO);
 
         mnfcSubDeviceEClass = createEClass(MNFC_SUB_DEVICE);
+
+        mnfcTextEClass = createEClass(MNFC_TEXT);
+        createEAttribute(mnfcTextEClass, MNFC_TEXT__DEVICE_TYPE);
+
+        mnfcUriEClass = createEClass(MNFC_URI);
+        createEAttribute(mnfcUriEClass, MNFC_URI__DEVICE_TYPE);
+
+        mnfcidEClass = createEClass(MNFCID);
+        createEAttribute(mnfcidEClass, MNFCID__DEVICE_TYPE);
 
         tfConfigEClass = createEClass(TF_CONFIG);
 
@@ -11756,6 +12012,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         percentTypeEDataType = createEDataType(PERCENT_TYPE);
         increaseDecreaseTypeEDataType = createEDataType(INCREASE_DECREASE_TYPE);
         directionValueEDataType = createEDataType(DIRECTION_VALUE);
+        stringValueEDataType = createEDataType(STRING_VALUE);
+        ndefRecordEDataType = createEDataType(NDEF_RECORD);
+        nfcTagInfoEDataType = createEDataType(NFC_TAG_INFO);
         enumEDataType = createEDataType(ENUM);
     }
 
@@ -13028,6 +13287,30 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getMBrickletNFC());
         g1.getETypeArguments().add(g2);
         mnfcSubDeviceEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMNFCSubDevice());
+        mnfcTextEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getStringValue());
+        g1.getETypeArguments().add(g2);
+        mnfcTextEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMNFCNDEFRecordListener());
+        mnfcTextEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMNFCSubDevice());
+        mnfcUriEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getStringValue());
+        g1.getETypeArguments().add(g2);
+        mnfcUriEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMNFCNDEFRecordListener());
+        mnfcUriEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMNFCSubDevice());
+        mnfcidEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSensor());
+        g2 = createEGenericType(this.getStringValue());
+        g1.getETypeArguments().add(g2);
+        mnfcidEClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMNFCTagInfoListener());
+        mnfcidEClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getOHTFDevice());
         g2 = createEGenericType(ohtfSubDeviceAdminDeviceEClass_TFC);
         g1.getETypeArguments().add(g2);
@@ -14633,8 +14916,55 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEClass(mBrickletNFCEClass, MBrickletNFC.class, "MBrickletNFC", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
 
+        op = initEOperation(getMBrickletNFC__AddNDEFRecordListener__MNFCNDEFRecordListener(), null,
+                "addNDEFRecordListener", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, this.getMNFCNDEFRecordListener(), "listener", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getMBrickletNFC__RemoveNDEFRecordListener__MNFCNDEFRecordListener(), null,
+                "removeNDEFRecordListener", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, this.getMNFCNDEFRecordListener(), "listener", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getMBrickletNFC__AddTagInfoListener__MNFCTagInfoListener(), null, "addTagInfoListener", 0,
+                1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, this.getMNFCTagInfoListener(), "listener", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        op = initEOperation(getMBrickletNFC__RemoveTagInfoListener__MNFCTagInfoListener(), null,
+                "removeTagInfoListener", 0, 1, !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, this.getMNFCTagInfoListener(), "listener", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        initEClass(mnfcndefRecordListenerEClass, MNFCNDEFRecordListener.class, "MNFCNDEFRecordListener", IS_ABSTRACT,
+                IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        op = initEOperation(getMNFCNDEFRecordListener__HandleNDEFRecord__NDEFRecord(), null, "handleNDEFRecord", 0, 1,
+                !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, this.getNDEFRecord(), "record", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
+        initEClass(mnfcTagInfoListenerEClass, MNFCTagInfoListener.class, "MNFCTagInfoListener", IS_ABSTRACT,
+                IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        op = initEOperation(getMNFCTagInfoListener__HandleTagInfo__NFCTagInfo(), null, "handleTagInfo", 0, 1,
+                !IS_UNIQUE, IS_ORDERED);
+        addEParameter(op, this.getNFCTagInfo(), "tagInfo", 0, 1, !IS_UNIQUE, IS_ORDERED);
+
         initEClass(mnfcSubDeviceEClass, MNFCSubDevice.class, "MNFCSubDevice", IS_ABSTRACT, IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(mnfcTextEClass, MNFCText.class, "MNFCText", !IS_ABSTRACT, !IS_INTERFACE,
+                IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMNFCText_DeviceType(), theEcorePackage.getEString(), "deviceType", "text", 0, 1,
+                MNFCText.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE,
+                !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mnfcUriEClass, MNFCUri.class, "MNFCUri", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMNFCUri_DeviceType(), theEcorePackage.getEString(), "deviceType", "uri", 0, 1, MNFCUri.class,
+                !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
+                IS_ORDERED);
+
+        initEClass(mnfcidEClass, org.openhab.binding.tinkerforge.internal.model.MNFCID.class, "MNFCID", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMNFCID_DeviceType(), theEcorePackage.getEString(), "deviceType", "id", 0, 1,
+                org.openhab.binding.tinkerforge.internal.model.MNFCID.class, !IS_TRANSIENT, !IS_VOLATILE,
+                !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(tfConfigEClass, TFConfig.class, "TFConfig", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -15388,6 +15718,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEDataType(increaseDecreaseTypeEDataType, IncreaseDecreaseType.class, "IncreaseDecreaseType",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(directionValueEDataType, DirectionValue.class, "DirectionValue", IS_SERIALIZABLE,
+                !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(stringValueEDataType, StringValue.class, "StringValue", IS_SERIALIZABLE,
+                !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(ndefRecordEDataType, NDEFRecord.class, "NDEFRecord", IS_SERIALIZABLE,
+                !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(nfcTagInfoEDataType, NFCTagInfo.class, "NFCTagInfo", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(enumEDataType, Enum.class, "Enum", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 

@@ -16,4 +16,40 @@ import com.tinkerforge.BrickletNFC;
  * @generated
  */
 public interface MBrickletNFC extends MDevice<BrickletNFC>, MSubDeviceHolder<MNFCSubDevice> {
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model listenerUnique="false"
+     * @generated
+     */
+    void addNDEFRecordListener(MNFCNDEFRecordListener listener);
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model listenerUnique="false"
+     * @generated
+     */
+    void removeNDEFRecordListener(MNFCNDEFRecordListener listener);
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model listenerUnique="false"
+     * @generated
+     */
+    void addTagInfoListener(MNFCTagInfoListener listener);
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @model listenerUnique="false"
+     * @generated
+     */
+    void removeTagInfoListener(MNFCTagInfoListener listener);
 } // MBrickletNFC
