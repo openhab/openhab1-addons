@@ -386,7 +386,7 @@ rule "percentdimmerdecrease"
     when
         Item RULEDIMMER received command DECREASE
     then
-       IMMERPERCENT.sendCommand(Dnew PercentType(25))
+       DIMMERPERCENT.sendCommand(new PercentType(25))
 end
 
 
