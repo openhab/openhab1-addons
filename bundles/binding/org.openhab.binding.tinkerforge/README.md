@@ -2856,7 +2856,7 @@ After that, the switch must be triggered to start the scanning again.
 |-----------|-------------|
 | id      | the tag id 
 | text    | the text from a text record
-| uri     | the complete uri from an uri record including the URIIdentifierCode e.g. 'https://www.someurl.com'
+| uri     | the complete uri from an uri record including the URIIdentifierCode e.g. 'https://www.google.com'
 | trigger | switch type, which triggers the scan process if *triggeredScan* scan is set to True in the config
 
 
