@@ -15,14 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class to handle boolean values which are handled as decimal 0/1 states
+ * Class to handle revolutions per minute values
  *
- * @author Holger Hees
- * @since 1.3.0
+ * @author Grzegorz Miasko
+ * @since 1.14.0
  */
-public class DataTypeBoolean implements ComfoAirDataType {
+public class DataTypeRPM implements ComfoAirDataType {
 
-    private Logger logger = LoggerFactory.getLogger(DataTypeBoolean.class);
+    private Logger logger = LoggerFactory.getLogger(DataTypeRPM.class);
 
     /**
      * {@inheritDoc}
@@ -31,19 +31,26 @@ public class DataTypeBoolean implements ComfoAirDataType {
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
         if (data == null || commandType == null) {
-            logger.debug("\"DataTypeBoolean\" class \"convertToState\" method parameter: null");
+            logger.debug("\"DataTypeRPM\" class \"convertToState\" method parameter: null");
             return null;
         } else {
 
             int[] get_reply_data_pos = commandType.getGetReplyDataPos();
-            int get_reply_data_bits = commandType.getGetReplyDataBits();
 
-            if (get_reply_data_pos[0] < data.length) {
-                boolean result = (data[get_reply_data_pos[0]] & get_reply_data_bits) == get_reply_data_bits;
-                return (result) ? new DecimalType(1) : new DecimalType(0);
-            } else {
-                return null;
+            int value = 0;
+            int base = 0;
+
+            for (int i = get_reply_data_pos.length - 1; i >= 0; i--) {
+
+                if (get_reply_data_pos[i] < data.length) {
+                    value += data[get_reply_data_pos[i]] << base;
+                    base += 8;
+                } else {
+                    return null;
+                }
             }
+
+            return new DecimalType((int) (1875000.0 / value));
         }
     }
 
@@ -54,15 +61,13 @@ public class DataTypeBoolean implements ComfoAirDataType {
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
         if (value == null || commandType == null) {
-            logger.debug("\"DataTypeBoolean\" class \"convertFromState\" method parameter: null");
+            logger.debug("\"DataTypeRPM\" class \"convertFromState\" method parameter: null");
             return null;
         } else {
 
             int[] template = commandType.getChangeDataTemplate();
 
-            template[commandType.getChangeDataPos()] = ((DecimalType) value).intValue() == 1
-                    ? commandType.getPossibleValues()[0]
-                    : 0x00;
+            template[commandType.getChangeDataPos()] = (int) (1875000 / ((DecimalType) value).doubleValue());
 
             return template;
         }

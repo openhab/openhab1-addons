@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,8 @@ package org.openhab.binding.comfoair.datatypes;
 import org.openhab.binding.comfoair.handling.ComfoAirCommandType;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.types.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to handle numeric values
@@ -20,39 +22,52 @@ import org.openhab.core.types.State;
  */
 public class DataTypeNumber implements ComfoAirDataType {
 
+    private Logger logger = LoggerFactory.getLogger(DataTypeNumber.class);
+
     /**
      * {@inheritDoc}
      */
     @Override
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
-        int[] get_reply_data_pos = commandType.getGetReplyDataPos();
+        if (data == null || commandType == null) {
+            logger.debug("\"DataTypeNumber\" class \"convertToState\" method parameter: null");
+            return null;
+        } else {
 
-        int value = 0;
-        int base = 0;
+            int[] get_reply_data_pos = commandType.getGetReplyDataPos();
 
-        for (int i = get_reply_data_pos.length - 1; i >= 0; i--) {
-            value += data[get_reply_data_pos[i]] << base;
-            base += 8;
-        }
+            int value = 0;
+            int base = 0;
 
-        int[] possibleValues = commandType.getPossibleValues();
-        if (possibleValues != null) {
+            for (int i = get_reply_data_pos.length - 1; i >= 0; i--) {
 
-            // fix for unexpected value for "level" value. got a 0x33. valid was
-            // the 0x03. 0x30 was to much.
-            // send DATA: 07 f0 00 cd 00 7a 07 0f
-            // receive CMD: ce DATA: 0f 20 32 00 0f 21 33 2d 33 03 01 5a 5b 00
-            for (int possibleValue : possibleValues) {
-                if ((value & possibleValue) == possibleValue) {
-                    return new DecimalType(value);
+                if (get_reply_data_pos[i] < data.length) {
+                    value += data[get_reply_data_pos[i]] << base;
+                    base += 8;
+                } else {
+                    return null;
                 }
             }
 
-            return null;
-        }
+            int[] possibleValues = commandType.getPossibleValues();
+            if (possibleValues != null) {
 
-        return new DecimalType(value);
+                // fix for unexpected value for "level" value. got a 0x33. valid was
+                // the 0x03. 0x30 was to much.
+                // send DATA: 07 f0 00 cd 00 7a 07 0f
+                // receive CMD: ce DATA: 0f 20 32 00 0f 21 33 2d 33 03 01 5a 5b 00
+                for (int possibleValue : possibleValues) {
+                    if ((value & possibleValue) == possibleValue) {
+                        return new DecimalType(value);
+                    }
+                }
+
+                return null;
+            }
+
+            return new DecimalType(value);
+        }
     }
 
     /**
@@ -61,19 +76,30 @@ public class DataTypeNumber implements ComfoAirDataType {
     @Override
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
-        int[] template = commandType.getChangeDataTemplate();
-        int[] possibleValues = commandType.getPossibleValues();
+        if (value == null || commandType == null) {
+            logger.debug("\"DataTypeNumber\" class \"convertFromState\" method parameter: null");
+            return null;
+        } else {
 
-        int intValue = ((DecimalType) value).intValue();
+            int[] template = commandType.getChangeDataTemplate();
+            int[] possibleValues = commandType.getPossibleValues();
+            int position = commandType.getChangeDataPos();
 
-        for (int i = 0; i < possibleValues.length; i++) {
-            if (possibleValues[i] == intValue) {
-                template[commandType.getChangeDataPos()] = intValue;
-                break;
+            int intValue = ((DecimalType) value).intValue();
+
+            if (possibleValues == null) {
+                template[position] = intValue;
+            } else {
+                for (int i = 0; i < possibleValues.length; i++) {
+                    if (possibleValues[i] == intValue) {
+                        template[position] = intValue;
+                        break;
+                    }
+                }
             }
-        }
 
-        return template;
+            return template;
+        }
     }
 
 }

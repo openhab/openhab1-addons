@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,17 +23,28 @@ public class ComfoAirCommand {
     private Integer requestCmd;
     private Integer replyCmd;
     private int[] requestData;
+    private Integer requestValue;
+    private Integer dataPosition;
 
     /**
      * @param key
-     *            command key
+     *                         command key
      * @param requestCmd
-     *            command as byte value
+     *                         command as byte value
      * @param replyCmd
-     *            reply command as byte value
+     *                         reply command as byte value
      * @param requestData
-     *            request byte values
+     *                         request byte values
+     * @param requestValue
+     *                         request byte value
+     * @param dataPosition
+     *                         request byte position
      */
+
+    /*
+     * @deprecated old version of ComfoAirCommand method
+     */
+    @Deprecated
     public ComfoAirCommand(String key, Integer requestCmd, Integer replyCmd, int[] requestData) {
         this.keys = new ArrayList<String>();
         this.keys.add(key);
@@ -42,9 +53,20 @@ public class ComfoAirCommand {
         this.replyCmd = replyCmd;
     }
 
+    public ComfoAirCommand(String key, Integer requestCmd, Integer replyCmd, int[] requestData, Integer dataPosition,
+            Integer requestValue) {
+        this.keys = new ArrayList<String>();
+        this.keys.add(key);
+        this.requestCmd = requestCmd;
+        this.requestData = requestData;
+        this.requestValue = requestValue;
+        this.dataPosition = dataPosition;
+        this.replyCmd = replyCmd;
+    }
+
     /**
      * @param key
-     *            additional command key
+     *                additional command key
      */
     public void addKey(String key) {
         keys.add(key);
@@ -76,5 +98,40 @@ public class ComfoAirCommand {
      */
     public Integer getReplyCmd() {
         return replyCmd;
+    }
+
+    /**
+     * @return request value as byte value
+     */
+    public Integer getRequestValue() {
+        return requestValue;
+    }
+
+    /**
+     * @return position of request byte
+     */
+    public Integer getDataPosition() {
+        return dataPosition;
+    }
+
+    /**
+     * set request command byte value
+     */
+    public void setRequestCmd(Integer newRequestCmd) {
+        requestCmd = newRequestCmd;
+    }
+
+    /**
+     * set reply command byte value
+     */
+    public void setReplyCmd(Integer newReplyCmd) {
+        replyCmd = newReplyCmd;
+    }
+
+    /**
+     * set request data byte values
+     */
+    public void setRequestData(int[] newRequestData) {
+        requestData = newRequestData;
     }
 }
