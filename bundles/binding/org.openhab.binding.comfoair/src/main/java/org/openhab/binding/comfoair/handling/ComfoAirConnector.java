@@ -153,7 +153,7 @@ public class ComfoAirConnector {
         } else if (requestCmd == 0x9c) {
             return new int[] { isSuspended ? 0x00 : 0x03 };
         } else if (isSuspended) {
-            logger.debug("Ignore cmd. Service is currently suspended");
+            logger.trace("Ignore cmd. Service is currently suspended");
             return null;
         }
 
@@ -217,7 +217,7 @@ public class ComfoAirConnector {
                             && responseBlock[responseBlock.length - 1] == (byte) 0x0f
                             && (responseBlock[5] & 0xff) == command.getReplyCmd()) {
 
-                        logger.debug("receive RAW DATA: " + dumpData(responseBlock));
+                        logger.trace("receive RAW DATA: " + dumpData(responseBlock));
 
                         byte[] cleanedBlock = cleanupBlock(responseBlock);
 
@@ -240,7 +240,7 @@ public class ComfoAirConnector {
                             // checksum
                             if (calculateChecksum(_block) == checksum) {
 
-                                logger.debug(String.format("receive CMD: %02x", command.getReplyCmd()) + " DATA: "
+                                logger.trace(String.format("receive CMD: %02x", command.getReplyCmd()) + " DATA: "
                                         + dumpData(replyData));
 
                                 send(ACK);
@@ -248,24 +248,24 @@ public class ComfoAirConnector {
                                 return replyData;
                             }
 
-                            logger.warn("Unable to handle data. Checksum verification failed");
+                            logger.debug("Unable to handle data. Checksum verification failed");
                         } else {
-                            logger.warn("Unable to handle data. Data size not valid");
+                            logger.debug("Unable to handle data. Data size not valid");
                         }
 
-                        logger.warn(String.format("skip CMD: %02x", command.getReplyCmd()) + " DATA: "
+                        logger.trace(String.format("skip CMD: %02x", command.getReplyCmd()) + " DATA: "
                                 + dumpData(cleanedBlock));
                     }
                 }
 
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
             }
 
             try {
 
                 Thread.sleep(1000);
-                logger.warn("Retry cmd. Last call was not successful." + " Request: " + dumpData(requestBlock)
+                logger.debug("Retry cmd. Last call was not successful." + " Request: " + dumpData(requestBlock)
                         + " Response: " + (responseBlock.length > 0 ? dumpData(responseBlock) : "null"));
 
             } catch (InterruptedException e) {
@@ -275,7 +275,7 @@ public class ComfoAirConnector {
         } while (retry++ < 5);
 
         if (retry == 5) {
-            logger.error("Unable to send command. " + retry + " retries failed.");
+            logger.debug("Unable to send command. " + retry + " retries failed.");
         }
 
         return null;
@@ -291,7 +291,7 @@ public class ComfoAirConnector {
         } else if (requestCmd == 0x9c) {
             return new int[] { isSuspended ? 0x00 : 0x03 };
         } else if (isSuspended) {
-            logger.debug("Ignore cmd. Service is currently suspended");
+            logger.trace("Ignore cmd. Service is currently suspended");
             return null;
         }
 
@@ -316,7 +316,7 @@ public class ComfoAirConnector {
             }
 
             byte[] requestBlock = calculateRequest(requestCmd, requestData);
-            logger.debug("send DATA: {}", dumpData(requestBlock));
+            logger.trace("send DATA: {}", dumpData(requestBlock));
 
             if (!send(requestBlock)) {
                 return null;
@@ -369,7 +369,7 @@ public class ComfoAirConnector {
                             && responseBlock[responseBlock.length - 1] == (byte) 0x0f
                             && (responseBlock[5] & 0xff) == command.getReplyCmd()) {
 
-                        logger.debug("receive RAW DATA: {}", dumpData(responseBlock));
+                        logger.trace("receive RAW DATA: {}", dumpData(responseBlock));
 
                         byte[] cleanedBlock = cleanupBlock(responseBlock);
 
@@ -392,7 +392,7 @@ public class ComfoAirConnector {
                             // checksum
                             if (calculateChecksum(_block) == checksum) {
 
-                                logger.debug(String.format("receive CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
+                                logger.trace(String.format("receive CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
                                         dumpData(replyData));
 
                                 send(ACK);
@@ -405,7 +405,7 @@ public class ComfoAirConnector {
                             logger.debug("Unable to handle data. Data size not valid");
                         }
 
-                        logger.debug(String.format("skip CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
+                        logger.trace(String.format("skip CMD: %02x ", command.getReplyCmd()) + " DATA: {}",
                                 dumpData(cleanedBlock));
                     }
                 }
@@ -427,7 +427,7 @@ public class ComfoAirConnector {
         } while (retry++ < 5);
 
         if (retry == 5) {
-            logger.warn("Unable to send command. {} retries failed.", retry);
+            logger.debug("Unable to send command. {} retries failed.", retry);
         }
 
         return null;
@@ -559,7 +559,7 @@ public class ComfoAirConnector {
      * @return successful flag
      */
     private boolean send(byte[] request) {
-        logger.debug("send DATA: {}", dumpData(request));
+        logger.trace("send DATA: {}", dumpData(request));
 
         try {
             outputStream.write(request);
@@ -567,7 +567,7 @@ public class ComfoAirConnector {
             return true;
 
         } catch (IOException e) {
-            logger.error("Error writing to serial port {}: {}", port, e.getLocalizedMessage());
+            logger.debug("Error writing to serial port {}: {}", port, e.getLocalizedMessage());
             return false;
         }
     }

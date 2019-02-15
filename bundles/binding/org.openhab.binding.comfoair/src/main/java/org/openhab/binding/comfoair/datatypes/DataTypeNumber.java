@@ -31,7 +31,7 @@ public class DataTypeNumber implements ComfoAirDataType {
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
         if (data == null || commandType == null) {
-            logger.debug("\"DataTypeNumber\" class \"convertToState\" method parameter: null");
+            logger.trace("\"DataTypeNumber\" class \"convertToState\" method parameter: null");
             return null;
         } else {
 
@@ -77,7 +77,7 @@ public class DataTypeNumber implements ComfoAirDataType {
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
         if (value == null || commandType == null) {
-            logger.debug("\"DataTypeNumber\" class \"convertFromState\" method parameter: null");
+            logger.trace("\"DataTypeNumber\" class \"convertFromState\" method parameter: null");
             return null;
         } else {
 

@@ -31,7 +31,7 @@ public class DataTypeRPM implements ComfoAirDataType {
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
         if (data == null || commandType == null) {
-            logger.debug("\"DataTypeRPM\" class \"convertToState\" method parameter: null");
+            logger.trace("\"DataTypeRPM\" class \"convertToState\" method parameter: null");
             return null;
         } else {
 
@@ -61,7 +61,7 @@ public class DataTypeRPM implements ComfoAirDataType {
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
         if (value == null || commandType == null) {
-            logger.debug("\"DataTypeRPM\" class \"convertFromState\" method parameter: null");
+            logger.trace("\"DataTypeRPM\" class \"convertFromState\" method parameter: null");
             return null;
         } else {
 
