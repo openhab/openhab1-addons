@@ -203,7 +203,7 @@ Within a rules file you can then open a browser and set a location
 
 ```
 LgTvAppExecute.sendCommand("Internet")
-postUpdate(LgTvBrowserRemote,"http://www.profil.at")
+LgTvBrowserRemote.postUpdate("http://www.profil.at")
 ```
 
 With the following example rule you can automate this process and changes websites based on a timeshedule. 
@@ -244,7 +244,7 @@ then
                 if (currentpage==2) site="http://www.diepresse.at"
                 if (currentpage==3) site="http://www.spiegel.de"
                 if (currentpage==4) site="http://openhabserver:8080/openhab.app?sitemap=demo"
-                postUpdate(LgTvBrowserRemote,site)
+                LgTvBrowserRemote.postUpdate(site)
         }else
         {
                 LgTvAppTerminate.sendCommand("Internet")
@@ -270,7 +270,7 @@ then
                 }
                 logInfo("lginfomode","infolauft: lgruninsec="+lgruninsec+" currentpage="+currentpage)
                 if (currentpage>4) currentpage=1
-                postUpdate(LgTvInfoMode,currentpage)
+                LgTvInfoMode.postUpdate(currentpage)
         }
 end
 ```
