@@ -25,47 +25,53 @@ There are currently 3 types available:
 
 ## Item Examples
 
-        /* Insteon-enabled thermostat.  Note "type=thermostat" to ensure proper temp calculations, and cmd=CLISPH to use the ISY setpoint heat value instead of status */
-        Number Temperature_Indoor "Inside [%.2f °F]" <temperature> (All) {isy="ctrl=29.24.98.1,type=thermostat,cmd=ST"}
-        Number Temperature_Setpoint		"Desired Temperature [%.2f °F]" <temperature> (All) {isy="ctrl=29.24.98.1,type=thermostat,cmd=CLISPH"}
+```
+/* Insteon-enabled thermostat.  Note "type=thermostat" to ensure proper temp calculations, and cmd=CLISPH to use the ISY setpoint heat value instead of status */
+Number Temperature_Indoor "Inside [%.2f °F]" <temperature> (All) {isy="ctrl=29.24.98.1,type=thermostat,cmd=ST"}
+Number Temperature_Setpoint		"Desired Temperature [%.2f °F]" <temperature> (All) {isy="ctrl=29.24.98.1,type=thermostat,cmd=CLISPH"}
 
-        /* Regular ISY scene id #12220, but look at device 30.CB.66.1 to get the scene status */
-        Switch Light_Hallway2 "Hallway" <switch> (GroundFloor,Lights) {isy="ctrl=12220,addr=30.CB.66.1"}
-        /* Regular ISY device, controlled directly (won't update scenes!)
-        Switch K_DiningRoom_Light "Dining Room Light" (GroundFloor,Lights) {isy="ctrl=F.C3.7C.1"}
+/* Regular ISY scene id #12220, but look at device 30.CB.66.1 to get the scene status */
+Switch Light_Hallway2 "Hallway" <switch> (GroundFloor,Lights) {isy="ctrl=12220,addr=30.CB.66.1"}
+/* Regular ISY device, controlled directly (won't update scenes!)
+Switch K_DiningRoom_Light "Dining Room Light" (GroundFloor,Lights) {isy="ctrl=F.C3.7C.1"}
 
-        /* ZWave lock.  Note type=lock (makes it use the security commands necessary). The second (Number) entry watches the BATLVL value, which battery-powered devices use to report battery level in percent */
-        Switch BDoorLock "Back Door Lock" <lock> (Locks) {isy="ctrl=ZW004_1,type=lock"}
-        Number BDoorLock_Battery "Back Door Lock Battery [%d]" <battery> (Locks,BattLevels) {isy="ctrl=ZW004_1,cmd=BATLVL"}
+/* ZWave lock.  Note type=lock (makes it use the security commands necessary). The second (Number) entry watches the BATLVL value, which battery-powered devices use to report battery level in percent */
+Switch BDoorLock "Back Door Lock" <lock> (Locks) {isy="ctrl=ZW004_1,type=lock"}
+Number BDoorLock_Battery "Back Door Lock Battery [%d]" <battery> (Locks,BattLevels) {isy="ctrl=ZW004_1,cmd=BATLVL"}
 
-        /* Insteon FanLinc, set up with a Keypadlinc.  4 scenes - Off, Low, Med, High */
-        Switch LR_Fan_Off "LR Fan Off" (ISYScenes) {isy="ctrl=4622,addr=1c.e2.d1.3", autoupdate="false"}
-        Switch LR_Fan_Low "LR Fan Low" (ISYScenes) {isy="ctrl=20771,addr=1c.e2.d1.4", autoupdate="false"}
-        Switch LR_Fan_Med "LR Fan Med" (ISYScenes) {isy="ctrl=22031,addr=1c.e2.d1.5", autoupdate="false"}
-        Switch LR_Fan_High "LR Fan High" (ISYScenes) {isy="ctrl=11187,addr=1c.e2.d1.6", autoupdate="false"}
+/* Insteon FanLinc, set up with a Keypadlinc.  4 scenes - Off, Low, Med, High */
+Switch LR_Fan_Off "LR Fan Off" (ISYScenes) {isy="ctrl=4622,addr=1c.e2.d1.3", autoupdate="false"}
+Switch LR_Fan_Low "LR Fan Low" (ISYScenes) {isy="ctrl=20771,addr=1c.e2.d1.4", autoupdate="false"}
+Switch LR_Fan_Med "LR Fan Med" (ISYScenes) {isy="ctrl=22031,addr=1c.e2.d1.5", autoupdate="false"}
+Switch LR_Fan_High "LR Fan High" (ISYScenes) {isy="ctrl=11187,addr=1c.e2.d1.6", autoupdate="false"}
 
-        /* Insteon water sensor - it has 3 subdevices: 1 = dry, 2 = wet, 4 = heartbeat
-           The heartbeat device sends an "ON" (255) ST code as a heartbeat.  With type=heartbeat, the binding
-           sends a DateTime value.  You can use a rule to check that DateTime to see if you have received
-           a heartbeat recently */
-        Contact Water_Heater_Dry "Water Heater Sensor [MAP(watersensor-en.map):%s]" (Sensors) {isy="addr=25.AD.4F.1"}
-        DateTime Water_Heater_Heartbeat "Water Heater HB [%1$td.%1$tm.%1$tY %1$tH:%1$tM]" (Sensors) {isy="addr=25.AD.4F.4", type=heartbeat}
+/* Insteon water sensor - it has 3 subdevices: 1 = dry, 2 = wet, 4 = heartbeat
+   The heartbeat device sends an "ON" (255) ST code as a heartbeat.  With type=heartbeat, the binding
+   sends a DateTime value.  You can use a rule to check that DateTime to see if you have received
+   a heartbeat recently */
+Contact Water_Heater_Dry "Water Heater Sensor [MAP(watersensor-en.map):%s]" (Sensors) {isy="addr=25.AD.4F.1"}
+DateTime Water_Heater_Heartbeat "Water Heater HB [%1$td.%1$tm.%1$tY %1$tH:%1$tM]" (Sensors) {isy="addr=25.AD.4F.4", type=heartbeat}
+```
 
 The transform file (watersensor-en.map) for the water sensor is:
 
-        CLOSED=Wet
-        OPEN=Dry
-        undefined=Unknown
-        -=Unknown
+```
+CLOSED=Wet
+OPEN=Dry
+undefined=Unknown
+-=Unknown
+```
 
 ## ISY Binding Configuration
 
 The following settings configure the ISY binding in the openhab.cfg file.
 
-* isy:refresh=60000 # refresh interval in milliseconds (optional, defaults to 60000 [1 minute])
-* isy:upnp=true # if true, use UPNP to communicate with the ISY 994i
-* isy:uuid=uuid:%your_uudid% # UUID of the ISY router
-* isy:ip=192.168.x.x # the hostname of the ISY router
-* isy:port=80 # the port of the ISY router
-* isy:user=user # the user of the ISY router
-* isy:password=password # the password of the ISY router
+```
+isy:refresh=60000 # refresh interval in milliseconds (optional, defaults to 60000 [1 minute])
+isy:upnp=true # if true, use UPNP to communicate with the ISY 994i
+isy:uuid=uuid:%your_uudid% # UUID of the ISY router
+isy:ip=192.168.x.x # the hostname of the ISY router
+isy:port=80 # the port of the ISY router
+isy:user=user # the user of the ISY router
+isy:password=password # the password of the ISY router
+```
