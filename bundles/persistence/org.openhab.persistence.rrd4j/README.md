@@ -4,7 +4,7 @@ The [rrd4j](https://github.com/rrd4j/rrd4j) Persistence service is based on a ro
 
 In contrast to a "normal" database such as db4o, a round-robin database does not grow in size - it has a fixed allocated size, which is used. 
 This is accomplished by saving a fixed amount of datapoints and by doing data compression, which means that the older the data is, the less values are available. 
-The data is kept in several "archives", each holding the data for its set timeframe in the set granulation.
+The data is kept in several "archives", each holding the data for its set timeframe in the set granularity.
 The start point for all archives is the actually saved datapoint.
 So while you might have a value every minute for the last 8 hours, you might only have one every day for the last year.
 
@@ -65,7 +65,7 @@ Each datasource also has a value for heartbeat, minimum and maximum. This heartb
 
 Step (set in `.def=<dstype>,<heartbeat>,[<min>|U],[<max>|U],<step>` with step in seconds)
 
-Sets the time intervall(seconds) between consecutive readings.
+Sets the time interval (seconds) between consecutive readings.
 
 - Steps or Granularity (set in `.archives=<consolidationfunction>,<xff>,<steps>,<rows>`
 
@@ -91,7 +91,7 @@ openHAB uses AVERAGE as default for numeric values, so if you add 20 and 21 with
 480 minutes is 8 hours, so we have a 8h with the granularity of one minute.
 
 The next archive has 144 boxes, which each represent the value of ten minutes (Step is set to 60s, Granularity = 10).
-1440 minutes is 24 hours, so we have a full day with with the granularity of 10 minutes.
+1440 minutes is 24 hours, so we have a full day with the granularity of 10 minutes.
 
 The same goes for following archives, for larger time spans, the stored values are less "exact". 
 However, usually you are not interested in the exact values for a selected minute some time ago.
