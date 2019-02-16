@@ -161,44 +161,44 @@ then
     
     if (plant1_Water_Level.state.toString.matches("9. %") && plantbswitch90.state == OFF) {
         sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I am well!My water level is " + level,           "http://192.168.177.138/flower1.jpg")
-        sendCommand(plantbswitch90, ON)
-        sendCommand(plantbswitch80, OFF)
-        sendCommand(plantbswitch70, OFF)
-        sendCommand(plantbswitch60, OFF)
-        sendCommand(plantbswitch50, OFF)
-        sendCommand(plantbswitch40, OFF)
-        sendCommand(plantbswitch30, OFF)
+        plantbswitch90.sendCommand(ON)
+        plantbswitch80.sendCommand(OFF)
+        plantbswitch70.sendCommand(OFF)
+        plantbswitch60.sendCommand(OFF)
+        plantbswitch50.sendCommand(OFF)
+        plantbswitch40.sendCommand(OFF)
+        plantbswitch30.sendCommand(OFF)
     }
     
     if (plant1_Water_Level.state.toString.matches("8. %") && plantbswitch80.state == OFF ){
         sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I am still well! My water level is " + level ,"http://192.168.177.138/flower1.jpg")
-        sendCommand(plantbswitch80, ON)
-        sendCommand(plantbswitch90, OFF)
+        plantbswitch80.sendCommand(ON)
+        plantbswitch90.sendCommand(OFF)
     }
     
     if (plant1_Water_Level.state.toString.matches("7. %") && plantbswitch70.state == OFF ){
-        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I am still well!My water level is "  + level ,"http://192.168.177.138/flower1.jpg")
-        sendCommand(plantbswitch70, ON)
+        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I am still well! My water level is "  + level ,"http://192.168.177.138/flower1.jpg")
+        plantbswitch70.sendCommand(ON)
     }
     
     if (plant1_Water_Level.state.toString.matches("6. %") && plantbswitch60.state == OFF ){
-        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I am still well!My water level is " + level ,"http://192.168.177.138/flower1.jpg")
-        sendCommand(plantbswitch60, ON)
+        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I am still well! My water level is " + level ,"http://192.168.177.138/flower1.jpg")
+        plantbswitch60.sendCommand(ON)
     }
     
     if (plant1_Water_Level.state.toString.matches("5. %") && plantbswitch50.state == OFF ){
-        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "Next I need water!My water level is " + level ,"http://192.168.177.138/flower1.jpg")
-        sendCommand(plantbswitch50, ON)
+        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "Next I need water! My water level is " + level ,"http://192.168.177.138/flower1.jpg")
+        plantbswitch50.sendCommand(ON)
     }
     
     if (plant1_Water_Level.state.toString.matches("4. %") && plantbswitch40.state == OFF ){
-        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I need water! Please give me water. My water level is"  + level ,"http://192.168.177.138/flower1.jpg")
-        sendCommand(plantbswitch40, ON)
+        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I need water! Please give me water. My water level is" + level ,"http://192.168.177.138/flower1.jpg")
+        plantbswitch40.sendCommand(ON)
     }
 
     if (plant1_Water_Level.state.toString.matches("3. %") && plantbswitch30.state == OFF) {
-        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I realy need water! Please give me water ore i will        di.  My water level is "  + level ,"http://192.168.177.138/flower1.jpg")
-        sendCommand(plantbswitch30, ON)
+        sendMail("my@mail.de", "Zamioculcas_zamiifolia", "I realy need water! Please give me water ore i will di. My water level is "  + level ,"http://192.168.177.138/flower1.jpg")
+        plantbswitch30.sendCommand(ON)
     }
 end
 
@@ -206,12 +206,12 @@ rule "set switch to off at start"
 when
     System started
 then
-    sendCommand(plantbswitch90, OFF)
-    sendCommand(plantbswitch80, OFF)
-    sendCommand(plantbswitch70, OFF)
-    sendCommand(plantbswitch60, OFF)
-    sendCommand(plantbswitch50, OFF)
-    sendCommand(plantbswitch40, OFF)
-    sendCommand(plantbswitch30, OFF)
+    plantbswitch90.sendCommand(OFF)
+    plantbswitch80.sendCommand(OFF)
+    plantbswitch70.sendCommand(OFF)
+    plantbswitch60.sendCommand(OFF)
+    plantbswitch50.sendCommand(OFF)
+    plantbswitch40.sendCommand(OFF)
+    plantbswitch30.sendCommand(OFF)
 end
 ```
