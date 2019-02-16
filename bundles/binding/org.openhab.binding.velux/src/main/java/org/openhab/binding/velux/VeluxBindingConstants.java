@@ -14,9 +14,11 @@ import org.openhab.binding.velux.internal.VeluxItemType;
  * The {@link VeluxBindingConstants} class defines common constants, which are
  * used across the whole binding.
  *
- * For an in-depth view of the available Item type with description of parameters, take a look onto {@link VeluxItemType}.
+ * For an in-depth view of the available Item type with description of parameters, take a look onto
+ * {@link VeluxItemType}.
  *
  * @author Guenther Schreiner - Initial contribution
+ * @since 1.13.0
  */
 public class VeluxBindingConstants {
 
@@ -26,6 +28,7 @@ public class VeluxBindingConstants {
     // List of all thing ids
     public static final String THING_VELUX_SCENE = "scene";
     public static final String THING_VELUX_BRIDGE = "bridge";
+    public static final String THING_VELUX_ACTUATOR = "actuator";
 
     // Id of support bridge
     public static final String BRIDGE_TYPE = "klf200";
@@ -49,6 +52,9 @@ public class VeluxBindingConstants {
     public static final String CHANNEL_SCENE_ACTION = "action";
     public static final String CHANNEL_SCENE_SILENTMODE = "silentMode";
 
+    // List of all actuator channel ids
+    public static final String CHANNEL_ACTUATOR_SERIAL = "serial";
+
     /** Helper definitions */
     public static final String BINDING_KVPAIR_SEPARATOR = ";";
     public static final String BINDING_KV_SEPARATOR = "=";
@@ -58,6 +64,3 @@ public class VeluxBindingConstants {
     public static final String BINDING_ID_CHANNEL = "channel";
 
 }
-/**
- * end-of-VeluxBindingConstants.java
- */

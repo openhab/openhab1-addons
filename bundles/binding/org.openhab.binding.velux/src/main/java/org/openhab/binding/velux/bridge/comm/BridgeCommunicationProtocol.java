@@ -35,7 +35,9 @@ package org.openhab.binding.velux.bridge.comm;
  * </UL>
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public interface BridgeCommunicationProtocol<T> {
 
     /**
@@ -103,7 +105,3 @@ public interface BridgeCommunicationProtocol<T> {
     public String[] getErrors(T response);
 
 }
-
-/**
- * end-of-bridge/comm/BridgeCommunicationProtocol.java
- */

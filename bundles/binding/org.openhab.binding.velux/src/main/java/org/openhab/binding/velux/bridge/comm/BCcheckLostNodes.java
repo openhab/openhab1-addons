@@ -25,7 +25,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCcheckLostNodes implements BridgeCommunicationProtocol<BCcheckLostNodes.Response> {
 
     public static String url = "/api/v1/device";
@@ -41,6 +43,7 @@ public class BCcheckLostNodes implements BridgeCommunicationProtocol<BCcheckLost
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * 
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"checkLostNodes","params":{}}
      * </pre>
@@ -66,6 +69,7 @@ public class BCcheckLostNodes implements BridgeCommunicationProtocol<BCcheckLost
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * 
      * Expected JSON (sample):
+     * 
      * <pre>
      * {
      *  "token":"RHIKGlJyZhidI/JSK0a2RQ==",
@@ -155,6 +159,3 @@ public class BCcheckLostNodes implements BridgeCommunicationProtocol<BCcheckLost
     }
 
 }
-/**
- * end-of-bridge/comm/BCcheckLostNodes.java
- */

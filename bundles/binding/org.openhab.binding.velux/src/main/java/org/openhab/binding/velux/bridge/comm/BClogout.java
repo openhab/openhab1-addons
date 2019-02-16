@@ -25,7 +25,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BClogout implements BridgeCommunicationProtocol<BClogout.Response> {
 
     public static String url = "/api/v1/auth";
@@ -47,6 +49,7 @@ public class BClogout implements BridgeCommunicationProtocol<BClogout.Response> 
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"logout","params":{}}
      * </pre>
@@ -68,6 +71,7 @@ public class BClogout implements BridgeCommunicationProtocol<BClogout.Response> 
      * Bridge I/O Response message used by {@link VeluxBridge} for deserializing with including component access methods
      * <P>
      * Expected JSON (sample):
+     * 
      * <pre>
      * '{"token": "PHPnfLda71xfGlxoYEOTGQ==", "result": true, "deviceStatus": "IDLE", "data": {}, "errors": [] }'
      * </pre>
@@ -143,6 +147,3 @@ public class BClogout implements BridgeCommunicationProtocol<BClogout.Response> 
     }
 
 }
-/**
- * end-of-bridge/comm/BClogout.java
- */

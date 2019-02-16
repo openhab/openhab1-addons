@@ -22,7 +22,9 @@ import org.openhab.binding.velux.bridge.VeluxBridge;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BClogin implements BridgeCommunicationProtocol<BClogin.Response> {
 
     public static String url = "/api/v1/auth";
@@ -50,6 +52,7 @@ public class BClogin implements BridgeCommunicationProtocol<BClogin.Response> {
      * Bridge I/O Request message used by {@link VeluxBridge} for serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"login","params":{"password":"PASSWORD"}}
      * </pre>
@@ -147,6 +150,3 @@ public class BClogin implements BridgeCommunicationProtocol<BClogin.Response> {
     }
 
 }
-/**
- * end-of-bridge/comm/BClogin.java
- */

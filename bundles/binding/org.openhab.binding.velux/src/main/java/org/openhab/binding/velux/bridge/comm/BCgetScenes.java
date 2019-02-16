@@ -23,7 +23,9 @@ import java.util.Map;
  * BridgeCommunicationProtocol}.
  *
  * @author Guenther Schreiner - Initial contribution.
+ * @since 1.13.0
  */
+@Deprecated
 public class BCgetScenes implements BridgeCommunicationProtocol<BCgetScenes.Response> {
 
     public static String url = "/api/v1/scenes";
@@ -115,6 +117,7 @@ public class BCgetScenes implements BridgeCommunicationProtocol<BCgetScenes.Resp
      * serializing:
      * <P>
      * Resulting JSON:
+     * 
      * <pre>
      * {"action":"get","params":{}}
      * </pre>
@@ -232,6 +235,3 @@ public class BCgetScenes implements BridgeCommunicationProtocol<BCgetScenes.Resp
     }
 
 }
-/**
- * end-of-bridge/comm/BCgetScenes.java
- */

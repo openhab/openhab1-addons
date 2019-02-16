@@ -9,10 +9,10 @@
     http://www.eclipse.org/legal/epl-v10.html
 
 -->
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.velux.genericbindingprovider">
-   <implementation class="org.openhab.binding.velux.internal.VeluxGenericBindingProvider"/>
-   <service>
-      <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
-      <provide interface="org.openhab.binding.velux.VeluxBindingProvider"/>
-   </service>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.openhab.binding.velux.genericbindingprovider">
+    <implementation class="org.openhab.binding.velux.internal.VeluxGenericBindingProvider"/>
+    <service>
+        <provide interface="org.openhab.model.item.binding.BindingConfigReader"/>
+        <provide interface="org.openhab.binding.velux.VeluxBindingProvider"/>
+    </service>
 </scr:component>

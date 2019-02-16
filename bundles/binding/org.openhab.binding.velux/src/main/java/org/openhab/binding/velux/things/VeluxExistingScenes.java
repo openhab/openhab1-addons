@@ -31,14 +31,18 @@ import org.slf4j.LoggerFactory;
  * @see VeluxScene
  *
  * @author Guenther Schreiner - initial contribution.
+ * @since 1.13.0
  */
 public class VeluxExistingScenes {
     private final Logger logger = LoggerFactory.getLogger(VeluxExistingScenes.class);
 
-    // Type definitions
+    // Type definitions, class-internal variables
 
+    private static String outputSeparator = ",";
     private ConcurrentHashMap<String, VeluxScene> existingScenesBySceneName;
     private int memberCount;
+
+    // Constructor methods
 
     public VeluxExistingScenes() {
         logger.trace("VeluxExistingScenes() initializing.");
@@ -86,21 +90,23 @@ public class VeluxExistingScenes {
         return memberCount;
     }
 
-    @Override
-    public String toString() {
+    public String toString(boolean showSummary, String delimiter) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(memberCount).append(" members: ");
-        for (VeluxScene scene : this.values()) {
-            sb.append(scene.toString()).append(",");
+        if (showSummary) {
+            sb.append(memberCount).append(" members: ");
         }
-        if (sb.lastIndexOf(",") > 0) {
-            sb.deleteCharAt(sb.lastIndexOf(","));
+        for (VeluxScene scene : this.values()) {
+            sb.append(scene.toString()).append(delimiter);
+        }
+        if (sb.lastIndexOf(delimiter) > 0) {
+            sb.deleteCharAt(sb.lastIndexOf(delimiter));
         }
         return sb.toString();
     }
-}
 
-/**
- * end-of-VeluxExistingScenes.java
- */
+    @Override
+    public String toString() {
+        return toString(true, outputSeparator);
+    }
+}

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * as declared in the binding configuration (possibly adapted by preprocessing).</li>
  * </ul>
  *
- * @author Guenther Schreiner
+ * @author Guenther Schreiner - Initial contribution
  * @since 1.13.0
  */
 
@@ -66,9 +66,9 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
     /**
      * The sorted list of generic Objects indexed by an Integer
      */
-    Integer rollershutterLevel = 0;
+    private Integer rollershutterLevel = 0;
 
-    public void VeluxRollershutterBindingParser(final String channelValue) {
+    public void veluxRollershutterBindingParser(final String channelValue) {
         logger.debug("VeluxRollershutterBindingParser({}) called.", channelValue);
 
         String[] channelValueParts = channelValue.trim().split(VeluxBindingConstants.BINDING_VALUES_SEPARATOR);
@@ -105,18 +105,18 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
      * Constructor of the VeluxBindingConfig.
      *
      * @param bindingItemType
-     *                            The Velux item type {@link org.openhab.binding.velux.internal.VeluxItemType
-     *                            VeluxItemType} which the Velux device is filed in the Velux bridge.
+     *            The Velux item type {@link org.openhab.binding.velux.internal.VeluxItemType
+     *            VeluxItemType} which the Velux device is filed in the Velux bridge.
      * @param channelValue
-     *                            The optional configuration type of the Velux binding.
+     *            The optional configuration type of the Velux binding.
      *
      * @throws BindingConfigParseException
-     *                                         does not really occur.
+     *             does not really occur.
      */
     public VeluxRSBindingConfig(VeluxItemType bindingItemType, String channelValue) throws BindingConfigParseException {
         super(bindingItemType, channelValue);
         logger.trace("VeluxRSBindingConfig(constructor:{},{}) called.", bindingItemType, channelValue);
-        VeluxRollershutterBindingParser(channelValue);
+        veluxRollershutterBindingParser(channelValue);
     }
 
     /**
@@ -142,7 +142,6 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
      * Returns the next shutter level for an UP command w/ adjusting the actual position.
      *
      * @return <b>rollershutterLevel</b> of type Integer with next position after UP command.
-     *
      */
     public Integer getNextDescendingLevel() {
         logger.trace("getNextDescendingLevel() called.");
@@ -172,7 +171,7 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
     /**
      * Returns the scene name of the current shutter level w/o adjusting the actual positioning.
      *
-     * @return sceneName
+     * @return <B>sceneName</B>
      *         A String describing the next scene.
      */
     public String getSceneName() {
@@ -183,8 +182,8 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
      * Returns the scene name w/o adjusting the actual positioning.
      *
      * @param level
-     *                  The shutter level is be queried.
-     * @return sceneName
+     *            The shutter level is be queried.
+     * @return <B>sceneName</B>
      *         A String describing the next scene.
      */
     public String getSceneName(Integer level) {
@@ -193,7 +192,3 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
         return mapDescending.get(level);
     }
 }
-
-/**
- * end-of-internal/VeluxRSBindingConfig.java
- */

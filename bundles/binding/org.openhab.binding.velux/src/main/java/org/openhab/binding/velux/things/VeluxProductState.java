@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.velux.things;
 
-import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCproductState;
+import org.openhab.binding.velux.bridge.comm.BCgetScenes;
 
 /**
  * <B>Velux</B> product status representation.
@@ -18,6 +18,7 @@ import org.openhab.binding.velux.bridge.comm.BCgetScenes.BCproductState;
  * @see VeluxProduct
  *
  * @author Guenther Schreiner - initial contribution.
+ * @since 1.13.0
  */
 public class VeluxProductState {
 
@@ -50,10 +51,6 @@ public class VeluxProductState {
         this.state = new ProductState(state);
     }
 
-    public VeluxProductState(BCproductState productState) {
-        this(new VeluxProductReference(productState), productState.getActuator(), productState.getStatus());
-    }
-
     // Class access methods
 
     public VeluxProductReference getProductReference() {
@@ -76,8 +73,8 @@ public class VeluxProductState {
     public String toString() {
         return String.format("State (%s, actuator %d, value %d)", this.productReference, this.actuator, this.state);
     }
-}
 
-/**
- * end-of-VeluxProductState.java
- */
+    @Deprecated
+    public VeluxProductState(BCgetScenes.BCproductState productState) {
+    }
+}

@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.velux.bridge;
 
-import org.openhab.binding.velux.bridge.comm.BCgetFirmware;
 import org.openhab.binding.velux.internal.config.VeluxBridgeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * The {@link VeluxBridgeFirmware} represents a complete set of transactions
  * for retrieving of firmware version string on the <B>Velux</B> bridge.
  * <P>
- * It therefore provides a method
+ * It provides the following methods:
  * <UL>
  * <LI>{@link VeluxBridgeFirmware#retrieve} for retrieval of information.
  * </UL>
@@ -26,12 +25,14 @@ import org.slf4j.LoggerFactory;
  * @see VeluxBridgeProvider
  *
  * @author Guenther Schreiner - Initial contribution
+ * @since 1.13.0
  */
+@Deprecated
 public class VeluxBridgeFirmware {
     private final Logger logger = LoggerFactory.getLogger(VeluxBridgeFirmware.class);
 
     /**
-     * Bridge information, (currently only) consisting of:
+     * Bridge information consisting of:
      * <ul>
      * <li>isRetrieved (boolean flag),
      * <li>firmwareVersion.
@@ -56,22 +57,7 @@ public class VeluxBridgeFirmware {
     public Channel retrieve(VeluxBridgeProvider bridge) {
         logger.trace("retrieve() called.");
 
-        if (this.channel == null) {
-            this.channel = new Channel();
-        }
-
-        BCgetFirmware.Response response = bridge.bridgeCommunicate(new BCgetFirmware());
-        if (response != null) {
-            logger.trace("retrieve() found successfully firmware {}.", response.getFirmwareVersion());
-            this.channel.firmwareVersion = response.getFirmwareVersion();
-            this.channel.isRetrieved = true;
-            return channel;
-        }
-        logger.trace("retrieve() finished with failure.");
-        return null;
+        return channel;
     }
 
 }
-/**
- * end-of-bridge/VeluxBridgeFirmware.java
- */
