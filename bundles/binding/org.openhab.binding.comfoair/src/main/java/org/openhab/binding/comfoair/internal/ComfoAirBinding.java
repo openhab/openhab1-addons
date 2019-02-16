@@ -216,7 +216,7 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
             State value = dataType.convertToState(response, commandType);
 
             if (value == null) {
-                logger.warn("Unexpected value for DATA: {}", ComfoAirConnector.dumpData(response));
+                logger.debug("Unexpected value for DATA: {}", ComfoAirConnector.dumpData(response));
             } else {
                 for (ComfoAirBindingProvider provider : providers) {
                     List<String> items = provider.getItemNamesForCommandKey(commandType.getKey());
@@ -256,7 +256,7 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
                 try {
                     connector.open(port);
                 } catch (InitializationException e) {
-                    logger.error(e.getMessage());
+                    logger.debug(e.getMessage());
                 }
 
                 setProperlyConfigured(true);

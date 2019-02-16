@@ -31,7 +31,7 @@ public class DataTypeTemperature implements ComfoAirDataType {
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
         if (data == null || commandType == null) {
-            logger.debug("\"DataTypeTemperature\" class \"convertToState\" method parameter: null");
+            logger.trace("\"DataTypeTemperature\" class \"convertToState\" method parameter: null");
             return null;
         } else {
 
@@ -50,7 +50,7 @@ public class DataTypeTemperature implements ComfoAirDataType {
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
         if (value == null || commandType == null) {
-            logger.debug("\"DataTypeTemperature\" class \"convertFromState\" method parameter: null");
+            logger.trace("\"DataTypeTemperature\" class \"convertFromState\" method parameter: null");
             return null;
         } else {
 

@@ -2119,7 +2119,7 @@ public enum ComfoAirCommandType {
         try {
             return data_type.newInstance();
         } catch (Exception e) {
-            logger.error("Creating new DataType went wrong ", e);
+            logger.debug("Creating new DataType went wrong ", e);
         }
         return null;
     }
