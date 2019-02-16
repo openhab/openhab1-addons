@@ -141,7 +141,7 @@ Although the device's configuration can be used to directly switch a relay with 
 ```
 rule "regular switch on Anel1 IO1 input for relay 1"
 when Item io1 changed then
-    sendCommand(f1, io1.state)
+    f1.sendCommand(io1.state)
 end
 ```
 
@@ -150,7 +150,7 @@ An input channel can also be used as a push button (also demonstrated in the [vi
 ```
 rule "push button switch on Anel1 IO2 input for relay 2"
 when Item io2 changed to ON then
-    sendCommand(f2, if (f2.state != ON) ON else OFF)
+    f2.sendCommand(if (f2.state != ON) ON else OFF)
 end
 ```
 
@@ -163,13 +163,13 @@ var org.openhab.model.script.actions.Timer timer2
 
 rule "switch dimmer on Anel1 IO3"
 when Item io3 changed to OFF then
-    sendCommand(milight_zone1, 10)
+    milight_zone1.sendCommand(10)
     timer2 = createTimer(now.plusMillis(333)) [|
         val int newValue = (milight_zone1.state as DecimalType).intValue + 5
         if (newValue > 100) {
             timer2 = null
         } else if (timer2 != null) {
-            sendCommand(milight_zone1, newValue)
+            milight_zone1.sendCommand(newValue)
             if (io3.state == OFF)
                 timer2.reschedule(now.plusMillis(333))
         }
