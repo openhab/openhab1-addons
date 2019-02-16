@@ -49,7 +49,7 @@ public class SlipEncoding {
      * Builds a message based on command and parameters.
      *
      * @param command Message type as short.
-     * @param data    Parameters as Array of bytes.
+     * @param data Parameters as Array of bytes.
      */
     public SlipEncoding(short command, byte[] data) {
         logger.trace("SlipEncoding(constructor) for command 0x{} with data size {} called.",

@@ -72,23 +72,23 @@ public class VeluxProduct {
     }
 
     /**
-     * @param name               This field Name holds the name of the actuator, ex. “Window 1”. This field is 64 bytes
-     *                               long, formatted as UTF-8 characters.
-     * @param typeId             This field indicates the node type, ex. Window, Roller shutter, Light etc.
+     * @param name This field Name holds the name of the actuator, ex. “Window 1”. This field is 64 bytes
+     *            long, formatted as UTF-8 characters.
+     * @param typeId This field indicates the node type, ex. Window, Roller shutter, Light etc.
      * @param bridgeProductIndex NodeID is an Actuator index in the system table, to get information from. It must be a
-     *                               value from 0 to 199.
-     * @param order              Order can be used to store a sort order. The sort order is used in client end, when
-     *                               presenting a list of nodes for the user.
-     * @param placement          Placement can be used to store a room group index or house group index number.
-     * @param velocity           This field indicates what velocity the node is operation with.
-     * @param variation          More detail information like top hung, kip, flat roof or sky light window.
-     * @param powerMode          This field indicates the power mode of the node (ALWAYS_ALIVE/LOW_POWER_MODE).
-     * @param serialNumber       This field tells the serial number of the node. This field is 8 bytes.
-     * @param state              This field indicates the operating state of the node.
-     * @param currentPosition    This field indicates the current position of the node.
-     * @param target             This field indicates the target position of the current operation.
-     * @param remainingTime      This field indicates the remaining time for a node activation in seconds.
-     * @param timeStamp          UTC time stamp for last known position.
+     *            value from 0 to 199.
+     * @param order Order can be used to store a sort order. The sort order is used in client end, when
+     *            presenting a list of nodes for the user.
+     * @param placement Placement can be used to store a room group index or house group index number.
+     * @param velocity This field indicates what velocity the node is operation with.
+     * @param variation More detail information like top hung, kip, flat roof or sky light window.
+     * @param powerMode This field indicates the power mode of the node (ALWAYS_ALIVE/LOW_POWER_MODE).
+     * @param serialNumber This field tells the serial number of the node. This field is 8 bytes.
+     * @param state This field indicates the operating state of the node.
+     * @param currentPosition This field indicates the current position of the node.
+     * @param target This field indicates the target position of the current operation.
+     * @param remainingTime This field indicates the remaining time for a node activation in seconds.
+     * @param timeStamp UTC time stamp for last known position.
      */
     public VeluxProduct(VeluxProductName name, VeluxProductType typeId, ProductBridgeIndex bridgeProductIndex,
             int order, int placement, int velocity, int variation, int powerMode, String serialNumber, int state,

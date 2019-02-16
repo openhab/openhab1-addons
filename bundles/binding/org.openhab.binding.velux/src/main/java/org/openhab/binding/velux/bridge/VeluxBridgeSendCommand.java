@@ -34,7 +34,7 @@ public class VeluxBridgeSendCommand {
      *
      * @param bridge Initialized Velux bridge handler.
      * @param nodeId Number of Actuator to be modified.
-     * @param value  Target value for Actuator main parameter.
+     * @param value Target value for Actuator main parameter.
      * @return true if successful, and false otherwise.
      */
     public boolean sendCommand(VeluxBridge bridge, int nodeId, VeluxProductPosition value) {

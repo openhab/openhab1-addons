@@ -271,12 +271,12 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
      *
      * It provides either information retrieval or information update according to the passed command.
      *
-     * @param itemName       The item passed as type {@link String} for which to following command is addressed to.
-     * @param command        The command passed as type {@link Command} for the mentioned item. If
-     *                           {@code command} is {@code null}, an information retrieval via a <B>Refresh</B> command
-     *                           is initiated for this item.
-     * @param config         The item-specific configuration information passed as type {@link VeluxBindingProvider}.
-     * @param provider       The bridge-specific provides information passed as type {@link VeluxBindingConfig}.
+     * @param itemName The item passed as type {@link String} for which to following command is addressed to.
+     * @param command The command passed as type {@link Command} for the mentioned item. If
+     *            {@code command} is {@code null}, an information retrieval via a <B>Refresh</B> command
+     *            is initiated for this item.
+     * @param config The item-specific configuration information passed as type {@link VeluxBindingProvider}.
+     * @param provider The bridge-specific provides information passed as type {@link VeluxBindingConfig}.
      * @param eventPublisher The connectivity to the OpenHAB event bus passed as type {@link EventPublisher}.
      */
     public void handleCommandOnChannel(String itemName, Command command, VeluxBindingConfig config,

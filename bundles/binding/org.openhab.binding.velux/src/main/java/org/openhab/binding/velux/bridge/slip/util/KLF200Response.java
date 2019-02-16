@@ -38,8 +38,8 @@ public class KLF200Response {
      * <P>
      * Introduction logging used at the beginning of the response handling.
      *
-     * @param logger           Instantiated logging class to be used for output.
-     * @param responseCommand  The command byte of the response packet.
+     * @param logger Instantiated logging class to be used for output.
+     * @param responseCommand The command byte of the response packet.
      * @param thisResponseData The array of bytes which are passed back within the response package.
      */
     public static void introLogging(Logger logger, short responseCommand, byte[] thisResponseData) {
@@ -54,7 +54,7 @@ public class KLF200Response {
      * <P>
      * Error logging used at the point where an unexpected or unrecognized command has been received.
      *
-     * @param logger          Instantiated logging class to be used for output.
+     * @param logger Instantiated logging class to be used for output.
      * @param responseCommand The command byte of the response packet.
      */
     public static void errorLogging(Logger logger, short responseCommand) {
@@ -69,8 +69,8 @@ public class KLF200Response {
      * <P>
      * Conclusion logging used at the end of the response handling.
      *
-     * @param logger   Instantiated logging class to be used for output.
-     * @param success  Describes the success of the response processing.
+     * @param logger Instantiated logging class to be used for output.
+     * @param success Describes the success of the response processing.
      * @param finished Describes whether the response processing has come to an end.
      */
     public static void outroLogging(Logger logger, boolean success, boolean finished) {
@@ -82,11 +82,11 @@ public class KLF200Response {
      * <P>
      * Check the intended length of the response packet.
      *
-     * @param logger                     Instantiated logging class to be used for output.
-     * @param responseCommand            The command byte of the response packet.
-     * @param thisResponseData           The array of bytes which are passed back within the response package.
+     * @param logger Instantiated logging class to be used for output.
+     * @param responseCommand The command byte of the response packet.
+     * @param thisResponseData The array of bytes which are passed back within the response package.
      * @param requiredResponseDataLength The expected size of the array of bytes which are passed back within the
-     *                                       response package.
+     *            response package.
      * @return <b>isLengthValid</b> of type boolean which signals the validity of the packet length.
      */
     public static boolean isLengthValid(Logger logger, short responseCommand, byte[] thisResponseData,
@@ -110,9 +110,9 @@ public class KLF200Response {
      * <P>
      * Internal support method to match two values for equality.
      *
-     * @param logger     Instantiated logging class to be used for output.
-     * @param idName     String describing the type of values being compared.
-     * @param requestID  Value of type int have been replaced within the request.
+     * @param logger Instantiated logging class to be used for output.
+     * @param idName String describing the type of values being compared.
+     * @param requestID Value of type int have been replaced within the request.
      * @param responseID Value of type int being received within the response.
      * @return <b>check4matchingAnyID</b> of type boolean which signals the equality.
      */
@@ -132,7 +132,7 @@ public class KLF200Response {
      * Compare the node identifier of the request with the node identifier within the response
      * with user-oriented logging in two log levels for monitoring KLF behavior.
      *
-     * @param logger    Instantiated logging class to be used for output.
+     * @param logger Instantiated logging class to be used for output.
      * @param reqNodeID Node identifier of the request.
      * @param cfmNodeID Node identifier of the response.
      * @return <b>success</b> of type boolean which signals the success of the communication.
@@ -146,7 +146,7 @@ public class KLF200Response {
      * Compare the session identifier of the request with the session identifier within the response
      * with user-oriented logging in two log levels for monitoring KLF behavior.
      *
-     * @param logger       Instantiated logging class to be used for output.
+     * @param logger Instantiated logging class to be used for output.
      * @param reqSessionID Session identifier of the request.
      * @param cfmSessionID Session identifier of the response.
      * @return <b>success</b> of type boolean which signals the success of the communication.

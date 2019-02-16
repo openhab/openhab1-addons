@@ -105,13 +105,13 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
      * Constructor of the VeluxBindingConfig.
      *
      * @param bindingItemType
-     *                            The Velux item type {@link org.openhab.binding.velux.internal.VeluxItemType
-     *                            VeluxItemType} which the Velux device is filed in the Velux bridge.
+     *            The Velux item type {@link org.openhab.binding.velux.internal.VeluxItemType
+     *            VeluxItemType} which the Velux device is filed in the Velux bridge.
      * @param channelValue
-     *                            The optional configuration type of the Velux binding.
+     *            The optional configuration type of the Velux binding.
      *
      * @throws BindingConfigParseException
-     *                                         does not really occur.
+     *             does not really occur.
      */
     public VeluxRSBindingConfig(VeluxItemType bindingItemType, String channelValue) throws BindingConfigParseException {
         super(bindingItemType, channelValue);
@@ -182,7 +182,7 @@ public class VeluxRSBindingConfig extends VeluxBindingConfig {
      * Returns the scene name w/o adjusting the actual positioning.
      *
      * @param level
-     *                  The shutter level is be queried.
+     *            The shutter level is be queried.
      * @return <B>sceneName</B>
      *         A String describing the next scene.
      */

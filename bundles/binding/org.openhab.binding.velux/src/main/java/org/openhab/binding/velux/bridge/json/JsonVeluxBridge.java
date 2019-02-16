@@ -100,17 +100,17 @@ public class JsonVeluxBridge extends VeluxBridge {
     /**
      * Base level communication with the <b>Velux</b> bridge.
      *
-     * @param url             as String describing the Service Access Point location i.e. http://localhost/api .
-     * @param authentication  as String providing the Authentication token to be passed with the request header.
-     * @param Request         as Object representing the structure of the message request body to be converted into
-     *                            JSON.
+     * @param url as String describing the Service Access Point location i.e. http://localhost/api .
+     * @param authentication as String providing the Authentication token to be passed with the request header.
+     * @param Request as Object representing the structure of the message request body to be converted into
+     *            JSON.
      * @param classOfResponse as Class representing the expected structure of the message response body to be converted
-     *                            from JSON.
+     *            from JSON.
      * @return <b>response</b> of type Object containing all resulting informations, i.e. device status, errors a.s.o.
      *         Will
      *         return
      *         <B>null</B> in case of communication or decoding error.
-     * @throws                     java.io.IOException in case of continuous communication I/O failures.
+     * @throws java.io.IOException in case of continuous communication I/O failures.
      * @throws JsonSyntaxException in case of unusual communication failures.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -176,16 +176,16 @@ public class JsonVeluxBridge extends VeluxBridge {
     /**
      * Initializes an authenticated communication with the {@link JsonVeluxBridge <b>Velux</b> bridge}.
      *
-     * @param url             as String describing the Service Access Point location i.e. http://localhost/api .
-     * @param authentication  as String providing the Authentication token to be passed with the request header.
-     * @param Request         as Object representing the structure of the message request body to be converted into
-     *                            JSON.
+     * @param url as String describing the Service Access Point location i.e. http://localhost/api .
+     * @param authentication as String providing the Authentication token to be passed with the request header.
+     * @param Request as Object representing the structure of the message request body to be converted into
+     *            JSON.
      * @param classOfResponse as Class representing the expected structure of the message response body to be converted
-     *                            from JSON.
+     *            from JSON.
      * @return <b>response</b> of type T containing all resulting informations, i.e. device status, errors a.s.o. Will
      *         return
      *         <B>null</B> in case of communication or decoding error.
-     * @throws                     java.io.IOException in case of continuous communication I/O failures.
+     * @throws java.io.IOException in case of continuous communication I/O failures.
      * @throws JsonSyntaxException in case of unusual communication failures.
      */
     @SuppressWarnings("rawtypes")
@@ -197,17 +197,17 @@ public class JsonVeluxBridge extends VeluxBridge {
     /**
      * Initializes an unauthenticated communication with the {@link JsonVeluxBridge <b>Velux</b> bridge}.
      *
-     * @param url             as String describing the Service Access Point location i.e. http://localhost/api .
-     * @param Request         as Object representing the structure of the message request body to be converted into
-     *                            JSON.
+     * @param url as String describing the Service Access Point location i.e. http://localhost/api .
+     * @param Request as Object representing the structure of the message request body to be converted into
+     *            JSON.
      * @param classOfResponse as Class representing the expected structure of the message response body to be converted
-     *                            from JSON.
-     * @param                 <T> generic response based on classOfResponse.
+     *            from JSON.
+     * @param <T> generic response based on classOfResponse.
      * @return <b>response</b> of type Object containing all resulting informations, i.e. device status, errors a.s.o.
      *         Will
      *         return
      *         <B>null</B> in case of communication or decoding error.
-     * @throws                     java.io.IOException in case of continuous communication I/O failures.
+     * @throws java.io.IOException in case of continuous communication I/O failures.
      * @throws JsonSyntaxException in case of unusual communication failures.
      */
     @SuppressWarnings("rawtypes")
@@ -221,10 +221,10 @@ public class JsonVeluxBridge extends VeluxBridge {
      * based on the Basic I/O interface {@link VeluxBridge} and parameters
      * passed as arguments (see below) and provided by {@link VeluxBridgeConfiguration}.
      *
-     * @param communication     Structure of interface type {@link JsonBridgeCommunicationProtocol} describing the
-     *                              intended
-     *                              communication,
-     *                              that is request and response interactions as well as appropriate URL definition.
+     * @param communication Structure of interface type {@link JsonBridgeCommunicationProtocol} describing the
+     *            intended
+     *            communication,
+     *            that is request and response interactions as well as appropriate URL definition.
      * @param useAuthentication boolean flag to decide whether to use authenticated communication.
      * @return <b>response</b> of type boolean will indicate the success of the communication.
      */

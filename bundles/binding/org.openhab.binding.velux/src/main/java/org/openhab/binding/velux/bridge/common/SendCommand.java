@@ -29,7 +29,7 @@ public abstract class SendCommand implements BridgeCommunicationProtocol {
     /**
      * Modifies the state of an actuator
      *
-     * @param actuatorId     Gateway internal actuator identifier (zero to 199).
+     * @param actuatorId Gateway internal actuator identifier (zero to 199).
      * @param parameterValue target device state.
      * @return reference to the class instance.
      */

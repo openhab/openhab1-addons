@@ -55,14 +55,14 @@ public class VeluxBindingConfig implements BindingConfig {
      * Constructor of the VeluxBindingConfig.
      *
      * @param bindingItemType
-     *                            The Velux item type {@link org.openhab.binding.velux.internal.VeluxItemType
-     *                            VeluxItemType}
-     *                            which the Velux device is filed in the Velux bridge.
+     *            The Velux item type {@link org.openhab.binding.velux.internal.VeluxItemType
+     *            VeluxItemType}
+     *            which the Velux device is filed in the Velux bridge.
      * @param bindingConfig
-     *                            The optional configuration type of the Velux binding.
+     *            The optional configuration type of the Velux binding.
      *
      * @throws BindingConfigParseException
-     *                                         does not really occur.
+     *             does not really occur.
      */
     public VeluxBindingConfig(VeluxItemType bindingItemType, String bindingConfig) throws BindingConfigParseException {
         logger.trace("VeluxBindingConfig(constructor:{},{}) called.", bindingItemType, bindingConfig);

@@ -155,7 +155,7 @@ public class SCsetSilentMode extends SetSilentMode implements SlipBridgeCommunic
      * Passes the intended Actuator Identifier towards this class for building the request lateron.
      *
      * @param actuatorId as type int describing the scene to be processed.
-     * @param silent     as type boolean describing the silence mode of this node.
+     * @param silent as type boolean describing the silence mode of this node.
      * @return <b>this</b> of type {@link SCsetSilentMode} as class itself.
      */
     @Override

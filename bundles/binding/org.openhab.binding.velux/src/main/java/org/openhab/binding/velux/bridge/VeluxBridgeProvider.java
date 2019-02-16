@@ -37,8 +37,8 @@ public interface VeluxBridgeProvider {
      * intended request if there has not been an authentication before.
      *
      * @param communication {@link BridgeCommunicationProtocol} describing the intended
-     *                          communication, that is request and response interactions as well as appropriate URL
-     *                          definition.
+     *            communication, that is request and response interactions as well as appropriate URL
+     *            definition.
      * @return true if communication was successful, and false otherwise.
      */
 

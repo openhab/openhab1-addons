@@ -63,7 +63,7 @@ public interface SlipBridgeCommunicationProtocol extends BridgeCommunicationProt
      * Storing the command and the data part of the response object for further checks.
      * 
      * @param thisResponseCommand of type short: command part of the response packet.
-     * @param thisResponseData    of type Array of bytes: data part of response packet to be processed.
+     * @param thisResponseData of type Array of bytes: data part of response packet to be processed.
      */
     public void setResponse(short thisResponseCommand, byte[] thisResponseData);
 

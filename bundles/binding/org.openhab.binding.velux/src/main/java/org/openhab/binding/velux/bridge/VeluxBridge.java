@@ -73,7 +73,7 @@ public class VeluxBridge {
      * by {@link VeluxBridgeConfiguration}.
      *
      * @param bridgeInstance refers to the binding-wide instance for dealing for common informations
-     *                           like existing actuators and predefined scenes.
+     *            like existing actuators and predefined scenes.
      */
     public VeluxBridge(VeluxBridgeInstance bridgeInstance) {
         logger.trace("VeluxBridge(constructor) called.");
@@ -102,9 +102,9 @@ public class VeluxBridge {
      * If any of the passed parameters is negative, the default configuration
      * will be set again.
      *
-     * @param retries             the number of retries before throwing an I/O error.
+     * @param retries the number of retries before throwing an I/O error.
      * @param waitIntervalInMSecs the initial time wait interval in milliseconds for the Binary
-     *                                Exponential Backoff (BEB) Algorithm for handling of I/O failures.
+     *            Exponential Backoff (BEB) Algorithm for handling of I/O failures.
      */
     public void bridgeOverwriteConfig(int retries, int waitIntervalInMSecs) {
         logger.trace(
@@ -176,8 +176,8 @@ public class VeluxBridge {
      * based on the Basic I/O interface {@link VeluxBridge} and parameters
      * passed as arguments (see below) and provided by {@link VeluxBridgeConfiguration}.
      *
-     * @param communication     the intended communication,
-     *                              that is request and response interactions as well as appropriate URL definition.
+     * @param communication the intended communication,
+     *            that is request and response interactions as well as appropriate URL definition.
      * @param useAuthentication whether to use authenticated communication.
      * @return true if communication was successful, and false otherwise.
      */
@@ -205,7 +205,7 @@ public class VeluxBridge {
      * intended request if there has not been an authentication before.
      *
      * @param communication the intended communication, that is request and response interactions as well as appropriate
-     *                          URL definition.
+     *            URL definition.
      * @return true if communication was successful, and false otherwise.
      */
     public synchronized boolean bridgeCommunicate(BridgeCommunicationProtocol communication) {

@@ -30,7 +30,7 @@ public class VeluxBridgeExecute {
      * Login into bridge, executes a scene and logout from bridge based
      * on a well-prepared environment of a {@link VeluxBridgeProvider}.
      *
-     * @param bridge  Initialized Velux bridge handler.
+     * @param bridge Initialized Velux bridge handler.
      * @param sceneNo Number of scene to be executed.
      * @return <b>success</b>
      *         of type boolean describing the overall result of this interaction.

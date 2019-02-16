@@ -229,7 +229,7 @@ public enum VeluxItemType {
     /**
      * {@link VeluxItemType} access method to find an enum by name.
      *
-     * @param thingIdentifier   as name of requested Thing of type String.
+     * @param thingIdentifier as name of requested Thing of type String.
      * @param channelIdentifier as name of requested Channel of type String.
      *
      * @return <b>veluxItemType</b> of type VeluxItemType describing the appropriate enum.

@@ -166,7 +166,7 @@ public class VeluxBridgeActuators {
      * In case of recognized changes in the real world, the method will
      * update the corresponding states via openHAB event bus.
      *
-     * @param provider       provides access to the defined items.
+     * @param provider provides access to the defined items.
      * @param eventPublisher provides access to the openHAB event bus methods.
      * @return true if the update of the openHAB item succeeded, and false otherwise.
      *

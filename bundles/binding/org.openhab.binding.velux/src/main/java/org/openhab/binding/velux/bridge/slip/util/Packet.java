@@ -94,7 +94,7 @@ public class Packet {
      * starting at position (n) up to the position (n+length-1).
      * 
      * @param position Position (n) within the packet.
-     * @param length   Length of the intended slice as int.
+     * @param length Length of the intended slice as int.
      * @return <b>packet</b> of type Array-of-byte.
      */
     public byte[] getByteArray(int position, int length) {
@@ -145,7 +145,7 @@ public class Packet {
      * Modifies the value of the byte at (n)th position by setting it to the value passed as int.
      *
      * @param position Position (n) within the packet.
-     * @param value    of type int.
+     * @param value of type int.
      */
     public void setOneByteValue(int position, int value) {
         data[position] = (byte) value;
@@ -171,7 +171,7 @@ public class Packet {
      * </P>
      * 
      * @param position Position (n) within the packet.
-     * @param value    of type int.
+     * @param value of type int.
      */
     public void setTwoByteValue(int position, int value) {
         data[position] = (byte) ((value >>> 8) & 0xFF);
@@ -199,7 +199,7 @@ public class Packet {
      * </P>
      * 
      * @param position Position (n) within the packet.
-     * @param value    of type int.
+     * @param value of type int.
      */
     public void setFourByteValue(int position, int value) {
         data[position] = (byte) ((value >>> 24) & 0xFF);
@@ -215,7 +215,7 @@ public class Packet {
      * </P>
      * 
      * @param position Position (n) within the packet.
-     * @param length   Length of the intended slice as int.
+     * @param length Length of the intended slice as int.
      * @return <b>value</b> of type String.
      */
     public String getString(int position, int length) {
@@ -230,7 +230,7 @@ public class Packet {
      * </P>
      * 
      * @param position Position (n) within the packet.
-     * @param text     of type String.
+     * @param text of type String.
      */
     public void setString(int position, String text) {
         System.arraycopy(text, 0, data, 0, text.length());

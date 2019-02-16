@@ -104,8 +104,8 @@ public class SlipVeluxBridge extends VeluxBridge {
     /**
      * Base level communication with the {@link SlipVeluxBridge <b>Velux</b> bridge}.
      *
-     * @param host    as String describing the Service Access Point location i.e. hostname.
-     * @param port    as String describing the Service Access Point location i.e. TCP port.
+     * @param host as String describing the Service Access Point location i.e. hostname.
+     * @param port as String describing the Service Access Point location i.e. TCP port.
      * @param request as Array of bytes representing the structure of the message to be converted into SLIP.
      * @return <b>response</b> of type Array of byte containing all resulting informations, i.e. device status, errors
      *         a.s.o. Will
@@ -197,10 +197,10 @@ public class SlipVeluxBridge extends VeluxBridge {
      * based on the Basic I/O interface {@link #io} and parameters
      * passed as arguments (see below) and provided by {@link VeluxBridgeConfiguration}.
      *
-     * @param communication     Structure of interface type {@link SlipBridgeCommunicationProtocol} describing the
-     *                              intended
-     *                              communication,
-     *                              that is request and response interactions as well as appropriate URL definition.
+     * @param communication Structure of interface type {@link SlipBridgeCommunicationProtocol} describing the
+     *            intended
+     *            communication,
+     *            that is request and response interactions as well as appropriate URL definition.
      * @param useAuthentication boolean flag to decide whether to use authenticated communication.
      * @return <b>success</b> of type boolean which signals the success of the communication.
      */

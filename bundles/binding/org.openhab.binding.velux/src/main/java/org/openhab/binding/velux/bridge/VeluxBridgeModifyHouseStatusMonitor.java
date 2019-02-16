@@ -34,7 +34,7 @@ public class VeluxBridgeModifyHouseStatusMonitor {
      * Login into bridge, modify HSM and logout from bridge based
      * on a well-prepared environment of a {@link VeluxBridgeProvider}.
      *
-     * @param bridge        Initialized Velux bridge handler.
+     * @param bridge Initialized Velux bridge handler.
      * @param enableService Flag whether the HSM should be activated.
      * @return true if successful or false otherwise.
      */
