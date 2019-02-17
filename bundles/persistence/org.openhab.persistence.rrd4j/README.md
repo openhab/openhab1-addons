@@ -69,8 +69,8 @@ Sets the time interval (seconds) between consecutive readings.
 
 - Steps or Granularity (set in `.archives=<consolidationfunction>,<xff>,<steps>,<rows>`
 
-Steps are the number of consecutive readings that are used the create a single entry into the database for this time intervall.
-The time intervall covered is calculated by (step x steps) seconds.
+Steps are the number of consecutive readings that are used the create a single entry into the database for this time interval.
+The time interval covered is calculated by (step x steps) seconds.
 
 Now for the archives: As already said, each datasource can have several archives.
 Think of an archive as a drawer with a fixed number of boxes in it.
