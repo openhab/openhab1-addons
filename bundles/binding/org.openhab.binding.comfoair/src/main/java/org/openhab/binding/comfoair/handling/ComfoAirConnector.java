@@ -88,7 +88,12 @@ public class ComfoAirConnector {
 
                 ComfoAirCommand command = ComfoAirCommandType.getChangeCommand(ComfoAirCommandType.ACTIVATE.key,
                         new DecimalType(1));
-                sendCommand(command, null);
+
+                if (command != null) {
+                    sendCommand(command, null);
+                } else {
+                    logger.debug("Failure while creating COMMAND: {}", command);
+                }
             } catch (PortInUseException e) {
                 throw new InitializationException(e);
             } catch (UnsupportedCommOperationException e) {
@@ -123,7 +128,12 @@ public class ComfoAirConnector {
 
         ComfoAirCommand command = ComfoAirCommandType.getChangeCommand(ComfoAirCommandType.ACTIVATE.key,
                 new DecimalType(0));
-        sendCommand(command, null);
+
+        if (command != null) {
+            sendCommand(command, null);
+        } else {
+            logger.debug("Failure while creating COMMAND: {}", command);
+        }
 
         IOUtils.closeQuietly(inputStream);
         IOUtils.closeQuietly(outputStream);

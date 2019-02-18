@@ -2174,12 +2174,17 @@ public enum ComfoAirCommandType {
      */
     public static ComfoAirCommand getChangeCommand(String key, State value) {
         ComfoAirCommandType commandType = ComfoAirCommandType.getCommandTypeByKey(key);
-        ComfoAirDataType dataType = commandType.getDataType();
-        int[] data = dataType.convertFromState(value, commandType);
-        int dataPossition = commandType.getChangeDataPos();
-        int intValue = ((DecimalType) value).intValue();
 
-        return new ComfoAirCommand(key, commandType.change_command, null, data, dataPossition, intValue);
+        if (commandType != null) {
+            ComfoAirDataType dataType = commandType.getDataType();
+            int[] data = dataType.convertFromState(value, commandType);
+            int dataPossition = commandType.getChangeDataPos();
+            int intValue = ((DecimalType) value).intValue();
+
+            return new ComfoAirCommand(key, commandType.change_command, null, data, dataPossition, intValue);
+        }
+
+        return null;
     }
 
     /**
