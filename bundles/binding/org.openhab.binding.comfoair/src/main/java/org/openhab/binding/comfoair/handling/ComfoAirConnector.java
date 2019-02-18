@@ -579,6 +579,9 @@ public class ComfoAirConnector {
         } catch (IOException e) {
             logger.debug("Error writing to serial port {}: {}", port, e.getLocalizedMessage());
             return false;
+        } catch (NullPointerException e) {
+            logger.debug("Error writing to serial port {}: {}", port, e.getLocalizedMessage());
+            return false;
         }
     }
 
