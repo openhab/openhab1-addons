@@ -71,11 +71,11 @@ public class SamsungTvGenericBindingProvider extends AbstractGenericBindingProvi
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof DimmerItem
+        if (!(item instanceof SwitchItem || item instanceof NumberItem
                 || item instanceof RollershutterItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only SwitchItem, NumberItem, DimmerItem, RollershutterItem and StringItem are allowed - please check your *.items configuration");
+                    + "', only SwitchItem, NumberItem, RollershutterItem and StringItem are allowed - please check your *.items configuration");
         }
     }
 

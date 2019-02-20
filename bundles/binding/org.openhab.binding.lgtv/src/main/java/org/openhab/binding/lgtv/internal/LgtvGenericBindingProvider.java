@@ -66,7 +66,7 @@ public class LgtvGenericBindingProvider extends AbstractGenericBindingProvider i
      * @{inheritDoc
      */
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof DimmerItem
+        if (!(item instanceof SwitchItem || item instanceof NumberItem
                 || item instanceof RollershutterItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()

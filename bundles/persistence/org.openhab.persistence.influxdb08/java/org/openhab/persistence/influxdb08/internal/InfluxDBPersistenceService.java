@@ -221,8 +221,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     State state = null;
     if (item instanceof DimmerItem || item instanceof RollershutterItem) {
       state = item.getStateAs(PercentType.class);
-    } else if (item instanceof ColorItem) {
-      state = item.getStateAs(HSBType.class);
     } else {
         // All other items should return the best format by default
         state = item.getState();
@@ -429,8 +427,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       value = (OnOffType) state == OnOffType.ON ? 1 : 0;
     } else if (state instanceof OpenClosedType) {
       value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
-    } else if (state instanceof HSBType) {
-      value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
       value = ((DateTimeType) state).getCalendar().getTime().getTime();
     } else {
@@ -453,8 +449,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
     } else if (state instanceof OpenClosedType) {
       value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;  
-    } else if (state instanceof HSBType) {
-      value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
       value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
     } else {

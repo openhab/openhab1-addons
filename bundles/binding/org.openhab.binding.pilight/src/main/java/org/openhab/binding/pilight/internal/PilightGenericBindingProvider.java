@@ -57,7 +57,7 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ContactItem
+        if (!(item instanceof SwitchItem || item instanceof ContactItem
                 || item instanceof StringItem || item instanceof NumberItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()

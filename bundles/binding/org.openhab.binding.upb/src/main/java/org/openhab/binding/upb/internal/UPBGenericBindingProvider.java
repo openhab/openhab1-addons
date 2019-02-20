@@ -36,7 +36,7 @@ public class UPBGenericBindingProvider extends AbstractGenericBindingProvider im
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+        if (!(item instanceof SwitchItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
                             + "', only Switch- and DimmerItems are allowed - please check your *.items configuration");

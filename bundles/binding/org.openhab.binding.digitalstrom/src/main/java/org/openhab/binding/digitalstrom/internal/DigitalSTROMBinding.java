@@ -1697,7 +1697,7 @@ public class DigitalSTROMBinding extends AbstractActiveBinding<DigitalSTROMBindi
                 if (item instanceof DimmerItem) {
                     state = new PercentType(getPercent(device.getMaxOutPutValue(), device.getOutputValue()));
 
-                } else if (item instanceof SwitchItem && !(item instanceof DimmerItem)) {
+                } else if (item instanceof SwitchItem) {
 
                     state = device.getOutputValue() > 0 ? OnOffType.ON : OnOffType.OFF;
                 } else if (item instanceof NumberItem) {

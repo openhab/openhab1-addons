@@ -37,9 +37,9 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
 
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof StringItem) && !(item instanceof SwitchItem) && !(item instanceof DimmerItem)) {
+        if (!(item instanceof StringItem) && !(item instanceof SwitchItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName() + "', but only String, Switch or Dimmer items are allowed.");
+                    + item.getClass().getSimpleName() + "', but only String or Switch items are allowed.");
         }
     }
 

@@ -101,7 +101,7 @@ public class UCPRelayBoardBinding extends AbstractActiveBinding<UCPRelayBoardBin
         for (Map.Entry<String, SerialDeviceConfig> config : configs.entrySet()) {
             if (serialDevices.containsKey(config.getKey())) {
                 SerialDevice device = serialDevices.get(config.getKey());
-                if (!config.equals(device.getConfig())) {
+                if (!config.getValue().equals(device.getConfig())) {
                     device.close();
                     prepareSerialDevice(config.getValue());
                 }

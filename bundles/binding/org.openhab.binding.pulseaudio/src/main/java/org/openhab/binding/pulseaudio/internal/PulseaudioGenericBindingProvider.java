@@ -60,8 +60,7 @@ public class PulseaudioGenericBindingProvider extends AbstractGenericBindingProv
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if ((item instanceof NumberItem) || (item instanceof StringItem) || (item instanceof SwitchItem)
-                || (item instanceof DimmerItem)) {
+        if ((item instanceof NumberItem) || (item instanceof StringItem) || (item instanceof SwitchItem)) {
             return;
         }
         throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"

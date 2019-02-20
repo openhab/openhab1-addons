@@ -160,10 +160,10 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         }
 
         if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem
-                || item instanceof RollershutterItem || item instanceof ContactItem || item instanceof DimmerItem)) {
+                || item instanceof RollershutterItem || item instanceof ContactItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only Switch-, Number-, Rollershutter-, Contact-, Dimmer- and StringItems are allowed - please check your *.items configuration");
+                    + "', only Switch-, Number-, Rollershutter-, Contact- and StringItems are allowed - please check your *.items configuration");
         }
     }
 

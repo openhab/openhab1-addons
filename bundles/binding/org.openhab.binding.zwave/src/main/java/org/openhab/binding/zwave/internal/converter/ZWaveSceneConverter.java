@@ -86,7 +86,7 @@ public class ZWaveSceneConverter extends ZWaveCommandClassConverter<ZWaveSceneAc
             return;
         }
 
-        if (scene != (Integer) event.getValue()) {
+        if (!scene.equals((Integer) event.getValue())) {
             return;
         }
 

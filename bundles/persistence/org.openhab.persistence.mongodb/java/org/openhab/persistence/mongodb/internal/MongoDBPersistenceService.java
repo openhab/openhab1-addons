@@ -285,8 +285,6 @@ public class MongoDBPersistenceService implements QueryablePersistenceService {
                 state = OpenClosedType.valueOf(obj.getString(FIELD_VALUE));
             } else if (item instanceof RollershutterItem) {
                 state = new PercentType(obj.getInt(FIELD_VALUE));
-            } else if (item instanceof ColorItem) {
-                state = new HSBType(obj.getString(FIELD_VALUE));
             } else if (item instanceof DateTimeItem) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(obj.getDate(FIELD_VALUE));

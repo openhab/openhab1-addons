@@ -445,7 +445,7 @@ public abstract class ZWaveSecurityCommandClass extends ZWaveCommandClass {
     public void sendNonceReport() {
         SerialMessage nonceReportMessage = nonceGeneration.generateAndBuildNonceReport();
         if (nonceReportMessage == null) {
-            logger.error("NODE {}: generateAndBuildNonceReport returned null");
+            logger.error("NODE {}: generateAndBuildNonceReport returned null", this.getNode().getNodeId());
         } else {
             transmitMessage(nonceReportMessage);
         }
@@ -632,7 +632,7 @@ public abstract class ZWaveSecurityCommandClass extends ZWaveCommandClass {
         if (hasMultipleParts) {
             if (!iter.hasNext()) {
                 logger.warn("NODE {}: security payload frame was marked as having 2 parts, "
-                        + "but only found 1 in payloadEncapsulationQueue: {}", frameToRemove);
+                        + "but only found 1 in payloadEncapsulationQueue: {}", this.getNode().getNodeId(), frameToRemove);
             } else {
                 ZWaveSecurityPayloadFrame secondFrame = iter.next(); // Go to the 2nd part
                 logger.info("NODE {}: Removing 2nd part from payloadEncapsulationQueue: {}", getNode().getNodeId(),

@@ -60,7 +60,7 @@ public class MpdGenericBindingProvider extends AbstractGenericBindingProvider im
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof StringItem
+        if (!(item instanceof SwitchItem || item instanceof StringItem
                 || item instanceof NumberItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()

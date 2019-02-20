@@ -54,7 +54,7 @@ public class Db4oConfiguration {
             try {
                 commitInterval = Integer.valueOf(commitIntervalString);
             } catch (IllegalArgumentException iae) {
-                logger.warn("couldn't parse '{}' to an integer");
+                logger.warn("couldn't parse '{}' to an integer", commitIntervalString);
             }
         }
 
@@ -63,7 +63,7 @@ public class Db4oConfiguration {
             try {
                 maxBackups = Integer.valueOf(maxBackupsString);
             } catch (IllegalArgumentException iae) {
-                logger.warn("couldn't parse '{}' to an integer");
+                logger.warn("couldn't parse '{}' to an integer", maxBackupsString);
             }
         }
     }

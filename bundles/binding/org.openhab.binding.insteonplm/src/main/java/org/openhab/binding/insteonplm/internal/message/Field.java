@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.insteonplm.internal.message;
 
+import java.util.Objects;
+
 import org.openhab.binding.insteonplm.internal.device.InsteonAddress;
 import org.openhab.binding.insteonplm.internal.utils.Utils;
 
@@ -197,5 +199,10 @@ public final class Field {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+    	return Objects.hash(getName(), getOffset());
     }
 }

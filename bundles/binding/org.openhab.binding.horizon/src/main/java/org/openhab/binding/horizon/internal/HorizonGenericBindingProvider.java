@@ -44,11 +44,11 @@ public class HorizonGenericBindingProvider extends AbstractGenericBindingProvide
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof DimmerItem
+        if (!(item instanceof SwitchItem || item instanceof NumberItem
                 || item instanceof RollershutterItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only Switch, Number, Dimmer, Rollershutter and String are allowed - please check your *.items configuration");
+                    + "', only Switch, Number, Rollershutter and String are allowed - please check your *.items configuration");
         }
     }
 

@@ -111,8 +111,6 @@ public class JpaHistoricItem implements HistoricItem {
             state = OpenClosedType.valueOf(pItem.getValue());
         } else if (item instanceof RollershutterItem) {
             state = PercentType.valueOf(pItem.getValue());
-        } else if (item instanceof ColorItem) {
-            state = new HSBType(pItem.getValue());
         } else if (item instanceof DateTimeItem) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date(Long.valueOf(pItem.getValue())));

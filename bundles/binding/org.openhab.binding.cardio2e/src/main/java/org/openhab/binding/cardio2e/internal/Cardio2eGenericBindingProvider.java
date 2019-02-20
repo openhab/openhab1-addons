@@ -74,7 +74,7 @@ public class Cardio2eGenericBindingProvider extends
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof DimmerItem
+		if (!(item instanceof SwitchItem
 				|| item instanceof RollershutterItem
 				|| item instanceof ContactItem || item instanceof NumberItem || item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(

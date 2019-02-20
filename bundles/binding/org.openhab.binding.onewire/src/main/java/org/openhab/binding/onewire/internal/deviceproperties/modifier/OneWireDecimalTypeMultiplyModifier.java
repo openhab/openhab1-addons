@@ -51,9 +51,7 @@ public class OneWireDecimalTypeMultiplyModifier extends AbstractOneWireDecimalTy
 
         BigDecimal lvResult = pvModifyValue.toBigDecimal();
 
-        if (pvModifyValue.equals(BigDecimal.ZERO)) {
-            return DecimalType.ZERO;
-        } else if (lvResult.equals(BigDecimal.ZERO)) {
+        if (lvResult.equals(BigDecimal.ZERO)) {
             return DecimalType.ZERO;
         } else {
             lvResult = lvResult.multiply(ivAdjustValue);
@@ -70,9 +68,7 @@ public class OneWireDecimalTypeMultiplyModifier extends AbstractOneWireDecimalTy
 
         BigDecimal lvResult = pvModifyValue.toBigDecimal();
 
-        if (pvModifyValue.equals(BigDecimal.ZERO)) {
-            return DecimalType.ZERO;
-        } else if (lvResult.equals(BigDecimal.ZERO)) {
+        if (lvResult.equals(BigDecimal.ZERO)) {
             return DecimalType.ZERO;
         } else {
             lvResult = lvResult.divide(ivAdjustValue);

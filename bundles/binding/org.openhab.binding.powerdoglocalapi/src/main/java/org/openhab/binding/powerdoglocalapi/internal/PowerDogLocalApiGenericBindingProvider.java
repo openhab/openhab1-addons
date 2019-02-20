@@ -92,11 +92,11 @@ public class PowerDogLocalApiGenericBindingProvider extends AbstractGenericBindi
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ContactItem
+        if (!(item instanceof SwitchItem || item instanceof ContactItem
                 || item instanceof NumberItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only Switch-, Dimmer-, Contact-, Number- and String-Items are allowed - please check your *.items configuration");
+                    + "', only Switch-, Contact-, Number- and String-Items are allowed - please check your *.items configuration");
         }
         logger.debug("PowerDogLocalApi:validateItemType called");
     }

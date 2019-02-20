@@ -58,10 +58,10 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof RollershutterItem)) {
+        if (!(item instanceof SwitchItem || item instanceof RollershutterItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only SwitchItems, DimmerItems and RollershutterItems are allowed - please check your *.items configuration");
+                    + "', only SwitchItems and RollershutterItems are allowed - please check your *.items configuration");
         }
     }
 

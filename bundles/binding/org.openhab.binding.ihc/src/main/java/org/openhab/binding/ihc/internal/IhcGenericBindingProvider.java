@@ -288,11 +288,11 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider im
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
         if (!(item instanceof NumberItem || item instanceof SwitchItem || item instanceof ContactItem
-                || item instanceof StringItem || item instanceof DateTimeItem || item instanceof DimmerItem
+                || item instanceof StringItem || item instanceof DateTimeItem
                 || item instanceof RollershutterItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only NumberItems, SwitchItems, ContactItems, DateTimeItem, StringItem, DimmerItem or RollershutterItem are allowed - please check your *.items configuration");
+                    + "', only NumberItems, SwitchItems, ContactItems, DateTimeItem, StringItem or RollershutterItem are allowed - please check your *.items configuration");
 
         }
 
