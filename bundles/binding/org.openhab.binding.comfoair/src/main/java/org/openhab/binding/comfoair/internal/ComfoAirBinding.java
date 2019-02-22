@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -117,7 +117,11 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
             String eventType = provider.getConfiguredKeyForItem(itemName);
             ComfoAirCommand changeCommand = ComfoAirCommandType.getChangeCommand(eventType, (DecimalType) command);
 
-            sendCommand(changeCommand);
+            if (changeCommand != null) {
+                sendCommand(changeCommand);
+            } else {
+                logger.debug("Failure while creating COMMAND: {} assigned to the ITEM: {}", command, itemName);
+            }
 
             Collection<ComfoAirCommand> affectedReadCommands = ComfoAirCommandType.getAffectedReadCommands(eventType,
                     usedKeys);
@@ -148,15 +152,65 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
     /**
      * send a command and send additional command which are affected by the
      * first command
-     * 
+     *
      * @param command
+     * @return int[] values
      */
-    private void sendCommand(ComfoAirCommand command) {
+    private int[] sendCommand(ComfoAirCommand command) {
+        Integer requestCmd = command.getRequestCmd();
+        Integer replyCmd = command.getReplyCmd();
+        int[] requestData = command.getRequestData();
 
-        int[] response = connector.sendCommand(command);
+        Integer preRequestCmd;
+        Integer preReplyCmd;
+        int[] preResponse = null;
+
+        switch (requestCmd) {
+            case 0x9f:
+                preRequestCmd = 0x9d;
+                preReplyCmd = 0x9e;
+                break;
+            case 0xcb:
+                preRequestCmd = 0xc9;
+                preReplyCmd = 0xca;
+                break;
+            case 0xcf:
+                preRequestCmd = 0xcd;
+                preReplyCmd = 0xce;
+                break;
+            case 0xd7:
+                preRequestCmd = 0xd5;
+                preReplyCmd = 0xd6;
+                break;
+            case 0xed:
+                preRequestCmd = 0xeb;
+                preReplyCmd = 0xec;
+                break;
+            default:
+                preRequestCmd = requestCmd;
+                preReplyCmd = replyCmd;
+        }
+
+        if (preRequestCmd != requestCmd) {
+            command.setRequestCmd(preRequestCmd);
+            command.setReplyCmd(preReplyCmd);
+            command.setRequestData(null);
+
+            preResponse = connector.sendCommand(command, null);
+
+            if (preResponse == null) {
+                return null;
+            } else {
+                command.setRequestCmd(requestCmd);
+                command.setReplyCmd(replyCmd);
+                command.setRequestData(requestData);
+            }
+        }
+
+        int[] response = connector.sendCommand(command, preResponse);
 
         if (response == null) {
-            return;
+            return null;
         }
 
         List<ComfoAirCommandType> commandTypes = ComfoAirCommandType.getCommandTypesByReplyCmd(command.getReplyCmd());
@@ -166,7 +220,7 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
             State value = dataType.convertToState(response, commandType);
 
             if (value == null) {
-                logger.error("Unexpected value for DATA: " + ComfoAirConnector.dumpData(response));
+                logger.debug("Unexpected value for DATA: {}", ComfoAirConnector.dumpData(response));
             } else {
                 for (ComfoAirBindingProvider provider : providers) {
                     List<String> items = provider.getItemNamesForCommandKey(commandType.getKey());
@@ -176,6 +230,8 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
                 }
             }
         }
+
+        return response;
     }
 
     /**
@@ -204,7 +260,7 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
                 try {
                     connector.open(port);
                 } catch (InitializationException e) {
-                    logger.error(e.getMessage());
+                    logger.debug(e.getMessage());
                 }
 
                 setProperlyConfigured(true);

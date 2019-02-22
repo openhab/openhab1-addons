@@ -15,14 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class to handle temperature values
+ * Class to handle volt values
  *
- * @author Holger Hees
- * @since 1.3.0
+ * @author Grzegorz Miasko
+ * @since 1.14.0
  */
-public class DataTypeTemperature implements ComfoAirDataType {
+public class DataTypeVolt implements ComfoAirDataType {
 
-    private Logger logger = LoggerFactory.getLogger(DataTypeTemperature.class);
+    private Logger logger = LoggerFactory.getLogger(DataTypeVolt.class);
 
     /**
      * {@inheritDoc}
@@ -31,12 +31,12 @@ public class DataTypeTemperature implements ComfoAirDataType {
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
         if (data == null || commandType == null) {
-            logger.trace("\"DataTypeTemperature\" class \"convertToState\" method parameter: null");
+            logger.trace("\"DataTypeVolt\" class \"convertToState\" method parameter: null");
             return null;
         } else {
 
             if (commandType.getGetReplyDataPos()[0] < data.length) {
-                return new DecimalType((((double) data[commandType.getGetReplyDataPos()[0]]) / 2) - 20);
+                return new DecimalType((double) data[commandType.getGetReplyDataPos()[0]] * 10 / 255);
             } else {
                 return null;
             }
@@ -50,13 +50,13 @@ public class DataTypeTemperature implements ComfoAirDataType {
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
         if (value == null || commandType == null) {
-            logger.trace("\"DataTypeTemperature\" class \"convertFromState\" method parameter: null");
+            logger.trace("\"DataTypeVolt\" class \"convertFromState\" method parameter: null");
             return null;
         } else {
 
             int[] template = commandType.getChangeDataTemplate();
 
-            template[commandType.getChangeDataPos()] = (int) (((DecimalType) value).doubleValue() + 20) * 2;
+            template[commandType.getChangeDataPos()] = (int) (((DecimalType) value).doubleValue() * 255 / 10);
 
             return template;
         }

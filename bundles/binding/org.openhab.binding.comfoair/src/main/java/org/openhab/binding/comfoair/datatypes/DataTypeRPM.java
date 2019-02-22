@@ -15,14 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class to handle temperature values
+ * Class to handle revolutions per minute values
  *
- * @author Holger Hees
- * @since 1.3.0
+ * @author Grzegorz Miasko
+ * @since 1.14.0
  */
-public class DataTypeTemperature implements ComfoAirDataType {
+public class DataTypeRPM implements ComfoAirDataType {
 
-    private Logger logger = LoggerFactory.getLogger(DataTypeTemperature.class);
+    private Logger logger = LoggerFactory.getLogger(DataTypeRPM.class);
 
     /**
      * {@inheritDoc}
@@ -31,15 +31,26 @@ public class DataTypeTemperature implements ComfoAirDataType {
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
         if (data == null || commandType == null) {
-            logger.trace("\"DataTypeTemperature\" class \"convertToState\" method parameter: null");
+            logger.trace("\"DataTypeRPM\" class \"convertToState\" method parameter: null");
             return null;
         } else {
 
-            if (commandType.getGetReplyDataPos()[0] < data.length) {
-                return new DecimalType((((double) data[commandType.getGetReplyDataPos()[0]]) / 2) - 20);
-            } else {
-                return null;
+            int[] get_reply_data_pos = commandType.getGetReplyDataPos();
+
+            int value = 0;
+            int base = 0;
+
+            for (int i = get_reply_data_pos.length - 1; i >= 0; i--) {
+
+                if (get_reply_data_pos[i] < data.length) {
+                    value += data[get_reply_data_pos[i]] << base;
+                    base += 8;
+                } else {
+                    return null;
+                }
             }
+
+            return new DecimalType((int) (1875000.0 / value));
         }
     }
 
@@ -50,13 +61,13 @@ public class DataTypeTemperature implements ComfoAirDataType {
     public int[] convertFromState(State value, ComfoAirCommandType commandType) {
 
         if (value == null || commandType == null) {
-            logger.trace("\"DataTypeTemperature\" class \"convertFromState\" method parameter: null");
+            logger.trace("\"DataTypeRPM\" class \"convertFromState\" method parameter: null");
             return null;
         } else {
 
             int[] template = commandType.getChangeDataTemplate();
 
-            template[commandType.getChangeDataPos()] = (int) (((DecimalType) value).doubleValue() + 20) * 2;
+            template[commandType.getChangeDataPos()] = (int) (1875000 / ((DecimalType) value).doubleValue());
 
             return template;
         }
