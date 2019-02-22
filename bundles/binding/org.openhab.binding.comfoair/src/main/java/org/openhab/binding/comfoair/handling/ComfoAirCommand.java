@@ -28,17 +28,17 @@ public class ComfoAirCommand {
 
     /**
      * @param key
-     *                         command key
+     *            command key
      * @param requestCmd
-     *                         command as byte value
+     *            command as byte value
      * @param replyCmd
-     *                         reply command as byte value
+     *            reply command as byte value
      * @param requestData
-     *                         request byte values
+     *            request byte values
      * @param requestValue
-     *                         request byte value
+     *            request byte value
      * @param dataPosition
-     *                         request byte position
+     *            request byte position
      */
 
     /*
@@ -66,7 +66,7 @@ public class ComfoAirCommand {
 
     /**
      * @param key
-     *                additional command key
+     *            additional command key
      */
     public void addKey(String key) {
         keys.add(key);

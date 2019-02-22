@@ -39,31 +39,31 @@ public enum ComfoAirCommandType {
      * Below all valid commands to change or read parameters from ComfoAir
      *
      * @param key
-     *                                 command name
+     *            command name
      * @param data_tape
-     *                                 data type (can be: DataTypeBoolean.class, DataTypeMessage.class,
-     *                                 DataTypeNumber.class, DataTypeRPM.class,
-     *                                 DataTypeTemperature.class, DataTypeVolt.class)
+     *            data type (can be: DataTypeBoolean.class, DataTypeMessage.class,
+     *            DataTypeNumber.class, DataTypeRPM.class,
+     *            DataTypeTemperature.class, DataTypeVolt.class)
      * @param possible_values
-     *                                 possible values for write command, if it can only take certain values
+     *            possible values for write command, if it can only take certain values
      * @param change_command
-     *                                 byte number for ComfoAir write command
+     *            byte number for ComfoAir write command
      * @param change_data_size
-     *                                 size of bytes list for ComfoAir write command
+     *            size of bytes list for ComfoAir write command
      * @param change_data_pos
-     *                                 position in bytes list to change
+     *            position in bytes list to change
      * @param change_affected
-     *                                 list of affected commands (can be empty)
-     *                                 is mandatory for read-write command
+     *            list of affected commands (can be empty)
+     *            is mandatory for read-write command
      * @param read_command
-     *                                 request byte number for ComfoAir read command
+     *            request byte number for ComfoAir read command
      * @param read_reply_command
-     *                                 reply byte list size for ComfoAir read command (list of values only)
+     *            reply byte list size for ComfoAir read command (list of values only)
      * @param read_reply_data_pos
-     *                                 list of byte positions in reply bytes list from ComfoAir
+     *            list of byte positions in reply bytes list from ComfoAir
      * @param read_reply_data_bits
-     *                                 byte value on read_reply_data_pos position to be considered by command (used with
-     *                                 DataTypeBoolean.class data_type)
+     *            byte value on read_reply_data_pos position to be considered by command (used with
+     *            DataTypeBoolean.class data_type)
      */
     ACTIVATE {
         {
@@ -2167,9 +2167,9 @@ public enum ComfoAirCommandType {
      * Get a command to change properties on the comfoair.
      *
      * @param key
-     *                  command key
+     *            command key
      * @param value
-     *                  new state
+     *            new state
      * @return initialized ComfoAirCommand
      */
     public static ComfoAirCommand getChangeCommand(String key, State value) {
@@ -2192,7 +2192,7 @@ public enum ComfoAirCommandType {
      * command.
      *
      * @param key
-     *                     command key
+     *            command key
      * @param usedKeys
      * @return ComfoAirCommand's which should be updated after a modifying
      *         ComfoAirCommand named by key
@@ -2271,7 +2271,7 @@ public enum ComfoAirCommandType {
      * Get commandtypes which matches the replyCmd.
      *
      * @param replyCmd
-     *                     reply command byte value
+     *            reply command byte value
      * @return ComfoAirCommandType identified by replyCmd
      */
     public static List<ComfoAirCommandType> getCommandTypesByReplyCmd(int replyCmd) {
@@ -2289,7 +2289,7 @@ public enum ComfoAirCommandType {
      * Get a specific command.
      *
      * @param key
-     *                command key
+     *            command key
      * @return ComfoAirCommandType identified by key
      */
     public static ComfoAirCommandType getCommandTypeByKey(String key) {

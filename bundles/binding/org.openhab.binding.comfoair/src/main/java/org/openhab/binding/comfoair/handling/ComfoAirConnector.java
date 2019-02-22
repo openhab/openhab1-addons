@@ -55,10 +55,10 @@ public class ComfoAirConnector {
      * Open and initialize a serial port.
      *
      * @param portName
-     *                     e.g. /dev/ttyS0
+     *            e.g. /dev/ttyS0
      * @param listener
-     *                     the listener which is informed after a successful response
-     *                     read
+     *            the listener which is informed after a successful response
+     *            read
      * @throws InitializationException
      */
     public void open(String portName) throws InitializationException {
