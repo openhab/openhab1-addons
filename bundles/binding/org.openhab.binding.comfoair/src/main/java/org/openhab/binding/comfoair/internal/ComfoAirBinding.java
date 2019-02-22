@@ -117,7 +117,11 @@ public class ComfoAirBinding extends AbstractActiveBinding<ComfoAirBindingProvid
             String eventType = provider.getConfiguredKeyForItem(itemName);
             ComfoAirCommand changeCommand = ComfoAirCommandType.getChangeCommand(eventType, (DecimalType) command);
 
-            sendCommand(changeCommand);
+            if (changeCommand != null) {
+                sendCommand(changeCommand);
+            } else {
+                logger.debug("Failure while creating COMMAND: {} assigned to the ITEM: {}", command, itemName);
+            }
 
             Collection<ComfoAirCommand> affectedReadCommands = ComfoAirCommandType.getAffectedReadCommands(eventType,
                     usedKeys);
