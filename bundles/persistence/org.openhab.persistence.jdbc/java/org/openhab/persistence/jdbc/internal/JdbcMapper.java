@@ -116,10 +116,10 @@ public class JdbcMapper {
      * MAPPERS ITEM *
      ****************/
     public void updateItemTableNames(List<ItemVO> vol) {
-        logger.debug("JDBC::createItemTable");
+        logger.debug("JDBC::updateItemTableNames");
         long timerStart = System.currentTimeMillis();
         conf.getDBDAO().doUpdateItemTableNames(vol);
-        logTime("createItemTable", timerStart, System.currentTimeMillis());
+        logTime("updateItemTableNames", timerStart, System.currentTimeMillis());
     }
 
     public ItemVO createItemTable(ItemVO vo) {
