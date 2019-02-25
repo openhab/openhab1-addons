@@ -264,7 +264,10 @@ public class JdbcConfiguration {
             if (!matcher.group(1).equals("sqltype")) {
                 continue;
             }
-            String itemType = matcher.group(2).toUpperCase() + "ITEM";
+            String itemType = matcher.group(2);
+            if (!itemType.startsWith("table")) {
+              itemType = itemType.toUpperCase() + "ITEM";
+            }
             String value = (String) configuration.get(key);
             logger.debug("JDBC::updateConfig: set sqlTypes: itemType={} value={}", itemType, value);
             dBDAO.sqlTypes.put(itemType, value);
