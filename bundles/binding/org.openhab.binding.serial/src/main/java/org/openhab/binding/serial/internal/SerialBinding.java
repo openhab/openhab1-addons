@@ -19,7 +19,6 @@ import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -163,7 +162,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 || item instanceof RollershutterItem || item instanceof ContactItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only Switch-, Number-, Rollershutter-, Contact- and StringItems are allowed - please check your *.items configuration");
+                    + "', only Switch-, Number-, Rollershutter-, Contact-, Dimmer- and StringItems are allowed - please check your *.items configuration");
         }
     }
 

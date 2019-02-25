@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import org.openhab.binding.xbmc.XbmcBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -39,7 +38,7 @@ public class XbmcGenericBindingProvider extends AbstractGenericBindingProvider i
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
         if (!(item instanceof StringItem) && !(item instanceof SwitchItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
-                    + item.getClass().getSimpleName() + "', but only String or Switch items are allowed.");
+                    + item.getClass().getSimpleName() + "', but only String, Switch or Dimmer items are allowed.");
         }
     }
 

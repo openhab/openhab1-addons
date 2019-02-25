@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 import org.openhab.binding.denon.DenonBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -56,7 +55,7 @@ public class DenonGenericBindingProvider extends AbstractGenericBindingProvider 
         if (!(item instanceof SwitchItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only Switch- and StringItems are allowed - please check your *.items configuration");
+                    + "', only Switch-, Dimmer- and StringItems are allowed - please check your *.items configuration");
         }
     }
 

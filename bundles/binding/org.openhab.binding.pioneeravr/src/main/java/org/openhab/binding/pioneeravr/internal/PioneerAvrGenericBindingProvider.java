@@ -15,7 +15,6 @@ import org.openhab.binding.pioneeravr.PioneerAvrBindingProvider;
 import org.openhab.binding.pioneeravr.internal.ipcontrolprotocol.IpControlCommand;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -74,7 +73,7 @@ public class PioneerAvrGenericBindingProvider extends AbstractGenericBindingProv
                 || item instanceof RollershutterItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
-                    + "', only SwitchItem, NumberItem, RollershutterItem and StringItem are allowed - please check your *.items configuration");
+                    + "', only SwitchItem, NumberItem, DimmerItem, RollershutterItem and StringItem are allowed - please check your *.items configuration");
         }
     }
 
