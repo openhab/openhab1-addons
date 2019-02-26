@@ -89,8 +89,8 @@ when
 	Item TV_PowerState changed to ON
 then
 	if(VDR_LIVINGROOM_POWER_STATUS?.state==OFF) {
-    	sendCommand(VDR_LivingroomPower, ON);
-    }    
+		VDR_LivingroomPower.sendCommand(ON);
+	}
 end
 ```
 
@@ -107,8 +107,8 @@ when
 then
 	if(VDR_LIVINGROOM_POWER_STATUS?.state==ON) {
 		if (VDR_LivingroomRecording?.state==OFF) {
-    		sendCommand(VDR_LivingroomPower, OFF);
-    	}
-    }    
+			VDR_LivingroomPower.sendCommand(OFF);
+		}
+	}
 end
 ```
