@@ -49,7 +49,7 @@ Typically a new Twitter account would be set up for openHAB, rather than using y
 ## Prerequisites
 
 You'll have to authorise openHAB to use Twitter.
-This is done using a two step process, similar to Dropbox authentication.
+This is done using a two step process.
 openHAB requests a token which is used as a one-time-password to get hold of an authentication token (second step) which will be used for all future requests to Twitter.
 
 ### Step 1
