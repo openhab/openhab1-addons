@@ -42,10 +42,9 @@ public class MyqData {
     static final Logger logger = LoggerFactory.getLogger(MyqData.class);
 
     private static final String WEBSITE = "https://myqexternal.myqdevice.com";
-    public static final String DEFAULT_APP_ID = "NWknvuBd7LoFHfXmKNMBcgajXtZEgKUh4V7WNzMidrpUUluDpVYVZx+xT4PCM5Kx";
+    public static final String DEFAULT_APP_ID = "OA9I/hgmPHFp9RYKJqCKfwnhh28uqLJzZ9KOJf1DXoo8N2XAaVX6A1wcLYyWsnnv";
 
-    private static final String CRAFTSMAN_WEBSITE = "https://craftexternal.myqdevice.com";
-    public static final String CRAFTSMAN_DEFAULT_APP_ID = "eU97d99kMG4t3STJZO/Mu2wt69yTQwM0WXZA5oZ74/ascQ2xQrLD/yjeVhEQccBZ";
+    public static final String CRAFTSMAN_DEFAULT_APP_ID = "YmiMRRS1juXdSd0KWsuKtHmQvh5RftEp5iewHdCvsNB77FnQbY+vjCVn2nMdIeN8";
     public static final int DEFAUALT_TIMEOUT = 5000;
 
     private static final String CULTURE = "en";
@@ -82,6 +81,7 @@ public class MyqData {
     public MyqData(String username, String password, String appId, int timeout, boolean craftman) {
         this.userName = username;
         this.password = password;
+            this.websiteUrl = WEBSITE;
 
         if (appId != null) {
             this.appId = appId;
@@ -94,10 +94,8 @@ public class MyqData {
         }
 
         if (craftman) {
-            this.websiteUrl = CRAFTSMAN_WEBSITE;
             this.brandId = "3";
         } else {
-            this.websiteUrl = WEBSITE;
             this.brandId = "2";
         }
 
@@ -123,7 +121,7 @@ public class MyqData {
      */
     public MyqDeviceData getMyqData() throws InvalidLoginException, IOException {
         logger.trace("Retrieving door data");
-        String url = String.format("%s/api/v4/userdevicedetails/get", websiteUrl);
+        String url = String.format("%s/api/v4/UserDeviceDetails/Get", websiteUrl);
         header.put("SecurityToken", getSecurityToken());
         JsonNode data = request("GET", url, null, null, true);
 
