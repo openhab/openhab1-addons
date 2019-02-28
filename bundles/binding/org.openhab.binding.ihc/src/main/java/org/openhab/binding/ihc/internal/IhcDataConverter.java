@@ -343,27 +343,6 @@ public class IhcDataConverter {
 
             }
 
-        } else if (type instanceof PercentType) {
-
-            if (value instanceof WSIntegerValue) {
-
-                int newVal = ((DecimalType) type).intValue();
-                int max = ((WSIntegerValue) value).getMaximumValue();
-                int min = ((WSIntegerValue) value).getMinimumValue();
-
-                if (newVal >= min && newVal <= max) {
-                    ((WSIntegerValue) value).setInteger(newVal);
-                } else {
-                    throw new NumberFormatException(
-                            "Value is not between accetable limits (min=" + min + ", max=" + max + ")");
-                }
-
-            } else {
-
-                throw new NumberFormatException("Can't convert PercentType to " + value.getClass());
-
-            }
-
         } else if (type instanceof UpDownType) {
 
             if (value instanceof WSBooleanValue) {

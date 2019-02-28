@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.primare.PrimareBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -70,7 +69,7 @@ public class PrimareGenericBindingProvider extends AbstractGenericBindingProvide
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof NumberItem || item instanceof DimmerItem
+        if (!(item instanceof SwitchItem || item instanceof NumberItem
                 || item instanceof RollershutterItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()

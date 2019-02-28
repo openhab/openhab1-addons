@@ -14,7 +14,6 @@ import java.util.Map;
 import org.openhab.binding.fs20.FS20BindingConfig;
 import org.openhab.binding.fs20.FS20BindingProvider;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
@@ -42,7 +41,7 @@ public class FS20GenericBindingProvider extends AbstractGenericBindingProvider i
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+        if (!(item instanceof SwitchItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
                             + "', only Switch- and DimmerItems are allowed - please check your *.items configuration");

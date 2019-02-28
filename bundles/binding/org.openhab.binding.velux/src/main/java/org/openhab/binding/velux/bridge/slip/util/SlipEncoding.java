@@ -55,7 +55,7 @@ public class SlipEncoding {
         logger.trace("SlipEncoding(constructor) for command 0x{} with data size {} called.",
                 Integer.toHexString(new Short(command).intValue()), data.length);
         if (data.length > 250) {
-            logger.warn("SlipEncoding(constructor) called with data size {}: too big, aborting.");
+            logger.warn("SlipEncoding(constructor) called with data size {}: too big, aborting.", data.length);
             encodingValid = false;
         } else {
             byte checksum = 0;

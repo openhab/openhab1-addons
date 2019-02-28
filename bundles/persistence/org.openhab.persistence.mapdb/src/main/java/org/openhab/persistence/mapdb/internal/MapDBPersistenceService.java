@@ -88,7 +88,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
             try {
                 commitInterval = Integer.valueOf(commitIntervalString);
             } catch (IllegalArgumentException iae) {
-                logger.warn("couldn't parse '{}' to an integer");
+                logger.warn("couldn't parse '{}' to an integer", commitIntervalString);
             }
         }
         String commitSameStateString = (String) config.get("commitsamestate");
@@ -96,7 +96,7 @@ public class MapDBPersistenceService implements QueryablePersistenceService {
             try {
                 commitSameState = Boolean.valueOf(commitSameStateString);
             } catch (IllegalArgumentException iae) {
-                logger.warn("couldn't parse '{}' to an integer");
+                logger.warn("couldn't parse '{}' to an integer", commitSameStateString);
             }
         }
 

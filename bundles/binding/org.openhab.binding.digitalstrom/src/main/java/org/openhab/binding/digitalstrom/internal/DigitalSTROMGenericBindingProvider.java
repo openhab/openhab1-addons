@@ -15,7 +15,6 @@ import org.openhab.binding.digitalstrom.DigitalSTROMBindingProvider;
 import org.openhab.binding.digitalstrom.internal.config.DigitalSTROMBindingConfig;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -45,7 +44,7 @@ public class DigitalSTROMGenericBindingProvider extends AbstractGenericBindingPr
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof StringItem
+        if (!(item instanceof SwitchItem || item instanceof StringItem
                 || item instanceof NumberItem || item instanceof RollershutterItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()

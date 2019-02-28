@@ -19,7 +19,6 @@ import org.openhab.binding.pilight.PilightBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -57,7 +56,7 @@ public class PilightGenericBindingProvider extends AbstractGenericBindingProvide
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ContactItem
+        if (!(item instanceof SwitchItem || item instanceof ContactItem
                 || item instanceof StringItem || item instanceof NumberItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()

@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.powerdoglocalapi.internal;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ import org.openhab.binding.powerdoglocalapi.PowerDogLocalApiBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -92,7 +90,7 @@ public class PowerDogLocalApiGenericBindingProvider extends AbstractGenericBindi
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ContactItem
+        if (!(item instanceof SwitchItem || item instanceof ContactItem
                 || item instanceof NumberItem || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()

@@ -92,7 +92,7 @@ public class DmxGenericBindingProvider extends AbstractGenericBindingProvider im
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ColorItem)) {
+        if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName() + "', which is not supported by the DMX Binding.");
         }

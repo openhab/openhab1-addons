@@ -53,7 +53,7 @@ public class MilightGenericBindingProvider extends AbstractGenericBindingProvide
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof ColorItem)) {
+        if (!(item instanceof SwitchItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
                     + "', only SwitchItems, DimmerItems and ColorItems are allowed - please check your *.items configuration");

@@ -204,8 +204,6 @@ public class LgtvBinding extends AbstractBinding<LgtvBindingProvider>
         } else if (command instanceof DecimalType) {
             deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());
 
-        } else if (command instanceof PercentType) {
-            deviceCmd = String.format(cmdTemplate, ((DecimalType) command).intValue());
         }
 
         return deviceCmd;

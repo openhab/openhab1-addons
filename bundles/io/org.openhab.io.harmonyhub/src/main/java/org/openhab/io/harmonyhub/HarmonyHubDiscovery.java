@@ -174,7 +174,7 @@ public class HarmonyHubDiscovery {
                     continue;
                 }
                 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                    InetAddress[] broadcast = new InetAddress[3];
+                    InetAddress[] broadcast = new InetAddress[4];
                     broadcast[0] = InetAddress.getByName("224.0.0.1");
                     broadcast[1] = InetAddress.getByName("255.255.255.255");
                     broadcast[2] = interfaceAddress.getBroadcast();

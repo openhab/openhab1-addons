@@ -12,7 +12,6 @@ import org.openhab.binding.wago.WagoBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
@@ -51,7 +50,7 @@ public class WagoGenericBindingProvider extends AbstractGenericBindingProvider i
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+        if (!(item instanceof SwitchItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
                             + "', only Switch- and DimmerItems are allowed - please check your *.items configuration");

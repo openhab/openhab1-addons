@@ -179,7 +179,7 @@ public class Tr064Comm {
 
             String itemCommand = itemConfiguration.getItemCommand();
 
-            if (values.containsKey(itemCommand)) {
+            if (values.containsKey(itemConfiguration)) {
                 // item value already read by earlier MultiItemMap
                 continue;
             }

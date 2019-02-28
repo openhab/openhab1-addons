@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -25,7 +24,6 @@ import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
@@ -111,8 +109,6 @@ public class JpaHistoricItem implements HistoricItem {
             state = OpenClosedType.valueOf(pItem.getValue());
         } else if (item instanceof RollershutterItem) {
             state = PercentType.valueOf(pItem.getValue());
-        } else if (item instanceof ColorItem) {
-            state = new HSBType(pItem.getValue());
         } else if (item instanceof DateTimeItem) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date(Long.valueOf(pItem.getValue())));

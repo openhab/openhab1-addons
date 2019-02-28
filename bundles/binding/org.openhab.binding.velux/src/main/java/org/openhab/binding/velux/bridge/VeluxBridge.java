@@ -228,7 +228,7 @@ public class VeluxBridge {
      */
     public BridgeAPI bridgeAPI() {
         logger.debug(
-                "bridgeAPI({}) called. Should NEVER occur as it seems to be a lack of protocol-specific implementation of this bridge API.");
+                "bridgeAPI() called. Should NEVER occur as it seems to be a lack of protocol-specific implementation of this bridge API.");
         return null;
     }
 

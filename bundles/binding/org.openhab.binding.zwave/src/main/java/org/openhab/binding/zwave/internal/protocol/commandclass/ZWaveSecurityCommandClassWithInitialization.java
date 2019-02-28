@@ -157,7 +157,7 @@ public class ZWaveSecurityCommandClassWithInitialization extends ZWaveSecurityCo
                 // Should be received during inclusion only
                 if (!wasThisNodeJustIncluded() || inclusionStateTracker == null) {
                     logger.error("NODE {}: Received SECURITY_SCHEME_REPORT but we are not in inclusion mode! {}",
-                            serialMessage);
+                    		this.getNode().getNodeId(), serialMessage);
                     return;
                 }
                 int schemes = serialMessage.getMessagePayloadByte(offset + 1);
@@ -209,7 +209,7 @@ public class ZWaveSecurityCommandClassWithInitialization extends ZWaveSecurityCo
                 // Should be received during inclusion only
                 if (!wasThisNodeJustIncluded() || inclusionStateTracker == null) {
                     logger.error("NODE {}: Received SECURITY_NETWORK_KEY_VERIFY but we are not in inclusion mode! {}",
-                            serialMessage);
+                    		this.getNode().getNodeId(), serialMessage);
                     return;
                 }
                 // Since we got here, it means we decrypted a packet using the key we sent in

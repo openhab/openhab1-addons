@@ -478,8 +478,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
             value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
         } else if (state instanceof OpenClosedType) {
             value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
-        } else if (state instanceof HSBType) {
-            value = ((HSBType) state).toString();
         } else if (state instanceof DateTimeType) {
             value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
         } else {

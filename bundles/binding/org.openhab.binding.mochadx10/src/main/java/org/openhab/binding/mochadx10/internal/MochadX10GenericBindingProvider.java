@@ -17,7 +17,6 @@ import org.openhab.binding.mochadx10.MochadX10BindingProvider;
 import org.openhab.binding.mochadx10.commands.MochadX10Address;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -58,7 +57,7 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof RollershutterItem)) {
+        if (!(item instanceof SwitchItem || item instanceof RollershutterItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
                     + "', only SwitchItems, DimmerItems and RollershutterItems are allowed - please check your *.items configuration");

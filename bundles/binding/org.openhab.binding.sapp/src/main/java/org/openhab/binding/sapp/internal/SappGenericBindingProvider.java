@@ -90,8 +90,6 @@ public class SappGenericBindingProvider extends AbstractGenericBindingProvider i
             ; // OK, nothing to validate
         } else if (item instanceof RollershutterItem) {
             ; // OK, nothing to validate
-        } else if (item instanceof DimmerItem) {
-            ; // OK, nothing to validate
         } else {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
