@@ -50,8 +50,8 @@ This service can be configured in the file `services/jdbc.cfg`.
 | sqltype.ROLLERSHUTTER	    | `TINYINT`        | No | see above |
 | sqltype.STRING		    | `VARCHAR(65500)` | No | see above |
 | sqltype.SWITCH		    | `VARCHAR(6)`     | No | see above |
-| sqltype.TABLEPRIMARYKEY   | `TIMESTAMP`      | No | see above |
-| sqltype.TABLEPRIMARYVALUE | `NOW()`          | No | see above |
+| sqltype.tablePrimaryKey   | `TIMESTAMP`      | No | type of `time` column for newly created item tables |
+| sqltype.tablePrimaryValue | `NOW()`          | No | value of `time` column for newly inserted rows  |
 | numberDecimalcount        | 3                | No | for Itemtype "Number" default decimal digit count |
 | tableNamePrefix           | `item`           | No | table name prefix. For Migration from MySQL Persistence, set to `Item`. |
 | tableUseRealItemNames     | `false`          | No | table name prefix generation.  When set to `true`, real item names are used for table names and `tableNamePrefix` is ignored.  When set to `false`, the `tableNamePrefix` is used to generate table names with sequential numbers. |

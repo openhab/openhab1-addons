@@ -319,6 +319,7 @@ public class JdbcBaseDAO {
         String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEM_TABLE,
                 new String[] { "#tableName#", "#dbType#", "#tablePrimaryKey#" },
                 new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryKey") });
+        logger.debug("JDBC::doCreateItemTable sql={}", sql);
         Yank.execute(sql, null);
     }
 
