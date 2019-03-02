@@ -31,6 +31,8 @@ public class DynamoDBConfig {
     public static final boolean DEFAULT_CREATE_TABLE_ON_DEMAND = true;
     public static final long DEFAULT_READ_CAPACITY_UNITS = 1;
     public static final long DEFAULT_WRITE_CAPACITY_UNITS = 1;
+    public static final long DEFAULT_BUFFER_COMMIT_INTERVAL_MILLIS = 1000;
+    public static final int DEFAULT_BUFFER_SIZE = 1000;
 
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBConfig.class);
 
@@ -40,6 +42,8 @@ public class DynamoDBConfig {
     private boolean createTable = DEFAULT_CREATE_TABLE_ON_DEMAND;
     private long readCapacityUnits = DEFAULT_READ_CAPACITY_UNITS;
     private long writeCapacityUnits = DEFAULT_WRITE_CAPACITY_UNITS;
+    private long bufferCommitIntervalMillis = DEFAULT_BUFFER_COMMIT_INTERVAL_MILLIS;
+    private int bufferSize = DEFAULT_BUFFER_SIZE;
 
     /**
      *
@@ -117,7 +121,26 @@ public class DynamoDBConfig {
                 writeCapacityUnits = Long.parseLong(writeCapacityUnitsParam);
             }
 
-            return new DynamoDBConfig(region, credentials, table, createTable, readCapacityUnits, writeCapacityUnits);
+            final long bufferCommitIntervalMillis;
+            String bufferCommitIntervalMillisParam = (String) config.get("bufferCommitIntervalMillis");
+            if (isBlank(bufferCommitIntervalMillisParam)) {
+                logger.debug("Buffer commit interval millis: {}", DEFAULT_BUFFER_COMMIT_INTERVAL_MILLIS);
+                bufferCommitIntervalMillis = DEFAULT_BUFFER_COMMIT_INTERVAL_MILLIS;
+            } else {
+                bufferCommitIntervalMillis = Long.parseLong(bufferCommitIntervalMillisParam);
+            }
+
+            final int bufferSize;
+            String bufferSizeParam = (String) config.get("bufferSize");
+            if (isBlank(bufferSizeParam)) {
+                logger.debug("Buffer size: {}", DEFAULT_BUFFER_SIZE);
+                bufferSize = DEFAULT_BUFFER_SIZE;
+            } else {
+                bufferSize = Integer.parseInt(bufferSizeParam);
+            }
+
+            return new DynamoDBConfig(region, credentials, table, createTable, readCapacityUnits, writeCapacityUnits,
+                    bufferCommitIntervalMillis, bufferSize);
         } catch (Exception e) {
             logger.error("Error with configuration", e);
             return null;
@@ -125,13 +148,15 @@ public class DynamoDBConfig {
     }
 
     public DynamoDBConfig(Regions region, AWSCredentials credentials, String table, boolean createTable,
-            long readCapacityUnits, long writeCapacityUnits) {
+            long readCapacityUnits, long writeCapacityUnits, long bufferCommitIntervalMillis, int bufferSize) {
         this.region = region;
         this.credentials = credentials;
         this.tablePrefix = table;
         this.createTable = createTable;
         this.readCapacityUnits = readCapacityUnits;
         this.writeCapacityUnits = writeCapacityUnits;
+        this.bufferCommitIntervalMillis = bufferCommitIntervalMillis;
+        this.bufferSize = bufferSize;
     }
 
     public AWSCredentials getCredentials() {
@@ -156,6 +181,14 @@ public class DynamoDBConfig {
 
     public long getWriteCapacityUnits() {
         return writeCapacityUnits;
+    }
+
+    public long getBufferCommitIntervalMillis() {
+        return bufferCommitIntervalMillis;
+    }
+
+    public int getBufferSize() {
+        return bufferSize;
     }
 
     private static void invalidRegionLogHelp(String region) {
