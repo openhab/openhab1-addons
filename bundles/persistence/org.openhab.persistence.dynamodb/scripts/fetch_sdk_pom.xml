@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>groupId</groupId>
     <artifactId>artifactId</artifactId>
-    <version>1.0</version>
+    <version>1.11.509</version>
 
     <dependencies>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-dynamodb</artifactId>
-            <version>1.11.213</version>
+            <version>1.11.509</version>
         </dependency>
     </dependencies>
 

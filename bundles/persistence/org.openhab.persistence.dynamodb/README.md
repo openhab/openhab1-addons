@@ -14,8 +14,20 @@ This service is provided "AS IS", and the user takes full responsibility of any 
 
 ## Table of Contents
 
-<!-- Using MarkdownTOC plugin for Sublime Text to update the table of contents (TOC) -->
-<!-- MarkdownTOC depth=3 autolink=true bracket=round -->
+<!-- Using MarkdownTOC plugin for Sublime Text to update the table of contents (TOC)
+
+Package settings:
+{
+  "defaults": {
+    "autolink": true,
+    "bracket": "round",
+    "levels": [1,2,3],
+  }
+}
+
+-->
+
+<!-- MarkdownTOC -->
 
 - [Prerequisites](#prerequisites)
 	- [Setting Up an Amazon Account](#setting-up-an-amazon-account)
@@ -30,6 +42,8 @@ This service is provided "AS IS", and the user takes full responsibility of any 
 	- [Updating Amazon SDK](#updating-amazon-sdk)
 
 <!-- /MarkdownTOC -->
+
+
 
 ## Prerequisites
 
@@ -55,21 +69,21 @@ This service can be configured in the file `services/dynamodb.cfg`.
 
 ### Basic configuration
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| accessKey |        |    Yes   | access key as shown in [Setting up Amazon account](#setting-up-amazon-account). |
-| secretKey |        |    Yes   | secret key as shown in [Setting up Amazon account](#setting-up-amazon-account). |
-| region   |         |    Yes   | AWS region ID as described in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user. |
+| Property  | Default | Required | Description                                                                                                                                                   |
+| --------- | ------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| accessKey |         |   Yes    | access key as shown in [Setting up Amazon account](#setting-up-amazon-account).                                                                               |
+| secretKey |         |   Yes    | secret key as shown in [Setting up Amazon account](#setting-up-amazon-account).                                                                               |
+| region    |         |   Yes    | AWS region ID as described in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user. |
 
 ### Configuration Using Credentials File
 
 Alternatively, instead of specifying `accessKey` and `secretKey`, one can configure a configuration profile file.
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| profilesConfigFile | |  Yes   | path to the credentials file.  For example, `/etc/openhab2/aws_creds`. Please note that the user that runs openHAB must have approriate read rights to the credential file. For more details on the Amazon credential file format, see [Amazon documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html). |
-| profile  |         |    Yes   | name of the profile to use |
-| region   |         |    Yes   | AWS region ID as described in Step 2 in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user. |
+| Property           | Default | Required | Description                                                                                                                                                                                                                                                                                                                                    |
+| ------------------ | ------- | :------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| profilesConfigFile |         |   Yes    | path to the credentials file.  For example, `/etc/openhab2/aws_creds`. Please note that the user that runs openHAB must have approriate read rights to the credential file. For more details on the Amazon credential file format, see [Amazon documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html). |
+| profile            |         |   Yes    | name of the profile to use                                                                                                                                                                                                                                                                                                                     |
+| region             |         |   Yes    | AWS region ID as described in Step 2 in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user.                                                                                                                                                                        |
 
 Example of service configuration file (`services/dynamodb.cfg`):
 
@@ -91,11 +105,11 @@ aws_secret_access_key=testSecretKey
 
 In addition to the configuration properties above, the following are also available:
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| readCapacityUnits | 1 |  No   | read capacity for the created tables |
-| writeCapacityUnits | 1 | No   | write capacity for the created tables |
-| tablePrefix | `openhab-` | No | table prefix used in the name of created tables |
+| Property           | Default    | Required | Description                                     |
+| ------------------ | ---------- | :------: | ----------------------------------------------- |
+| readCapacityUnits  | 1          |    No    | read capacity for the created tables            |
+| writeCapacityUnits | 1          |    No    | write capacity for the created tables           |
+| tablePrefix        | `openhab-` |    No    | table prefix used in the name of created tables |
 
 Refer to Amazon documentation on [provisioned throughput](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ProvisionedThroughput.html) for details on read/write capacity.
 
@@ -117,6 +131,16 @@ When the tables are created, the read/write capacity is configured according to 
 
 ### Updating Amazon SDK
 
+There are two ways to update Amazon SDK used by this service: scripted and manual.
+
+#### Using update_sdk.sh script
+
+1. Make sure you have clean git repo state
+2. Use helper script `scripts/update_sdk.sh` to automatically update library references in `build.properties`, `MANIFEST.MF` and `.classpath`. For example, to update SDK to 1.11.509: `scripts/update_sdk.sh 1.11.509`. You can use the [maven online repository browser](https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb) to find the latest version available online.
+3. Verify changes and commit changes to git.
+
+#### Update manually
+
 1. Clean `lib/*`
 2. Update SDK version in `scripts/fetch_sdk_pom.xml`. You can use the [maven online repository browser](https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-dynamodb) to find the latest version available online.
 3. `scripts/fetch_sdk.sh`
@@ -128,4 +152,4 @@ When the tables are created, the read/write capacity is configured according to 
 7. Generate `.classpath` entries
 `ls lib/*.jar | python -c "import sys;pre='<classpathentry exported=\"true\" kind=\"lib\" path=\"';post='\"/>'; print('\\t' + pre + (post + '\\n\\t' + pre).join(map(str.strip, sys.stdin.readlines())) + post)"`
 
-After these changes, it's good practice to run integration tests (against live AWS DynamoDB) in `org.openhab.persistence.dynamodb.test` bundle. See README.md in the test bundle for more information how to execute the tests.
+**Always after updating the SDK, please remember to run integration tests** (against live AWS DynamoDB) in `org.openhab.persistence.dynamodb.test` bundle. See README.md in the test bundle for more information how to execute the tests.
