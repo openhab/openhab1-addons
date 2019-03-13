@@ -27,6 +27,7 @@ It has been tested on:
 * getting new messages per TAM
 * getting missed calls for the last x days
 * getting DSL/WAN statistics for monitoring connection quality
+* reboot
 
 ## Prerequisites
 
@@ -61,6 +62,7 @@ Switch  fboxWifi24          "2,4GHz Wifi"               {fritzboxtr064="wifi24Sw
 Switch  fboxWifi50          "5,0GHz Wifi"               {fritzboxtr064="wifi50Switch"}
 Switch  fboxGuestWifi       "Guest Wifi"                {fritzboxtr064="wifiGuestSwitch"}
 Contact cFboxMacOnline      "Presence (WiFi) [%s]"      {fritzboxtr064="maconline:11-11-11-11-11-11" }
+Switch  fboxReboot          "Reboot"                    {fritzboxtr064="reboot"}
 
 // WAN statistics
 
@@ -154,5 +156,13 @@ then
     val callerName = incCallResolved.getValue(1)
 
     // do something with callerName
+end
+
+rule "Reboot Fritzbox on Connectionloss"
+when
+    // to be determined externally
+    Item internetConnection changed from ON to OFF
+then
+    sendCommand("fboxReboot", ON)
 end
 ```

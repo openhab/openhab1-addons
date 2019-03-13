@@ -193,6 +193,10 @@ public class Tr064Comm {
                 continue;
             }
 
+            if (itemMap.getReadServiceCommand() == null) {
+                logger.debug("skipping {}, read command is null", itemMap);
+                continue;
+            }
             // determine which url etc. to connect to for accessing required value
             Tr064Service tr064service = determineServiceByItemMapping(itemMap);
 
@@ -869,6 +873,11 @@ public class Tr064Comm {
                 .itemArgumentName("NewEnable").readServiceCommand("GetDeflection")
                 .writeServiceCommand("SetDeflectionEnable").build();
         addItemMap(callDeflection);
+
+        // reboot
+        SingleItemMap reboot = SingleItemMap.builder().itemCommand("reboot")
+                .serviceId("urn:DeviceConfig-com:serviceId:DeviceConfig1").writeServiceCommand("Reboot").build();
+        addItemMap(reboot);
     }
 
     private void addItemMap(ItemMap itemMap) {
