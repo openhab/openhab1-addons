@@ -239,14 +239,6 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                     VeluxBindingConstants.BINDING_ID);
             return;
         }
-        if (thisBridge.bridgeAPI().modifyHouseStatusMonitor() != null) {
-            logger.trace("bridgeParamsUpdated(): Activating HouseStatusMonitor.");
-            if (new VeluxBridgeModifyHouseStatusMonitor().modifyHSM(thisBridge, true)) {
-                logger.trace("bridgeParamsUpdated(): HSM activated.");
-            } else {
-                logger.warn("Activation of House-Status-Monitoring failed (might lead to a lack of status updates).");
-            }
-        }
 
         logger.trace("bridgeParamsUpdated(): Querying bridge state.");
         bridgeParameters.gateway = new VeluxBridgeDeviceStatus().retrieve(thisBridge);
@@ -260,6 +252,15 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
         bridgeParameters.actuators.getProducts(thisBridge);
         String products = bridgeParameters.actuators.getChannel().existingProducts.toString(false, "\n\t");
         logger.info("Found {} actuators:\n\t{}.", VeluxBindingConstants.BINDING_ID, products);
+
+        if (thisBridge.bridgeAPI().modifyHouseStatusMonitor() != null) {
+            logger.trace("bridgeParamsUpdated(): Activating HouseStatusMonitor.");
+            if (new VeluxBridgeModifyHouseStatusMonitor().modifyHSM(thisBridge, true)) {
+                logger.trace("bridgeParamsUpdated(): HSM activated.");
+            } else {
+                logger.warn("Activation of House-Status-Monitoring failed (might lead to a lack of status updates).");
+            }
+        }
 
         veluxBridgeConfiguration.hasChanged = false;
         logger.info("{} Bridge is online, now.", VeluxBindingConstants.BINDING_ID);

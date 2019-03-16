@@ -236,85 +236,92 @@ public class VeluxBinding extends AbstractActiveBinding<VeluxBindingProvider> im
 
     @Override
     public void updated(final Dictionary<String, ?> config) throws ConfigurationException {
-        logger.debug("updated() called with {} dictionary entries.", config.size());
-        if (config != null) {
-            final String protocol = (String) config.get(VeluxBridgeConfiguration.BRIDGE_PROTOCOL);
-            if (isNotBlank(protocol)) {
-                this.config.bridgeProtocol = protocol;
-                this.config.hasChanged = true;
-                logger.debug("updated(): adapted BRIDGE_PROTOCOL to {}.", this.config.bridgeProtocol);
-            }
-            final String ipAddressString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_IPADDRESS);
-            if (isNotBlank(ipAddressString)) {
-                this.config.bridgeIPAddress = ipAddressString;
-                this.config.hasChanged = true;
-                logger.debug("updated(): adapted BRIDGE_IPADDRESS to {}.", this.config.bridgeIPAddress);
-            }
-            final String tcpPortString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_TCPPORT);
-            if (isNotBlank(tcpPortString)) {
-                try {
-                    this.config.bridgeTCPPort = Integer.parseInt(tcpPortString);
-                } catch (NumberFormatException e) {
-                    throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_TCPPORT, e.getMessage());
-                }
-                this.config.hasChanged = true;
-                logger.debug("updated(): adapted BRIDGE_TCPPORT to {}.", this.config.bridgeTCPPort);
-            }
-            final String passwordString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_PASSWORD);
-            if (isNotBlank(passwordString)) {
-                this.config.bridgePassword = passwordString;
-                this.config.hasChanged = true;
-                logger.debug("updated(): adapted BRIDGE_PASSWORD to {}.", this.config.bridgePassword);
-            }
-            final String timeoutMsecsString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_TIMEOUT_MSECS);
-            if (isNotBlank(timeoutMsecsString)) {
-                try {
-                    this.config.timeoutMsecs = Integer.parseInt(timeoutMsecsString);
-                } catch (NumberFormatException e) {
-                    throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_TIMEOUT_MSECS, e.getMessage());
-                }
-                this.config.hasChanged = true;
-                logger.debug("updated(): adapted BRIDGE_TIMEOUT_MSECS to {}.", this.config.timeoutMsecs);
-            }
-            final String retryNoString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_RETRIES);
-            if (isNotBlank(retryNoString)) {
-                try {
-                    this.config.retries = Integer.parseInt(retryNoString);
-                } catch (NumberFormatException e) {
-                    throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_RETRIES, e.getMessage());
-                }
-                this.config.hasChanged = true;
-                logger.debug("updated(): adapted BRIDGE_RETRIES to {}.", this.config.retries);
-            }
-            final String bulkRetrievalString = (String) config
-                    .get(VeluxBridgeConfiguration.BRIDGE_IS_BULK_RETRIEVAL_ENABLED);
-            if (isNotBlank(bulkRetrievalString)) {
-                try {
-                    this.config.isBulkRetrievalEnabled = Boolean.parseBoolean(bulkRetrievalString);
-                } catch (NumberFormatException e) {
-                    throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_IS_BULK_RETRIEVAL_ENABLED,
-                            e.getMessage());
-                }
-                this.config.hasChanged = true;
-                logger.debug("updated(): adapted BRIDGE_IS_BULK_RETRIEVAL_ENABLED to {}.",
-                        this.config.isBulkRetrievalEnabled);
-            }
-        }
+    	if (config == null) {
+    		logger.info("updated() called with empty dictionary.");
+    		return;
+    	}
+    	logger.debug("updated() called with {} dictionary entries.", config.size());
+    	final String protocol = (String) config.get(VeluxBridgeConfiguration.BRIDGE_PROTOCOL);
+    	if (isNotBlank(protocol)) {
+    		this.config.bridgeProtocol = protocol;
+    		this.config.hasChanged = true;
+    		logger.debug("updated(): adapted BRIDGE_PROTOCOL to {}.", this.config.bridgeProtocol);
+    	}
+    	final String ipAddressString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_IPADDRESS);
+    	if (isNotBlank(ipAddressString)) {
+    		this.config.bridgeIPAddress = ipAddressString;
+    		this.config.hasChanged = true;
+    		logger.debug("updated(): adapted BRIDGE_IPADDRESS to {}.", this.config.bridgeIPAddress);
+    	}
+    	final String tcpPortString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_TCPPORT);
+    	if (isNotBlank(tcpPortString)) {
+    		try {
+    			this.config.bridgeTCPPort = Integer.parseInt(tcpPortString);
+    		} catch (NumberFormatException e) {
+    			throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_TCPPORT, e.getMessage());
+    		}
+    		this.config.hasChanged = true;
+    		logger.debug("updated(): adapted BRIDGE_TCPPORT to {}.", this.config.bridgeTCPPort);
+    	}
+    	final String passwordString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_PASSWORD);
+    	if (isNotBlank(passwordString)) {
+    		this.config.bridgePassword = passwordString;
+    		this.config.hasChanged = true;
+    		logger.debug("updated(): adapted BRIDGE_PASSWORD to {}.", this.config.bridgePassword);
+    	}
+    	final String timeoutMsecsString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_TIMEOUT_MSECS);
+    	if (isNotBlank(timeoutMsecsString)) {
+    		try {
+    			this.config.timeoutMsecs = Integer.parseInt(timeoutMsecsString);
+    		} catch (NumberFormatException e) {
+    			throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_TIMEOUT_MSECS, e.getMessage());
+    		}
+    		this.config.hasChanged = true;
+    		logger.debug("updated(): adapted BRIDGE_TIMEOUT_MSECS to {}.", this.config.timeoutMsecs);
+    	}
+    	final String retryNoString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_RETRIES);
+    	if (isNotBlank(retryNoString)) {
+    		try {
+    			this.config.retries = Integer.parseInt(retryNoString);
+    		} catch (NumberFormatException e) {
+    			throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_RETRIES, e.getMessage());
+    		}
+    		this.config.hasChanged = true;
+    		logger.debug("updated(): adapted BRIDGE_RETRIES to {}.", this.config.retries);
+    	}
+    	try {
+    		final String bulkRetrievalString = (String) config.get(VeluxBridgeConfiguration.BRIDGE_IS_BULK_RETRIEVAL_ENABLED);
+    		if (isNotBlank(bulkRetrievalString)) {
+    			try {
+    				this.config.isBulkRetrievalEnabled = Boolean.parseBoolean(bulkRetrievalString);
+    			} catch (NumberFormatException e) {
+    				throw new ConfigurationException(VeluxBridgeConfiguration.BRIDGE_IS_BULK_RETRIEVAL_ENABLED,
+    						e.getMessage());
+    			}
+    			this.config.hasChanged = true;
+    			logger.debug("updated(): adapted BRIDGE_IS_BULK_RETRIEVAL_ENABLED to {}.",
+    					this.config.isBulkRetrievalEnabled);
+    		} 
+    	} 
+    	catch (ClassCastException ex){
+    		logger.warn("updated(): bad configuration setting for {}: {}.",
+    				VeluxBridgeConfiguration.BRIDGE_IS_BULK_RETRIEVAL_ENABLED, ex.toString());
+    	}
 
-        setProperlyConfigured(true);
+    	setProperlyConfigured(true);
 
-        logger.info("{}Config[{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={}]", VeluxBindingConstants.BINDING_ID,
-                VeluxBridgeConfiguration.BRIDGE_PROTOCOL, this.config.bridgeProtocol,
-                VeluxBridgeConfiguration.BRIDGE_IPADDRESS, this.config.bridgeIPAddress,
-                VeluxBridgeConfiguration.BRIDGE_TCPPORT, this.config.bridgeTCPPort,
-                VeluxBridgeConfiguration.BRIDGE_PASSWORD, this.config.bridgePassword.replaceAll(".", "*"),
-                VeluxBridgeConfiguration.BRIDGE_TIMEOUT_MSECS, this.config.timeoutMsecs,
-                VeluxBridgeConfiguration.BRIDGE_RETRIES, this.config.retries,
-                VeluxBridgeConfiguration.BRIDGE_REFRESH_MSECS, this.config.refreshMSecs,
-                VeluxBridgeConfiguration.BRIDGE_IS_BULK_RETRIEVAL_ENABLED, this.config.isBulkRetrievalEnabled);
+    	logger.info("{}Config[{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={}]", VeluxBindingConstants.BINDING_ID,
+    			VeluxBridgeConfiguration.BRIDGE_PROTOCOL, this.config.bridgeProtocol,
+    			VeluxBridgeConfiguration.BRIDGE_IPADDRESS, this.config.bridgeIPAddress,
+    			VeluxBridgeConfiguration.BRIDGE_TCPPORT, this.config.bridgeTCPPort,
+    			VeluxBridgeConfiguration.BRIDGE_PASSWORD, this.config.bridgePassword.replaceAll(".", "*"),
+    			VeluxBridgeConfiguration.BRIDGE_TIMEOUT_MSECS, this.config.timeoutMsecs,
+    			VeluxBridgeConfiguration.BRIDGE_RETRIES, this.config.retries,
+    			VeluxBridgeConfiguration.BRIDGE_REFRESH_MSECS, this.config.refreshMSecs,
+    			VeluxBridgeConfiguration.BRIDGE_IS_BULK_RETRIEVAL_ENABLED, this.config.isBulkRetrievalEnabled);
 
-        // Now that we've read ALL the configuration, initialize the binding.
-        execute();
+    	// Now that we've read ALL the configuration, initialize the binding.
+    	execute();
     }
 
     /***

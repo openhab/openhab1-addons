@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	* Copyright 2016-2019 (c) Guenther Schreiner <guenther.schreiner@smile.de>
+	*
+	* All rights reserved. This program and the accompanying materials
+	* are made available under the terms of the Eclipse Public License v1.0
+	* which accompanies this distribution, and is available at
+	* http://www.eclipse.org/legal/epl-v10.html
+	*
+-->
+<!-- Velux Binding -->
+<thing:thing-descriptions bindingId="velux"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+	<!-- Channel Type - of Scene -->
+
+	<channel-type id="action" advanced="true">
+		<item-type>Switch</item-type>
+		<label>Start of a scene</label>
+		<description>Activates a set of predefined product settings</description>
+		<category>Scene</category>
+	</channel-type>
+
+	<channel-type id="silentMode" advanced="true">
+		<item-type>Switch</item-type>
+		<label>Enabling silent mode</label>
+		<description>Activates the silent mode of the predefined product settings</description>
+		<category>Scene</category>
+	</channel-type>
+
+	<!-- Channel Type - of Bridge -->
+
+	<channel-type id="firmware" advanced="true">
+		<item-type>String</item-type>
+		<label>Firmware Version</label>
+		<description>Software version of the Bridge</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="status" advanced="true">
+		<item-type>String</item-type>
+		<label>Bridge state</label>
+		<description>Description of current Bridge State</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="ipAddress" advanced="true">
+		<item-type>String</item-type>
+		<label>IP Address</label>
+		<description>IP address of the Bridge</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="subnetMask" advanced="true">
+		<item-type>String</item-type>
+		<label>IP Subnet Mask</label>
+		<description>IP subnetmask of the Bridge</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="defaultGW" advanced="true">
+		<item-type>String</item-type>
+		<label>Default Gateway</label>
+		<description>IP address of the Default Gateway of the Bridge</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="DHCP" advanced="true">
+		<item-type>Switch</item-type>
+		<label>DHCP Enabled</label>
+		<description>Flag whether automatic IP configuration is enabled</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="WLANSSID" advanced="true">
+		<item-type>String</item-type>
+		<label>SSID</label>
+		<description>Name of the wireless network</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="WLANPassword" advanced="true">
+		<item-type>String</item-type>
+		<label>WLAN Authentication</label>
+		<description>WLAN Authentication Password</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="doDetection" advanced="true">
+		<item-type>Switch</item-type>
+		<label>Start of detection mode</label>
+		<description>Start of the Detection Mode</description>
+		<category>Bridge</category>
+	</channel-type>
+
+	<channel-type id="products" advanced="true">
+		<item-type>String</item-type>
+		<label>Identified Products</label>
+		<description>Products which are configured on the Bridge</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="scenes" advanced="true">
+		<item-type>String</item-type>
+		<label>Identified Scenes</label>
+		<description>Scenes which are configured on the Bridge</description>
+		<category>Bridge</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="shutter" advanced="true">
+		<item-type>Switch</item-type>
+		<label>Shutter</label>
+		<description>Control of a shutter element</description>
+		<category>Bridge</category>
+	</channel-type>
+
+	<!-- Channel Type - of Actuator -->
+
+	<channel-type id="serial">
+		<item-type>String</item-type>
+		<label>Serial Number</label>
+		<description>Eight hex digits (i.e. 65:23:3E:26:0C:1B:00:10)</description>
+		<category>Actuator</category>
+	</channel-type>
+
+</thing:thing-descriptions>
+
+<!-- ==================================== -->
+<!-- end-of-ESH-INF/thing/channels.xml -->
+<!-- ==================================== -->
+

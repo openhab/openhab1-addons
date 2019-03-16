@@ -1,7 +1,7 @@
 
 # Velux Binding
 
-This binding integrates the <B>Velux</B> devices with help of a gateway, the <B>Velux Bridge KLF200</B>.
+This binding integrates the <B>Velux</B> devices with help of a gateway, the <B>Velux Bridge KLF200</B>, which is able to control 200 actuators.
 The Velux Binding interacts via the Velux Bridge with any [io-homecontrol](http://www.io-homecontrol.com/)-based
 devices like window openers, shutters and others.
 
@@ -301,6 +301,11 @@ Notes:
 - Velux bridges cannot be returned to version one of the firmware after being upgraded to version two.
 - Firmware updates are currently provided at [Velux download area](https://updates2.velux.com/).
 
+
+## How to run it under openHAB2?
+
+Use the Karaf console to install the openHAB1 compatibility layer with `feature:install openhab-runtime-compat1x`.
+Create the basic configuration of the service i.e. with a file `services/velux.cfg`, define the items within i.e. `items/velux.items` and finally generate a UI within i.e. `sitemap/default.sitemap`.
 
 ## Unknown Velux devices
 
