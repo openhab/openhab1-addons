@@ -11,6 +11,10 @@ package org.openhab.binding.weather.internal.provider;
 import org.openhab.binding.weather.internal.model.ProviderName;
 import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
 
+import org.openhab.binding.weather.internal.common.WeatherConfig;
+import org.openhab.binding.weather.internal.common.WeatherContext;
+import org.openhab.binding.weather.internal.common.ProviderConfig;
+
 /**
  * OpenWeatherMap weather provider.
  *
@@ -19,8 +23,11 @@ import org.openhab.binding.weather.internal.parser.JsonWeatherParser;
  */
 public class OpenWeatherMapProvider extends AbstractWeatherProvider {
     private static final String URL = "http://api.openweathermap.org/data/2.5/weather?lat=[LATITUDE]&lon=[LONGITUDE]&lang=[LANGUAGE]&mode=json&units=metric&APPID=[API_KEY]";
-    private static final String FORECAST = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=[LATITUDE]&lon=[LONGITUDE]&lang=[LANGUAGE]&cnt=5&mode=json&units=metric&APPID=[API_KEY]";
-
+    // private static final String FORECAST = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=[LATITUDE]&lon=[LONGITUDE]&lang=[LANGUAGE]&cnt=5&mode=json&units=metric&APPID=[API_KEY]";
+    private static final String FORECAST = "http://api.openweathermap.org/data/2.5/forecast/daily?lat=[LATITUDE]&lon=[LONGITUDE]&lang=[LANGUAGE]&cnt=5&mode=json&units=metric&APPID=[API_KEY_2]";
+    
+    private WeatherConfig config = WeatherContext.getInstance().getConfig();
+   
     public OpenWeatherMapProvider() {
         super(new JsonWeatherParser());
     }
@@ -46,6 +53,12 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
      */
     @Override
     protected String getForecastUrl() {
-        return FORECAST;
+        ProviderConfig providerConfig = config.getProviderConfig(getProviderName());
+        if (providerConfig.getApiKey2() != null && !providerConfig.getApiKey2().equals("null") ) {
+            return FORECAST;
+        } else {
+            return null;
+        }
+        
     }
 }

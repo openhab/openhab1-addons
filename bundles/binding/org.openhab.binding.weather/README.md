@@ -44,6 +44,7 @@ The table below shows the apikey properties for the different weather providers;
 |---------------------------|-------------|
 | apikey.ForecastIo         | API key for [ForecastIo](http://forecast.io) |
 | apikey.OpenWeatherMap     | API key for [OpenWeatherMap](http://openweathermap.org) |
+| apikey2.OpenWeatherMap    | optional API key if [OpenWeatherMap forecasts](https://openweathermap.org/forecast5) paid / non-free, are to acquired|
 | apikey.WorldWeatherOnline | API key for [WorldWeatherOnline](http://worldweatheronline.com) |
 | apikey.Hamweather         | `client_id` for [Hamweather](http://hamweather.com) |
 | apikey2.Hamweather        | `client_secret` for [Hamweather](http://hamweather.com) |
@@ -53,6 +54,7 @@ The table below shows the apikey properties for the different weather providers;
 
 > [Hamweather](http://hamweather.com) is the only provider with multiple keys; both are required.
 
+> [OpenWeather](http://openweathermap.org) has a non-free FORECAST service, specify the key in `apikey2` that then will include this service in openHAB, value may be the same as the first apikey. In case apikey2 was accidentally specified or produces error-messages, one can nullify the use by: `apikey2.OpenWeatherMap=null`; or leave it out and restart openHAB.
 
 ### Location Configuration
 
@@ -284,7 +286,7 @@ Number   Temp_Max         "Temperature max [%.2f °C]"   {weather="locationId=ho
 Each provider sends different forecast days. 
 
 - ForecastIo: 8 days (0-7)
-- OpenWeatherMap: 5 days (0-4)
+- OpenWeatherMap: 5 days (0-4)  (Note: requires a paid key in weather configuration)
 - WorldWeatherOnline: 5 days (0-4)
 - Hamweather: 5 days (0-4)
 - Meteoblue: 10 days (0-9)
