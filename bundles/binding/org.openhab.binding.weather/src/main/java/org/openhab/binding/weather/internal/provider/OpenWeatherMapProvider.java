@@ -46,6 +46,6 @@ public class OpenWeatherMapProvider extends AbstractWeatherProvider {
      */
     @Override
     protected String getForecastUrl() {
-        return FORECAST;
+        return null;
     }
 }
