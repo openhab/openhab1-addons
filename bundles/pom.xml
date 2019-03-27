@@ -19,7 +19,6 @@
     <module>action</module>
     <module>binding</module>
     <module>io</module>
-    <module>persistence</module>
   </modules>
 
 </project>
