@@ -239,14 +239,6 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                     VeluxBindingConstants.BINDING_ID);
             return;
         }
-        if (thisBridge.bridgeAPI().modifyHouseStatusMonitor() != null) {
-            logger.trace("bridgeParamsUpdated(): Activating HouseStatusMonitor.");
-            if (new VeluxBridgeModifyHouseStatusMonitor().modifyHSM(thisBridge, true)) {
-                logger.trace("bridgeParamsUpdated(): HSM activated.");
-            } else {
-                logger.warn("Activation of House-Status-Monitoring failed (might lead to a lack of status updates).");
-            }
-        }
 
         logger.trace("bridgeParamsUpdated(): Querying bridge state.");
         bridgeParameters.gateway = new VeluxBridgeDeviceStatus().retrieve(thisBridge);
@@ -260,6 +252,15 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
         bridgeParameters.actuators.getProducts(thisBridge);
         String products = bridgeParameters.actuators.getChannel().existingProducts.toString(false, "\n\t");
         logger.info("Found {} actuators:\n\t{}.", VeluxBindingConstants.BINDING_ID, products);
+
+        if (thisBridge.bridgeAPI().modifyHouseStatusMonitor() != null) {
+            logger.trace("bridgeParamsUpdated(): Activating HouseStatusMonitor.");
+            if (new VeluxBridgeModifyHouseStatusMonitor().modifyHSM(thisBridge, true)) {
+                logger.trace("bridgeParamsUpdated(): HSM activated.");
+            } else {
+                logger.warn("Activation of House-Status-Monitoring failed (might lead to a lack of status updates).");
+            }
+        }
 
         veluxBridgeConfiguration.hasChanged = false;
         logger.info("{} Bridge is online, now.", VeluxBindingConstants.BINDING_ID);
@@ -462,6 +463,14 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                                     itemName, config.getBindingItemType());
                     }
                 }
+                if (newState != null) {
+                    logger.debug("handleCommandOnChannel(): updating {} to {}.", itemName, newState);
+                    assert eventPublisher != null : "eventPublisher not initialized.";
+                    eventPublisher.postUpdate(itemName, newState);
+                } else {
+                    logger.info("handleCommandOnChannel(): updating of item {} (type {}) failed.", itemName,
+                            config.getBindingItemType().name());
+                }
             } else {
                 /*
                  * ===========================================================
@@ -586,25 +595,15 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                         logger.debug("handleCommandOnChannel(): sending command with target level {}.", targetLevel);
                         new VeluxBridgeSendCommand().sendCommand(thisBridge,
                                 thisProduct.getBridgeProductIndex().toInt(), targetLevel);
-                        newState = targetLevel.getPositionAsPercentType();
+                        if (bridgeParameters.actuators.autoRefresh(thisBridge)) {
+                            logger.trace("handleCommandOnChannel(): position of actuators are updated.");
+                        }
                         break;
 
                     default:
                         logger.trace("handleCommand() cannot handle command {} on channel {} (type {}).", command,
                                 itemName, config.getBindingItemType());
                 }
-            }
-            /*
-             * ===========================================================
-             * Common part
-             */
-            if (newState != null) {
-                logger.debug("handleCommandOnChannel(): updating {} to {}.", itemName, newState);
-                assert eventPublisher != null : "eventPublisher not initialized.";
-                eventPublisher.postUpdate(itemName, newState);
-            } else {
-                logger.info("handleCommandOnChannel(): updating of item {} (type {}) failed.", itemName,
-                        config.getBindingItemType().name());
             }
             logger.trace("handleCommandOnChannel() done.");
         }
