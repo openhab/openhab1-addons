@@ -109,7 +109,7 @@ public class DynamoDBPersistenceService extends AbstractBufferedPersistenceServi
             if (unprocessedItems.isEmpty()) {
                 logger.debug("After {} retries successfully wrote all unprocessed items", retry);
             } else {
-                logger.error(
+                logger.warn(
                         "Even after retries failed to write some items. Last exception: {} {}, unprocessed items: {}",
                         lastException == null ? "null" : lastException.getClass().getName(),
                         lastException == null ? "null" : lastException.getMessage(), unprocessedItems);
@@ -127,7 +127,7 @@ public class DynamoDBPersistenceService extends AbstractBufferedPersistenceServi
                 Thread.sleep(sleepTime);
                 return true;
             } catch (InterruptedException e) {
-                logger.error("Interrupted while writing data!");
+                logger.debug("Interrupted while writing data!");
                 return false;
             }
         }

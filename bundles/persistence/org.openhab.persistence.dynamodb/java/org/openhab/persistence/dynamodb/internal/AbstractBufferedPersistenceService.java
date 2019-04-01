@@ -85,7 +85,7 @@ public abstract class AbstractBufferedPersistenceService<T> implements Persisten
                             System.currentTimeMillis() - bufferStart, uuid);
                 } else {
                     // The unlikely case happened -- buffer got full again immediately
-                    logger.error("Buffering failed for the second time -- Too small bufferSize? Discarding data [{}]",
+                    logger.warn("Buffering failed for the second time -- Too small bufferSize? Discarding data [{}]",
                             uuid);
                 }
             }
@@ -96,7 +96,7 @@ public abstract class AbstractBufferedPersistenceService<T> implements Persisten
         try {
             return buffer.offer(persistenceItem, BUFFER_OFFER_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            logger.error("Interrupted when trying to buffer data! Dropping data");
+            logger.warn("Interrupted when trying to buffer data! Dropping data");
             return false;
         }
     }
