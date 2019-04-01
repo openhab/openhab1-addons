@@ -17,7 +17,7 @@ public abstract class AbstractBufferedPersistenceService<T> implements Persisten
 
     private static final long BUFFER_OFFER_TIMEOUT_MILLIS = 500;
 
-    private final Logger logger = LoggerFactory.getLogger(DynamoDBPersistenceService.class);
+    private final Logger logger = LoggerFactory.getLogger(AbstractBufferedPersistenceService.class);
     protected BlockingQueue<T> buffer;
 
     private boolean writeImmediately;
