@@ -57,6 +57,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -72,6 +74,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -115,6 +119,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -128,6 +134,8 @@ public class DynamoDBConfigTest {
         assertEquals(false, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -141,6 +149,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(5, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -154,6 +164,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -167,5 +179,24 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(3, fromConfig.getReadCapacityUnits());
         assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
+    }
+
+    @Test
+    public void testRegionWithAccessKeysWithPrefixWithReadWriteCapacityUnitsWithBufferSettings() throws Exception {
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(
+                ImmutableMap.<String, Object> builder().put("region", "eu-west-1").put("accessKey", "access1")
+                        .put("secretKey", "secret1").put("readCapacityUnits", "3").put("writeCapacityUnits", "5")
+                        .put("bufferCommitIntervalMillis", "501").put("bufferSize", "112").build());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
+        assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
+        assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
+        assertEquals("openhab-", fromConfig.getTablePrefix());
+        assertEquals(true, fromConfig.isCreateTable());
+        assertEquals(3, fromConfig.getReadCapacityUnits());
+        assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(501L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(112, fromConfig.getBufferSize());
     }
 }

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
 
 /**
- * 
+ *
  * @author Sami Salonen
  *
  */
@@ -111,6 +111,9 @@ public class BaseIntegrationTest {
         config.put("accessKey", System.getProperty("DYNAMODBTEST_ACCESS"));
         config.put("secretKey", System.getProperty("DYNAMODBTEST_SECRET"));
         config.put("tablePrefix", "dynamodb-integration-tests-");
+
+        // Disable buffering
+        config.put("bufferSize", "0");
 
         for (Entry<String, Object> entry : config.entrySet()) {
             if (entry.getValue() == null) {
