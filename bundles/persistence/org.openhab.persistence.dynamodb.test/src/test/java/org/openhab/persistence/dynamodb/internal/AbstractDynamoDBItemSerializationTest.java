@@ -183,7 +183,7 @@ public class AbstractDynamoDBItemSerializationTest {
 
     @Test
     public void testDecimalTypeWithNumberItem() throws IOException {
-        DynamoDBItem<?> dbitem = testStateGeneric(new DecimalType(3.2), new BigDecimal("3.2"));
+        DynamoDBItem<?> dbitem = testStateGeneric(new DecimalType("3.2"), new BigDecimal("3.2"));
         testAsHistoricGeneric(dbitem, new NumberItem("foo"), new DecimalType(3.2));
     }
 
