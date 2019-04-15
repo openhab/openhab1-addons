@@ -61,19 +61,20 @@ public class AbstractDynamoDBItemSerializationTest {
      * @return dynamo db item
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     public DynamoDBItem<?> testStateGeneric(State state, Object expectedState) throws IOException {
         DynamoDBItem<?> dbItem = AbstractDynamoDBItem.fromState("item1", state, date);
 
         assertEquals("item1", dbItem.getName());
         assertEquals(date, dbItem.getTime());
+        Object actualState = dbItem.getState();
         if (expectedState instanceof BigDecimal) {
-            BigDecimal expectedDigitsLost = DynamoDBBigDecimalItem.loseDigits(((BigDecimal) expectedState));
-            BigDecimal actual = ((DynamoDBItem<BigDecimal>) dbItem).getState();
-            assertTrue(String.format("Expected state %s (%s but with some digits lost) did not match actual state %s",
-                    expectedDigitsLost, expectedState, actual), expectedDigitsLost.compareTo(actual) == 0);
+            BigDecimal expectedRounded = DynamoDBBigDecimalItem.loseDigits(((BigDecimal) expectedState));
+            assertTrue(
+                    String.format("Expected state %s (%s but with some digits lost) did not match actual state %s",
+                            expectedRounded, expectedState, actualState),
+                    expectedRounded.compareTo((BigDecimal) actualState) == 0);
         } else {
-            assertEquals(expectedState, dbItem.getState());
+            assertEquals(expectedState, actualState);
         }
         return dbItem;
     }
@@ -96,8 +97,11 @@ public class AbstractDynamoDBItemSerializationTest {
         assertEquals(expectedState.getClass(), historicItem.getState().getClass());
         if (expectedState instanceof DecimalType) {
             // serialization loses accuracy, take this into consideration
-            assertTrue(DynamoDBBigDecimalItem.loseDigits(((DecimalType) expectedState).toBigDecimal())
-                    .compareTo(((DecimalType) historicItem.getState()).toBigDecimal()) == 0);
+            BigDecimal expectedRounded = DynamoDBBigDecimalItem
+                    .loseDigits(((DecimalType) expectedState).toBigDecimal());
+            BigDecimal actual = ((DecimalType) historicItem.getState()).toBigDecimal();
+            assertTrue(String.format("Expected state %s (%s but with some digits lost) did not match actual state %s",
+                    expectedRounded, expectedState, actual), expectedRounded.compareTo(actual) == 0);
         } else if (expectedState instanceof CallType) {
             // CallType has buggy equals, let's compare strings instead
             assertEquals(expectedState.toString(), historicItem.getState().toString());
@@ -183,8 +187,8 @@ public class AbstractDynamoDBItemSerializationTest {
 
     @Test
     public void testDecimalTypeWithNumberItem() throws IOException {
-        DynamoDBItem<?> dbitem = testStateGeneric(new DecimalType(3.2), new BigDecimal("3.2"));
-        testAsHistoricGeneric(dbitem, new NumberItem("foo"), new DecimalType(3.2));
+        DynamoDBItem<?> dbitem = testStateGeneric(new DecimalType("3.2"), new BigDecimal("3.2"));
+        testAsHistoricGeneric(dbitem, new NumberItem("foo"), new DecimalType("3.2"));
     }
 
     @Test
