@@ -30,6 +30,7 @@ import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
+import com.tinkerforge.BrickletLCD128x64;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLaserRangeFinder;
@@ -371,6 +372,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMBrickletDistanceUS();
             case ModelPackage.MBRICKLET_LCD2_0X4:
                 return createMBrickletLCD20x4();
+            case ModelPackage.MBRICKLET_LCD12_8X64:
+                return createMBrickletLCD128x64();
+            case ModelPackage.MLCD12_8X64_BACKLIGHT:
+                return createMLCD128x64Backlight();
             case ModelPackage.MBRICKLET_OLED12_8X64_V2:
                 return createMBrickletOLED128x64V2();
             case ModelPackage.MBRICKLET_OLED12_8X64:
@@ -603,6 +608,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMTinkerBrickletAmbientLightFromString(eDataType, initialValue);
             case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
                 return createMTinkerBrickletLCD20x4FromString(eDataType, initialValue);
+            case ModelPackage.MTINKER_BRICKLET_LCD12_8X64:
+                return createMTinkerBrickletLCD128x64FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
                 return createTinkerBrickletRemoteSwitchFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_MOTION_DETECTOR:
@@ -838,6 +845,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertMTinkerBrickletAmbientLightToString(eDataType, instanceValue);
             case ModelPackage.MTINKER_BRICKLET_LCD2_0X4:
                 return convertMTinkerBrickletLCD20x4ToString(eDataType, instanceValue);
+            case ModelPackage.MTINKER_BRICKLET_LCD12_8X64:
+                return convertMTinkerBrickletLCD128x64ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_REMOTE_SWITCH:
                 return convertTinkerBrickletRemoteSwitchToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_MOTION_DETECTOR:
@@ -2211,6 +2220,28 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public MBrickletLCD20x4 createMBrickletLCD20x4() {
         MBrickletLCD20x4Impl mBrickletLCD20x4 = new MBrickletLCD20x4Impl();
         return mBrickletLCD20x4;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletLCD128x64 createMBrickletLCD128x64() {
+        MBrickletLCD128x64Impl mBrickletLCD128x64 = new MBrickletLCD128x64Impl();
+        return mBrickletLCD128x64;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MLCD128x64Backlight createMLCD128x64Backlight() {
+        MLCD128x64BacklightImpl mlcd128x64Backlight = new MLCD128x64BacklightImpl();
+        return mlcd128x64Backlight;
     }
 
     /**
@@ -4076,6 +4107,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertMTinkerBrickletLCD20x4ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletLCD128x64 createMTinkerBrickletLCD128x64FromString(EDataType eDataType, String initialValue) {
+        return (BrickletLCD128x64) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertMTinkerBrickletLCD128x64ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 

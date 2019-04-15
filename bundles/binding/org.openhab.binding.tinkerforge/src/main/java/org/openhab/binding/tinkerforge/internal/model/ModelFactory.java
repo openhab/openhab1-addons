@@ -1174,6 +1174,26 @@ public interface ModelFactory extends EFactory {
     MBrickletLCD20x4 createMBrickletLCD20x4();
 
     /**
+     * Returns a new object of class '<em>MBricklet LCD12 8x64</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet LCD12 8x64</em>'.
+     * @generated
+     */
+    MBrickletLCD128x64 createMBrickletLCD128x64();
+
+    /**
+     * Returns a new object of class '<em>MLCD12 8x64 Backlight</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MLCD12 8x64 Backlight</em>'.
+     * @generated
+     */
+    MLCD128x64Backlight createMLCD128x64Backlight();
+
+    /**
      * Returns a new object of class '<em>MBricklet OLED12 8x64 V2</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

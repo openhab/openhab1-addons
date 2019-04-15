@@ -2933,13 +2933,13 @@ String oled_text "OLED Text" (gTF) {tinkerforge="uid=HgQ"}
 
 Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc//Software/Bricklets/OLED128x64V2_Bricklet_Java.html)
 
-Sending a text command will set the text on the display.
+Sending a text command will set the text on the display. Sending an empty string or null will clear the display.
 
 `TFNUM<310>Hello` will write to the line 3 on column 10.
 Lines: 0-7
 Columns: 0-21
 
-Maximum of 22 characters will fit on the screen. 
+Maximum of 22 characters will fit in one row. 
 
 #### tinkerforge.items
 

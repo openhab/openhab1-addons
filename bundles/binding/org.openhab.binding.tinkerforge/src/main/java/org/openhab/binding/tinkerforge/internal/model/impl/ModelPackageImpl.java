@@ -30,6 +30,7 @@ import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
+import com.tinkerforge.BrickletLCD128x64;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLaserRangeFinder;
@@ -196,6 +197,7 @@ import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigital
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD128x64;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
 import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
@@ -230,6 +232,8 @@ import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
 import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD128x64Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD128x64SubDevice;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
 import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
 import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
@@ -1633,6 +1637,30 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mBrickletLCD128x64EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mlcd128x64SubDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mlcd128x64BacklightEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass oledBrickletEClass = null;
 
     /**
@@ -2539,6 +2567,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType mTinkerBrickletLCD20x4EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType mTinkerBrickletLCD128x64EDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -8064,6 +8100,76 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletLCD128x64() {
+        return mBrickletLCD128x64EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLCD128x64_DeviceType() {
+        return (EAttribute) mBrickletLCD128x64EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLCD128x64_PositionPrefix() {
+        return (EAttribute) mBrickletLCD128x64EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLCD128x64_PositionSuffix() {
+        return (EAttribute) mBrickletLCD128x64EClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMLCD128x64SubDevice() {
+        return mlcd128x64SubDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMLCD128x64Backlight() {
+        return mlcd128x64BacklightEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMLCD128x64Backlight_DeviceType() {
+        return (EAttribute) mlcd128x64BacklightEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getOLEDBricklet() {
         return oledBrickletEClass;
     }
@@ -10375,6 +10481,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EDataType getMTinkerBrickletLCD128x64() {
+        return mTinkerBrickletLCD128x64EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EDataType getTinkerBrickletRemoteSwitch() {
         return tinkerBrickletRemoteSwitchEDataType;
     }
@@ -11585,6 +11701,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___INIT);
         createEOperation(mBrickletLCD20x4EClass, MBRICKLET_LCD2_0X4___CLEAR);
 
+        mBrickletLCD128x64EClass = createEClass(MBRICKLET_LCD12_8X64);
+        createEAttribute(mBrickletLCD128x64EClass, MBRICKLET_LCD12_8X64__DEVICE_TYPE);
+        createEAttribute(mBrickletLCD128x64EClass, MBRICKLET_LCD12_8X64__POSITION_PREFIX);
+        createEAttribute(mBrickletLCD128x64EClass, MBRICKLET_LCD12_8X64__POSITION_SUFFIX);
+
+        mlcd128x64SubDeviceEClass = createEClass(MLCD12_8X64_SUB_DEVICE);
+
+        mlcd128x64BacklightEClass = createEClass(MLCD12_8X64_BACKLIGHT);
+        createEAttribute(mlcd128x64BacklightEClass, MLCD12_8X64_BACKLIGHT__DEVICE_TYPE);
+
         oledBrickletEClass = createEClass(OLED_BRICKLET);
         createEAttribute(oledBrickletEClass, OLED_BRICKLET__POSITION_PREFIX);
         createEAttribute(oledBrickletEClass, OLED_BRICKLET__POSITION_SUFFIX);
@@ -11884,6 +12010,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         mTinkerBrickletBarometerEDataType = createEDataType(MTINKER_BRICKLET_BAROMETER);
         mTinkerBrickletAmbientLightEDataType = createEDataType(MTINKER_BRICKLET_AMBIENT_LIGHT);
         mTinkerBrickletLCD20x4EDataType = createEDataType(MTINKER_BRICKLET_LCD2_0X4);
+        mTinkerBrickletLCD128x64EDataType = createEDataType(MTINKER_BRICKLET_LCD12_8X64);
         tinkerBrickletRemoteSwitchEDataType = createEDataType(TINKER_BRICKLET_REMOTE_SWITCH);
         tinkerBrickletMotionDetectorEDataType = createEDataType(TINKER_BRICKLET_MOTION_DETECTOR);
         tinkerBrickletMultiTouchEDataType = createEDataType(TINKER_BRICKLET_MULTI_TOUCH);
@@ -13171,6 +13298,22 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getMLCDSubDevice());
         g1.getETypeArguments().add(g2);
         mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getMTinkerBrickletLCD128x64());
+        g1.getETypeArguments().add(g2);
+        mBrickletLCD128x64EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTextActor());
+        mBrickletLCD128x64EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDeviceHolder());
+        g2 = createEGenericType(this.getMLCD128x64SubDevice());
+        g1.getETypeArguments().add(g2);
+        mBrickletLCD128x64EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMSubDevice());
+        g2 = createEGenericType(this.getMBrickletLCD128x64());
+        g1.getETypeArguments().add(g2);
+        mlcd128x64SubDeviceEClass.getEGenericSuperTypes().add(g1);
+        mlcd128x64BacklightEClass.getESuperTypes().add(this.getMInSwitchActor());
+        mlcd128x64BacklightEClass.getESuperTypes().add(this.getMLCD128x64SubDevice());
         g1 = createEGenericType(this.getOLEDBricklet());
         mBrickletOLED128x64V2EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMDevice());
@@ -14829,6 +14972,27 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEOperation(getMBrickletLCD20x4__Clear(), theEcorePackage.getEBoolean(), "clear", 0, 1, !IS_UNIQUE,
                 IS_ORDERED);
 
+        initEClass(mBrickletLCD128x64EClass, MBrickletLCD128x64.class, "MBrickletLCD128x64", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletLCD128x64_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_LCD128x64", 0, 1, MBrickletLCD128x64.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletLCD128x64_PositionPrefix(), theEcorePackage.getEString(), "positionPrefix", "TFNUM<",
+                0, 1, MBrickletLCD128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getMBrickletLCD128x64_PositionSuffix(), theEcorePackage.getEString(), "positionSuffix", ">", 0,
+                1, MBrickletLCD128x64.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(mlcd128x64SubDeviceEClass, MLCD128x64SubDevice.class, "MLCD128x64SubDevice", IS_ABSTRACT,
+                IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(mlcd128x64BacklightEClass, MLCD128x64Backlight.class, "MLCD128x64Backlight", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMLCD128x64Backlight_DeviceType(), theEcorePackage.getEString(), "deviceType", "backlight", 0,
+                1, MLCD128x64Backlight.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+                !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         initEClass(oledBrickletEClass, OLEDBricklet.class, "OLEDBricklet", IS_ABSTRACT, IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOLEDBricklet_PositionPrefix(), theEcorePackage.getEString(), "positionPrefix", "TFNUM<", 0, 1,
@@ -15655,6 +15819,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(mTinkerBrickletLCD20x4EDataType, BrickletLCD20x4.class, "MTinkerBrickletLCD20x4", IS_SERIALIZABLE,
                 !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(mTinkerBrickletLCD128x64EDataType, BrickletLCD128x64.class, "MTinkerBrickletLCD128x64",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletRemoteSwitchEDataType, BrickletRemoteSwitch.class, "TinkerBrickletRemoteSwitch",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletMotionDetectorEDataType, BrickletMotionDetector.class,

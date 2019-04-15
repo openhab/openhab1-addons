@@ -69,6 +69,7 @@ import com.tinkerforge.BrickletIndustrialDual020mA;
 import com.tinkerforge.BrickletIndustrialDualAnalogIn;
 import com.tinkerforge.BrickletIndustrialQuadRelay;
 import com.tinkerforge.BrickletJoystick;
+import com.tinkerforge.BrickletLCD128x64;
 import com.tinkerforge.BrickletLCD20x4;
 import com.tinkerforge.BrickletLEDStrip;
 import com.tinkerforge.BrickletLaserRangeFinder;
@@ -993,6 +994,10 @@ public class MBrickdImpl extends MinimalEObjectImpl.Container implements MBrickd
                 logger.debug("addDevice BrickletLCD20x4");
                 mDevice = factory.createMBrickletLCD20x4();
                 mDevice.setDeviceIdentifier(BrickletLCD20x4.DEVICE_IDENTIFIER);
+            } else if (deviceIdentifier == BrickletLCD128x64.DEVICE_IDENTIFIER) {
+                logger.debug("addDevice BrickletLCD128x64");
+                mDevice = factory.createMBrickletLCD128x64();
+                mDevice.setDeviceIdentifier(BrickletLCD128x64.DEVICE_IDENTIFIER);
             } else if (deviceIdentifier == BrickletIndustrialDigitalIn4.DEVICE_IDENTIFIER) {
                 logger.debug("addDevice BrickletIndustrialDigitalIn4");
                 mDevice = factory.createMBrickletIndustrialDigitalIn4();

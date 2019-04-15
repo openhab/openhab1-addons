@@ -24,6 +24,7 @@ import com.tinkerforge.BrickletAmbientLight
 import com.tinkerforge.BrickDC
 import java.util.concurrent.atomic.AtomicBoolean
 import com.tinkerforge.BrickletLCD20x4
+import com.tinkerforge.BrickletLCD128x64
 import com.tinkerforge.BrickletIndustrialQuadRelay
 import com.tinkerforge.BrickletIndustrialDigitalIn4
 import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue
@@ -116,6 +117,7 @@ type MTinkerBrickletTemperature wraps BrickletTemperature
 type MTinkerBrickletBarometer wraps BrickletBarometer
 type MTinkerBrickletAmbientLight wraps BrickletAmbientLight
 type MTinkerBrickletLCD20x4 wraps BrickletLCD20x4
+type MTinkerBrickletLCD128x64 wraps BrickletLCD128x64
 type TinkerBrickletRemoteSwitch wraps BrickletRemoteSwitch
 type TinkerBrickletMotionDetector wraps BrickletMotionDetector
 type TinkerBrickletMultiTouch wraps BrickletMultiTouch
@@ -1135,6 +1137,19 @@ class MBrickletLCD20x4 extends MDevice<MTinkerBrickletLCD20x4>, MTextActor,
 	boolean displayErrors = "true"
 	readonly String errorPrefix = "openhab Error:"
 	op boolean clear()
+}
+
+class MBrickletLCD128x64 extends MDevice<MTinkerBrickletLCD128x64>, MTextActor, MSubDeviceHolder<MLCD128x64SubDevice>{
+    readonly String deviceType = "bricklet_LCD128x64"
+    String positionPrefix = "TFNUM<"
+    String positionSuffix = ">"    
+}
+
+interface MLCD128x64SubDevice extends MSubDevice<MBrickletLCD128x64> {
+}
+
+class MLCD128x64Backlight extends MInSwitchActor, MLCD128x64SubDevice{
+    readonly String deviceType = "backlight"
 }
 
 interface OLEDBricklet {
