@@ -1,12 +1,4 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
-/**
  */
 package org.openhab.binding.tinkerforge.internal.model;
 
@@ -16,10 +8,8 @@ import org.eclipse.emf.ecore.EFactory;
  * <!-- begin-user-doc -->
  * The <b>Factory</b> for the model.
  * It provides a create method for each non-abstract class of the model.
- *
- * @author Theo Weiss
- * @since 1.3.0
- *        <!-- end-user-doc -->
+ * <!-- end-user-doc -->
+ * 
  * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage
  * @generated
  */
@@ -32,37 +22,6 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     ModelFactory eINSTANCE = org.openhab.binding.tinkerforge.internal.model.impl.ModelFactoryImpl.init();
-
-    /**
-     * Returns a new object of class '<em>OHTF Device</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>OHTF Device</em>'.
-     * @generated
-     */
-    @SuppressWarnings("rawtypes")
-    <TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice();
-
-    /**
-     * Returns a new object of class '<em>OHTF Sub Device Admin Device</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>OHTF Sub Device Admin Device</em>'.
-     * @generated
-     */
-    <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice();
-
-    /**
-     * Returns a new object of class '<em>OH Config</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>OH Config</em>'.
-     * @generated
-     */
-    OHConfig createOHConfig();
 
     /**
      * Returns a new object of class '<em>Ecosystem</em>'.
@@ -225,6 +184,66 @@ public interface ModelFactory extends EFactory {
     LaserRangeFinderVelocity createLaserRangeFinderVelocity();
 
     /**
+     * Returns a new object of class '<em>MBricklet Load Cell</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Load Cell</em>'.
+     * @generated
+     */
+    MBrickletLoadCell createMBrickletLoadCell();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Load Cell V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Load Cell V2</em>'.
+     * @generated
+     */
+    MBrickletLoadCellV2 createMBrickletLoadCellV2();
+
+    /**
+     * Returns a new object of class '<em>Load Cell Weight</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Load Cell Weight</em>'.
+     * @generated
+     */
+    LoadCellWeight createLoadCellWeight();
+
+    /**
+     * Returns a new object of class '<em>Load Cell Weight V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Load Cell Weight V2</em>'.
+     * @generated
+     */
+    LoadCellWeightV2 createLoadCellWeightV2();
+
+    /**
+     * Returns a new object of class '<em>Load Cell Led</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Load Cell Led</em>'.
+     * @generated
+     */
+    LoadCellLed createLoadCellLed();
+
+    /**
+     * Returns a new object of class '<em>Load Cell Led V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Load Cell Led V2</em>'.
+     * @generated
+     */
+    LoadCellLedV2 createLoadCellLedV2();
+
+    /**
      * Returns a new object of class '<em>MBricklet Color</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -385,14 +404,14 @@ public interface ModelFactory extends EFactory {
     MBrickServo createMBrickServo();
 
     /**
-     * Returns a new object of class '<em>TF Brick DC Configuration</em>'.
+     * Returns a new object of class '<em>MServo</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>TF Brick DC Configuration</em>'.
+     * @return a new object of class '<em>MServo</em>'.
      * @generated
      */
-    TFBrickDCConfiguration createTFBrickDCConfiguration();
+    MServo createMServo();
 
     /**
      * Returns a new object of class '<em>MBrick DC</em>'.
@@ -655,26 +674,6 @@ public interface ModelFactory extends EFactory {
     DigitalActorIO16 createDigitalActorIO16();
 
     /**
-     * Returns a new object of class '<em>TFIO Actor Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>TFIO Actor Configuration</em>'.
-     * @generated
-     */
-    TFIOActorConfiguration createTFIOActorConfiguration();
-
-    /**
-     * Returns a new object of class '<em>TF Interrupt Listener Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>TF Interrupt Listener Configuration</em>'.
-     * @generated
-     */
-    TFInterruptListenerConfiguration createTFInterruptListenerConfiguration();
-
-    /**
      * Returns a new object of class '<em>MBricklet IO16</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -683,16 +682,6 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     MBrickletIO16 createMBrickletIO16();
-
-    /**
-     * Returns a new object of class '<em>TFIO Sensor Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>TFIO Sensor Configuration</em>'.
-     * @generated
-     */
-    TFIOSensorConfiguration createTFIOSensorConfiguration();
 
     /**
      * Returns a new object of class '<em>Digital Sensor</em>'.
@@ -843,206 +832,6 @@ public interface ModelFactory extends EFactory {
      * @generated
      */
     RemoteSwitchC createRemoteSwitchC();
-
-    /**
-     * Returns a new object of class '<em>TF Null Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>TF Null Configuration</em>'.
-     * @generated
-     */
-    TFNullConfiguration createTFNullConfiguration();
-
-    /**
-     * Returns a new object of class '<em>TFPTC Bricklet Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>TFPTC Bricklet Configuration</em>'.
-     * @generated
-     */
-    TFPTCBrickletConfiguration createTFPTCBrickletConfiguration();
-
-    /**
-     * Returns a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
-     * @generated
-     */
-    TFIndustrialDual020mAConfiguration createTFIndustrialDual020mAConfiguration();
-
-    /**
-     * Returns a new object of class '<em>TF Servo Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>TF Servo Configuration</em>'.
-     * @generated
-     */
-    TFServoConfiguration createTFServoConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
-     * @generated
-     */
-    BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Remote Switch AConfiguration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Remote Switch AConfiguration</em>'.
-     * @generated
-     */
-    RemoteSwitchAConfiguration createRemoteSwitchAConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Remote Switch BConfiguration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Remote Switch BConfiguration</em>'.
-     * @generated
-     */
-    RemoteSwitchBConfiguration createRemoteSwitchBConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Remote Switch CConfiguration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Remote Switch CConfiguration</em>'.
-     * @generated
-     */
-    RemoteSwitchCConfiguration createRemoteSwitchCConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Multi Touch Device Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Multi Touch Device Configuration</em>'.
-     * @generated
-     */
-    MultiTouchDeviceConfiguration createMultiTouchDeviceConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
-     * @generated
-     */
-    BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Dimmable Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Dimmable Configuration</em>'.
-     * @generated
-     */
-    DimmableConfiguration createDimmableConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Button Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Button Configuration</em>'.
-     * @generated
-     */
-    ButtonConfiguration createButtonConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Dual Button LED Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Dual Button LED Configuration</em>'.
-     * @generated
-     */
-    DualButtonLEDConfiguration createDualButtonLEDConfiguration();
-
-    /**
-     * Returns a new object of class '<em>LED Strip Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>LED Strip Configuration</em>'.
-     * @generated
-     */
-    LEDStripConfiguration createLEDStripConfiguration();
-
-    /**
-     * Returns a new object of class '<em>LED Group Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>LED Group Configuration</em>'.
-     * @generated
-     */
-    LEDGroupConfiguration createLEDGroupConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Bricklet Color Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Bricklet Color Configuration</em>'.
-     * @generated
-     */
-    BrickletColorConfiguration createBrickletColorConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
-     * @generated
-     */
-    BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration();
-
-    /**
-     * Returns a new object of class '<em>Bricklet OLED Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>Bricklet OLED Configuration</em>'.
-     * @generated
-     */
-    BrickletOLEDConfiguration createBrickletOLEDConfiguration();
-
-    /**
-     * Returns a new object of class '<em>NFC Configuration</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>NFC Configuration</em>'.
-     * @generated
-     */
-    NFCConfiguration createNFCConfiguration();
-
-    /**
-     * Returns a new object of class '<em>MServo</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MServo</em>'.
-     * @generated
-     */
-    MServo createMServo();
 
     /**
      * Returns a new object of class '<em>MBricklet Humidity</em>'.
@@ -1255,6 +1044,316 @@ public interface ModelFactory extends EFactory {
     VCDevicePower createVCDevicePower();
 
     /**
+     * Returns a new object of class '<em>MBricklet Barometer</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Barometer</em>'.
+     * @generated
+     */
+    MBrickletBarometer createMBrickletBarometer();
+
+    /**
+     * Returns a new object of class '<em>MBarometer Temperature</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBarometer Temperature</em>'.
+     * @generated
+     */
+    MBarometerTemperature createMBarometerTemperature();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Ambient Light</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Ambient Light</em>'.
+     * @generated
+     */
+    MBrickletAmbientLight createMBrickletAmbientLight();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Ambient Light V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Ambient Light V2</em>'.
+     * @generated
+     */
+    MBrickletAmbientLightV2 createMBrickletAmbientLightV2();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Industrial Dual Analog In</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Industrial Dual Analog In</em>'.
+     * @generated
+     */
+    MBrickletIndustrialDualAnalogIn createMBrickletIndustrialDualAnalogIn();
+
+    /**
+     * Returns a new object of class '<em>Industrial Dual Analog In Channel</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>Industrial Dual Analog In Channel</em>'.
+     * @generated
+     */
+    IndustrialDualAnalogInChannel createIndustrialDualAnalogInChannel();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Sound Intensity</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Sound Intensity</em>'.
+     * @generated
+     */
+    MBrickletSoundIntensity createMBrickletSoundIntensity();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Dust Detector</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Dust Detector</em>'.
+     * @generated
+     */
+    MBrickletDustDetector createMBrickletDustDetector();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Moisture</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Moisture</em>'.
+     * @generated
+     */
+    MBrickletMoisture createMBrickletMoisture();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Analog In V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Analog In V2</em>'.
+     * @generated
+     */
+    MBrickletAnalogInV2 createMBrickletAnalogInV2();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Analog In</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Analog In</em>'.
+     * @generated
+     */
+    MBrickletAnalogIn createMBrickletAnalogIn();
+
+    /**
+     * Returns a new object of class '<em>MBricklet Distance US</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet Distance US</em>'.
+     * @generated
+     */
+    MBrickletDistanceUS createMBrickletDistanceUS();
+
+    /**
+     * Returns a new object of class '<em>MBricklet LCD2 0x4</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet LCD2 0x4</em>'.
+     * @generated
+     */
+    MBrickletLCD20x4 createMBrickletLCD20x4();
+
+    /**
+     * Returns a new object of class '<em>MBricklet OLED12 8x64 V2</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet OLED12 8x64 V2</em>'.
+     * @generated
+     */
+    MBrickletOLED128x64V2 createMBrickletOLED128x64V2();
+
+    /**
+     * Returns a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * @generated
+     */
+    MBrickletOLED128x64 createMBrickletOLED128x64();
+
+    /**
+     * Returns a new object of class '<em>MBricklet OLE6 4x48</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet OLE6 4x48</em>'.
+     * @generated
+     */
+    MBrickletOLE64x48 createMBrickletOLE64x48();
+
+    /**
+     * Returns a new object of class '<em>MBricklet RGBLED Button</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet RGBLED Button</em>'.
+     * @generated
+     */
+    MBrickletRGBLEDButton createMBrickletRGBLEDButton();
+
+    /**
+     * Returns a new object of class '<em>MRGBLED Button LED</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MRGBLED Button LED</em>'.
+     * @generated
+     */
+    MRGBLEDButtonLED createMRGBLEDButtonLED();
+
+    /**
+     * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MLCD2 0x4 Backlight</em>'.
+     * @generated
+     */
+    MLCD20x4Backlight createMLCD20x4Backlight();
+
+    /**
+     * Returns a new object of class '<em>MLCD2 0x4 Button</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MLCD2 0x4 Button</em>'.
+     * @generated
+     */
+    MLCD20x4Button createMLCD20x4Button();
+
+    /**
+     * Returns a new object of class '<em>MBricklet NFC</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MBricklet NFC</em>'.
+     * @generated
+     */
+    MBrickletNFC createMBrickletNFC();
+
+    /**
+     * Returns a new object of class '<em>MNFC Text</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFC Text</em>'.
+     * @generated
+     */
+    MNFCText createMNFCText();
+
+    /**
+     * Returns a new object of class '<em>MNFC Uri</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFC Uri</em>'.
+     * @generated
+     */
+    MNFCUri createMNFCUri();
+
+    /**
+     * Returns a new object of class '<em>MNFCID</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFCID</em>'.
+     * @generated
+     */
+    MNFCID createMNFCID();
+
+    /**
+     * Returns a new object of class '<em>MNFC Trigger</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>MNFC Trigger</em>'.
+     * @generated
+     */
+    MNFCTrigger createMNFCTrigger();
+
+    /**
+     * Returns a new object of class '<em>OHTF Device</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>OHTF Device</em>'.
+     * @generated
+     */
+    <TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice();
+
+    /**
+     * Returns a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>OHTF Sub Device Admin Device</em>'.
+     * @generated
+     */
+    <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice();
+
+    /**
+     * Returns a new object of class '<em>OH Config</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>OH Config</em>'.
+     * @generated
+     */
+    OHConfig createOHConfig();
+
+    /**
+     * Returns a new object of class '<em>TF Null Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>TF Null Configuration</em>'.
+     * @generated
+     */
+    TFNullConfiguration createTFNullConfiguration();
+
+    /**
+     * Returns a new object of class '<em>TFPTC Bricklet Configuration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>TFPTC Bricklet Configuration</em>'.
+     * @generated
+     */
+    TFPTCBrickletConfiguration createTFPTCBrickletConfiguration();
+
+    /**
+     * Returns a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return a new object of class '<em>TF Industrial Dual020m AConfiguration</em>'.
+     * @generated
+     */
+    TFIndustrialDual020mAConfiguration createTFIndustrialDual020mAConfiguration();
+
+    /**
      * Returns a new object of class '<em>TF Base Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1385,304 +1484,204 @@ public interface ModelFactory extends EFactory {
     TFVoltageCurrentConfiguration createTFVoltageCurrentConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Barometer</em>'.
+     * Returns a new object of class '<em>TF Brick DC Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Barometer</em>'.
+     * @return a new object of class '<em>TF Brick DC Configuration</em>'.
      * @generated
      */
-    MBrickletBarometer createMBrickletBarometer();
+    TFBrickDCConfiguration createTFBrickDCConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBarometer Temperature</em>'.
+     * Returns a new object of class '<em>TFIO Actor Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBarometer Temperature</em>'.
+     * @return a new object of class '<em>TFIO Actor Configuration</em>'.
      * @generated
      */
-    MBarometerTemperature createMBarometerTemperature();
+    TFIOActorConfiguration createTFIOActorConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Ambient Light</em>'.
+     * Returns a new object of class '<em>TF Interrupt Listener Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Ambient Light</em>'.
+     * @return a new object of class '<em>TF Interrupt Listener Configuration</em>'.
      * @generated
      */
-    MBrickletAmbientLight createMBrickletAmbientLight();
+    TFInterruptListenerConfiguration createTFInterruptListenerConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Ambient Light V2</em>'.
+     * Returns a new object of class '<em>TFIO Sensor Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Ambient Light V2</em>'.
+     * @return a new object of class '<em>TFIO Sensor Configuration</em>'.
      * @generated
      */
-    MBrickletAmbientLightV2 createMBrickletAmbientLightV2();
+    TFIOSensorConfiguration createTFIOSensorConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Industrial Dual Analog In</em>'.
+     * Returns a new object of class '<em>TF Servo Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Industrial Dual Analog In</em>'.
+     * @return a new object of class '<em>TF Servo Configuration</em>'.
      * @generated
      */
-    MBrickletIndustrialDualAnalogIn createMBrickletIndustrialDualAnalogIn();
+    TFServoConfiguration createTFServoConfiguration();
 
     /**
-     * Returns a new object of class '<em>Industrial Dual Analog In Channel</em>'.
+     * Returns a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>Industrial Dual Analog In Channel</em>'.
+     * @return a new object of class '<em>Bricklet Remote Switch Configuration</em>'.
      * @generated
      */
-    IndustrialDualAnalogInChannel createIndustrialDualAnalogInChannel();
+    BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Sound Intensity</em>'.
+     * Returns a new object of class '<em>Remote Switch AConfiguration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Sound Intensity</em>'.
+     * @return a new object of class '<em>Remote Switch AConfiguration</em>'.
      * @generated
      */
-    MBrickletSoundIntensity createMBrickletSoundIntensity();
+    RemoteSwitchAConfiguration createRemoteSwitchAConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Dust Detector</em>'.
+     * Returns a new object of class '<em>Remote Switch BConfiguration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Dust Detector</em>'.
+     * @return a new object of class '<em>Remote Switch BConfiguration</em>'.
      * @generated
      */
-    MBrickletDustDetector createMBrickletDustDetector();
+    RemoteSwitchBConfiguration createRemoteSwitchBConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Load Cell</em>'.
+     * Returns a new object of class '<em>Remote Switch CConfiguration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Load Cell</em>'.
+     * @return a new object of class '<em>Remote Switch CConfiguration</em>'.
      * @generated
      */
-    MBrickletLoadCell createMBrickletLoadCell();
+    RemoteSwitchCConfiguration createRemoteSwitchCConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Load Cell V2</em>'.
+     * Returns a new object of class '<em>Multi Touch Device Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Load Cell V2</em>'.
+     * @return a new object of class '<em>Multi Touch Device Configuration</em>'.
      * @generated
      */
-    MBrickletLoadCellV2 createMBrickletLoadCellV2();
+    MultiTouchDeviceConfiguration createMultiTouchDeviceConfiguration();
 
     /**
-     * Returns a new object of class '<em>Load Cell Weight</em>'.
+     * Returns a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>Load Cell Weight</em>'.
+     * @return a new object of class '<em>Bricklet Multi Touch Configuration</em>'.
      * @generated
      */
-    LoadCellWeight createLoadCellWeight();
+    BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration();
 
     /**
-     * Returns a new object of class '<em>Load Cell Weight V2</em>'.
+     * Returns a new object of class '<em>Dimmable Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>Load Cell Weight V2</em>'.
+     * @return a new object of class '<em>Dimmable Configuration</em>'.
      * @generated
      */
-    LoadCellWeightV2 createLoadCellWeightV2();
+    DimmableConfiguration createDimmableConfiguration();
 
     /**
-     * Returns a new object of class '<em>Load Cell Led</em>'.
+     * Returns a new object of class '<em>Button Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>Load Cell Led</em>'.
+     * @return a new object of class '<em>Button Configuration</em>'.
      * @generated
      */
-    LoadCellLed createLoadCellLed();
+    ButtonConfiguration createButtonConfiguration();
 
     /**
-     * Returns a new object of class '<em>Load Cell Led V2</em>'.
+     * Returns a new object of class '<em>Dual Button LED Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>Load Cell Led V2</em>'.
+     * @return a new object of class '<em>Dual Button LED Configuration</em>'.
      * @generated
      */
-    LoadCellLedV2 createLoadCellLedV2();
+    DualButtonLEDConfiguration createDualButtonLEDConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Moisture</em>'.
+     * Returns a new object of class '<em>LED Strip Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Moisture</em>'.
+     * @return a new object of class '<em>LED Strip Configuration</em>'.
      * @generated
      */
-    MBrickletMoisture createMBrickletMoisture();
+    LEDStripConfiguration createLEDStripConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Analog In V2</em>'.
+     * Returns a new object of class '<em>LED Group Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Analog In V2</em>'.
+     * @return a new object of class '<em>LED Group Configuration</em>'.
      * @generated
      */
-    MBrickletAnalogInV2 createMBrickletAnalogInV2();
+    LEDGroupConfiguration createLEDGroupConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Analog In</em>'.
+     * Returns a new object of class '<em>Bricklet Color Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Analog In</em>'.
+     * @return a new object of class '<em>Bricklet Color Configuration</em>'.
      * @generated
      */
-    MBrickletAnalogIn createMBrickletAnalogIn();
+    BrickletColorConfiguration createBrickletColorConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet Distance US</em>'.
+     * Returns a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet Distance US</em>'.
+     * @return a new object of class '<em>Bricklet Accelerometer Configuration</em>'.
      * @generated
      */
-    MBrickletDistanceUS createMBrickletDistanceUS();
+    BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet LCD2 0x4</em>'.
+     * Returns a new object of class '<em>Bricklet OLED Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet LCD2 0x4</em>'.
+     * @return a new object of class '<em>Bricklet OLED Configuration</em>'.
      * @generated
      */
-    MBrickletLCD20x4 createMBrickletLCD20x4();
+    BrickletOLEDConfiguration createBrickletOLEDConfiguration();
 
     /**
-     * Returns a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * Returns a new object of class '<em>NFC Configuration</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
-     * @return a new object of class '<em>MBricklet OLED12 8x64</em>'.
+     * @return a new object of class '<em>NFC Configuration</em>'.
      * @generated
      */
-    MBrickletOLED128x64 createMBrickletOLED128x64();
-
-    /**
-     * Returns a new object of class '<em>MBricklet OLE6 4x48</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MBricklet OLE6 4x48</em>'.
-     * @generated
-     */
-    MBrickletOLE64x48 createMBrickletOLE64x48();
-
-    /**
-     * Returns a new object of class '<em>MBricklet RGBLED Button</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MBricklet RGBLED Button</em>'.
-     * @generated
-     */
-    MBrickletRGBLEDButton createMBrickletRGBLEDButton();
-
-    /**
-     * Returns a new object of class '<em>MRGBLED Button LED</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MRGBLED Button LED</em>'.
-     * @generated
-     */
-    MRGBLEDButtonLED createMRGBLEDButtonLED();
-
-    /**
-     * Returns a new object of class '<em>MLCD2 0x4 Backlight</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MLCD2 0x4 Backlight</em>'.
-     * @generated
-     */
-    MLCD20x4Backlight createMLCD20x4Backlight();
-
-    /**
-     * Returns a new object of class '<em>MLCD2 0x4 Button</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MLCD2 0x4 Button</em>'.
-     * @generated
-     */
-    MLCD20x4Button createMLCD20x4Button();
-
-    /**
-     * Returns a new object of class '<em>MBricklet NFC</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MBricklet NFC</em>'.
-     * @generated
-     */
-    MBrickletNFC createMBrickletNFC();
-
-    /**
-     * Returns a new object of class '<em>MNFC Text</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MNFC Text</em>'.
-     * @generated
-     */
-    MNFCText createMNFCText();
-
-    /**
-     * Returns a new object of class '<em>MNFC Uri</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MNFC Uri</em>'.
-     * @generated
-     */
-    MNFCUri createMNFCUri();
-
-    /**
-     * Returns a new object of class '<em>MNFCID</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MNFCID</em>'.
-     * @generated
-     */
-    MNFCID createMNFCID();
-
-    /**
-     * Returns a new object of class '<em>MNFC Trigger</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @return a new object of class '<em>MNFC Trigger</em>'.
-     * @generated
-     */
-    MNFCTrigger createMNFCTrigger();
+    NFCConfiguration createNFCConfiguration();
 
     /**
      * Returns the package supported by this factory.

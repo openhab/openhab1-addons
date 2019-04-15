@@ -58,6 +58,9 @@ The TinkerForge auto reconnect feature is supported. Furthermore even if the ini
     - [Multi Touch Bricklet](#multi-touch-bricklet)
     - [Moisture Bricklet](#moisture-bricklet)
     - [NFC Bricklet](#nfc-bricklet)
+	- [OLED64x48 Bricklet](#oled64x48-bricklet)
+	- [OLED128x64 Bricklet](#oled128x64-bricklet)
+	- [OLED128x64V2 Bricklet](#oled128x64v2-bricklet)
     - [Piezo Speaker Bricklet](#piezo-speaker-bricklet)
     - [PTC Bricklet](#ptc-bricklet)
     - [Remote Switch Bricklet](#remote-switch-bricklet)
@@ -2892,6 +2895,57 @@ Switch nfc_trigger "NFC Trigger"     (gTF) { tinkerforge="uid=<uid>, subid=trigg
 * only short records are supported
 * only *NFC_FORUM_WELL_KNOWN_TYPE* is supported
 * writing nfc messages is not supported
+
+---
+[Table of Contents](#table-of-contents)
+
+### OLED64x48 Bricklet
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc/Software/Bricklets/OLED64x48_Bricklet_MATLAB.html)
+
+Sending a text command will set the text on the display.
+
+#### tinkerforge.items
+
+```
+String oled_text "OLED Text" (gTF) {tinkerforge="uid=HgQ"}
+```
+
+---
+[Table of Contents](#table-of-contents)
+
+### OLED128x64 Bricklet
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc/Software/Bricklets/OLED128x64_Bricklet_Java.html/)
+
+Sending a text command will set the text on the display.
+
+#### tinkerforge.items
+
+```
+String oled_text "OLED Text" (gTF) {tinkerforge="uid=HgQ"}
+```
+
+---
+[Table of Contents](#table-of-contents)
+
+### OLED128x64V2 Bricklet
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc//Software/Bricklets/OLED128x64V2_Bricklet_Java.html)
+
+Sending a text command will set the text on the display.
+
+`TFNUM<310>Hello` will write to the line 3 on column 10.
+Lines: 0-7
+Columns: 0-21
+
+Maximum of 22 characters will fit on the screen. 
+
+#### tinkerforge.items
+
+```
+String oled_text "OLED Text" (gTF) {tinkerforge="uid=HgQ"}
+```
 
 ---
 [Table of Contents](#table-of-contents)

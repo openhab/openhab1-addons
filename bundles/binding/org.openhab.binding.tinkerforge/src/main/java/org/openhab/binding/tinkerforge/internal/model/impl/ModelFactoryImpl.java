@@ -1,40 +1,6 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
-/**
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.impl.EFactoryImpl;
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
-import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
-import org.openhab.binding.tinkerforge.internal.model.*;
-import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
-import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
-import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
-import org.openhab.binding.tinkerforge.internal.types.HSBValue;
-import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
-import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
-import org.openhab.binding.tinkerforge.internal.types.PercentValue;
-import org.openhab.binding.tinkerforge.internal.types.StringValue;
-import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
-import org.openhab.core.library.types.HSBType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.UpDownType;
-import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
@@ -75,6 +41,7 @@ import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletNFC;
 import com.tinkerforge.BrickletOLED128x64;
+import com.tinkerforge.BrickletOLED128x64V2;
 import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
@@ -92,6 +59,40 @@ import com.tinkerforge.BrickletUVLight;
 import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+
+import org.eclipse.emf.ecore.impl.EFactoryImpl;
+
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+
+import org.openhab.binding.tinkerforge.internal.model.*;
+
+import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
+import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
+
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
+import org.openhab.binding.tinkerforge.internal.types.StringValue;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+
+import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.UpDownType;
+
+import org.slf4j.Logger;
 
 /**
  * <!-- begin-user-doc -->
@@ -370,6 +371,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createMBrickletDistanceUS();
             case ModelPackage.MBRICKLET_LCD2_0X4:
                 return createMBrickletLCD20x4();
+            case ModelPackage.MBRICKLET_OLED12_8X64_V2:
+                return createMBrickletOLED128x64V2();
             case ModelPackage.MBRICKLET_OLED12_8X64:
                 return createMBrickletOLED128x64();
             case ModelPackage.MBRICKLET_OLE6_4X48:
@@ -666,6 +669,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return createTinkerBrickletAccelerometerFromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_OLED12_8X64:
                 return createTinkerBrickletOLED128x64FromString(eDataType, initialValue);
+            case ModelPackage.TINKER_BRICKLET_OLED12_8X64_V2:
+                return createTinkerBrickletOLED128x64V2FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
                 return createTinkerBrickletOLED64x48FromString(eDataType, initialValue);
             case ModelPackage.TINKER_BRICKLET_THERMOCOUPLE:
@@ -899,6 +904,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
                 return convertTinkerBrickletAccelerometerToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_OLED12_8X64:
                 return convertTinkerBrickletOLED128x64ToString(eDataType, instanceValue);
+            case ModelPackage.TINKER_BRICKLET_OLED12_8X64_V2:
+                return convertTinkerBrickletOLED128x64V2ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_OLED6_4X48:
                 return convertTinkerBrickletOLED64x48ToString(eDataType, instanceValue);
             case ModelPackage.TINKER_BRICKLET_THERMOCOUPLE:
@@ -947,44 +954,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
-    @SuppressWarnings("rawtypes")
-    public <TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice() {
-        OHTFDeviceImpl<TFC, IDS> ohtfDevice = new OHTFDeviceImpl<TFC, IDS>();
-        return ohtfDevice;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice() {
-        OHTFSubDeviceAdminDeviceImpl<TFC, IDS> ohtfSubDeviceAdminDevice = new OHTFSubDeviceAdminDeviceImpl<TFC, IDS>();
-        return ohtfSubDeviceAdminDevice;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public OHConfig createOHConfig() {
-        OHConfigImpl ohConfig = new OHConfigImpl();
-        return ohConfig;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public Ecosystem createEcosystem() {
         EcosystemImpl ecosystem = new EcosystemImpl();
         return ecosystem;
@@ -996,7 +965,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickd createMBrickd() {
         MBrickdImpl mBrickd = new MBrickdImpl();
         return mBrickd;
@@ -1008,7 +976,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletDualButton createMBrickletDualButton() {
         MBrickletDualButtonImpl mBrickletDualButton = new MBrickletDualButtonImpl();
         return mBrickletDualButton;
@@ -1020,7 +987,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletPiezoSpeaker createMBrickletPiezoSpeaker() {
         MBrickletPiezoSpeakerImpl mBrickletPiezoSpeaker = new MBrickletPiezoSpeakerImpl();
         return mBrickletPiezoSpeaker;
@@ -1032,7 +998,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DualButtonButton createDualButtonButton() {
         DualButtonButtonImpl dualButtonButton = new DualButtonButtonImpl();
         return dualButtonButton;
@@ -1077,7 +1042,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletAccelerometer createMBrickletAccelerometer() {
         MBrickletAccelerometerImpl mBrickletAccelerometer = new MBrickletAccelerometerImpl();
         return mBrickletAccelerometer;
@@ -1089,7 +1053,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public AccelerometerDirection createAccelerometerDirection() {
         AccelerometerDirectionImpl accelerometerDirection = new AccelerometerDirectionImpl();
         return accelerometerDirection;
@@ -1101,7 +1064,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public AccelerometerTemperature createAccelerometerTemperature() {
         AccelerometerTemperatureImpl accelerometerTemperature = new AccelerometerTemperatureImpl();
         return accelerometerTemperature;
@@ -1113,7 +1075,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public AccelerometerLed createAccelerometerLed() {
         AccelerometerLedImpl accelerometerLed = new AccelerometerLedImpl();
         return accelerometerLed;
@@ -1125,7 +1086,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletLaserRangeFinder createMBrickletLaserRangeFinder() {
         MBrickletLaserRangeFinderImpl mBrickletLaserRangeFinder = new MBrickletLaserRangeFinderImpl();
         return mBrickletLaserRangeFinder;
@@ -1137,7 +1097,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public LaserRangeFinderLaser createLaserRangeFinderLaser() {
         LaserRangeFinderLaserImpl laserRangeFinderLaser = new LaserRangeFinderLaserImpl();
         return laserRangeFinderLaser;
@@ -1149,7 +1108,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public LaserRangeFinderDistance createLaserRangeFinderDistance() {
         LaserRangeFinderDistanceImpl laserRangeFinderDistance = new LaserRangeFinderDistanceImpl();
         return laserRangeFinderDistance;
@@ -1161,7 +1119,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public LaserRangeFinderVelocity createLaserRangeFinderVelocity() {
         LaserRangeFinderVelocityImpl laserRangeFinderVelocity = new LaserRangeFinderVelocityImpl();
         return laserRangeFinderVelocity;
@@ -1173,7 +1130,72 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
+    public MBrickletLoadCell createMBrickletLoadCell() {
+        MBrickletLoadCellImpl mBrickletLoadCell = new MBrickletLoadCellImpl();
+        return mBrickletLoadCell;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletLoadCellV2 createMBrickletLoadCellV2() {
+        MBrickletLoadCellV2Impl mBrickletLoadCellV2 = new MBrickletLoadCellV2Impl();
+        return mBrickletLoadCellV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LoadCellWeight createLoadCellWeight() {
+        LoadCellWeightImpl loadCellWeight = new LoadCellWeightImpl();
+        return loadCellWeight;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LoadCellWeightV2 createLoadCellWeightV2() {
+        LoadCellWeightV2Impl loadCellWeightV2 = new LoadCellWeightV2Impl();
+        return loadCellWeightV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LoadCellLed createLoadCellLed() {
+        LoadCellLedImpl loadCellLed = new LoadCellLedImpl();
+        return loadCellLed;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LoadCellLedV2 createLoadCellLedV2() {
+        LoadCellLedV2Impl loadCellLedV2 = new LoadCellLedV2Impl();
+        return loadCellLedV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public MBrickletColor createMBrickletColor() {
         MBrickletColorImpl mBrickletColor = new MBrickletColorImpl();
         return mBrickletColor;
@@ -1185,7 +1207,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public ColorColor createColorColor() {
         ColorColorImpl colorColor = new ColorColorImpl();
         return colorColor;
@@ -1197,7 +1218,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public ColorIlluminance createColorIlluminance() {
         ColorIlluminanceImpl colorIlluminance = new ColorIlluminanceImpl();
         return colorIlluminance;
@@ -1209,7 +1229,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public ColorColorTemperature createColorColorTemperature() {
         ColorColorTemperatureImpl colorColorTemperature = new ColorColorTemperatureImpl();
         return colorColorTemperature;
@@ -1221,7 +1240,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public ColorLed createColorLed() {
         ColorLedImpl colorLed = new ColorLedImpl();
         return colorLed;
@@ -1233,7 +1251,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DualButtonLed createDualButtonLed() {
         DualButtonLedImpl dualButtonLed = new DualButtonLedImpl();
         return dualButtonLed;
@@ -1245,7 +1262,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletLinearPoti createMBrickletLinearPoti() {
         MBrickletLinearPotiImpl mBrickletLinearPoti = new MBrickletLinearPotiImpl();
         return mBrickletLinearPoti;
@@ -1257,7 +1273,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletRotaryEncoder createMBrickletRotaryEncoder() {
         MBrickletRotaryEncoderImpl mBrickletRotaryEncoder = new MBrickletRotaryEncoderImpl();
         return mBrickletRotaryEncoder;
@@ -1269,7 +1284,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RotaryEncoder createRotaryEncoder() {
         RotaryEncoderImpl rotaryEncoder = new RotaryEncoderImpl();
         return rotaryEncoder;
@@ -1281,7 +1295,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RotaryEncoderButton createRotaryEncoderButton() {
         RotaryEncoderButtonImpl rotaryEncoderButton = new RotaryEncoderButtonImpl();
         return rotaryEncoderButton;
@@ -1293,7 +1306,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletJoystick createMBrickletJoystick() {
         MBrickletJoystickImpl mBrickletJoystick = new MBrickletJoystickImpl();
         return mBrickletJoystick;
@@ -1305,7 +1317,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public JoystickXPosition createJoystickXPosition() {
         JoystickXPositionImpl joystickXPosition = new JoystickXPositionImpl();
         return joystickXPosition;
@@ -1317,7 +1328,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public JoystickYPosition createJoystickYPosition() {
         JoystickYPositionImpl joystickYPosition = new JoystickYPositionImpl();
         return joystickYPosition;
@@ -1329,7 +1339,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public JoystickButton createJoystickButton() {
         JoystickButtonImpl joystickButton = new JoystickButtonImpl();
         return joystickButton;
@@ -1352,7 +1361,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickServo createMBrickServo() {
         MBrickServoImpl mBrickServo = new MBrickServoImpl();
         return mBrickServo;
@@ -1364,10 +1372,9 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
-    public TFBrickDCConfiguration createTFBrickDCConfiguration() {
-        TFBrickDCConfigurationImpl tfBrickDCConfiguration = new TFBrickDCConfigurationImpl();
-        return tfBrickDCConfiguration;
+    public MServo createMServo() {
+        MServoImpl mServo = new MServoImpl();
+        return mServo;
     }
 
     /**
@@ -1376,7 +1383,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickDC createMBrickDC() {
         MBrickDCImpl mBrickDC = new MBrickDCImpl();
         return mBrickDC;
@@ -1542,7 +1548,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MDualRelayBricklet createMDualRelayBricklet() {
         MDualRelayBrickletImpl mDualRelayBricklet = new MDualRelayBrickletImpl();
         return mDualRelayBricklet;
@@ -1554,7 +1559,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MIndustrialQuadRelayBricklet createMIndustrialQuadRelayBricklet() {
         MIndustrialQuadRelayBrickletImpl mIndustrialQuadRelayBricklet = new MIndustrialQuadRelayBrickletImpl();
         return mIndustrialQuadRelayBricklet;
@@ -1566,7 +1570,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MIndustrialQuadRelay createMIndustrialQuadRelay() {
         MIndustrialQuadRelayImpl mIndustrialQuadRelay = new MIndustrialQuadRelayImpl();
         return mIndustrialQuadRelay;
@@ -1578,7 +1581,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletIndustrialDigitalIn4 createMBrickletIndustrialDigitalIn4() {
         MBrickletIndustrialDigitalIn4Impl mBrickletIndustrialDigitalIn4 = new MBrickletIndustrialDigitalIn4Impl();
         return mBrickletIndustrialDigitalIn4;
@@ -1590,7 +1592,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MIndustrialDigitalIn createMIndustrialDigitalIn() {
         MIndustrialDigitalInImpl mIndustrialDigitalIn = new MIndustrialDigitalInImpl();
         return mIndustrialDigitalIn;
@@ -1602,7 +1603,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletIndustrialDigitalOut4 createMBrickletIndustrialDigitalOut4() {
         MBrickletIndustrialDigitalOut4Impl mBrickletIndustrialDigitalOut4 = new MBrickletIndustrialDigitalOut4Impl();
         return mBrickletIndustrialDigitalOut4;
@@ -1614,7 +1614,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DigitalActorDigitalOut4 createDigitalActorDigitalOut4() {
         DigitalActorDigitalOut4Impl digitalActorDigitalOut4 = new DigitalActorDigitalOut4Impl();
         return digitalActorDigitalOut4;
@@ -1626,7 +1625,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletSegmentDisplay4x7 createMBrickletSegmentDisplay4x7() {
         MBrickletSegmentDisplay4x7Impl mBrickletSegmentDisplay4x7 = new MBrickletSegmentDisplay4x7Impl();
         return mBrickletSegmentDisplay4x7;
@@ -1638,7 +1636,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletLEDStrip createMBrickletLEDStrip() {
         MBrickletLEDStripImpl mBrickletLEDStrip = new MBrickletLEDStripImpl();
         return mBrickletLEDStrip;
@@ -1650,7 +1647,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public LEDGroup createLEDGroup() {
         LEDGroupImpl ledGroup = new LEDGroupImpl();
         return ledGroup;
@@ -1662,7 +1658,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DigitalActorIO16 createDigitalActorIO16() {
         DigitalActorIO16Impl digitalActorIO16 = new DigitalActorIO16Impl();
         return digitalActorIO16;
@@ -1674,31 +1669,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
-    public TFIOActorConfiguration createTFIOActorConfiguration() {
-        TFIOActorConfigurationImpl tfioActorConfiguration = new TFIOActorConfigurationImpl();
-        return tfioActorConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFInterruptListenerConfiguration createTFInterruptListenerConfiguration() {
-        TFInterruptListenerConfigurationImpl tfInterruptListenerConfiguration = new TFInterruptListenerConfigurationImpl();
-        return tfInterruptListenerConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public MBrickletIO16 createMBrickletIO16() {
         MBrickletIO16Impl mBrickletIO16 = new MBrickletIO16Impl();
         return mBrickletIO16;
@@ -1710,19 +1680,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
-    public TFIOSensorConfiguration createTFIOSensorConfiguration() {
-        TFIOSensorConfigurationImpl tfioSensorConfiguration = new TFIOSensorConfigurationImpl();
-        return tfioSensorConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public DigitalSensor createDigitalSensor() {
         DigitalSensorImpl digitalSensor = new DigitalSensorImpl();
         return digitalSensor;
@@ -1734,7 +1691,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletIO4 createMBrickletIO4() {
         MBrickletIO4Impl mBrickletIO4 = new MBrickletIO4Impl();
         return mBrickletIO4;
@@ -1746,7 +1702,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DigitalSensorIO4 createDigitalSensorIO4() {
         DigitalSensorIO4Impl digitalSensorIO4 = new DigitalSensorIO4Impl();
         return digitalSensorIO4;
@@ -1758,7 +1713,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DigitalActorIO4 createDigitalActorIO4() {
         DigitalActorIO4Impl digitalActorIO4 = new DigitalActorIO4Impl();
         return digitalActorIO4;
@@ -1770,7 +1724,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletMultiTouch createMBrickletMultiTouch() {
         MBrickletMultiTouchImpl mBrickletMultiTouch = new MBrickletMultiTouchImpl();
         return mBrickletMultiTouch;
@@ -1782,7 +1735,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MultiTouchDevice createMultiTouchDevice() {
         MultiTouchDeviceImpl multiTouchDevice = new MultiTouchDeviceImpl();
         return multiTouchDevice;
@@ -1794,7 +1746,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public Electrode createElectrode() {
         ElectrodeImpl electrode = new ElectrodeImpl();
         return electrode;
@@ -1806,7 +1757,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public Proximity createProximity() {
         ProximityImpl proximity = new ProximityImpl();
         return proximity;
@@ -1818,7 +1768,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletMotionDetector createMBrickletMotionDetector() {
         MBrickletMotionDetectorImpl mBrickletMotionDetector = new MBrickletMotionDetectorImpl();
         return mBrickletMotionDetector;
@@ -1830,7 +1779,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletHallEffect createMBrickletHallEffect() {
         MBrickletHallEffectImpl mBrickletHallEffect = new MBrickletHallEffectImpl();
         return mBrickletHallEffect;
@@ -1842,7 +1790,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MDualRelay createMDualRelay() {
         MDualRelayImpl mDualRelay = new MDualRelayImpl();
         return mDualRelay;
@@ -1854,7 +1801,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MBrickletRemoteSwitch createMBrickletRemoteSwitch() {
         MBrickletRemoteSwitchImpl mBrickletRemoteSwitch = new MBrickletRemoteSwitchImpl();
         return mBrickletRemoteSwitch;
@@ -1866,7 +1812,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RemoteSwitchA createRemoteSwitchA() {
         RemoteSwitchAImpl remoteSwitchA = new RemoteSwitchAImpl();
         return remoteSwitchA;
@@ -1878,7 +1823,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RemoteSwitchB createRemoteSwitchB() {
         RemoteSwitchBImpl remoteSwitchB = new RemoteSwitchBImpl();
         return remoteSwitchB;
@@ -1890,7 +1834,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RemoteSwitchC createRemoteSwitchC() {
         RemoteSwitchCImpl remoteSwitchC = new RemoteSwitchCImpl();
         return remoteSwitchC;
@@ -1902,7 +1845,545 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
+    public MBrickletHumidity createMBrickletHumidity() {
+        MBrickletHumidityImpl mBrickletHumidity = new MBrickletHumidityImpl();
+        return mBrickletHumidity;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletDistanceIR createMBrickletDistanceIR() {
+        MBrickletDistanceIRImpl mBrickletDistanceIR = new MBrickletDistanceIRImpl();
+        return mBrickletDistanceIR;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletSolidStateRelay createMBrickletSolidStateRelay() {
+        MBrickletSolidStateRelayImpl mBrickletSolidStateRelay = new MBrickletSolidStateRelayImpl();
+        return mBrickletSolidStateRelay;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletIndustrialDual020mA createMBrickletIndustrialDual020mA() {
+        MBrickletIndustrialDual020mAImpl mBrickletIndustrialDual020mA = new MBrickletIndustrialDual020mAImpl();
+        return mBrickletIndustrialDual020mA;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public Dual020mADevice createDual020mADevice() {
+        Dual020mADeviceImpl dual020mADevice = new Dual020mADeviceImpl();
+        return dual020mADevice;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletPTC createMBrickletPTC() {
+        MBrickletPTCImpl mBrickletPTC = new MBrickletPTCImpl();
+        return mBrickletPTC;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public PTCTemperature createPTCTemperature() {
+        PTCTemperatureImpl ptcTemperature = new PTCTemperatureImpl();
+        return ptcTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public PTCResistance createPTCResistance() {
+        PTCResistanceImpl ptcResistance = new PTCResistanceImpl();
+        return ptcResistance;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public PTCConnected createPTCConnected() {
+        PTCConnectedImpl ptcConnected = new PTCConnectedImpl();
+        return ptcConnected;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletTemperature createMBrickletTemperature() {
+        MBrickletTemperatureImpl mBrickletTemperature = new MBrickletTemperatureImpl();
+        return mBrickletTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletThermocouple createMBrickletThermocouple() {
+        MBrickletThermocoupleImpl mBrickletThermocouple = new MBrickletThermocoupleImpl();
+        return mBrickletThermocouple;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletUVLight createMBrickletUVLight() {
+        MBrickletUVLightImpl mBrickletUVLight = new MBrickletUVLightImpl();
+        return mBrickletUVLight;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletCO2 createMBrickletCO2() {
+        MBrickletCO2Impl mBrickletCO2 = new MBrickletCO2Impl();
+        return mBrickletCO2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletTemperatureIR createMBrickletTemperatureIR() {
+        MBrickletTemperatureIRImpl mBrickletTemperatureIR = new MBrickletTemperatureIRImpl();
+        return mBrickletTemperatureIR;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public ObjectTemperature createObjectTemperature() {
+        ObjectTemperatureImpl objectTemperature = new ObjectTemperatureImpl();
+        return objectTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public AmbientTemperature createAmbientTemperature() {
+        AmbientTemperatureImpl ambientTemperature = new AmbientTemperatureImpl();
+        return ambientTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletTilt createMBrickletTilt() {
+        MBrickletTiltImpl mBrickletTilt = new MBrickletTiltImpl();
+        return mBrickletTilt;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletVoltageCurrent createMBrickletVoltageCurrent() {
+        MBrickletVoltageCurrentImpl mBrickletVoltageCurrent = new MBrickletVoltageCurrentImpl();
+        return mBrickletVoltageCurrent;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public VCDeviceVoltage createVCDeviceVoltage() {
+        VCDeviceVoltageImpl vcDeviceVoltage = new VCDeviceVoltageImpl();
+        return vcDeviceVoltage;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public VCDeviceCurrent createVCDeviceCurrent() {
+        VCDeviceCurrentImpl vcDeviceCurrent = new VCDeviceCurrentImpl();
+        return vcDeviceCurrent;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public VCDevicePower createVCDevicePower() {
+        VCDevicePowerImpl vcDevicePower = new VCDevicePowerImpl();
+        return vcDevicePower;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletBarometer createMBrickletBarometer() {
+        MBrickletBarometerImpl mBrickletBarometer = new MBrickletBarometerImpl();
+        return mBrickletBarometer;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBarometerTemperature createMBarometerTemperature() {
+        MBarometerTemperatureImpl mBarometerTemperature = new MBarometerTemperatureImpl();
+        return mBarometerTemperature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletAmbientLight createMBrickletAmbientLight() {
+        MBrickletAmbientLightImpl mBrickletAmbientLight = new MBrickletAmbientLightImpl();
+        return mBrickletAmbientLight;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletAmbientLightV2 createMBrickletAmbientLightV2() {
+        MBrickletAmbientLightV2Impl mBrickletAmbientLightV2 = new MBrickletAmbientLightV2Impl();
+        return mBrickletAmbientLightV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletIndustrialDualAnalogIn createMBrickletIndustrialDualAnalogIn() {
+        MBrickletIndustrialDualAnalogInImpl mBrickletIndustrialDualAnalogIn = new MBrickletIndustrialDualAnalogInImpl();
+        return mBrickletIndustrialDualAnalogIn;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public IndustrialDualAnalogInChannel createIndustrialDualAnalogInChannel() {
+        IndustrialDualAnalogInChannelImpl industrialDualAnalogInChannel = new IndustrialDualAnalogInChannelImpl();
+        return industrialDualAnalogInChannel;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletSoundIntensity createMBrickletSoundIntensity() {
+        MBrickletSoundIntensityImpl mBrickletSoundIntensity = new MBrickletSoundIntensityImpl();
+        return mBrickletSoundIntensity;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletDustDetector createMBrickletDustDetector() {
+        MBrickletDustDetectorImpl mBrickletDustDetector = new MBrickletDustDetectorImpl();
+        return mBrickletDustDetector;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletMoisture createMBrickletMoisture() {
+        MBrickletMoistureImpl mBrickletMoisture = new MBrickletMoistureImpl();
+        return mBrickletMoisture;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletAnalogInV2 createMBrickletAnalogInV2() {
+        MBrickletAnalogInV2Impl mBrickletAnalogInV2 = new MBrickletAnalogInV2Impl();
+        return mBrickletAnalogInV2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletAnalogIn createMBrickletAnalogIn() {
+        MBrickletAnalogInImpl mBrickletAnalogIn = new MBrickletAnalogInImpl();
+        return mBrickletAnalogIn;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletDistanceUS createMBrickletDistanceUS() {
+        MBrickletDistanceUSImpl mBrickletDistanceUS = new MBrickletDistanceUSImpl();
+        return mBrickletDistanceUS;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletLCD20x4 createMBrickletLCD20x4() {
+        MBrickletLCD20x4Impl mBrickletLCD20x4 = new MBrickletLCD20x4Impl();
+        return mBrickletLCD20x4;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletOLED128x64V2 createMBrickletOLED128x64V2() {
+        MBrickletOLED128x64V2Impl mBrickletOLED128x64V2 = new MBrickletOLED128x64V2Impl();
+        return mBrickletOLED128x64V2;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletOLED128x64 createMBrickletOLED128x64() {
+        MBrickletOLED128x64Impl mBrickletOLED128x64 = new MBrickletOLED128x64Impl();
+        return mBrickletOLED128x64;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletOLE64x48 createMBrickletOLE64x48() {
+        MBrickletOLE64x48Impl mBrickletOLE64x48 = new MBrickletOLE64x48Impl();
+        return mBrickletOLE64x48;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletRGBLEDButton createMBrickletRGBLEDButton() {
+        MBrickletRGBLEDButtonImpl mBrickletRGBLEDButton = new MBrickletRGBLEDButtonImpl();
+        return mBrickletRGBLEDButton;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MRGBLEDButtonLED createMRGBLEDButtonLED() {
+        MRGBLEDButtonLEDImpl mrgbledButtonLED = new MRGBLEDButtonLEDImpl();
+        return mrgbledButtonLED;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MLCD20x4Backlight createMLCD20x4Backlight() {
+        MLCD20x4BacklightImpl mlcd20x4Backlight = new MLCD20x4BacklightImpl();
+        return mlcd20x4Backlight;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MLCD20x4Button createMLCD20x4Button() {
+        MLCD20x4ButtonImpl mlcd20x4Button = new MLCD20x4ButtonImpl();
+        return mlcd20x4Button;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MBrickletNFC createMBrickletNFC() {
+        MBrickletNFCImpl mBrickletNFC = new MBrickletNFCImpl();
+        return mBrickletNFC;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCText createMNFCText() {
+        MNFCTextImpl mnfcText = new MNFCTextImpl();
+        return mnfcText;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCUri createMNFCUri() {
+        MNFCUriImpl mnfcUri = new MNFCUriImpl();
+        return mnfcUri;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCID createMNFCID() {
+        MNFCIDImpl mnfcid = new MNFCIDImpl();
+        return mnfcid;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public MNFCTrigger createMNFCTrigger() {
+        MNFCTriggerImpl mnfcTrigger = new MNFCTriggerImpl();
+        return mnfcTrigger;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public <TFC extends TFConfig, IDS extends Enum> OHTFDevice<TFC, IDS> createOHTFDevice() {
+        OHTFDeviceImpl<TFC, IDS> ohtfDevice = new OHTFDeviceImpl<TFC, IDS>();
+        return ohtfDevice;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public <TFC extends TFConfig, IDS extends Enum> OHTFSubDeviceAdminDevice<TFC, IDS> createOHTFSubDeviceAdminDevice() {
+        OHTFSubDeviceAdminDeviceImpl<TFC, IDS> ohtfSubDeviceAdminDevice = new OHTFSubDeviceAdminDeviceImpl<TFC, IDS>();
+        return ohtfSubDeviceAdminDevice;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public OHConfig createOHConfig() {
+        OHConfigImpl ohConfig = new OHConfigImpl();
+        return ohConfig;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public TFNullConfiguration createTFNullConfiguration() {
         TFNullConfigurationImpl tfNullConfiguration = new TFNullConfigurationImpl();
         return tfNullConfiguration;
@@ -1914,7 +2395,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public TFPTCBrickletConfiguration createTFPTCBrickletConfiguration() {
         TFPTCBrickletConfigurationImpl tfptcBrickletConfiguration = new TFPTCBrickletConfigurationImpl();
         return tfptcBrickletConfiguration;
@@ -1926,7 +2406,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public TFIndustrialDual020mAConfiguration createTFIndustrialDual020mAConfiguration() {
         TFIndustrialDual020mAConfigurationImpl tfIndustrialDual020mAConfiguration = new TFIndustrialDual020mAConfigurationImpl();
         return tfIndustrialDual020mAConfiguration;
@@ -1938,7 +2417,193 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
+    public TFBaseConfiguration createTFBaseConfiguration() {
+        TFBaseConfigurationImpl tfBaseConfiguration = new TFBaseConfigurationImpl();
+        return tfBaseConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LoadCellConfiguration createLoadCellConfiguration() {
+        LoadCellConfigurationImpl loadCellConfiguration = new LoadCellConfigurationImpl();
+        return loadCellConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LaserRangeFinderConfiguration createLaserRangeFinderConfiguration() {
+        LaserRangeFinderConfigurationImpl laserRangeFinderConfiguration = new LaserRangeFinderConfigurationImpl();
+        return laserRangeFinderConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public AmbientLightV2Configuration createAmbientLightV2Configuration() {
+        AmbientLightV2ConfigurationImpl ambientLightV2Configuration = new AmbientLightV2ConfigurationImpl();
+        return ambientLightV2Configuration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletIndustrialDualAnalogInConfiguration createBrickletIndustrialDualAnalogInConfiguration() {
+        BrickletIndustrialDualAnalogInConfigurationImpl brickletIndustrialDualAnalogInConfiguration = new BrickletIndustrialDualAnalogInConfigurationImpl();
+        return brickletIndustrialDualAnalogInConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFTemperatureConfiguration createTFTemperatureConfiguration() {
+        TFTemperatureConfigurationImpl tfTemperatureConfiguration = new TFTemperatureConfigurationImpl();
+        return tfTemperatureConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFThermocoupleConfiguration createTFThermocoupleConfiguration() {
+        TFThermocoupleConfigurationImpl tfThermocoupleConfiguration = new TFThermocoupleConfigurationImpl();
+        return tfThermocoupleConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration() {
+        TFObjectTemperatureConfigurationImpl tfObjectTemperatureConfiguration = new TFObjectTemperatureConfigurationImpl();
+        return tfObjectTemperatureConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration() {
+        TFMoistureBrickletConfigurationImpl tfMoistureBrickletConfiguration = new TFMoistureBrickletConfigurationImpl();
+        return tfMoistureBrickletConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFAnalogInConfiguration createTFAnalogInConfiguration() {
+        TFAnalogInConfigurationImpl tfAnalogInConfiguration = new TFAnalogInConfigurationImpl();
+        return tfAnalogInConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFAnalogInV2Configuration createTFAnalogInV2Configuration() {
+        TFAnalogInV2ConfigurationImpl tfAnalogInV2Configuration = new TFAnalogInV2ConfigurationImpl();
+        return tfAnalogInV2Configuration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFDistanceUSBrickletConfiguration createTFDistanceUSBrickletConfiguration() {
+        TFDistanceUSBrickletConfigurationImpl tfDistanceUSBrickletConfiguration = new TFDistanceUSBrickletConfigurationImpl();
+        return tfDistanceUSBrickletConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFVoltageCurrentConfiguration createTFVoltageCurrentConfiguration() {
+        TFVoltageCurrentConfigurationImpl tfVoltageCurrentConfiguration = new TFVoltageCurrentConfigurationImpl();
+        return tfVoltageCurrentConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFBrickDCConfiguration createTFBrickDCConfiguration() {
+        TFBrickDCConfigurationImpl tfBrickDCConfiguration = new TFBrickDCConfigurationImpl();
+        return tfBrickDCConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFIOActorConfiguration createTFIOActorConfiguration() {
+        TFIOActorConfigurationImpl tfioActorConfiguration = new TFIOActorConfigurationImpl();
+        return tfioActorConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFInterruptListenerConfiguration createTFInterruptListenerConfiguration() {
+        TFInterruptListenerConfigurationImpl tfInterruptListenerConfiguration = new TFInterruptListenerConfigurationImpl();
+        return tfInterruptListenerConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public TFIOSensorConfiguration createTFIOSensorConfiguration() {
+        TFIOSensorConfigurationImpl tfioSensorConfiguration = new TFIOSensorConfigurationImpl();
+        return tfioSensorConfiguration;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public TFServoConfiguration createTFServoConfiguration() {
         TFServoConfigurationImpl tfServoConfiguration = new TFServoConfigurationImpl();
         return tfServoConfiguration;
@@ -1950,7 +2615,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public BrickletRemoteSwitchConfiguration createBrickletRemoteSwitchConfiguration() {
         BrickletRemoteSwitchConfigurationImpl brickletRemoteSwitchConfiguration = new BrickletRemoteSwitchConfigurationImpl();
         return brickletRemoteSwitchConfiguration;
@@ -1962,7 +2626,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RemoteSwitchAConfiguration createRemoteSwitchAConfiguration() {
         RemoteSwitchAConfigurationImpl remoteSwitchAConfiguration = new RemoteSwitchAConfigurationImpl();
         return remoteSwitchAConfiguration;
@@ -1974,7 +2637,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RemoteSwitchBConfiguration createRemoteSwitchBConfiguration() {
         RemoteSwitchBConfigurationImpl remoteSwitchBConfiguration = new RemoteSwitchBConfigurationImpl();
         return remoteSwitchBConfiguration;
@@ -1986,7 +2648,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public RemoteSwitchCConfiguration createRemoteSwitchCConfiguration() {
         RemoteSwitchCConfigurationImpl remoteSwitchCConfiguration = new RemoteSwitchCConfigurationImpl();
         return remoteSwitchCConfiguration;
@@ -1998,7 +2659,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public MultiTouchDeviceConfiguration createMultiTouchDeviceConfiguration() {
         MultiTouchDeviceConfigurationImpl multiTouchDeviceConfiguration = new MultiTouchDeviceConfigurationImpl();
         return multiTouchDeviceConfiguration;
@@ -2010,7 +2670,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration() {
         BrickletMultiTouchConfigurationImpl brickletMultiTouchConfiguration = new BrickletMultiTouchConfigurationImpl();
         return brickletMultiTouchConfiguration;
@@ -2022,7 +2681,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DimmableConfiguration createDimmableConfiguration() {
         DimmableConfigurationImpl dimmableConfiguration = new DimmableConfigurationImpl();
         return dimmableConfiguration;
@@ -2034,7 +2692,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public ButtonConfiguration createButtonConfiguration() {
         ButtonConfigurationImpl buttonConfiguration = new ButtonConfigurationImpl();
         return buttonConfiguration;
@@ -2046,7 +2703,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public DualButtonLEDConfiguration createDualButtonLEDConfiguration() {
         DualButtonLEDConfigurationImpl dualButtonLEDConfiguration = new DualButtonLEDConfigurationImpl();
         return dualButtonLEDConfiguration;
@@ -2058,7 +2714,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public LEDStripConfiguration createLEDStripConfiguration() {
         LEDStripConfigurationImpl ledStripConfiguration = new LEDStripConfigurationImpl();
         return ledStripConfiguration;
@@ -2070,7 +2725,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public LEDGroupConfiguration createLEDGroupConfiguration() {
         LEDGroupConfigurationImpl ledGroupConfiguration = new LEDGroupConfigurationImpl();
         return ledGroupConfiguration;
@@ -2082,7 +2736,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public BrickletColorConfiguration createBrickletColorConfiguration() {
         BrickletColorConfigurationImpl brickletColorConfiguration = new BrickletColorConfigurationImpl();
         return brickletColorConfiguration;
@@ -2094,7 +2747,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @Override
     public BrickletAccelerometerConfiguration createBrickletAccelerometerConfiguration() {
         BrickletAccelerometerConfigurationImpl brickletAccelerometerConfiguration = new BrickletAccelerometerConfigurationImpl();
         return brickletAccelerometerConfiguration;
@@ -2167,1187 +2819,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertBrickStepperSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MServo createMServo() {
-        MServoImpl mServo = new MServoImpl();
-        return mServo;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletHumidity createMBrickletHumidity() {
-        MBrickletHumidityImpl mBrickletHumidity = new MBrickletHumidityImpl();
-        return mBrickletHumidity;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletDistanceIR createMBrickletDistanceIR() {
-        MBrickletDistanceIRImpl mBrickletDistanceIR = new MBrickletDistanceIRImpl();
-        return mBrickletDistanceIR;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletSolidStateRelay createMBrickletSolidStateRelay() {
-        MBrickletSolidStateRelayImpl mBrickletSolidStateRelay = new MBrickletSolidStateRelayImpl();
-        return mBrickletSolidStateRelay;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletIndustrialDual020mA createMBrickletIndustrialDual020mA() {
-        MBrickletIndustrialDual020mAImpl mBrickletIndustrialDual020mA = new MBrickletIndustrialDual020mAImpl();
-        return mBrickletIndustrialDual020mA;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public Dual020mADevice createDual020mADevice() {
-        Dual020mADeviceImpl dual020mADevice = new Dual020mADeviceImpl();
-        return dual020mADevice;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletPTC createMBrickletPTC() {
-        MBrickletPTCImpl mBrickletPTC = new MBrickletPTCImpl();
-        return mBrickletPTC;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public PTCTemperature createPTCTemperature() {
-        PTCTemperatureImpl ptcTemperature = new PTCTemperatureImpl();
-        return ptcTemperature;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public PTCResistance createPTCResistance() {
-        PTCResistanceImpl ptcResistance = new PTCResistanceImpl();
-        return ptcResistance;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public PTCConnected createPTCConnected() {
-        PTCConnectedImpl ptcConnected = new PTCConnectedImpl();
-        return ptcConnected;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletTemperature createMBrickletTemperature() {
-        MBrickletTemperatureImpl mBrickletTemperature = new MBrickletTemperatureImpl();
-        return mBrickletTemperature;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletThermocouple createMBrickletThermocouple() {
-        MBrickletThermocoupleImpl mBrickletThermocouple = new MBrickletThermocoupleImpl();
-        return mBrickletThermocouple;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletUVLight createMBrickletUVLight() {
-        MBrickletUVLightImpl mBrickletUVLight = new MBrickletUVLightImpl();
-        return mBrickletUVLight;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletCO2 createMBrickletCO2() {
-        MBrickletCO2Impl mBrickletCO2 = new MBrickletCO2Impl();
-        return mBrickletCO2;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletTemperatureIR createMBrickletTemperatureIR() {
-        MBrickletTemperatureIRImpl mBrickletTemperatureIR = new MBrickletTemperatureIRImpl();
-        return mBrickletTemperatureIR;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public ObjectTemperature createObjectTemperature() {
-        ObjectTemperatureImpl objectTemperature = new ObjectTemperatureImpl();
-        return objectTemperature;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public AmbientTemperature createAmbientTemperature() {
-        AmbientTemperatureImpl ambientTemperature = new AmbientTemperatureImpl();
-        return ambientTemperature;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletTilt createMBrickletTilt() {
-        MBrickletTiltImpl mBrickletTilt = new MBrickletTiltImpl();
-        return mBrickletTilt;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletVoltageCurrent createMBrickletVoltageCurrent() {
-        MBrickletVoltageCurrentImpl mBrickletVoltageCurrent = new MBrickletVoltageCurrentImpl();
-        return mBrickletVoltageCurrent;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public VCDeviceVoltage createVCDeviceVoltage() {
-        VCDeviceVoltageImpl vcDeviceVoltage = new VCDeviceVoltageImpl();
-        return vcDeviceVoltage;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public VCDeviceCurrent createVCDeviceCurrent() {
-        VCDeviceCurrentImpl vcDeviceCurrent = new VCDeviceCurrentImpl();
-        return vcDeviceCurrent;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public VCDevicePower createVCDevicePower() {
-        VCDevicePowerImpl vcDevicePower = new VCDevicePowerImpl();
-        return vcDevicePower;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFBaseConfiguration createTFBaseConfiguration() {
-        TFBaseConfigurationImpl tfBaseConfiguration = new TFBaseConfigurationImpl();
-        return tfBaseConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public LoadCellConfiguration createLoadCellConfiguration() {
-        LoadCellConfigurationImpl loadCellConfiguration = new LoadCellConfigurationImpl();
-        return loadCellConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public LaserRangeFinderConfiguration createLaserRangeFinderConfiguration() {
-        LaserRangeFinderConfigurationImpl laserRangeFinderConfiguration = new LaserRangeFinderConfigurationImpl();
-        return laserRangeFinderConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public AmbientLightV2Configuration createAmbientLightV2Configuration() {
-        AmbientLightV2ConfigurationImpl ambientLightV2Configuration = new AmbientLightV2ConfigurationImpl();
-        return ambientLightV2Configuration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public BrickletIndustrialDualAnalogInConfiguration createBrickletIndustrialDualAnalogInConfiguration() {
-        BrickletIndustrialDualAnalogInConfigurationImpl brickletIndustrialDualAnalogInConfiguration = new BrickletIndustrialDualAnalogInConfigurationImpl();
-        return brickletIndustrialDualAnalogInConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFTemperatureConfiguration createTFTemperatureConfiguration() {
-        TFTemperatureConfigurationImpl tfTemperatureConfiguration = new TFTemperatureConfigurationImpl();
-        return tfTemperatureConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public TFThermocoupleConfiguration createTFThermocoupleConfiguration() {
-        TFThermocoupleConfigurationImpl tfThermocoupleConfiguration = new TFThermocoupleConfigurationImpl();
-        return tfThermocoupleConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFObjectTemperatureConfiguration createTFObjectTemperatureConfiguration() {
-        TFObjectTemperatureConfigurationImpl tfObjectTemperatureConfiguration = new TFObjectTemperatureConfigurationImpl();
-        return tfObjectTemperatureConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFMoistureBrickletConfiguration createTFMoistureBrickletConfiguration() {
-        TFMoistureBrickletConfigurationImpl tfMoistureBrickletConfiguration = new TFMoistureBrickletConfigurationImpl();
-        return tfMoistureBrickletConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFAnalogInConfiguration createTFAnalogInConfiguration() {
-        TFAnalogInConfigurationImpl tfAnalogInConfiguration = new TFAnalogInConfigurationImpl();
-        return tfAnalogInConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFAnalogInV2Configuration createTFAnalogInV2Configuration() {
-        TFAnalogInV2ConfigurationImpl tfAnalogInV2Configuration = new TFAnalogInV2ConfigurationImpl();
-        return tfAnalogInV2Configuration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFDistanceUSBrickletConfiguration createTFDistanceUSBrickletConfiguration() {
-        TFDistanceUSBrickletConfigurationImpl tfDistanceUSBrickletConfiguration = new TFDistanceUSBrickletConfigurationImpl();
-        return tfDistanceUSBrickletConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public TFVoltageCurrentConfiguration createTFVoltageCurrentConfiguration() {
-        TFVoltageCurrentConfigurationImpl tfVoltageCurrentConfiguration = new TFVoltageCurrentConfigurationImpl();
-        return tfVoltageCurrentConfiguration;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletBarometer createMBrickletBarometer() {
-        MBrickletBarometerImpl mBrickletBarometer = new MBrickletBarometerImpl();
-        return mBrickletBarometer;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBarometerTemperature createMBarometerTemperature() {
-        MBarometerTemperatureImpl mBarometerTemperature = new MBarometerTemperatureImpl();
-        return mBarometerTemperature;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletAmbientLight createMBrickletAmbientLight() {
-        MBrickletAmbientLightImpl mBrickletAmbientLight = new MBrickletAmbientLightImpl();
-        return mBrickletAmbientLight;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletAmbientLightV2 createMBrickletAmbientLightV2() {
-        MBrickletAmbientLightV2Impl mBrickletAmbientLightV2 = new MBrickletAmbientLightV2Impl();
-        return mBrickletAmbientLightV2;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletIndustrialDualAnalogIn createMBrickletIndustrialDualAnalogIn() {
-        MBrickletIndustrialDualAnalogInImpl mBrickletIndustrialDualAnalogIn = new MBrickletIndustrialDualAnalogInImpl();
-        return mBrickletIndustrialDualAnalogIn;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public IndustrialDualAnalogInChannel createIndustrialDualAnalogInChannel() {
-        IndustrialDualAnalogInChannelImpl industrialDualAnalogInChannel = new IndustrialDualAnalogInChannelImpl();
-        return industrialDualAnalogInChannel;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletSoundIntensity createMBrickletSoundIntensity() {
-        MBrickletSoundIntensityImpl mBrickletSoundIntensity = new MBrickletSoundIntensityImpl();
-        return mBrickletSoundIntensity;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletDustDetector createMBrickletDustDetector() {
-        MBrickletDustDetectorImpl mBrickletDustDetector = new MBrickletDustDetectorImpl();
-        return mBrickletDustDetector;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletLoadCell createMBrickletLoadCell() {
-        MBrickletLoadCellImpl mBrickletLoadCell = new MBrickletLoadCellImpl();
-        return mBrickletLoadCell;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletLoadCellV2 createMBrickletLoadCellV2() {
-        MBrickletLoadCellV2Impl mBrickletLoadCellV2 = new MBrickletLoadCellV2Impl();
-        return mBrickletLoadCellV2;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public LoadCellWeight createLoadCellWeight() {
-        LoadCellWeightImpl loadCellWeight = new LoadCellWeightImpl();
-        return loadCellWeight;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public LoadCellWeightV2 createLoadCellWeightV2() {
-        LoadCellWeightV2Impl loadCellWeightV2 = new LoadCellWeightV2Impl();
-        return loadCellWeightV2;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public LoadCellLed createLoadCellLed() {
-        LoadCellLedImpl loadCellLed = new LoadCellLedImpl();
-        return loadCellLed;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public LoadCellLedV2 createLoadCellLedV2() {
-        LoadCellLedV2Impl loadCellLedV2 = new LoadCellLedV2Impl();
-        return loadCellLedV2;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletMoisture createMBrickletMoisture() {
-        MBrickletMoistureImpl mBrickletMoisture = new MBrickletMoistureImpl();
-        return mBrickletMoisture;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletAnalogInV2 createMBrickletAnalogInV2() {
-        MBrickletAnalogInV2Impl mBrickletAnalogInV2 = new MBrickletAnalogInV2Impl();
-        return mBrickletAnalogInV2;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletAnalogIn createMBrickletAnalogIn() {
-        MBrickletAnalogInImpl mBrickletAnalogIn = new MBrickletAnalogInImpl();
-        return mBrickletAnalogIn;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletDistanceUS createMBrickletDistanceUS() {
-        MBrickletDistanceUSImpl mBrickletDistanceUS = new MBrickletDistanceUSImpl();
-        return mBrickletDistanceUS;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MBrickletLCD20x4 createMBrickletLCD20x4() {
-        MBrickletLCD20x4Impl mBrickletLCD20x4 = new MBrickletLCD20x4Impl();
-        return mBrickletLCD20x4;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletOLED128x64 createMBrickletOLED128x64() {
-        MBrickletOLED128x64Impl mBrickletOLED128x64 = new MBrickletOLED128x64Impl();
-        return mBrickletOLED128x64;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletOLE64x48 createMBrickletOLE64x48() {
-        MBrickletOLE64x48Impl mBrickletOLE64x48 = new MBrickletOLE64x48Impl();
-        return mBrickletOLE64x48;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletRGBLEDButton createMBrickletRGBLEDButton() {
-        MBrickletRGBLEDButtonImpl mBrickletRGBLEDButton = new MBrickletRGBLEDButtonImpl();
-        return mBrickletRGBLEDButton;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MRGBLEDButtonLED createMRGBLEDButtonLED() {
-        MRGBLEDButtonLEDImpl mrgbledButtonLED = new MRGBLEDButtonLEDImpl();
-        return mrgbledButtonLED;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MLCD20x4Backlight createMLCD20x4Backlight() {
-        MLCD20x4BacklightImpl mlcd20x4Backlight = new MLCD20x4BacklightImpl();
-        return mlcd20x4Backlight;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public MLCD20x4Button createMLCD20x4Button() {
-        MLCD20x4ButtonImpl mlcd20x4Button = new MLCD20x4ButtonImpl();
-        return mlcd20x4Button;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MBrickletNFC createMBrickletNFC() {
-        MBrickletNFCImpl mBrickletNFC = new MBrickletNFCImpl();
-        return mBrickletNFC;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MNFCText createMNFCText() {
-        MNFCTextImpl mnfcText = new MNFCTextImpl();
-        return mnfcText;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MNFCUri createMNFCUri() {
-        MNFCUriImpl mnfcUri = new MNFCUriImpl();
-        return mnfcUri;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MNFCID createMNFCID() {
-        MNFCIDImpl mnfcid = new MNFCIDImpl();
-        return mnfcid;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public MNFCTrigger createMNFCTrigger() {
-        MNFCTriggerImpl mnfcTrigger = new MNFCTriggerImpl();
-        return mnfcTrigger;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public OnOffValue createSwitchStateFromString(EDataType eDataType, String initialValue) {
-        return (OnOffValue) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertSwitchStateToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public HighLowValue createDigitalValueFromString(EDataType eDataType, String initialValue) {
-        return (HighLowValue) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertDigitalValueToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public HSBValue createHSBValueFromString(EDataType eDataType, String initialValue) {
-        return (HSBValue) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertHSBValueToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public BrickletIO16 createTinkerBrickletIO16FromString(EDataType eDataType, String initialValue) {
-        return (BrickletIO16) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertTinkerBrickletIO16ToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public DCDriveMode createDCDriveModeFromString(EDataType eDataType, String initialValue) {
-        DCDriveMode result = DCDriveMode.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertDCDriveModeToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public ConfigOptsServo createConfigOptsServoFromString(EDataType eDataType, String initialValue) {
-        ConfigOptsServo result = ConfigOptsServo.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertConfigOptsServoToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public DualButtonDevicePosition createDualButtonDevicePositionFromString(EDataType eDataType, String initialValue) {
-        DualButtonDevicePosition result = DualButtonDevicePosition.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertDualButtonDevicePositionToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public DualButtonLedSubIds createDualButtonLedSubIdsFromString(EDataType eDataType, String initialValue) {
-        DualButtonLedSubIds result = DualButtonLedSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertDualButtonLedSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public DualButtonButtonSubIds createDualButtonButtonSubIdsFromString(EDataType eDataType, String initialValue) {
-        DualButtonButtonSubIds result = DualButtonButtonSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertDualButtonButtonSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public JoystickSubIds createJoystickSubIdsFromString(EDataType eDataType, String initialValue) {
-        JoystickSubIds result = JoystickSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertJoystickSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public PTCSubIds createPTCSubIdsFromString(EDataType eDataType, String initialValue) {
-        PTCSubIds result = PTCSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertPTCSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public IndustrialDual020mASubIds createIndustrialDual020mASubIdsFromString(EDataType eDataType,
-            String initialValue) {
-        IndustrialDual020mASubIds result = IndustrialDual020mASubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertIndustrialDual020mASubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public RotaryEncoderSubIds createRotaryEncoderSubIdsFromString(EDataType eDataType, String initialValue) {
-        RotaryEncoderSubIds result = RotaryEncoderSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertRotaryEncoderSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public ColorBrickletSubIds createColorBrickletSubIdsFromString(EDataType eDataType, String initialValue) {
-        ColorBrickletSubIds result = ColorBrickletSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertColorBrickletSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public LoadCellSubIds createLoadCellSubIdsFromString(EDataType eDataType, String initialValue) {
-        LoadCellSubIds result = LoadCellSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertLoadCellSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public IndustrialDualAnalogInSubIds createIndustrialDualAnalogInSubIdsFromString(EDataType eDataType,
-            String initialValue) {
-        IndustrialDualAnalogInSubIds result = IndustrialDualAnalogInSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertIndustrialDualAnalogInSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public LaserRangeFinderSubIds createLaserRangeFinderSubIdsFromString(EDataType eDataType, String initialValue) {
-        LaserRangeFinderSubIds result = LaserRangeFinderSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertLaserRangeFinderSubIdsToString(EDataType eDataType, Object instanceValue) {
-        return instanceValue == null ? null : instanceValue.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public AccelerometerSubIds createAccelerometerSubIdsFromString(EDataType eDataType, String initialValue) {
-        AccelerometerSubIds result = AccelerometerSubIds.get(initialValue);
-        if (result == null)
-            throw new IllegalArgumentException(
-                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-        return result;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertAccelerometerSubIdsToString(EDataType eDataType, Object instanceValue) {
         return instanceValue == null ? null : instanceValue.toString();
     }
 
@@ -3789,6 +3260,344 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @generated
+     */
+    public DCDriveMode createDCDriveModeFromString(EDataType eDataType, String initialValue) {
+        DCDriveMode result = DCDriveMode.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertDCDriveModeToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public ConfigOptsServo createConfigOptsServoFromString(EDataType eDataType, String initialValue) {
+        ConfigOptsServo result = ConfigOptsServo.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertConfigOptsServoToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public DualButtonDevicePosition createDualButtonDevicePositionFromString(EDataType eDataType, String initialValue) {
+        DualButtonDevicePosition result = DualButtonDevicePosition.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertDualButtonDevicePositionToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public DualButtonLedSubIds createDualButtonLedSubIdsFromString(EDataType eDataType, String initialValue) {
+        DualButtonLedSubIds result = DualButtonLedSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertDualButtonLedSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public DualButtonButtonSubIds createDualButtonButtonSubIdsFromString(EDataType eDataType, String initialValue) {
+        DualButtonButtonSubIds result = DualButtonButtonSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertDualButtonButtonSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public JoystickSubIds createJoystickSubIdsFromString(EDataType eDataType, String initialValue) {
+        JoystickSubIds result = JoystickSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertJoystickSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public PTCSubIds createPTCSubIdsFromString(EDataType eDataType, String initialValue) {
+        PTCSubIds result = PTCSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertPTCSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public IndustrialDual020mASubIds createIndustrialDual020mASubIdsFromString(EDataType eDataType,
+            String initialValue) {
+        IndustrialDual020mASubIds result = IndustrialDual020mASubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertIndustrialDual020mASubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public RotaryEncoderSubIds createRotaryEncoderSubIdsFromString(EDataType eDataType, String initialValue) {
+        RotaryEncoderSubIds result = RotaryEncoderSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertRotaryEncoderSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public ColorBrickletSubIds createColorBrickletSubIdsFromString(EDataType eDataType, String initialValue) {
+        ColorBrickletSubIds result = ColorBrickletSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertColorBrickletSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LoadCellSubIds createLoadCellSubIdsFromString(EDataType eDataType, String initialValue) {
+        LoadCellSubIds result = LoadCellSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertLoadCellSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public IndustrialDualAnalogInSubIds createIndustrialDualAnalogInSubIdsFromString(EDataType eDataType,
+            String initialValue) {
+        IndustrialDualAnalogInSubIds result = IndustrialDualAnalogInSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertIndustrialDualAnalogInSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public LaserRangeFinderSubIds createLaserRangeFinderSubIdsFromString(EDataType eDataType, String initialValue) {
+        LaserRangeFinderSubIds result = LaserRangeFinderSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertLaserRangeFinderSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public AccelerometerSubIds createAccelerometerSubIdsFromString(EDataType eDataType, String initialValue) {
+        AccelerometerSubIds result = AccelerometerSubIds.get(initialValue);
+        if (result == null)
+            throw new IllegalArgumentException(
+                    "The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertAccelerometerSubIdsToString(EDataType eDataType, Object instanceValue) {
+        return instanceValue == null ? null : instanceValue.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
      * @since 1.3.0
      * @generated
      */
@@ -3924,6 +3733,169 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * @generated
      */
     public String convertMTinkerBrickStepperToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletDualRelay createMTinkerBrickletDualRelayFromString(EDataType eDataType, String initialValue) {
+        return (BrickletDualRelay) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertMTinkerBrickletDualRelayToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletIndustrialQuadRelay createMTinkerBrickletIndustrialQuadRelayFromString(EDataType eDataType,
+            String initialValue) {
+        return (BrickletIndustrialQuadRelay) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertMTinkerBrickletIndustrialQuadRelayToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletIndustrialDigitalIn4 createMTinkerBrickletIndustrialDigitalIn4FromString(EDataType eDataType,
+            String initialValue) {
+        return (BrickletIndustrialDigitalIn4) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertMTinkerBrickletIndustrialDigitalIn4ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletIndustrialDigitalOut4 createMTinkerBrickletIndustrialDigitalOut4FromString(EDataType eDataType,
+            String initialValue) {
+        return (BrickletIndustrialDigitalOut4) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertMTinkerBrickletIndustrialDigitalOut4ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public OnOffValue createSwitchStateFromString(EDataType eDataType, String initialValue) {
+        return (OnOffValue) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertSwitchStateToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public HighLowValue createDigitalValueFromString(EDataType eDataType, String initialValue) {
+        return (HighLowValue) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertDigitalValueToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public HSBValue createHSBValueFromString(EDataType eDataType, String initialValue) {
+        return (HSBValue) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertHSBValueToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public BrickletIO16 createTinkerBrickletIO16FromString(EDataType eDataType, String initialValue) {
+        return (BrickletIO16) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletIO16ToString(EDataType eDataType, Object instanceValue) {
         return super.convertToString(eDataType, instanceValue);
     }
 
@@ -4782,6 +4754,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
+    public BrickletOLED128x64V2 createTinkerBrickletOLED128x64V2FromString(EDataType eDataType, String initialValue) {
+        return (BrickletOLED128x64V2) super.createFromString(eDataType, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public String convertTinkerBrickletOLED128x64V2ToString(EDataType eDataType, Object instanceValue) {
+        return super.convertToString(eDataType, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public BrickletOLED64x48 createTinkerBrickletOLED64x48FromString(EDataType eDataType, String initialValue) {
         return (BrickletOLED64x48) super.createFromString(eDataType, initialValue);
     }
@@ -5122,7 +5114,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    @SuppressWarnings("rawtypes")
     public Enum createEnumFromString(EDataType eDataType, String initialValue) {
         return (Enum) super.createFromString(eDataType, initialValue);
     }
@@ -5143,90 +5134,6 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
      * 
      * @generated
      */
-    public BrickletDualRelay createMTinkerBrickletDualRelayFromString(EDataType eDataType, String initialValue) {
-        return (BrickletDualRelay) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertMTinkerBrickletDualRelayToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public BrickletIndustrialQuadRelay createMTinkerBrickletIndustrialQuadRelayFromString(EDataType eDataType,
-            String initialValue) {
-        return (BrickletIndustrialQuadRelay) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertMTinkerBrickletIndustrialQuadRelayToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public BrickletIndustrialDigitalIn4 createMTinkerBrickletIndustrialDigitalIn4FromString(EDataType eDataType,
-            String initialValue) {
-        return (BrickletIndustrialDigitalIn4) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertMTinkerBrickletIndustrialDigitalIn4ToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public BrickletIndustrialDigitalOut4 createMTinkerBrickletIndustrialDigitalOut4FromString(EDataType eDataType,
-            String initialValue) {
-        return (BrickletIndustrialDigitalOut4) super.createFromString(eDataType, initialValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public String convertMTinkerBrickletIndustrialDigitalOut4ToString(EDataType eDataType, Object instanceValue) {
-        return super.convertToString(eDataType, instanceValue);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public ModelPackage getModelPackage() {
         return (ModelPackage) getEPackage();
     }

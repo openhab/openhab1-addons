@@ -32,6 +32,7 @@ import com.tinkerforge.BrickletOLED128x64;
  */
 public interface MBrickletOLED128x64
         extends OLEDBricklet, MDevice<BrickletOLED128x64>, MTextActor, MTFConfigConsumer<BrickletOLEDConfiguration> {
+
     /**
      * Returns the value of the '<em><b>Device Type</b></em>' attribute.
      * The default value is <code>"bricklet_oled128x64"</code>.

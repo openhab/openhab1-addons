@@ -1,45 +1,6 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- */
-/**
  */
 package org.openhab.binding.tinkerforge.internal.model.impl;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EGenericType;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.ETypeParameter;
-import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.impl.EPackageImpl;
-import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
-import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
-import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
-import org.openhab.binding.tinkerforge.internal.model.*;
-import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
-import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
-import org.openhab.binding.tinkerforge.internal.types.HSBValue;
-import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
-import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
-import org.openhab.binding.tinkerforge.internal.types.PercentValue;
-import org.openhab.binding.tinkerforge.internal.types.StringValue;
-import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
-import org.openhab.core.library.types.HSBType;
-import org.openhab.core.library.types.IncreaseDecreaseType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.UpDownType;
-import org.slf4j.Logger;
 
 import com.tinkerforge.BrickDC;
 import com.tinkerforge.BrickServo;
@@ -80,6 +41,7 @@ import com.tinkerforge.BrickletMotionDetector;
 import com.tinkerforge.BrickletMultiTouch;
 import com.tinkerforge.BrickletNFC;
 import com.tinkerforge.BrickletOLED128x64;
+import com.tinkerforge.BrickletOLED128x64V2;
 import com.tinkerforge.BrickletOLED64x48;
 import com.tinkerforge.BrickletPTC;
 import com.tinkerforge.BrickletPiezoSpeaker;
@@ -98,6 +60,293 @@ import com.tinkerforge.BrickletVoltageCurrent;
 import com.tinkerforge.Device;
 import com.tinkerforge.IPConnection;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EGenericType;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.ETypeParameter;
+import org.eclipse.emf.ecore.EcorePackage;
+
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+
+import org.openhab.binding.tinkerforge.internal.config.DeviceOptions;
+
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerCoordinate;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerDevice;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerDirection;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerLed;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerSubIds;
+import org.openhab.binding.tinkerforge.internal.model.AccelerometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.AmbientLightV2Configuration;
+import org.openhab.binding.tinkerforge.internal.model.AmbientTemperature;
+import org.openhab.binding.tinkerforge.internal.model.BarometerSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.BrickStepperSubIds;
+import org.openhab.binding.tinkerforge.internal.model.BrickletAccelerometerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletColorDevice;
+import org.openhab.binding.tinkerforge.internal.model.BrickletIndustrialDualAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletMultiTouchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletOLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.BrickletRemoteSwitchConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.ButtonConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.CallbackListener;
+import org.openhab.binding.tinkerforge.internal.model.ColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ColorBrickletSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ColorColor;
+import org.openhab.binding.tinkerforge.internal.model.ColorColorTemperature;
+import org.openhab.binding.tinkerforge.internal.model.ColorIlluminance;
+import org.openhab.binding.tinkerforge.internal.model.ColorLed;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsDimmable;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsMove;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsServo;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSetPoint;
+import org.openhab.binding.tinkerforge.internal.model.ConfigOptsSwitchSpeed;
+import org.openhab.binding.tinkerforge.internal.model.DCDriveMode;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO16;
+import org.openhab.binding.tinkerforge.internal.model.DigitalActorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensor;
+import org.openhab.binding.tinkerforge.internal.model.DigitalSensorIO4;
+import org.openhab.binding.tinkerforge.internal.model.DimmableActor;
+import org.openhab.binding.tinkerforge.internal.model.DimmableConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.Dual020mADevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButton;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonButtonV2;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevice;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDevicePosition;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonDeviceV2;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLEDConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLed;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedSubIds;
+import org.openhab.binding.tinkerforge.internal.model.DualButtonLedV2;
+import org.openhab.binding.tinkerforge.internal.model.DualRelaySubIds;
+import org.openhab.binding.tinkerforge.internal.model.Ecosystem;
+import org.openhab.binding.tinkerforge.internal.model.Electrode;
+import org.openhab.binding.tinkerforge.internal.model.GenericDevice;
+import org.openhab.binding.tinkerforge.internal.model.IO16SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IO4Device;
+import org.openhab.binding.tinkerforge.internal.model.IO4SubIds;
+import org.openhab.binding.tinkerforge.internal.model.IODevice;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalInSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDigitalOutSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDual020mASubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInChannel;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialDualAnalogInSubIds;
+import org.openhab.binding.tinkerforge.internal.model.IndustrialQuadRelayIDs;
+import org.openhab.binding.tinkerforge.internal.model.InterruptListener;
+import org.openhab.binding.tinkerforge.internal.model.JoystickButton;
+import org.openhab.binding.tinkerforge.internal.model.JoystickDevice;
+import org.openhab.binding.tinkerforge.internal.model.JoystickSubIds;
+import org.openhab.binding.tinkerforge.internal.model.JoystickXPosition;
+import org.openhab.binding.tinkerforge.internal.model.JoystickYPosition;
+import org.openhab.binding.tinkerforge.internal.model.LCDBacklightSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LCDButtonSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroup;
+import org.openhab.binding.tinkerforge.internal.model.LEDGroupConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LEDStripConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDevice;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderDistance;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderLaser;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LaserRangeFinderVelocity;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellDevice;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellDeviceV2;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellLed;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellLedV2;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellSubIds;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellWeight;
+import org.openhab.binding.tinkerforge.internal.model.LoadCellWeightV2;
+import org.openhab.binding.tinkerforge.internal.model.MActor;
+import org.openhab.binding.tinkerforge.internal.model.MBarometerTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBaseDevice;
+import org.openhab.binding.tinkerforge.internal.model.MBrickDC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickServo;
+import org.openhab.binding.tinkerforge.internal.model.MBrickStepper;
+import org.openhab.binding.tinkerforge.internal.model.MBrickd;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAccelerometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAmbientLightV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogIn;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogInV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletAnalogOutV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletBarometer;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletCO2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletColor;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDistanceUS;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDualButtonV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletDustDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHallEffect;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletHumidity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO16;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIO4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalIn4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDigitalOut4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDual020mA;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletIndustrialDualAnalogIn;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletJoystick;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLCD20x4;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLEDStrip;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLaserRangeFinder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLinearPoti;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCell;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletLoadCellV2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMoisture;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMotionDetector;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletMultiTouch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletNFC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletOLE64x48;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletOLED128x64V2;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPTC;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletPiezoSpeaker;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRGBLEDButton;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletRotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSegmentDisplay4x7;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSolidStateRelay;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletSoundIntensity;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTemperatureIR;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletThermocouple;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletTilt;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletUVLight;
+import org.openhab.binding.tinkerforge.internal.model.MBrickletVoltageCurrent;
+import org.openhab.binding.tinkerforge.internal.model.MDevice;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelay;
+import org.openhab.binding.tinkerforge.internal.model.MDualRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MInSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialDigitalIn;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelay;
+import org.openhab.binding.tinkerforge.internal.model.MIndustrialQuadRelayBricklet;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Backlight;
+import org.openhab.binding.tinkerforge.internal.model.MLCD20x4Button;
+import org.openhab.binding.tinkerforge.internal.model.MLCDSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MNFCNDEFRecordListener;
+import org.openhab.binding.tinkerforge.internal.model.MNFCSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MNFCTagInfoListener;
+import org.openhab.binding.tinkerforge.internal.model.MNFCText;
+import org.openhab.binding.tinkerforge.internal.model.MNFCTrigger;
+import org.openhab.binding.tinkerforge.internal.model.MNFCUri;
+import org.openhab.binding.tinkerforge.internal.model.MRGBLEDButtonLED;
+import org.openhab.binding.tinkerforge.internal.model.MSensor;
+import org.openhab.binding.tinkerforge.internal.model.MServo;
+import org.openhab.binding.tinkerforge.internal.model.MStepperChipTemperature;
+import org.openhab.binding.tinkerforge.internal.model.MStepperConsumption;
+import org.openhab.binding.tinkerforge.internal.model.MStepperCurrent;
+import org.openhab.binding.tinkerforge.internal.model.MStepperDevice;
+import org.openhab.binding.tinkerforge.internal.model.MStepperDrive;
+import org.openhab.binding.tinkerforge.internal.model.MStepperExternalVoltage;
+import org.openhab.binding.tinkerforge.internal.model.MStepperPosition;
+import org.openhab.binding.tinkerforge.internal.model.MStepperStackVoltage;
+import org.openhab.binding.tinkerforge.internal.model.MStepperState;
+import org.openhab.binding.tinkerforge.internal.model.MStepperStatusLed;
+import org.openhab.binding.tinkerforge.internal.model.MStepperSteps;
+import org.openhab.binding.tinkerforge.internal.model.MStepperUnderVoltage;
+import org.openhab.binding.tinkerforge.internal.model.MStepperVelocity;
+import org.openhab.binding.tinkerforge.internal.model.MSubDevice;
+import org.openhab.binding.tinkerforge.internal.model.MSubDeviceHolder;
+import org.openhab.binding.tinkerforge.internal.model.MSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.MTFConfigConsumer;
+import org.openhab.binding.tinkerforge.internal.model.MTemperatureIRDevice;
+import org.openhab.binding.tinkerforge.internal.model.MTextActor;
+import org.openhab.binding.tinkerforge.internal.model.ModelFactory;
+import org.openhab.binding.tinkerforge.internal.model.ModelPackage;
+import org.openhab.binding.tinkerforge.internal.model.MoveActor;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDevice;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchDeviceConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.MultiTouchSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NFCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.NoSubIds;
+import org.openhab.binding.tinkerforge.internal.model.NumberActor;
+import org.openhab.binding.tinkerforge.internal.model.OHConfig;
+import org.openhab.binding.tinkerforge.internal.model.OHTFDevice;
+import org.openhab.binding.tinkerforge.internal.model.OHTFSubDeviceAdminDevice;
+import org.openhab.binding.tinkerforge.internal.model.OLEDBricklet;
+import org.openhab.binding.tinkerforge.internal.model.ObjectTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PTCConnected;
+import org.openhab.binding.tinkerforge.internal.model.PTCDevice;
+import org.openhab.binding.tinkerforge.internal.model.PTCResistance;
+import org.openhab.binding.tinkerforge.internal.model.PTCSubIds;
+import org.openhab.binding.tinkerforge.internal.model.PTCTemperature;
+import org.openhab.binding.tinkerforge.internal.model.PercentTypeActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableColorActor;
+import org.openhab.binding.tinkerforge.internal.model.ProgrammableSwitchActor;
+import org.openhab.binding.tinkerforge.internal.model.Proximity;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitch;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchA;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchB;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchC;
+import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoder;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderButton;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderDevice;
+import org.openhab.binding.tinkerforge.internal.model.RotaryEncoderSubIds;
+import org.openhab.binding.tinkerforge.internal.model.ServoSubIDs;
+import org.openhab.binding.tinkerforge.internal.model.SetPointActor;
+import org.openhab.binding.tinkerforge.internal.model.SimpleColorActor;
+import org.openhab.binding.tinkerforge.internal.model.SubDeviceAdmin;
+import org.openhab.binding.tinkerforge.internal.model.SwitchSensor;
+import org.openhab.binding.tinkerforge.internal.model.SwitchableColorActor;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFAnalogInV2Configuration;
+import org.openhab.binding.tinkerforge.internal.model.TFBaseConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickDCConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFBrickStepperConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFConfig;
+import org.openhab.binding.tinkerforge.internal.model.TFDistanceUSBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOActorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIOSensorConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFIndustrialDual020mAConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFInterruptListenerConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFMoistureBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFNullConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFObjectTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFPTCBrickletConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFTemperatureConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFThermocoupleConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TFVoltageCurrentConfiguration;
+import org.openhab.binding.tinkerforge.internal.model.TemperatureIRSubIds;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceCurrent;
+import org.openhab.binding.tinkerforge.internal.model.VCDevicePower;
+import org.openhab.binding.tinkerforge.internal.model.VCDeviceVoltage;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentDevice;
+import org.openhab.binding.tinkerforge.internal.model.VoltageCurrentSubIds;
+
+import org.openhab.binding.tinkerforge.internal.tools.NDEFRecord;
+import org.openhab.binding.tinkerforge.internal.tools.NFCTagInfo;
+
+import org.openhab.binding.tinkerforge.internal.types.DecimalValue;
+import org.openhab.binding.tinkerforge.internal.types.DirectionValue;
+import org.openhab.binding.tinkerforge.internal.types.HSBValue;
+import org.openhab.binding.tinkerforge.internal.types.HighLowValue;
+import org.openhab.binding.tinkerforge.internal.types.OnOffValue;
+import org.openhab.binding.tinkerforge.internal.types.PercentValue;
+import org.openhab.binding.tinkerforge.internal.types.StringValue;
+import org.openhab.binding.tinkerforge.internal.types.TinkerforgeValue;
+
+import org.openhab.core.library.types.HSBType;
+import org.openhab.core.library.types.IncreaseDecreaseType;
+import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.UpDownType;
+
+import org.slf4j.Logger;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Package</b>.
@@ -106,38 +355,6 @@ import com.tinkerforge.IPConnection;
  * @generated
  */
 public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfConfigEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass ohtfDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass ohtfSubDeviceAdminDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass ohConfigEClass = null;
-
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -200,6 +417,550 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass switchSensorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mSwitchActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass programmableSwitchActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mInSwitchActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass genericDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass ioDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mSubDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass callbackListenerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass interruptListenerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mSensorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass programmableActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mTextActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mlcdSubDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass digitalActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass numberActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass colorActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass programmableColorActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass simpleColorActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass switchableColorActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass moveActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass dimmableActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass percentTypeActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass setPointActorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletDualButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass dualButtonDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletPiezoSpeakerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass dualButtonButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletDualButtonV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass dualButtonDeviceV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass dualButtonButtonV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass dualButtonLedV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletAccelerometerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass accelerometerDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass accelerometerDirectionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass accelerometerTemperatureEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass accelerometerLedEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletLaserRangeFinderEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass laserRangeFinderDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass laserRangeFinderLaserEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass laserRangeFinderDistanceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass laserRangeFinderVelocityEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletLoadCellEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletLoadCellV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellDeviceV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellWeightEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellWeightV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellLedEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass loadCellLedV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletColorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass brickletColorDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass colorColorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass colorIlluminanceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass colorColorTemperatureEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass colorLedEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass dualButtonLedEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletLinearPotiEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletRotaryEncoderEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass rotaryEncoderDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass rotaryEncoderEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass rotaryEncoderButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletJoystickEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass joystickDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass joystickXPositionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass joystickYPositionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass joystickButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletAnalogOutV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass mBrickServoEClass = null;
 
     /**
@@ -208,7 +969,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass tfBrickDCConfigurationEClass = null;
+    private EClass mServoEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -400,359 +1161,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass digitalActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass numberActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass colorActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass programmableColorActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass simpleColorActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass moveActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dimmableActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass percentTypeActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass setPointActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletDualButtonEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dualButtonDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletPiezoSpeakerEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dualButtonButtonEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletDualButtonV2EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dualButtonDeviceV2EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dualButtonButtonV2EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dualButtonLedV2EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletAccelerometerEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass accelerometerDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass accelerometerDirectionEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass accelerometerTemperatureEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass accelerometerLedEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletLaserRangeFinderEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass laserRangeFinderDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass laserRangeFinderLaserEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass laserRangeFinderDistanceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass laserRangeFinderVelocityEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletColorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass brickletColorDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass colorColorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass colorIlluminanceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass colorColorTemperatureEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass colorLedEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dualButtonLedEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletLinearPotiEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletRotaryEncoderEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass rotaryEncoderDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass rotaryEncoderEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass rotaryEncoderButtonEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletJoystickEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass joystickDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass joystickXPositionEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass joystickYPositionEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass joystickButtonEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletAnalogOutV2EClass = null;
+    private EClass mBrickletSegmentDisplay4x7EClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -776,14 +1185,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletSegmentDisplay4x7EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
     private EClass digitalActorIO16EClass = null;
 
     /**
@@ -792,87 +1193,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass switchSensorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mSwitchActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass programmableSwitchActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mInSwitchActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass genericDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfioActorConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfInterruptListenerConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
     private EClass mBrickletIO16EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass ioDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfioSensorConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -968,14 +1289,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mSubDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
     private EClass mDualRelayEClass = null;
 
     /**
@@ -1017,214 +1330,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass remoteSwitchCEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfNullConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfptcBrickletConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfIndustrialDual020mAConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass tfServoConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass brickletRemoteSwitchConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass remoteSwitchAConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass remoteSwitchBConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass remoteSwitchCConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass multiTouchDeviceConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass brickletMultiTouchConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dimmableConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass buttonConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass dualButtonLEDConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass ledStripConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass ledGroupConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass brickletColorConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass brickletAccelerometerConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass brickletOLEDConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass nfcConfigurationEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum accelerometerCoordinateEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum brickStepperSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mServoEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass callbackListenerEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass interruptListenerEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mSensorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass programmableActorEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1424,6 +1529,294 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EClass mBrickletBarometerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBarometerTemperatureEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletAmbientLightEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletAmbientLightV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletIndustrialDualAnalogInEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass industrialDualAnalogInChannelEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletSoundIntensityEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletDustDetectorEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletMoistureEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletAnalogInV2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletAnalogInEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletDistanceUSEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletLCD20x4EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass oledBrickletEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletOLED128x64V2EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletOLED128x64EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletOLE64x48EClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletRGBLEDButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mrgbledButtonLEDEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mlcd20x4BacklightEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mlcd20x4ButtonEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mBrickletNFCEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcndefRecordListenerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcTagInfoListenerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcSubDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcTextEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcUriEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcidEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass mnfcTriggerEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass tfConfigEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass ohtfDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass ohtfSubDeviceAdminDeviceEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass ohConfigEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass tfNullConfigurationEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass tfptcBrickletConfigurationEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EClass tfIndustrialDual020mAConfigurationEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EClass tfBaseConfigurationEClass = null;
 
     /**
@@ -1528,7 +1921,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletBarometerEClass = null;
+    private EClass tfBrickDCConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1536,7 +1929,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBarometerTemperatureEClass = null;
+    private EClass tfioActorConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1544,7 +1937,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletAmbientLightEClass = null;
+    private EClass tfInterruptListenerConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1552,7 +1945,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletAmbientLightV2EClass = null;
+    private EClass tfioSensorConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1560,7 +1953,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletIndustrialDualAnalogInEClass = null;
+    private EClass tfServoConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1568,7 +1961,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass industrialDualAnalogInChannelEClass = null;
+    private EClass brickletRemoteSwitchConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1576,7 +1969,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletSoundIntensityEClass = null;
+    private EClass remoteSwitchAConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1584,7 +1977,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletDustDetectorEClass = null;
+    private EClass remoteSwitchBConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1592,7 +1985,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletLoadCellEClass = null;
+    private EClass remoteSwitchCConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1600,7 +1993,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletLoadCellV2EClass = null;
+    private EClass multiTouchDeviceConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1608,7 +2001,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass loadCellDeviceEClass = null;
+    private EClass brickletMultiTouchConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1616,7 +2009,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass loadCellDeviceV2EClass = null;
+    private EClass dimmableConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1624,7 +2017,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass loadCellWeightEClass = null;
+    private EClass buttonConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1632,7 +2025,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass loadCellWeightV2EClass = null;
+    private EClass dualButtonLEDConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1640,7 +2033,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass loadCellLedEClass = null;
+    private EClass ledStripConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1648,7 +2041,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass loadCellLedV2EClass = null;
+    private EClass ledGroupConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1656,7 +2049,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletMoistureEClass = null;
+    private EClass brickletColorConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1664,7 +2057,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletAnalogInV2EClass = null;
+    private EClass brickletAccelerometerConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1672,7 +2065,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletAnalogInEClass = null;
+    private EClass brickletOLEDConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1680,7 +2073,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletDistanceUSEClass = null;
+    private EClass nfcConfigurationEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1688,7 +2081,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass mBrickletLCD20x4EClass = null;
+    private EEnum accelerometerCoordinateEEnum = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -1696,255 +2089,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    private EClass oledBrickletEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletOLED128x64EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletOLE64x48EClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletRGBLEDButtonEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass switchableColorActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mrgbledButtonLEDEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mlcd20x4BacklightEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mTextActorEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mlcdSubDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mlcd20x4ButtonEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mBrickletNFCEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mnfcndefRecordListenerEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mnfcTagInfoListenerEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mnfcSubDeviceEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mnfcTextEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mnfcUriEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mnfcidEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EClass mnfcTriggerEClass = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum dcDriveModeEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum configOptsServoEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum dualButtonDevicePositionEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum dualButtonLedSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum dualButtonButtonSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum joystickSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum ptcSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum industrialDual020mASubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum rotaryEncoderSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum colorBrickletSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum loadCellSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum industrialDualAnalogInSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum laserRangeFinderSubIdsEEnum = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EEnum accelerometerSubIdsEEnum = null;
+    private EEnum brickStepperSubIdsEEnum = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2094,6 +2239,118 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * 
+     * @generated
+     */
+    private EEnum dcDriveModeEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum configOptsServoEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum dualButtonDevicePositionEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum dualButtonLedSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum dualButtonButtonSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum joystickSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum ptcSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum industrialDual020mASubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum rotaryEncoderSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum colorBrickletSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum loadCellSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum industrialDualAnalogInSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum laserRangeFinderSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EEnum accelerometerSubIdsEEnum = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
      * @since 1.3.0
      * @generated
      */
@@ -2146,6 +2403,70 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EDataType mTinkerBrickStepperEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType mTinkerBrickletDualRelayEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType mTinkerBrickletIndustrialQuadRelayEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType mTinkerBrickletIndustrialDigitalIn4EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType mTinkerBrickletIndustrialDigitalOut4EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType switchStateEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType digitalValueEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType hsbValueEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    private EDataType tinkerBrickletIO16EDataType = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -2489,6 +2810,14 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    private EDataType tinkerBrickletOLED128x64V2EDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     private EDataType tinkerBrickletOLED64x48EDataType = null;
 
     /**
@@ -2628,70 +2957,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     private EDataType enumEDataType = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType mTinkerBrickletDualRelayEDataType = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType mTinkerBrickletIndustrialQuadRelayEDataType = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType mTinkerBrickletIndustrialDigitalIn4EDataType = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType mTinkerBrickletIndustrialDigitalOut4EDataType = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType switchStateEDataType = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType digitalValueEDataType = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType hsbValueEDataType = null;
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    private EDataType tinkerBrickletIO16EDataType = null;
-
-    /**
      * Creates an instance of the model <b>Package</b>, registered with
      * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
      * package URI value.
@@ -2769,172 +3034,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getTFConfig() {
-        return tfConfigEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getOHTFDevice() {
-        return ohtfDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getOHTFDevice_Uid() {
-        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getOHTFDevice_Subid() {
-        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getOHTFDevice_Ohid() {
-        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getOHTFDevice_SubDeviceIds() {
-        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EReference getOHTFDevice_TfConfig() {
-        return (EReference) ohtfDeviceEClass.getEStructuralFeatures().get(4);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EReference getOHTFDevice_OhConfig() {
-        return (EReference) ohtfDeviceEClass.getEStructuralFeatures().get(5);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getOHTFDevice__IsValidSubId__String() {
-        return ohtfDeviceEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getOHTFSubDeviceAdminDevice() {
-        return ohtfSubDeviceAdminDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getOHTFSubDeviceAdminDevice__IsValidSubId__String() {
-        return ohtfSubDeviceAdminDeviceEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getOHConfig() {
-        return ohConfigEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EReference getOHConfig_OhTfDevices() {
-        return (EReference) ohConfigEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getOHConfig__GetConfigByTFId__String_String() {
-        return ohConfigEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getOHConfig__GetConfigByOHId__String() {
-        return ohConfigEClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getEcosystem() {
         return ecosystemEClass;
     }
@@ -2945,7 +3044,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getEcosystem_Logger() {
         return (EAttribute) ecosystemEClass.getEStructuralFeatures().get(0);
     }
@@ -2956,7 +3054,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EReference getEcosystem_Mbrickds() {
         return (EReference) ecosystemEClass.getEStructuralFeatures().get(1);
     }
@@ -2967,7 +3064,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getEcosystem__GetBrickd__String_int() {
         return ecosystemEClass.getEOperations().get(0);
     }
@@ -2978,7 +3074,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getEcosystem__GetDevice__String_String() {
         return ecosystemEClass.getEOperations().get(1);
     }
@@ -2989,7 +3084,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getEcosystem__GetDevices4GenericId__String_String() {
         return ecosystemEClass.getEOperations().get(2);
     }
@@ -3000,7 +3094,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getEcosystem__Disconnect() {
         return ecosystemEClass.getEOperations().get(3);
     }
@@ -3011,7 +3104,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickd() {
         return mBrickdEClass;
     }
@@ -3022,7 +3114,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_Logger() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(0);
     }
@@ -3033,7 +3124,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_IpConnection() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(1);
     }
@@ -3044,7 +3134,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_Host() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(2);
     }
@@ -3055,7 +3144,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_Port() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(3);
     }
@@ -3066,7 +3154,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_Authkey() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(4);
     }
@@ -3077,7 +3164,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_IsConnected() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(5);
     }
@@ -3088,7 +3174,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_AutoReconnect() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(6);
     }
@@ -3099,7 +3184,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_Reconnected() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(7);
     }
@@ -3110,7 +3194,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_ConnectedCounter() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(8);
     }
@@ -3121,7 +3204,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickd_Timeout() {
         return (EAttribute) mBrickdEClass.getEStructuralFeatures().get(9);
     }
@@ -3132,7 +3214,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EReference getMBrickd_Mdevices() {
         return (EReference) mBrickdEClass.getEStructuralFeatures().get(10);
     }
@@ -3143,7 +3224,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EReference getMBrickd_Ecosystem() {
         return (EReference) mBrickdEClass.getEStructuralFeatures().get(11);
     }
@@ -3154,7 +3234,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickd__Connect() {
         return mBrickdEClass.getEOperations().get(0);
     }
@@ -3165,7 +3244,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickd__Disconnect() {
         return mBrickdEClass.getEOperations().get(1);
     }
@@ -3176,7 +3254,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickd__Init() {
         return mBrickdEClass.getEOperations().get(2);
     }
@@ -3187,7 +3264,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickd__GetDevice__String() {
         return mBrickdEClass.getEOperations().get(3);
     }
@@ -3198,7 +3274,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getSubDeviceAdmin() {
         return subDeviceAdminEClass;
     }
@@ -3209,7 +3284,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getSubDeviceAdmin__AddSubDevice__String_String() {
         return subDeviceAdminEClass.getEOperations().get(0);
     }
@@ -3220,7 +3294,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMTFConfigConsumer() {
         return mtfConfigConsumerEClass;
     }
@@ -3231,7 +3304,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EReference getMTFConfigConsumer_TfConfig() {
         return (EReference) mtfConfigConsumerEClass.getEStructuralFeatures().get(0);
     }
@@ -3242,7 +3314,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBaseDevice() {
         return mBaseDeviceEClass;
     }
@@ -3253,7 +3324,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBaseDevice_Logger() {
         return (EAttribute) mBaseDeviceEClass.getEStructuralFeatures().get(0);
     }
@@ -3264,7 +3334,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBaseDevice_Uid() {
         return (EAttribute) mBaseDeviceEClass.getEStructuralFeatures().get(1);
     }
@@ -3275,7 +3344,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBaseDevice_Poll() {
         return (EAttribute) mBaseDeviceEClass.getEStructuralFeatures().get(2);
     }
@@ -3286,7 +3354,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBaseDevice_EnabledA() {
         return (EAttribute) mBaseDeviceEClass.getEStructuralFeatures().get(3);
     }
@@ -3297,7 +3364,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBaseDevice__Init() {
         return mBaseDeviceEClass.getEOperations().get(0);
     }
@@ -3308,7 +3374,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBaseDevice__Enable() {
         return mBaseDeviceEClass.getEOperations().get(1);
     }
@@ -3319,7 +3384,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBaseDevice__Disable() {
         return mBaseDeviceEClass.getEOperations().get(2);
     }
@@ -3330,7 +3394,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMDevice() {
         return mDeviceEClass;
     }
@@ -3341,7 +3404,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDevice_TinkerforgeDevice() {
         return (EAttribute) mDeviceEClass.getEStructuralFeatures().get(0);
     }
@@ -3352,7 +3414,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDevice_IpConnection() {
         return (EAttribute) mDeviceEClass.getEStructuralFeatures().get(1);
     }
@@ -3363,7 +3424,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDevice_ConnectedUid() {
         return (EAttribute) mDeviceEClass.getEStructuralFeatures().get(2);
     }
@@ -3374,7 +3434,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDevice_Position() {
         return (EAttribute) mDeviceEClass.getEStructuralFeatures().get(3);
     }
@@ -3385,7 +3444,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDevice_DeviceIdentifier() {
         return (EAttribute) mDeviceEClass.getEStructuralFeatures().get(4);
     }
@@ -3396,7 +3454,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDevice_Name() {
         return (EAttribute) mDeviceEClass.getEStructuralFeatures().get(5);
     }
@@ -3407,7 +3464,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EReference getMDevice_Brickd() {
         return (EReference) mDeviceEClass.getEStructuralFeatures().get(6);
     }
@@ -3418,7 +3474,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMSubDeviceHolder() {
         return mSubDeviceHolderEClass;
     }
@@ -3429,7 +3484,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EReference getMSubDeviceHolder_Msubdevices() {
         return (EReference) mSubDeviceHolderEClass.getEStructuralFeatures().get(0);
     }
@@ -3440,7 +3494,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMSubDeviceHolder__InitSubDevices() {
         return mSubDeviceHolderEClass.getEOperations().get(0);
     }
@@ -3451,7 +3504,1676 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
+    public EClass getMActor() {
+        return mActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getSwitchSensor() {
+        return switchSensorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getSwitchSensor_SwitchState() {
+        return (EAttribute) switchSensorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getSwitchSensor__FetchSwitchState() {
+        return switchSensorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMSwitchActor() {
+        return mSwitchActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMSwitchActor__TurnSwitch__OnOffValue() {
+        return mSwitchActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getProgrammableSwitchActor() {
+        return programmableSwitchActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getProgrammableSwitchActor__TurnSwitch__OnOffValue_DeviceOptions() {
+        return programmableSwitchActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMInSwitchActor() {
+        return mInSwitchActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getGenericDevice() {
+        return genericDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getGenericDevice_GenericDeviceId() {
+        return (EAttribute) genericDeviceEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getIODevice() {
+        return ioDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMSubDevice() {
+        return mSubDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMSubDevice_SubId() {
+        return (EAttribute) mSubDeviceEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EReference getMSubDevice_Mbrick() {
+        return (EReference) mSubDeviceEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getCallbackListener() {
+        return callbackListenerEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getCallbackListener_CallbackPeriod() {
+        return (EAttribute) callbackListenerEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getInterruptListener() {
+        return interruptListenerEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getInterruptListener_DebouncePeriod() {
+        return (EAttribute) interruptListenerEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMSensor() {
+        return mSensorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMSensor_SensorValue() {
+        return (EAttribute) mSensorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMSensor__FetchSensorValue() {
+        return mSensorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getProgrammableActor() {
+        return programmableActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getProgrammableActor__Action__DeviceOptions() {
+        return programmableActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMTextActor() {
+        return mTextActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMTextActor_Text() {
+        return (EAttribute) mTextActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMTextActor__Write__String() {
+        return mTextActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMLCDSubDevice() {
+        return mlcdSubDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDigitalActor() {
+        return digitalActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDigitalActor_DigitalState() {
+        return (EAttribute) digitalActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getDigitalActor__TurnDigital__HighLowValue() {
+        return digitalActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getDigitalActor__FetchDigitalValue() {
+        return digitalActorEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getNumberActor() {
+        return numberActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getNumberActor__SetNumber__BigDecimal() {
+        return numberActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getColorActor() {
+        return colorActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getColorActor_Color() {
+        return (EAttribute) colorActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getProgrammableColorActor() {
+        return programmableColorActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getProgrammableColorActor__SetSelectedColor__HSBType_DeviceOptions() {
+        return programmableColorActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getSimpleColorActor() {
+        return simpleColorActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getSimpleColorActor__SetSelectedColor__HSBType() {
+        return simpleColorActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getSwitchableColorActor() {
+        return switchableColorActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getSwitchableColorActor_SwitchState() {
+        return (EAttribute) switchableColorActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getSwitchableColorActor__TurnSwitch__OnOffValue() {
+        return switchableColorActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getSwitchableColorActor__SetSelectedColor__HSBType() {
+        return switchableColorActorEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMoveActor() {
+        return moveActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMoveActor_Direction() {
+        return (EAttribute) moveActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMoveActor__Move__UpDownType_DeviceOptions() {
+        return moveActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMoveActor__Stop() {
+        return moveActorEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMoveActor__Moveon__DeviceOptions() {
+        return moveActorEClass.getEOperations().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDimmableActor() {
+        return dimmableActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDimmableActor_MinValue() {
+        return (EAttribute) dimmableActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDimmableActor_MaxValue() {
+        return (EAttribute) dimmableActorEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getDimmableActor__Dimm__IncreaseDecreaseType_DeviceOptions() {
+        return dimmableActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getPercentTypeActor() {
+        return percentTypeActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getPercentTypeActor_PercentValue() {
+        return (EAttribute) percentTypeActorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getPercentTypeActor__SetValue__PercentType_DeviceOptions() {
+        return percentTypeActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getSetPointActor() {
+        return setPointActorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getSetPointActor__SetValue__BigDecimal_DeviceOptions() {
+        return setPointActorEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletDualButton() {
+        return mBrickletDualButtonEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletDualButton_DeviceType() {
+        return (EAttribute) mBrickletDualButtonEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDualButtonDevice() {
+        return dualButtonDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletPiezoSpeaker() {
+        return mBrickletPiezoSpeakerEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletPiezoSpeaker_DeviceType() {
+        return (EAttribute) mBrickletPiezoSpeakerEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDualButtonButton() {
+        return dualButtonButtonEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonButton_DeviceType() {
+        return (EAttribute) dualButtonButtonEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonButton_Position() {
+        return (EAttribute) dualButtonButtonEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletDualButtonV2() {
+        return mBrickletDualButtonV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletDualButtonV2_DeviceType() {
+        return (EAttribute) mBrickletDualButtonV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDualButtonDeviceV2() {
+        return dualButtonDeviceV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDualButtonButtonV2() {
+        return dualButtonButtonV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonButtonV2_DeviceType() {
+        return (EAttribute) dualButtonButtonV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonButtonV2_Position() {
+        return (EAttribute) dualButtonButtonV2EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDualButtonLedV2() {
+        return dualButtonLedV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonLedV2_DeviceType() {
+        return (EAttribute) dualButtonLedV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonLedV2_Position() {
+        return (EAttribute) dualButtonLedV2EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletAccelerometer() {
+        return mBrickletAccelerometerEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAccelerometer_DeviceType() {
+        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAccelerometer_DataRate() {
+        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAccelerometer_FullScale() {
+        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAccelerometer_FilterBandwidth() {
+        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getAccelerometerDevice() {
+        return accelerometerDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getAccelerometerDirection() {
+        return accelerometerDirectionEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getAccelerometerDirection_DeviceType() {
+        return (EAttribute) accelerometerDirectionEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getAccelerometerDirection_Threshold() {
+        return (EAttribute) accelerometerDirectionEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getAccelerometerDirection_Direction() {
+        return (EAttribute) accelerometerDirectionEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getAccelerometerTemperature() {
+        return accelerometerTemperatureEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getAccelerometerTemperature_DeviceType() {
+        return (EAttribute) accelerometerTemperatureEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getAccelerometerLed() {
+        return accelerometerLedEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getAccelerometerLed_DeviceType() {
+        return (EAttribute) accelerometerLedEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletLaserRangeFinder() {
+        return mBrickletLaserRangeFinderEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLaserRangeFinder_DeviceType() {
+        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLaserRangeFinder_DistanceAverageLength() {
+        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLaserRangeFinder_VelocityAverageLength() {
+        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLaserRangeFinder_Mode() {
+        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLaserRangeFinder_EnableLaserOnStartup() {
+        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLaserRangeFinderDevice() {
+        return laserRangeFinderDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLaserRangeFinderLaser() {
+        return laserRangeFinderLaserEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderLaser_DeviceType() {
+        return (EAttribute) laserRangeFinderLaserEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLaserRangeFinderDistance() {
+        return laserRangeFinderDistanceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderDistance_DeviceType() {
+        return (EAttribute) laserRangeFinderDistanceEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderDistance_Threshold() {
+        return (EAttribute) laserRangeFinderDistanceEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLaserRangeFinderVelocity() {
+        return laserRangeFinderVelocityEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderVelocity_DeviceType() {
+        return (EAttribute) laserRangeFinderVelocityEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderVelocity_Threshold() {
+        return (EAttribute) laserRangeFinderVelocityEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletLoadCell() {
+        return mBrickletLoadCellEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLoadCell_DeviceType() {
+        return (EAttribute) mBrickletLoadCellEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletLoadCellV2() {
+        return mBrickletLoadCellV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLoadCellV2_DeviceType() {
+        return (EAttribute) mBrickletLoadCellV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellDevice() {
+        return loadCellDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellDeviceV2() {
+        return loadCellDeviceV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellWeight() {
+        return loadCellWeightEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeight_DeviceType() {
+        return (EAttribute) loadCellWeightEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeight_Threshold() {
+        return (EAttribute) loadCellWeightEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeight_MovingAverage() {
+        return (EAttribute) loadCellWeightEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getLoadCellWeight__Init() {
+        return loadCellWeightEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getLoadCellWeight__Tare() {
+        return loadCellWeightEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellWeightV2() {
+        return loadCellWeightV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeightV2_DeviceType() {
+        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeightV2_Threshold() {
+        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellWeightV2_MovingAverage() {
+        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getLoadCellWeightV2__Init() {
+        return loadCellWeightV2EClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getLoadCellWeightV2__Tare() {
+        return loadCellWeightV2EClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellLed() {
+        return loadCellLedEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellLed_DeviceType() {
+        return (EAttribute) loadCellLedEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellLedV2() {
+        return loadCellLedV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellLedV2_DeviceType() {
+        return (EAttribute) loadCellLedV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletColor() {
+        return mBrickletColorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletColor_DeviceType() {
+        return (EAttribute) mBrickletColorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletColor_Gain() {
+        return (EAttribute) mBrickletColorEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletColor_IntegrationTime() {
+        return (EAttribute) mBrickletColorEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getBrickletColorDevice() {
+        return brickletColorDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getColorColor() {
+        return colorColorEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getColorColor_DeviceType() {
+        return (EAttribute) colorColorEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getColorIlluminance() {
+        return colorIlluminanceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getColorIlluminance_DeviceType() {
+        return (EAttribute) colorIlluminanceEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getColorIlluminance_Gain() {
+        return (EAttribute) colorIlluminanceEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getColorIlluminance_IntegrationTime() {
+        return (EAttribute) colorIlluminanceEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getColorColorTemperature() {
+        return colorColorTemperatureEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getColorColorTemperature_DeviceType() {
+        return (EAttribute) colorColorTemperatureEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getColorLed() {
+        return colorLedEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getColorLed_DeviceType() {
+        return (EAttribute) colorLedEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDualButtonLed() {
+        return dualButtonLedEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonLed_DeviceType() {
+        return (EAttribute) dualButtonLedEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonLed_Position() {
+        return (EAttribute) dualButtonLedEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletLinearPoti() {
+        return mBrickletLinearPotiEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLinearPoti_DeviceType() {
+        return (EAttribute) mBrickletLinearPotiEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletRotaryEncoder() {
+        return mBrickletRotaryEncoderEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletRotaryEncoder_DeviceType() {
+        return (EAttribute) mBrickletRotaryEncoderEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getRotaryEncoderDevice() {
+        return rotaryEncoderDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getRotaryEncoder() {
+        return rotaryEncoderEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRotaryEncoder_DeviceType() {
+        return (EAttribute) rotaryEncoderEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getRotaryEncoder__Clear() {
+        return rotaryEncoderEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getRotaryEncoderButton() {
+        return rotaryEncoderButtonEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRotaryEncoderButton_DeviceType() {
+        return (EAttribute) rotaryEncoderButtonEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletJoystick() {
+        return mBrickletJoystickEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletJoystick_DeviceType() {
+        return (EAttribute) mBrickletJoystickEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getJoystickDevice() {
+        return joystickDeviceEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getJoystickXPosition() {
+        return joystickXPositionEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getJoystickXPosition_DeviceType() {
+        return (EAttribute) joystickXPositionEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getJoystickYPosition() {
+        return joystickYPositionEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getJoystickYPosition_DeviceType() {
+        return (EAttribute) joystickYPositionEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getJoystickButton() {
+        return joystickButtonEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getJoystickButton_DeviceType() {
+        return (EAttribute) joystickButtonEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMBrickletAnalogOutV2() {
+        return mBrickletAnalogOutV2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAnalogOutV2_DeviceType() {
+        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAnalogOutV2_MinValueDevice() {
+        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletAnalogOutV2_MaxValueDevice() {
+        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getMBrickServo() {
         return mBrickServoEClass;
     }
@@ -3462,7 +5184,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickServo_DeviceType() {
         return (EAttribute) mBrickServoEClass.getEStructuralFeatures().get(0);
     }
@@ -3473,7 +5194,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickServo__Init() {
         return mBrickServoEClass.getEOperations().get(0);
     }
@@ -3484,9 +5204,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getTFBrickDCConfiguration() {
-        return tfBrickDCConfigurationEClass;
+    public EClass getMServo() {
+        return mServoEClass;
     }
 
     /**
@@ -3495,9 +5214,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EAttribute getTFBrickDCConfiguration_Velocity() {
-        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(0);
+    public EAttribute getMServo_DeviceType() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -3506,9 +5224,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EAttribute getTFBrickDCConfiguration_Acceleration() {
-        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(1);
+    public EAttribute getMServo_Velocity() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -3517,9 +5234,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EAttribute getTFBrickDCConfiguration_PwmFrequency() {
-        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(2);
+    public EAttribute getMServo_Acceleration() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -3528,9 +5244,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EAttribute getTFBrickDCConfiguration_DriveMode() {
-        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(3);
+    public EAttribute getMServo_MaxPosition() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -3539,7 +5254,86 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
+    public EAttribute getMServo_MinPosition() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMServo_PulseWidthMin() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMServo_PulseWidthMax() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(6);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMServo_Period() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(7);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMServo_OutputVoltage() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(8);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMServo_TargetPosition() {
+        return (EAttribute) mServoEClass.getEStructuralFeatures().get(9);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMServo__Init() {
+        return mServoEClass.getEOperations().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EOperation getMServo__SetPoint__Short_int_int() {
+        return mServoEClass.getEOperations().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getMBrickDC() {
         return mBrickDCEClass;
     }
@@ -3550,40 +5344,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EAttribute getMBrickDC_Threshold() {
-        return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickDC_MaxVelocity() {
-        return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickDC_MinVelocity() {
-        return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EAttribute getMBrickDC_DeviceType() {
         return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(0);
     }
@@ -3594,7 +5354,36 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
+    public EAttribute getMBrickDC_Threshold() {
+        return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickDC_MaxVelocity() {
+        return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickDC_MinVelocity() {
+        return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EAttribute getMBrickDC_Velocity() {
         return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(4);
     }
@@ -3605,7 +5394,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickDC_Targetvelocity() {
         return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(5);
     }
@@ -3616,7 +5404,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickDC_CurrentVelocity() {
         return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(6);
     }
@@ -3627,7 +5414,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickDC_Acceleration() {
         return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(7);
     }
@@ -3638,7 +5424,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickDC_PwmFrequency() {
         return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(8);
     }
@@ -3649,7 +5434,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickDC_DriveMode() {
         return (EAttribute) mBrickDCEClass.getEStructuralFeatures().get(9);
     }
@@ -3660,7 +5444,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickDC__Init() {
         return mBrickDCEClass.getEOperations().get(0);
     }
@@ -3671,7 +5454,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickDC__SetSpeed__Short_int_String() {
         return mBrickDCEClass.getEOperations().get(1);
     }
@@ -4042,7 +5824,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMDualRelayBricklet() {
         return mDualRelayBrickletEClass;
     }
@@ -4053,7 +5834,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDualRelayBricklet_DeviceType() {
         return (EAttribute) mDualRelayBrickletEClass.getEStructuralFeatures().get(0);
     }
@@ -4064,7 +5844,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMIndustrialQuadRelayBricklet() {
         return mIndustrialQuadRelayBrickletEClass;
     }
@@ -4075,7 +5854,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMIndustrialQuadRelayBricklet_DeviceType() {
         return (EAttribute) mIndustrialQuadRelayBrickletEClass.getEStructuralFeatures().get(0);
     }
@@ -4086,7 +5864,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMIndustrialQuadRelay() {
         return mIndustrialQuadRelayEClass;
     }
@@ -4097,7 +5874,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMIndustrialQuadRelay_DeviceType() {
         return (EAttribute) mIndustrialQuadRelayEClass.getEStructuralFeatures().get(0);
     }
@@ -4108,7 +5884,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletIndustrialDigitalIn4() {
         return mBrickletIndustrialDigitalIn4EClass;
     }
@@ -4119,7 +5894,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletIndustrialDigitalIn4_DeviceType() {
         return (EAttribute) mBrickletIndustrialDigitalIn4EClass.getEStructuralFeatures().get(0);
     }
@@ -4130,7 +5904,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMIndustrialDigitalIn() {
         return mIndustrialDigitalInEClass;
     }
@@ -4141,7 +5914,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMIndustrialDigitalIn_DeviceType() {
         return (EAttribute) mIndustrialDigitalInEClass.getEStructuralFeatures().get(0);
     }
@@ -4152,7 +5924,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletIndustrialDigitalOut4() {
         return mBrickletIndustrialDigitalOut4EClass;
     }
@@ -4163,7 +5934,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletIndustrialDigitalOut4_DeviceType() {
         return (EAttribute) mBrickletIndustrialDigitalOut4EClass.getEStructuralFeatures().get(0);
     }
@@ -4174,7 +5944,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getDigitalActorDigitalOut4() {
         return digitalActorDigitalOut4EClass;
     }
@@ -4185,7 +5954,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorDigitalOut4_Pin() {
         return (EAttribute) digitalActorDigitalOut4EClass.getEStructuralFeatures().get(0);
     }
@@ -4196,7 +5964,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorDigitalOut4_DeviceType() {
         return (EAttribute) digitalActorDigitalOut4EClass.getEStructuralFeatures().get(1);
     }
@@ -4207,1292 +5974,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getDigitalActor() {
-        return digitalActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDigitalActor_DigitalState() {
-        return (EAttribute) digitalActorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getDigitalActor__TurnDigital__HighLowValue() {
-        return digitalActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getDigitalActor__FetchDigitalValue() {
-        return digitalActorEClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getNumberActor() {
-        return numberActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getNumberActor__SetNumber__BigDecimal() {
-        return numberActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getColorActor() {
-        return colorActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getColorActor_Color() {
-        return (EAttribute) colorActorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getProgrammableColorActor() {
-        return programmableColorActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getProgrammableColorActor__SetSelectedColor__HSBType_DeviceOptions() {
-        return programmableColorActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getSimpleColorActor() {
-        return simpleColorActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getSimpleColorActor__SetSelectedColor__HSBType() {
-        return simpleColorActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMoveActor() {
-        return moveActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMoveActor_Direction() {
-        return (EAttribute) moveActorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getMoveActor__Move__UpDownType_DeviceOptions() {
-        return moveActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getMoveActor__Stop() {
-        return moveActorEClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getMoveActor__Moveon__DeviceOptions() {
-        return moveActorEClass.getEOperations().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getDimmableActor() {
-        return dimmableActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDimmableActor_MinValue() {
-        return (EAttribute) dimmableActorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDimmableActor_MaxValue() {
-        return (EAttribute) dimmableActorEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getDimmableActor__Dimm__IncreaseDecreaseType_DeviceOptions() {
-        return dimmableActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getPercentTypeActor() {
-        return percentTypeActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getPercentTypeActor_PercentValue() {
-        return (EAttribute) percentTypeActorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getPercentTypeActor__SetValue__PercentType_DeviceOptions() {
-        return percentTypeActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getSetPointActor() {
-        return setPointActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getSetPointActor__SetValue__BigDecimal_DeviceOptions() {
-        return setPointActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletDualButton() {
-        return mBrickletDualButtonEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletDualButton_DeviceType() {
-        return (EAttribute) mBrickletDualButtonEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getDualButtonDevice() {
-        return dualButtonDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletPiezoSpeaker() {
-        return mBrickletPiezoSpeakerEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletPiezoSpeaker_DeviceType() {
-        return (EAttribute) mBrickletPiezoSpeakerEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getDualButtonButton() {
-        return dualButtonButtonEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDualButtonButton_DeviceType() {
-        return (EAttribute) dualButtonButtonEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDualButtonButton_Position() {
-        return (EAttribute) dualButtonButtonEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getMBrickletDualButtonV2() {
-        return mBrickletDualButtonV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletDualButtonV2_DeviceType() {
-        return (EAttribute) mBrickletDualButtonV2EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getDualButtonDeviceV2() {
-        return dualButtonDeviceV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getDualButtonButtonV2() {
-        return dualButtonButtonV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getDualButtonButtonV2_DeviceType() {
-        return (EAttribute) dualButtonButtonV2EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getDualButtonButtonV2_Position() {
-        return (EAttribute) dualButtonButtonV2EClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getDualButtonLedV2() {
-        return dualButtonLedV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getDualButtonLedV2_DeviceType() {
-        return (EAttribute) dualButtonLedV2EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getDualButtonLedV2_Position() {
-        return (EAttribute) dualButtonLedV2EClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletAccelerometer() {
-        return mBrickletAccelerometerEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletAccelerometer_DeviceType() {
-        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletAccelerometer_DataRate() {
-        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletAccelerometer_FullScale() {
-        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletAccelerometer_FilterBandwidth() {
-        return (EAttribute) mBrickletAccelerometerEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getAccelerometerDevice() {
-        return accelerometerDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getAccelerometerDirection() {
-        return accelerometerDirectionEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getAccelerometerDirection_DeviceType() {
-        return (EAttribute) accelerometerDirectionEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getAccelerometerDirection_Threshold() {
-        return (EAttribute) accelerometerDirectionEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getAccelerometerDirection_Direction() {
-        return (EAttribute) accelerometerDirectionEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getAccelerometerTemperature() {
-        return accelerometerTemperatureEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getAccelerometerTemperature_DeviceType() {
-        return (EAttribute) accelerometerTemperatureEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getAccelerometerLed() {
-        return accelerometerLedEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getAccelerometerLed_DeviceType() {
-        return (EAttribute) accelerometerLedEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletLaserRangeFinder() {
-        return mBrickletLaserRangeFinderEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLaserRangeFinder_DeviceType() {
-        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLaserRangeFinder_DistanceAverageLength() {
-        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLaserRangeFinder_VelocityAverageLength() {
-        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLaserRangeFinder_Mode() {
-        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLaserRangeFinder_EnableLaserOnStartup() {
-        return (EAttribute) mBrickletLaserRangeFinderEClass.getEStructuralFeatures().get(4);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLaserRangeFinderDevice() {
-        return laserRangeFinderDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLaserRangeFinderLaser() {
-        return laserRangeFinderLaserEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderLaser_DeviceType() {
-        return (EAttribute) laserRangeFinderLaserEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLaserRangeFinderDistance() {
-        return laserRangeFinderDistanceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderDistance_DeviceType() {
-        return (EAttribute) laserRangeFinderDistanceEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderDistance_Threshold() {
-        return (EAttribute) laserRangeFinderDistanceEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLaserRangeFinderVelocity() {
-        return laserRangeFinderVelocityEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderVelocity_DeviceType() {
-        return (EAttribute) laserRangeFinderVelocityEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderVelocity_Threshold() {
-        return (EAttribute) laserRangeFinderVelocityEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletColor() {
-        return mBrickletColorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletColor_DeviceType() {
-        return (EAttribute) mBrickletColorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletColor_Gain() {
-        return (EAttribute) mBrickletColorEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletColor_IntegrationTime() {
-        return (EAttribute) mBrickletColorEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getBrickletColorDevice() {
-        return brickletColorDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getColorColor() {
-        return colorColorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getColorColor_DeviceType() {
-        return (EAttribute) colorColorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getColorIlluminance() {
-        return colorIlluminanceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getColorIlluminance_DeviceType() {
-        return (EAttribute) colorIlluminanceEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getColorIlluminance_Gain() {
-        return (EAttribute) colorIlluminanceEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getColorIlluminance_IntegrationTime() {
-        return (EAttribute) colorIlluminanceEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getColorColorTemperature() {
-        return colorColorTemperatureEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getColorColorTemperature_DeviceType() {
-        return (EAttribute) colorColorTemperatureEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getColorLed() {
-        return colorLedEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getColorLed_DeviceType() {
-        return (EAttribute) colorLedEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getDualButtonLed() {
-        return dualButtonLedEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDualButtonLed_DeviceType() {
-        return (EAttribute) dualButtonLedEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDualButtonLed_Position() {
-        return (EAttribute) dualButtonLedEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletLinearPoti() {
-        return mBrickletLinearPotiEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLinearPoti_DeviceType() {
-        return (EAttribute) mBrickletLinearPotiEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletRotaryEncoder() {
-        return mBrickletRotaryEncoderEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletRotaryEncoder_DeviceType() {
-        return (EAttribute) mBrickletRotaryEncoderEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getRotaryEncoderDevice() {
-        return rotaryEncoderDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getRotaryEncoder() {
-        return rotaryEncoderEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRotaryEncoder_DeviceType() {
-        return (EAttribute) rotaryEncoderEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getRotaryEncoder__Clear() {
-        return rotaryEncoderEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getRotaryEncoderButton() {
-        return rotaryEncoderButtonEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRotaryEncoderButton_DeviceType() {
-        return (EAttribute) rotaryEncoderButtonEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletJoystick() {
-        return mBrickletJoystickEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletJoystick_DeviceType() {
-        return (EAttribute) mBrickletJoystickEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getJoystickDevice() {
-        return joystickDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getJoystickXPosition() {
-        return joystickXPositionEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getJoystickXPosition_DeviceType() {
-        return (EAttribute) joystickXPositionEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getJoystickYPosition() {
-        return joystickYPositionEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getJoystickYPosition_DeviceType() {
-        return (EAttribute) joystickYPositionEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getJoystickButton() {
-        return joystickButtonEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getJoystickButton_DeviceType() {
-        return (EAttribute) joystickButtonEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getMBrickletAnalogOutV2() {
-        return mBrickletAnalogOutV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletAnalogOutV2_DeviceType() {
-        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletAnalogOutV2_MinValueDevice() {
-        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletAnalogOutV2_MaxValueDevice() {
-        return (EAttribute) mBrickletAnalogOutV2EClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMBrickletLEDStrip() {
-        return mBrickletLEDStripEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLEDStrip_DeviceType() {
-        return (EAttribute) mBrickletLEDStripEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLEDStrip_ColorMapping() {
-        return (EAttribute) mBrickletLEDStripEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLEDGroup() {
-        return ledGroupEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLEDGroup_DeviceType() {
-        return (EAttribute) ledGroupEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getMBrickletSegmentDisplay4x7() {
         return mBrickletSegmentDisplay4x7EClass;
     }
@@ -5503,7 +5984,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletSegmentDisplay4x7_DeviceType() {
         return (EAttribute) mBrickletSegmentDisplay4x7EClass.getEStructuralFeatures().get(0);
     }
@@ -5514,7 +5994,56 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
+    public EClass getMBrickletLEDStrip() {
+        return mBrickletLEDStripEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLEDStrip_DeviceType() {
+        return (EAttribute) mBrickletLEDStripEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletLEDStrip_ColorMapping() {
+        return (EAttribute) mBrickletLEDStripEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLEDGroup() {
+        return ledGroupEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLEDGroup_DeviceType() {
+        return (EAttribute) ledGroupEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getDigitalActorIO16() {
         return digitalActorIO16EClass;
     }
@@ -5525,7 +6054,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO16_DeviceType() {
         return (EAttribute) digitalActorIO16EClass.getEStructuralFeatures().get(0);
     }
@@ -5536,7 +6064,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO16_Port() {
         return (EAttribute) digitalActorIO16EClass.getEStructuralFeatures().get(1);
     }
@@ -5547,7 +6074,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO16_Pin() {
         return (EAttribute) digitalActorIO16EClass.getEStructuralFeatures().get(2);
     }
@@ -5558,7 +6084,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO16_DefaultState() {
         return (EAttribute) digitalActorIO16EClass.getEStructuralFeatures().get(3);
     }
@@ -5569,7 +6094,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO16_KeepOnReconnect() {
         return (EAttribute) digitalActorIO16EClass.getEStructuralFeatures().get(4);
     }
@@ -5580,7 +6104,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getDigitalActorIO16__TurnDigital__HighLowValue() {
         return digitalActorIO16EClass.getEOperations().get(0);
     }
@@ -5591,7 +6114,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getDigitalActorIO16__FetchDigitalValue() {
         return digitalActorIO16EClass.getEOperations().get(1);
     }
@@ -5602,183 +6124,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getMActor() {
-        return mActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getSwitchSensor() {
-        return switchSensorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getSwitchSensor_SwitchState() {
-        return (EAttribute) switchSensorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getSwitchSensor__FetchSwitchState() {
-        return switchSensorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMSwitchActor() {
-        return mSwitchActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getMSwitchActor__TurnSwitch__OnOffValue() {
-        return mSwitchActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getProgrammableSwitchActor() {
-        return programmableSwitchActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getProgrammableSwitchActor__TurnSwitch__OnOffValue_DeviceOptions() {
-        return programmableSwitchActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMInSwitchActor() {
-        return mInSwitchActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getGenericDevice() {
-        return genericDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getGenericDevice_GenericDeviceId() {
-        return (EAttribute) genericDeviceEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFIOActorConfiguration() {
-        return tfioActorConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFIOActorConfiguration_DefaultState() {
-        return (EAttribute) tfioActorConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFIOActorConfiguration_KeepOnReconnect() {
-        return (EAttribute) tfioActorConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFInterruptListenerConfiguration() {
-        return tfInterruptListenerConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFInterruptListenerConfiguration_DebouncePeriod() {
-        return (EAttribute) tfInterruptListenerConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getMBrickletIO16() {
         return mBrickletIO16EClass;
     }
@@ -5789,7 +6134,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletIO16_DeviceType() {
         return (EAttribute) mBrickletIO16EClass.getEStructuralFeatures().get(0);
     }
@@ -5800,40 +6144,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getIODevice() {
-        return ioDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFIOSensorConfiguration() {
-        return tfioSensorConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFIOSensorConfiguration_PullUpResistorEnabled() {
-        return (EAttribute) tfioSensorConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getDigitalSensor() {
         return digitalSensorEClass;
     }
@@ -5844,7 +6154,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalSensor_DeviceType() {
         return (EAttribute) digitalSensorEClass.getEStructuralFeatures().get(0);
     }
@@ -5855,7 +6164,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalSensor_PullUpResistorEnabled() {
         return (EAttribute) digitalSensorEClass.getEStructuralFeatures().get(1);
     }
@@ -5866,7 +6174,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalSensor_Port() {
         return (EAttribute) digitalSensorEClass.getEStructuralFeatures().get(2);
     }
@@ -5877,7 +6184,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalSensor_Pin() {
         return (EAttribute) digitalSensorEClass.getEStructuralFeatures().get(3);
     }
@@ -5888,7 +6194,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletIO4() {
         return mBrickletIO4EClass;
     }
@@ -5899,7 +6204,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletIO4_DeviceType() {
         return (EAttribute) mBrickletIO4EClass.getEStructuralFeatures().get(0);
     }
@@ -5910,7 +6214,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getIO4Device() {
         return io4DeviceEClass;
     }
@@ -5921,7 +6224,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getDigitalSensorIO4() {
         return digitalSensorIO4EClass;
     }
@@ -5932,7 +6234,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalSensorIO4_DeviceType() {
         return (EAttribute) digitalSensorIO4EClass.getEStructuralFeatures().get(0);
     }
@@ -5943,7 +6244,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalSensorIO4_PullUpResistorEnabled() {
         return (EAttribute) digitalSensorIO4EClass.getEStructuralFeatures().get(1);
     }
@@ -5954,7 +6254,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalSensorIO4_Pin() {
         return (EAttribute) digitalSensorIO4EClass.getEStructuralFeatures().get(2);
     }
@@ -5965,7 +6264,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getDigitalActorIO4() {
         return digitalActorIO4EClass;
     }
@@ -5976,7 +6274,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO4_DeviceType() {
         return (EAttribute) digitalActorIO4EClass.getEStructuralFeatures().get(0);
     }
@@ -5987,7 +6284,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO4_Pin() {
         return (EAttribute) digitalActorIO4EClass.getEStructuralFeatures().get(1);
     }
@@ -5998,7 +6294,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO4_DefaultState() {
         return (EAttribute) digitalActorIO4EClass.getEStructuralFeatures().get(2);
     }
@@ -6009,7 +6304,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDigitalActorIO4_KeepOnReconnect() {
         return (EAttribute) digitalActorIO4EClass.getEStructuralFeatures().get(3);
     }
@@ -6020,7 +6314,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getDigitalActorIO4__TurnDigital__HighLowValue() {
         return digitalActorIO4EClass.getEOperations().get(0);
     }
@@ -6031,7 +6324,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getDigitalActorIO4__FetchDigitalValue() {
         return digitalActorIO4EClass.getEOperations().get(1);
     }
@@ -6042,7 +6334,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletMultiTouch() {
         return mBrickletMultiTouchEClass;
     }
@@ -6053,7 +6344,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletMultiTouch_DeviceType() {
         return (EAttribute) mBrickletMultiTouchEClass.getEStructuralFeatures().get(0);
     }
@@ -6064,7 +6354,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletMultiTouch_Recalibrate() {
         return (EAttribute) mBrickletMultiTouchEClass.getEStructuralFeatures().get(1);
     }
@@ -6075,7 +6364,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletMultiTouch_Sensitivity() {
         return (EAttribute) mBrickletMultiTouchEClass.getEStructuralFeatures().get(2);
     }
@@ -6086,7 +6374,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMultiTouchDevice() {
         return multiTouchDeviceEClass;
     }
@@ -6097,7 +6384,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMultiTouchDevice_Pin() {
         return (EAttribute) multiTouchDeviceEClass.getEStructuralFeatures().get(0);
     }
@@ -6108,7 +6394,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMultiTouchDevice_DisableElectrode() {
         return (EAttribute) multiTouchDeviceEClass.getEStructuralFeatures().get(1);
     }
@@ -6119,7 +6404,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getElectrode() {
         return electrodeEClass;
     }
@@ -6130,7 +6414,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getElectrode_DeviceType() {
         return (EAttribute) electrodeEClass.getEStructuralFeatures().get(0);
     }
@@ -6141,7 +6424,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getProximity() {
         return proximityEClass;
     }
@@ -6152,7 +6434,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getProximity_DeviceType() {
         return (EAttribute) proximityEClass.getEStructuralFeatures().get(0);
     }
@@ -6163,7 +6444,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletMotionDetector() {
         return mBrickletMotionDetectorEClass;
     }
@@ -6174,7 +6454,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletMotionDetector_DeviceType() {
         return (EAttribute) mBrickletMotionDetectorEClass.getEStructuralFeatures().get(0);
     }
@@ -6185,7 +6464,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletMotionDetector__Init() {
         return mBrickletMotionDetectorEClass.getEOperations().get(0);
     }
@@ -6196,7 +6474,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletHallEffect() {
         return mBrickletHallEffectEClass;
     }
@@ -6207,7 +6484,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletHallEffect_DeviceType() {
         return (EAttribute) mBrickletHallEffectEClass.getEStructuralFeatures().get(0);
     }
@@ -6218,7 +6494,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletHallEffect__Init() {
         return mBrickletHallEffectEClass.getEOperations().get(0);
     }
@@ -6229,40 +6504,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getMSubDevice() {
-        return mSubDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMSubDevice_SubId() {
-        return (EAttribute) mSubDeviceEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EReference getMSubDevice_Mbrick() {
-        return (EReference) mSubDeviceEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getMDualRelay() {
         return mDualRelayEClass;
     }
@@ -6273,7 +6514,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMDualRelay_DeviceType() {
         return (EAttribute) mDualRelayEClass.getEStructuralFeatures().get(0);
     }
@@ -6284,7 +6524,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletRemoteSwitch() {
         return mBrickletRemoteSwitchEClass;
     }
@@ -6295,7 +6534,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletRemoteSwitch_DeviceType() {
         return (EAttribute) mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(0);
     }
@@ -6306,7 +6544,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletRemoteSwitch_TypeADevices() {
         return (EAttribute) mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(1);
     }
@@ -6317,7 +6554,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletRemoteSwitch_TypeBDevices() {
         return (EAttribute) mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(2);
     }
@@ -6328,7 +6564,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletRemoteSwitch_TypeCDevices() {
         return (EAttribute) mBrickletRemoteSwitchEClass.getEStructuralFeatures().get(3);
     }
@@ -6339,7 +6574,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getRemoteSwitch() {
         return remoteSwitchEClass;
     }
@@ -6350,7 +6584,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getRemoteSwitchA() {
         return remoteSwitchAEClass;
     }
@@ -6361,7 +6594,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchA_DeviceType() {
         return (EAttribute) remoteSwitchAEClass.getEStructuralFeatures().get(0);
     }
@@ -6372,7 +6604,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchA_HouseCode() {
         return (EAttribute) remoteSwitchAEClass.getEStructuralFeatures().get(1);
     }
@@ -6383,7 +6614,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchA_ReceiverCode() {
         return (EAttribute) remoteSwitchAEClass.getEStructuralFeatures().get(2);
     }
@@ -6394,7 +6624,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchA_Repeats() {
         return (EAttribute) remoteSwitchAEClass.getEStructuralFeatures().get(3);
     }
@@ -6405,7 +6634,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getRemoteSwitchB() {
         return remoteSwitchBEClass;
     }
@@ -6416,7 +6644,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchB_DeviceType() {
         return (EAttribute) remoteSwitchBEClass.getEStructuralFeatures().get(0);
     }
@@ -6427,7 +6654,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchB_Address() {
         return (EAttribute) remoteSwitchBEClass.getEStructuralFeatures().get(1);
     }
@@ -6438,7 +6664,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchB_Unit() {
         return (EAttribute) remoteSwitchBEClass.getEStructuralFeatures().get(2);
     }
@@ -6449,7 +6674,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchB_Repeats() {
         return (EAttribute) remoteSwitchBEClass.getEStructuralFeatures().get(3);
     }
@@ -6460,7 +6684,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchB_AbsDimmValue() {
         return (EAttribute) remoteSwitchBEClass.getEStructuralFeatures().get(4);
     }
@@ -6471,7 +6694,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getRemoteSwitchC() {
         return remoteSwitchCEClass;
     }
@@ -6482,7 +6704,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchC_DeviceType() {
         return (EAttribute) remoteSwitchCEClass.getEStructuralFeatures().get(0);
     }
@@ -6493,7 +6714,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchC_SystemCode() {
         return (EAttribute) remoteSwitchCEClass.getEStructuralFeatures().get(1);
     }
@@ -6504,7 +6724,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchC_DeviceCode() {
         return (EAttribute) remoteSwitchCEClass.getEStructuralFeatures().get(2);
     }
@@ -6515,7 +6734,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getRemoteSwitchC_Repeats() {
         return (EAttribute) remoteSwitchCEClass.getEStructuralFeatures().get(3);
     }
@@ -6526,967 +6744,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getTFNullConfiguration() {
-        return tfNullConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFPTCBrickletConfiguration() {
-        return tfptcBrickletConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFPTCBrickletConfiguration_NoiseRejectionFilter() {
-        return (EAttribute) tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFPTCBrickletConfiguration_WireMode() {
-        return (EAttribute) tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFIndustrialDual020mAConfiguration() {
-        return tfIndustrialDual020mAConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFIndustrialDual020mAConfiguration_SampleRate() {
-        return (EAttribute) tfIndustrialDual020mAConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFServoConfiguration() {
-        return tfServoConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFServoConfiguration_Velocity() {
-        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFServoConfiguration_Acceleration() {
-        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFServoConfiguration_ServoVoltage() {
-        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFServoConfiguration_PulseWidthMin() {
-        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFServoConfiguration_PulseWidthMax() {
-        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(4);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFServoConfiguration_Period() {
-        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(5);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFServoConfiguration_OutputVoltage() {
-        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(6);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getBrickletRemoteSwitchConfiguration() {
-        return brickletRemoteSwitchConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletRemoteSwitchConfiguration_TypeADevices() {
-        return (EAttribute) brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletRemoteSwitchConfiguration_TypeBDevices() {
-        return (EAttribute) brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletRemoteSwitchConfiguration_TypeCDevices() {
-        return (EAttribute) brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getRemoteSwitchAConfiguration() {
-        return remoteSwitchAConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchAConfiguration_HouseCode() {
-        return (EAttribute) remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchAConfiguration_ReceiverCode() {
-        return (EAttribute) remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchAConfiguration_Repeats() {
-        return (EAttribute) remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getRemoteSwitchBConfiguration() {
-        return remoteSwitchBConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchBConfiguration_Address() {
-        return (EAttribute) remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchBConfiguration_Unit() {
-        return (EAttribute) remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchBConfiguration_Repeats() {
-        return (EAttribute) remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getRemoteSwitchCConfiguration() {
-        return remoteSwitchCConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchCConfiguration_SystemCode() {
-        return (EAttribute) remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchCConfiguration_DeviceCode() {
-        return (EAttribute) remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getRemoteSwitchCConfiguration_Repeats() {
-        return (EAttribute) remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMultiTouchDeviceConfiguration() {
-        return multiTouchDeviceConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMultiTouchDeviceConfiguration_DisableElectrode() {
-        return (EAttribute) multiTouchDeviceConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getBrickletMultiTouchConfiguration() {
-        return brickletMultiTouchConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletMultiTouchConfiguration_Recalibrate() {
-        return (EAttribute) brickletMultiTouchConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletMultiTouchConfiguration_Sensitivity() {
-        return (EAttribute) brickletMultiTouchConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getDimmableConfiguration() {
-        return dimmableConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDimmableConfiguration_MinValue() {
-        return (EAttribute) dimmableConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDimmableConfiguration_MaxValue() {
-        return (EAttribute) dimmableConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getButtonConfiguration() {
-        return buttonConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getButtonConfiguration_Tactile() {
-        return (EAttribute) buttonConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getDualButtonLEDConfiguration() {
-        return dualButtonLEDConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getDualButtonLEDConfiguration_Autotoggle() {
-        return (EAttribute) dualButtonLEDConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLEDStripConfiguration() {
-        return ledStripConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLEDStripConfiguration_Chiptype() {
-        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLEDStripConfiguration_Frameduration() {
-        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLEDStripConfiguration_Clockfrequency() {
-        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLEDStripConfiguration_ColorMapping() {
-        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLEDStripConfiguration_SubDevices() {
-        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(4);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLEDGroupConfiguration() {
-        return ledGroupConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLEDGroupConfiguration_Leds() {
-        return (EAttribute) ledGroupConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getBrickletColorConfiguration() {
-        return brickletColorConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletColorConfiguration_Gain() {
-        return (EAttribute) brickletColorConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletColorConfiguration_IntegrationTime() {
-        return (EAttribute) brickletColorConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getBrickletAccelerometerConfiguration() {
-        return brickletAccelerometerConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletAccelerometerConfiguration_DataRate() {
-        return (EAttribute) brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletAccelerometerConfiguration_FullScale() {
-        return (EAttribute) brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletAccelerometerConfiguration_FilterBandwidth() {
-        return (EAttribute) brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getBrickletOLEDConfiguration() {
-        return brickletOLEDConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getBrickletOLEDConfiguration_Contrast() {
-        return (EAttribute) brickletOLEDConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getBrickletOLEDConfiguration_Invert() {
-        return (EAttribute) brickletOLEDConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getNFCConfiguration() {
-        return nfcConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getNFCConfiguration_ResetOldValues() {
-        return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getNFCConfiguration_TriggeredScan() {
-        return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getNFCConfiguration_DelayAfterScan() {
-        return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EEnum getAccelerometerCoordinate() {
-        return accelerometerCoordinateEEnum;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EEnum getBrickStepperSubIds() {
-        return brickStepperSubIdsEEnum;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMServo() {
-        return mServoEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_DeviceType() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_Velocity() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_Acceleration() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_MaxPosition() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_MinPosition() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(4);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_PulseWidthMin() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(5);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_PulseWidthMax() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(6);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_Period() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(7);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_OutputVoltage() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(8);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMServo_TargetPosition() {
-        return (EAttribute) mServoEClass.getEStructuralFeatures().get(9);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getMServo__Init() {
-        return mServoEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getMServo__SetPoint__Short_int_int() {
-        return mServoEClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getCallbackListener() {
-        return callbackListenerEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getCallbackListener_CallbackPeriod() {
-        return (EAttribute) callbackListenerEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getInterruptListener() {
-        return interruptListenerEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getInterruptListener_DebouncePeriod() {
-        return (EAttribute) interruptListenerEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMSensor() {
-        return mSensorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMSensor_SensorValue() {
-        return (EAttribute) mSensorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getMSensor__FetchSensorValue() {
-        return mSensorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getProgrammableActor() {
-        return programmableActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getProgrammableActor__Action__DeviceOptions() {
-        return programmableActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getMBrickletHumidity() {
         return mBrickletHumidityEClass;
     }
@@ -7497,7 +6754,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletHumidity_DeviceType() {
         return (EAttribute) mBrickletHumidityEClass.getEStructuralFeatures().get(0);
     }
@@ -7508,7 +6764,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletHumidity_Threshold() {
         return (EAttribute) mBrickletHumidityEClass.getEStructuralFeatures().get(1);
     }
@@ -7519,7 +6774,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletHumidity__Init() {
         return mBrickletHumidityEClass.getEOperations().get(0);
     }
@@ -7530,7 +6784,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletDistanceIR() {
         return mBrickletDistanceIREClass;
     }
@@ -7541,7 +6794,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletDistanceIR_DeviceType() {
         return (EAttribute) mBrickletDistanceIREClass.getEStructuralFeatures().get(0);
     }
@@ -7552,7 +6804,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletDistanceIR_Threshold() {
         return (EAttribute) mBrickletDistanceIREClass.getEStructuralFeatures().get(1);
     }
@@ -7563,7 +6814,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletDistanceIR__Init() {
         return mBrickletDistanceIREClass.getEOperations().get(0);
     }
@@ -7574,7 +6824,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletSolidStateRelay() {
         return mBrickletSolidStateRelayEClass;
     }
@@ -7585,7 +6834,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletSolidStateRelay_DeviceType() {
         return (EAttribute) mBrickletSolidStateRelayEClass.getEStructuralFeatures().get(0);
     }
@@ -7596,7 +6844,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletSolidStateRelay__Init() {
         return mBrickletSolidStateRelayEClass.getEOperations().get(0);
     }
@@ -7607,7 +6854,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletIndustrialDual020mA() {
         return mBrickletIndustrialDual020mAEClass;
     }
@@ -7618,7 +6864,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletIndustrialDual020mA_DeviceType() {
         return (EAttribute) mBrickletIndustrialDual020mAEClass.getEStructuralFeatures().get(0);
     }
@@ -7629,7 +6874,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletIndustrialDual020mA__Init() {
         return mBrickletIndustrialDual020mAEClass.getEOperations().get(0);
     }
@@ -7640,7 +6884,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getDual020mADevice() {
         return dual020mADeviceEClass;
     }
@@ -7651,7 +6894,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDual020mADevice_DeviceType() {
         return (EAttribute) dual020mADeviceEClass.getEStructuralFeatures().get(0);
     }
@@ -7662,7 +6904,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDual020mADevice_Threshold() {
         return (EAttribute) dual020mADeviceEClass.getEStructuralFeatures().get(1);
     }
@@ -7673,7 +6914,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getDual020mADevice_SensorNum() {
         return (EAttribute) dual020mADeviceEClass.getEStructuralFeatures().get(2);
     }
@@ -7684,7 +6924,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletPTC() {
         return mBrickletPTCEClass;
     }
@@ -7695,7 +6934,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletPTC_DeviceType() {
         return (EAttribute) mBrickletPTCEClass.getEStructuralFeatures().get(0);
     }
@@ -7706,7 +6944,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletPTC__Init() {
         return mBrickletPTCEClass.getEOperations().get(0);
     }
@@ -7717,7 +6954,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getPTCDevice() {
         return ptcDeviceEClass;
     }
@@ -7728,7 +6964,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getPTCTemperature() {
         return ptcTemperatureEClass;
     }
@@ -7739,7 +6974,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getPTCTemperature_DeviceType() {
         return (EAttribute) ptcTemperatureEClass.getEStructuralFeatures().get(0);
     }
@@ -7750,7 +6984,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getPTCTemperature_Threshold() {
         return (EAttribute) ptcTemperatureEClass.getEStructuralFeatures().get(1);
     }
@@ -7761,7 +6994,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getPTCResistance() {
         return ptcResistanceEClass;
     }
@@ -7772,7 +7004,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getPTCResistance_DeviceType() {
         return (EAttribute) ptcResistanceEClass.getEStructuralFeatures().get(0);
     }
@@ -7783,7 +7014,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getPTCResistance_Threshold() {
         return (EAttribute) ptcResistanceEClass.getEStructuralFeatures().get(1);
     }
@@ -7794,7 +7024,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getPTCConnected() {
         return ptcConnectedEClass;
     }
@@ -7805,7 +7034,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getPTCConnected_DeviceType() {
         return (EAttribute) ptcConnectedEClass.getEStructuralFeatures().get(0);
     }
@@ -7816,7 +7044,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletTemperature() {
         return mBrickletTemperatureEClass;
     }
@@ -7827,7 +7054,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletTemperature_DeviceType() {
         return (EAttribute) mBrickletTemperatureEClass.getEStructuralFeatures().get(0);
     }
@@ -7838,7 +7064,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletTemperature_Threshold() {
         return (EAttribute) mBrickletTemperatureEClass.getEStructuralFeatures().get(1);
     }
@@ -7849,7 +7074,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletTemperature_SlowI2C() {
         return (EAttribute) mBrickletTemperatureEClass.getEStructuralFeatures().get(2);
     }
@@ -7860,7 +7084,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletTemperature__Init() {
         return mBrickletTemperatureEClass.getEOperations().get(0);
     }
@@ -7991,7 +7214,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletTemperatureIR() {
         return mBrickletTemperatureIREClass;
     }
@@ -8002,7 +7224,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletTemperatureIR_DeviceType() {
         return (EAttribute) mBrickletTemperatureIREClass.getEStructuralFeatures().get(0);
     }
@@ -8013,7 +7234,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMTemperatureIRDevice() {
         return mTemperatureIRDeviceEClass;
     }
@@ -8024,7 +7244,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMTemperatureIRDevice_Threshold() {
         return (EAttribute) mTemperatureIRDeviceEClass.getEStructuralFeatures().get(0);
     }
@@ -8035,7 +7254,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getObjectTemperature() {
         return objectTemperatureEClass;
     }
@@ -8046,7 +7264,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getObjectTemperature_DeviceType() {
         return (EAttribute) objectTemperatureEClass.getEStructuralFeatures().get(0);
     }
@@ -8057,7 +7274,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getObjectTemperature_Emissivity() {
         return (EAttribute) objectTemperatureEClass.getEStructuralFeatures().get(1);
     }
@@ -8068,7 +7284,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getAmbientTemperature() {
         return ambientTemperatureEClass;
     }
@@ -8079,7 +7294,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getAmbientTemperature_DeviceType() {
         return (EAttribute) ambientTemperatureEClass.getEStructuralFeatures().get(0);
     }
@@ -8090,7 +7304,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletTilt() {
         return mBrickletTiltEClass;
     }
@@ -8101,7 +7314,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletTilt_DeviceType() {
         return (EAttribute) mBrickletTiltEClass.getEStructuralFeatures().get(0);
     }
@@ -8112,7 +7324,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletVoltageCurrent() {
         return mBrickletVoltageCurrentEClass;
     }
@@ -8123,7 +7334,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletVoltageCurrent_DeviceType() {
         return (EAttribute) mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(0);
     }
@@ -8134,7 +7344,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletVoltageCurrent_Averaging() {
         return (EAttribute) mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(1);
     }
@@ -8145,7 +7354,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletVoltageCurrent_VoltageConversionTime() {
         return (EAttribute) mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(2);
     }
@@ -8156,7 +7364,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletVoltageCurrent_CurrentConversionTime() {
         return (EAttribute) mBrickletVoltageCurrentEClass.getEStructuralFeatures().get(3);
     }
@@ -8167,7 +7374,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getVoltageCurrentDevice() {
         return voltageCurrentDeviceEClass;
     }
@@ -8178,7 +7384,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getVCDeviceVoltage() {
         return vcDeviceVoltageEClass;
     }
@@ -8189,7 +7394,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getVCDeviceVoltage_DeviceType() {
         return (EAttribute) vcDeviceVoltageEClass.getEStructuralFeatures().get(0);
     }
@@ -8200,7 +7404,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getVCDeviceVoltage_Threshold() {
         return (EAttribute) vcDeviceVoltageEClass.getEStructuralFeatures().get(1);
     }
@@ -8211,7 +7414,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getVCDeviceCurrent() {
         return vcDeviceCurrentEClass;
     }
@@ -8222,7 +7424,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getVCDeviceCurrent_DeviceType() {
         return (EAttribute) vcDeviceCurrentEClass.getEStructuralFeatures().get(0);
     }
@@ -8233,7 +7434,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getVCDeviceCurrent_Threshold() {
         return (EAttribute) vcDeviceCurrentEClass.getEStructuralFeatures().get(1);
     }
@@ -8244,7 +7444,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getVCDevicePower() {
         return vcDevicePowerEClass;
     }
@@ -8255,7 +7454,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getVCDevicePower_DeviceType() {
         return (EAttribute) vcDevicePowerEClass.getEStructuralFeatures().get(0);
     }
@@ -8266,7 +7464,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getVCDevicePower_Threshold() {
         return (EAttribute) vcDevicePowerEClass.getEStructuralFeatures().get(1);
     }
@@ -8277,399 +7474,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getTFBaseConfiguration() {
-        return tfBaseConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFBaseConfiguration_Threshold() {
-        return (EAttribute) tfBaseConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFBaseConfiguration_CallbackPeriod() {
-        return (EAttribute) tfBaseConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLoadCellConfiguration() {
-        return loadCellConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLoadCellConfiguration_MovingAverage() {
-        return (EAttribute) loadCellConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLaserRangeFinderConfiguration() {
-        return laserRangeFinderConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderConfiguration_DistanceAverageLength() {
-        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderConfiguration_VelocityAverageLength() {
-        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderConfiguration_Mode() {
-        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLaserRangeFinderConfiguration_EnableLaserOnStartup() {
-        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(3);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getAmbientLightV2Configuration() {
-        return ambientLightV2ConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getAmbientLightV2Configuration_IlluminanceRange() {
-        return (EAttribute) ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getAmbientLightV2Configuration_IntegrationTime() {
-        return (EAttribute) ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getBrickletIndustrialDualAnalogInConfiguration() {
-        return brickletIndustrialDualAnalogInConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getBrickletIndustrialDualAnalogInConfiguration_SampleRate() {
-        return (EAttribute) brickletIndustrialDualAnalogInConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFTemperatureConfiguration() {
-        return tfTemperatureConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFTemperatureConfiguration_SlowI2C() {
-        return (EAttribute) tfTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getTFThermocoupleConfiguration() {
-        return tfThermocoupleConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getTFThermocoupleConfiguration_Averaging() {
-        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getTFThermocoupleConfiguration_ThermocoupleType() {
-        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getTFThermocoupleConfiguration_Filter() {
-        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFObjectTemperatureConfiguration() {
-        return tfObjectTemperatureConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFObjectTemperatureConfiguration_Emissivity() {
-        return (EAttribute) tfObjectTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFMoistureBrickletConfiguration() {
-        return tfMoistureBrickletConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFMoistureBrickletConfiguration_MovingAverage() {
-        return (EAttribute) tfMoistureBrickletConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFAnalogInConfiguration() {
-        return tfAnalogInConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFAnalogInConfiguration_MovingAverage() {
-        return (EAttribute) tfAnalogInConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFAnalogInConfiguration_Range() {
-        return (EAttribute) tfAnalogInConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFAnalogInV2Configuration() {
-        return tfAnalogInV2ConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFAnalogInV2Configuration_MovingAverage() {
-        return (EAttribute) tfAnalogInV2ConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFDistanceUSBrickletConfiguration() {
-        return tfDistanceUSBrickletConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFDistanceUSBrickletConfiguration_MovingAverage() {
-        return (EAttribute) tfDistanceUSBrickletConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getTFVoltageCurrentConfiguration() {
-        return tfVoltageCurrentConfigurationEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFVoltageCurrentConfiguration_Averaging() {
-        return (EAttribute) tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFVoltageCurrentConfiguration_VoltageConversionTime() {
-        return (EAttribute) tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getTFVoltageCurrentConfiguration_CurrentConversionTime() {
-        return (EAttribute) tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getMBrickletBarometer() {
         return mBrickletBarometerEClass;
     }
@@ -8680,7 +7484,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletBarometer_DeviceType() {
         return (EAttribute) mBrickletBarometerEClass.getEStructuralFeatures().get(0);
     }
@@ -8691,7 +7494,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletBarometer_Threshold() {
         return (EAttribute) mBrickletBarometerEClass.getEStructuralFeatures().get(1);
     }
@@ -8702,7 +7504,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletBarometer__Init() {
         return mBrickletBarometerEClass.getEOperations().get(0);
     }
@@ -8713,7 +7514,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBarometerTemperature() {
         return mBarometerTemperatureEClass;
     }
@@ -8724,7 +7524,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBarometerTemperature_DeviceType() {
         return (EAttribute) mBarometerTemperatureEClass.getEStructuralFeatures().get(0);
     }
@@ -8735,7 +7534,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBarometerTemperature__Init() {
         return mBarometerTemperatureEClass.getEOperations().get(0);
     }
@@ -8746,7 +7544,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletAmbientLight() {
         return mBrickletAmbientLightEClass;
     }
@@ -8757,7 +7554,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAmbientLight_DeviceType() {
         return (EAttribute) mBrickletAmbientLightEClass.getEStructuralFeatures().get(0);
     }
@@ -8768,7 +7564,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAmbientLight_Threshold() {
         return (EAttribute) mBrickletAmbientLightEClass.getEStructuralFeatures().get(1);
     }
@@ -8779,7 +7574,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletAmbientLight__Init() {
         return mBrickletAmbientLightEClass.getEOperations().get(0);
     }
@@ -8790,7 +7584,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletAmbientLightV2() {
         return mBrickletAmbientLightV2EClass;
     }
@@ -8801,7 +7594,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAmbientLightV2_DeviceType() {
         return (EAttribute) mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(0);
     }
@@ -8812,7 +7604,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAmbientLightV2_Threshold() {
         return (EAttribute) mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(1);
     }
@@ -8823,7 +7614,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAmbientLightV2_IlluminanceRange() {
         return (EAttribute) mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(2);
     }
@@ -8834,7 +7624,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAmbientLightV2_IntegrationTime() {
         return (EAttribute) mBrickletAmbientLightV2EClass.getEStructuralFeatures().get(3);
     }
@@ -8845,7 +7634,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletAmbientLightV2__Init() {
         return mBrickletAmbientLightV2EClass.getEOperations().get(0);
     }
@@ -8856,7 +7644,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletIndustrialDualAnalogIn() {
         return mBrickletIndustrialDualAnalogInEClass;
     }
@@ -8867,7 +7654,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletIndustrialDualAnalogIn_DeviceType() {
         return (EAttribute) mBrickletIndustrialDualAnalogInEClass.getEStructuralFeatures().get(0);
     }
@@ -8878,7 +7664,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletIndustrialDualAnalogIn_SampleRate() {
         return (EAttribute) mBrickletIndustrialDualAnalogInEClass.getEStructuralFeatures().get(1);
     }
@@ -8889,7 +7674,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getIndustrialDualAnalogInChannel() {
         return industrialDualAnalogInChannelEClass;
     }
@@ -8900,7 +7684,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getIndustrialDualAnalogInChannel_DeviceType() {
         return (EAttribute) industrialDualAnalogInChannelEClass.getEStructuralFeatures().get(0);
     }
@@ -8911,7 +7694,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getIndustrialDualAnalogInChannel_Threshold() {
         return (EAttribute) industrialDualAnalogInChannelEClass.getEStructuralFeatures().get(1);
     }
@@ -8922,7 +7704,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getIndustrialDualAnalogInChannel_ChannelNum() {
         return (EAttribute) industrialDualAnalogInChannelEClass.getEStructuralFeatures().get(2);
     }
@@ -8933,7 +7714,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletSoundIntensity() {
         return mBrickletSoundIntensityEClass;
     }
@@ -8944,7 +7724,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletSoundIntensity_DeviceType() {
         return (EAttribute) mBrickletSoundIntensityEClass.getEStructuralFeatures().get(0);
     }
@@ -8955,7 +7734,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletSoundIntensity_Threshold() {
         return (EAttribute) mBrickletSoundIntensityEClass.getEStructuralFeatures().get(1);
     }
@@ -8966,7 +7744,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletSoundIntensity__Init() {
         return mBrickletSoundIntensityEClass.getEOperations().get(0);
     }
@@ -8977,7 +7754,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletDustDetector() {
         return mBrickletDustDetectorEClass;
     }
@@ -8988,7 +7764,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletDustDetector_DeviceType() {
         return (EAttribute) mBrickletDustDetectorEClass.getEStructuralFeatures().get(0);
     }
@@ -8999,7 +7774,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletDustDetector_Threshold() {
         return (EAttribute) mBrickletDustDetectorEClass.getEStructuralFeatures().get(1);
     }
@@ -9010,7 +7784,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletDustDetector__Init() {
         return mBrickletDustDetectorEClass.getEOperations().get(0);
     }
@@ -9021,238 +7794,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getMBrickletLoadCell() {
-        return mBrickletLoadCellEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMBrickletLoadCell_DeviceType() {
-        return (EAttribute) mBrickletLoadCellEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getMBrickletLoadCellV2() {
-        return mBrickletLoadCellV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getMBrickletLoadCellV2_DeviceType() {
-        return (EAttribute) mBrickletLoadCellV2EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLoadCellDevice() {
-        return loadCellDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getLoadCellDeviceV2() {
-        return loadCellDeviceV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLoadCellWeight() {
-        return loadCellWeightEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLoadCellWeight_DeviceType() {
-        return (EAttribute) loadCellWeightEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLoadCellWeight_Threshold() {
-        return (EAttribute) loadCellWeightEClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLoadCellWeight_MovingAverage() {
-        return (EAttribute) loadCellWeightEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getLoadCellWeight__Init() {
-        return loadCellWeightEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EOperation getLoadCellWeight__Tare() {
-        return loadCellWeightEClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getLoadCellWeightV2() {
-        return loadCellWeightV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getLoadCellWeightV2_DeviceType() {
-        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getLoadCellWeightV2_Threshold() {
-        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getLoadCellWeightV2_MovingAverage() {
-        return (EAttribute) loadCellWeightV2EClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getLoadCellWeightV2__Init() {
-        return loadCellWeightV2EClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getLoadCellWeightV2__Tare() {
-        return loadCellWeightV2EClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getLoadCellLed() {
-        return loadCellLedEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getLoadCellLed_DeviceType() {
-        return (EAttribute) loadCellLedEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EClass getLoadCellLedV2() {
-        return loadCellLedV2EClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getLoadCellLedV2_DeviceType() {
-        return (EAttribute) loadCellLedV2EClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getMBrickletMoisture() {
         return mBrickletMoistureEClass;
     }
@@ -9263,7 +7804,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletMoisture_DeviceType() {
         return (EAttribute) mBrickletMoistureEClass.getEStructuralFeatures().get(0);
     }
@@ -9274,7 +7814,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletMoisture_Threshold() {
         return (EAttribute) mBrickletMoistureEClass.getEStructuralFeatures().get(1);
     }
@@ -9285,7 +7824,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletMoisture_MovingAverage() {
         return (EAttribute) mBrickletMoistureEClass.getEStructuralFeatures().get(2);
     }
@@ -9296,7 +7834,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletMoisture__Init() {
         return mBrickletMoistureEClass.getEOperations().get(0);
     }
@@ -9307,7 +7844,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletAnalogInV2() {
         return mBrickletAnalogInV2EClass;
     }
@@ -9318,7 +7854,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAnalogInV2_DeviceType() {
         return (EAttribute) mBrickletAnalogInV2EClass.getEStructuralFeatures().get(0);
     }
@@ -9329,7 +7864,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAnalogInV2_Threshold() {
         return (EAttribute) mBrickletAnalogInV2EClass.getEStructuralFeatures().get(1);
     }
@@ -9340,7 +7874,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAnalogInV2_MovingAverage() {
         return (EAttribute) mBrickletAnalogInV2EClass.getEStructuralFeatures().get(2);
     }
@@ -9351,7 +7884,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletAnalogIn() {
         return mBrickletAnalogInEClass;
     }
@@ -9362,7 +7894,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAnalogIn_DeviceType() {
         return (EAttribute) mBrickletAnalogInEClass.getEStructuralFeatures().get(0);
     }
@@ -9373,7 +7904,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAnalogIn_Threshold() {
         return (EAttribute) mBrickletAnalogInEClass.getEStructuralFeatures().get(1);
     }
@@ -9384,7 +7914,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAnalogIn_MovingAverage() {
         return (EAttribute) mBrickletAnalogInEClass.getEStructuralFeatures().get(2);
     }
@@ -9395,7 +7924,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletAnalogIn_Range() {
         return (EAttribute) mBrickletAnalogInEClass.getEStructuralFeatures().get(3);
     }
@@ -9406,7 +7934,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletDistanceUS() {
         return mBrickletDistanceUSEClass;
     }
@@ -9417,7 +7944,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletDistanceUS_DeviceType() {
         return (EAttribute) mBrickletDistanceUSEClass.getEStructuralFeatures().get(0);
     }
@@ -9428,7 +7954,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletDistanceUS_Threshold() {
         return (EAttribute) mBrickletDistanceUSEClass.getEStructuralFeatures().get(1);
     }
@@ -9439,7 +7964,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletDistanceUS_MovingAverage() {
         return (EAttribute) mBrickletDistanceUSEClass.getEStructuralFeatures().get(2);
     }
@@ -9450,7 +7974,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletDistanceUS__Init() {
         return mBrickletDistanceUSEClass.getEOperations().get(0);
     }
@@ -9461,7 +7984,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EClass getMBrickletLCD20x4() {
         return mBrickletLCD20x4EClass;
     }
@@ -9472,7 +7994,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletLCD20x4_DeviceType() {
         return (EAttribute) mBrickletLCD20x4EClass.getEStructuralFeatures().get(0);
     }
@@ -9483,7 +8004,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletLCD20x4_PositionPrefix() {
         return (EAttribute) mBrickletLCD20x4EClass.getEStructuralFeatures().get(1);
     }
@@ -9494,7 +8014,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletLCD20x4_PositonSuffix() {
         return (EAttribute) mBrickletLCD20x4EClass.getEStructuralFeatures().get(2);
     }
@@ -9505,7 +8024,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletLCD20x4_DisplayErrors() {
         return (EAttribute) mBrickletLCD20x4EClass.getEStructuralFeatures().get(3);
     }
@@ -9516,7 +8034,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMBrickletLCD20x4_ErrorPrefix() {
         return (EAttribute) mBrickletLCD20x4EClass.getEStructuralFeatures().get(4);
     }
@@ -9527,7 +8044,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletLCD20x4__Init() {
         return mBrickletLCD20x4EClass.getEOperations().get(0);
     }
@@ -9538,7 +8054,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EOperation getMBrickletLCD20x4__Clear() {
         return mBrickletLCD20x4EClass.getEOperations().get(1);
     }
@@ -9649,6 +8164,26 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
+    public EClass getMBrickletOLED128x64V2() {
+        return mBrickletOLED128x64V2EClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMBrickletOLED128x64V2_DeviceType() {
+        return (EAttribute) mBrickletOLED128x64V2EClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EClass getMBrickletOLED128x64() {
         return mBrickletOLED128x64EClass;
     }
@@ -9709,46 +8244,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    public EClass getSwitchableColorActor() {
-        return switchableColorActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EAttribute getSwitchableColorActor_SwitchState() {
-        return (EAttribute) switchableColorActorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getSwitchableColorActor__TurnSwitch__OnOffValue() {
-        return switchableColorActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getSwitchableColorActor__SetSelectedColor__HSBType() {
-        return switchableColorActorEClass.getEOperations().get(1);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
     public EClass getMRGBLEDButtonLED() {
         return mrgbledButtonLEDEClass;
     }
@@ -9799,50 +8294,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EClass getMTextActor() {
-        return mTextActorEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EAttribute getMTextActor_Text() {
-        return (EAttribute) mTextActorEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    public EOperation getMTextActor__Write__String() {
-        return mTextActorEClass.getEOperations().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EClass getMLCDSubDevice() {
-        return mlcdSubDeviceEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public EClass getMLCD20x4Button() {
         return mlcd20x4ButtonEClass;
     }
@@ -9853,7 +8304,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMLCD20x4Button_DeviceType() {
         return (EAttribute) mlcd20x4ButtonEClass.getEStructuralFeatures().get(0);
     }
@@ -9864,7 +8314,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EAttribute getMLCD20x4Button_ButtonNum() {
         return (EAttribute) mlcd20x4ButtonEClass.getEStructuralFeatures().get(1);
     }
@@ -10075,9 +8524,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EDataType getSwitchState() {
-        return switchStateEDataType;
+    public EClass getTFConfig() {
+        return tfConfigEClass;
     }
 
     /**
@@ -10086,9 +8534,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EDataType getDigitalValue() {
-        return digitalValueEDataType;
+    public EClass getOHTFDevice() {
+        return ohtfDeviceEClass;
     }
 
     /**
@@ -10097,9 +8544,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EDataType getHSBValue() {
-        return hsbValueEDataType;
+    public EAttribute getOHTFDevice_Uid() {
+        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -10108,9 +8554,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EDataType getTinkerBrickletIO16() {
-        return tinkerBrickletIO16EDataType;
+    public EAttribute getOHTFDevice_Subid() {
+        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -10119,9 +8564,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getDCDriveMode() {
-        return dcDriveModeEEnum;
+    public EAttribute getOHTFDevice_Ohid() {
+        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -10130,9 +8574,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getConfigOptsServo() {
-        return configOptsServoEEnum;
+    public EAttribute getOHTFDevice_SubDeviceIds() {
+        return (EAttribute) ohtfDeviceEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -10141,9 +8584,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getDualButtonDevicePosition() {
-        return dualButtonDevicePositionEEnum;
+    public EReference getOHTFDevice_TfConfig() {
+        return (EReference) ohtfDeviceEClass.getEStructuralFeatures().get(4);
     }
 
     /**
@@ -10152,9 +8594,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getDualButtonLedSubIds() {
-        return dualButtonLedSubIdsEEnum;
+    public EReference getOHTFDevice_OhConfig() {
+        return (EReference) ohtfDeviceEClass.getEStructuralFeatures().get(5);
     }
 
     /**
@@ -10163,9 +8604,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getDualButtonButtonSubIds() {
-        return dualButtonButtonSubIdsEEnum;
+    public EOperation getOHTFDevice__IsValidSubId__String() {
+        return ohtfDeviceEClass.getEOperations().get(0);
     }
 
     /**
@@ -10174,9 +8614,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getJoystickSubIds() {
-        return joystickSubIdsEEnum;
+    public EClass getOHTFSubDeviceAdminDevice() {
+        return ohtfSubDeviceAdminDeviceEClass;
     }
 
     /**
@@ -10185,9 +8624,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getPTCSubIds() {
-        return ptcSubIdsEEnum;
+    public EOperation getOHTFSubDeviceAdminDevice__IsValidSubId__String() {
+        return ohtfSubDeviceAdminDeviceEClass.getEOperations().get(0);
     }
 
     /**
@@ -10196,9 +8634,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getIndustrialDual020mASubIds() {
-        return industrialDual020mASubIdsEEnum;
+    public EClass getOHConfig() {
+        return ohConfigEClass;
     }
 
     /**
@@ -10207,9 +8644,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getRotaryEncoderSubIds() {
-        return rotaryEncoderSubIdsEEnum;
+    public EReference getOHConfig_OhTfDevices() {
+        return (EReference) ohConfigEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -10218,9 +8654,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getColorBrickletSubIds() {
-        return colorBrickletSubIdsEEnum;
+    public EOperation getOHConfig__GetConfigByTFId__String_String() {
+        return ohConfigEClass.getEOperations().get(0);
     }
 
     /**
@@ -10229,9 +8664,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getLoadCellSubIds() {
-        return loadCellSubIdsEEnum;
+    public EOperation getOHConfig__GetConfigByOHId__String() {
+        return ohConfigEClass.getEOperations().get(1);
     }
 
     /**
@@ -10240,9 +8674,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getIndustrialDualAnalogInSubIds() {
-        return industrialDualAnalogInSubIdsEEnum;
+    public EClass getTFNullConfiguration() {
+        return tfNullConfigurationEClass;
     }
 
     /**
@@ -10251,9 +8684,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getLaserRangeFinderSubIds() {
-        return laserRangeFinderSubIdsEEnum;
+    public EClass getTFPTCBrickletConfiguration() {
+        return tfptcBrickletConfigurationEClass;
     }
 
     /**
@@ -10262,9 +8694,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EEnum getAccelerometerSubIds() {
-        return accelerometerSubIdsEEnum;
+    public EAttribute getTFPTCBrickletConfiguration_NoiseRejectionFilter() {
+        return (EAttribute) tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -10273,7 +8704,1116 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
+    public EAttribute getTFPTCBrickletConfiguration_WireMode() {
+        return (EAttribute) tfptcBrickletConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFIndustrialDual020mAConfiguration() {
+        return tfIndustrialDual020mAConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFIndustrialDual020mAConfiguration_SampleRate() {
+        return (EAttribute) tfIndustrialDual020mAConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFBaseConfiguration() {
+        return tfBaseConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBaseConfiguration_Threshold() {
+        return (EAttribute) tfBaseConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBaseConfiguration_CallbackPeriod() {
+        return (EAttribute) tfBaseConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLoadCellConfiguration() {
+        return loadCellConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLoadCellConfiguration_MovingAverage() {
+        return (EAttribute) loadCellConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLaserRangeFinderConfiguration() {
+        return laserRangeFinderConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderConfiguration_DistanceAverageLength() {
+        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderConfiguration_VelocityAverageLength() {
+        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderConfiguration_Mode() {
+        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLaserRangeFinderConfiguration_EnableLaserOnStartup() {
+        return (EAttribute) laserRangeFinderConfigurationEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getAmbientLightV2Configuration() {
+        return ambientLightV2ConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getAmbientLightV2Configuration_IlluminanceRange() {
+        return (EAttribute) ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getAmbientLightV2Configuration_IntegrationTime() {
+        return (EAttribute) ambientLightV2ConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getBrickletIndustrialDualAnalogInConfiguration() {
+        return brickletIndustrialDualAnalogInConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletIndustrialDualAnalogInConfiguration_SampleRate() {
+        return (EAttribute) brickletIndustrialDualAnalogInConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFTemperatureConfiguration() {
+        return tfTemperatureConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFTemperatureConfiguration_SlowI2C() {
+        return (EAttribute) tfTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFThermocoupleConfiguration() {
+        return tfThermocoupleConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFThermocoupleConfiguration_Averaging() {
+        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFThermocoupleConfiguration_ThermocoupleType() {
+        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFThermocoupleConfiguration_Filter() {
+        return (EAttribute) tfThermocoupleConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFObjectTemperatureConfiguration() {
+        return tfObjectTemperatureConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFObjectTemperatureConfiguration_Emissivity() {
+        return (EAttribute) tfObjectTemperatureConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFMoistureBrickletConfiguration() {
+        return tfMoistureBrickletConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFMoistureBrickletConfiguration_MovingAverage() {
+        return (EAttribute) tfMoistureBrickletConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFAnalogInConfiguration() {
+        return tfAnalogInConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFAnalogInConfiguration_MovingAverage() {
+        return (EAttribute) tfAnalogInConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFAnalogInConfiguration_Range() {
+        return (EAttribute) tfAnalogInConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFAnalogInV2Configuration() {
+        return tfAnalogInV2ConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFAnalogInV2Configuration_MovingAverage() {
+        return (EAttribute) tfAnalogInV2ConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFDistanceUSBrickletConfiguration() {
+        return tfDistanceUSBrickletConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFDistanceUSBrickletConfiguration_MovingAverage() {
+        return (EAttribute) tfDistanceUSBrickletConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFVoltageCurrentConfiguration() {
+        return tfVoltageCurrentConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFVoltageCurrentConfiguration_Averaging() {
+        return (EAttribute) tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFVoltageCurrentConfiguration_VoltageConversionTime() {
+        return (EAttribute) tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFVoltageCurrentConfiguration_CurrentConversionTime() {
+        return (EAttribute) tfVoltageCurrentConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFBrickDCConfiguration() {
+        return tfBrickDCConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickDCConfiguration_Velocity() {
+        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickDCConfiguration_Acceleration() {
+        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickDCConfiguration_PwmFrequency() {
+        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFBrickDCConfiguration_DriveMode() {
+        return (EAttribute) tfBrickDCConfigurationEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFIOActorConfiguration() {
+        return tfioActorConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFIOActorConfiguration_DefaultState() {
+        return (EAttribute) tfioActorConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFIOActorConfiguration_KeepOnReconnect() {
+        return (EAttribute) tfioActorConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFInterruptListenerConfiguration() {
+        return tfInterruptListenerConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFInterruptListenerConfiguration_DebouncePeriod() {
+        return (EAttribute) tfInterruptListenerConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFIOSensorConfiguration() {
+        return tfioSensorConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFIOSensorConfiguration_PullUpResistorEnabled() {
+        return (EAttribute) tfioSensorConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getTFServoConfiguration() {
+        return tfServoConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFServoConfiguration_Velocity() {
+        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFServoConfiguration_Acceleration() {
+        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFServoConfiguration_ServoVoltage() {
+        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFServoConfiguration_PulseWidthMin() {
+        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFServoConfiguration_PulseWidthMax() {
+        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFServoConfiguration_Period() {
+        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getTFServoConfiguration_OutputVoltage() {
+        return (EAttribute) tfServoConfigurationEClass.getEStructuralFeatures().get(6);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getBrickletRemoteSwitchConfiguration() {
+        return brickletRemoteSwitchConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletRemoteSwitchConfiguration_TypeADevices() {
+        return (EAttribute) brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletRemoteSwitchConfiguration_TypeBDevices() {
+        return (EAttribute) brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletRemoteSwitchConfiguration_TypeCDevices() {
+        return (EAttribute) brickletRemoteSwitchConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getRemoteSwitchAConfiguration() {
+        return remoteSwitchAConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchAConfiguration_HouseCode() {
+        return (EAttribute) remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchAConfiguration_ReceiverCode() {
+        return (EAttribute) remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchAConfiguration_Repeats() {
+        return (EAttribute) remoteSwitchAConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getRemoteSwitchBConfiguration() {
+        return remoteSwitchBConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchBConfiguration_Address() {
+        return (EAttribute) remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchBConfiguration_Unit() {
+        return (EAttribute) remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchBConfiguration_Repeats() {
+        return (EAttribute) remoteSwitchBConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getRemoteSwitchCConfiguration() {
+        return remoteSwitchCConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchCConfiguration_SystemCode() {
+        return (EAttribute) remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchCConfiguration_DeviceCode() {
+        return (EAttribute) remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getRemoteSwitchCConfiguration_Repeats() {
+        return (EAttribute) remoteSwitchCConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getMultiTouchDeviceConfiguration() {
+        return multiTouchDeviceConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getMultiTouchDeviceConfiguration_DisableElectrode() {
+        return (EAttribute) multiTouchDeviceConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getBrickletMultiTouchConfiguration() {
+        return brickletMultiTouchConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletMultiTouchConfiguration_Recalibrate() {
+        return (EAttribute) brickletMultiTouchConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletMultiTouchConfiguration_Sensitivity() {
+        return (EAttribute) brickletMultiTouchConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDimmableConfiguration() {
+        return dimmableConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDimmableConfiguration_MinValue() {
+        return (EAttribute) dimmableConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDimmableConfiguration_MaxValue() {
+        return (EAttribute) dimmableConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getButtonConfiguration() {
+        return buttonConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getButtonConfiguration_Tactile() {
+        return (EAttribute) buttonConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getDualButtonLEDConfiguration() {
+        return dualButtonLEDConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getDualButtonLEDConfiguration_Autotoggle() {
+        return (EAttribute) dualButtonLEDConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLEDStripConfiguration() {
+        return ledStripConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLEDStripConfiguration_Chiptype() {
+        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLEDStripConfiguration_Frameduration() {
+        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLEDStripConfiguration_Clockfrequency() {
+        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLEDStripConfiguration_ColorMapping() {
+        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLEDStripConfiguration_SubDevices() {
+        return (EAttribute) ledStripConfigurationEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getLEDGroupConfiguration() {
+        return ledGroupConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getLEDGroupConfiguration_Leds() {
+        return (EAttribute) ledGroupConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getBrickletColorConfiguration() {
+        return brickletColorConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletColorConfiguration_Gain() {
+        return (EAttribute) brickletColorConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletColorConfiguration_IntegrationTime() {
+        return (EAttribute) brickletColorConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getBrickletAccelerometerConfiguration() {
+        return brickletAccelerometerConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletAccelerometerConfiguration_DataRate() {
+        return (EAttribute) brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletAccelerometerConfiguration_FullScale() {
+        return (EAttribute) brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletAccelerometerConfiguration_FilterBandwidth() {
+        return (EAttribute) brickletAccelerometerConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getBrickletOLEDConfiguration() {
+        return brickletOLEDConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletOLEDConfiguration_Contrast() {
+        return (EAttribute) brickletOLEDConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getBrickletOLEDConfiguration_Invert() {
+        return (EAttribute) brickletOLEDConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EClass getNFCConfiguration() {
+        return nfcConfigurationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getNFCConfiguration_ResetOldValues() {
+        return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getNFCConfiguration_TriggeredScan() {
+        return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getNFCConfiguration_DelayAfterScan() {
+        return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getAccelerometerCoordinate() {
+        return accelerometerCoordinateEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getBrickStepperSubIds() {
+        return brickStepperSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EEnum getNoSubIds() {
         return noSubIdsEEnum;
     }
@@ -10284,7 +9824,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getIndustrialDigitalInSubIDs() {
         return industrialDigitalInSubIDsEEnum;
     }
@@ -10295,7 +9834,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getIndustrialDigitalOutSubIDs() {
         return industrialDigitalOutSubIDsEEnum;
     }
@@ -10306,7 +9844,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getIndustrialQuadRelayIDs() {
         return industrialQuadRelayIDsEEnum;
     }
@@ -10317,7 +9854,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getServoSubIDs() {
         return servoSubIDsEEnum;
     }
@@ -10328,7 +9864,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getBarometerSubIDs() {
         return barometerSubIDsEEnum;
     }
@@ -10339,7 +9874,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getIO16SubIds() {
         return io16SubIdsEEnum;
     }
@@ -10350,7 +9884,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getIO4SubIds() {
         return io4SubIdsEEnum;
     }
@@ -10361,7 +9894,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getDualRelaySubIds() {
         return dualRelaySubIdsEEnum;
     }
@@ -10372,7 +9904,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getLCDButtonSubIds() {
         return lcdButtonSubIdsEEnum;
     }
@@ -10383,7 +9914,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getLCDBacklightSubIds() {
         return lcdBacklightSubIdsEEnum;
     }
@@ -10394,7 +9924,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getMultiTouchSubIds() {
         return multiTouchSubIdsEEnum;
     }
@@ -10405,7 +9934,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getTemperatureIRSubIds() {
         return temperatureIRSubIdsEEnum;
     }
@@ -10416,7 +9944,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getVoltageCurrentSubIds() {
         return voltageCurrentSubIdsEEnum;
     }
@@ -10427,7 +9954,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getConfigOptsMove() {
         return configOptsMoveEEnum;
     }
@@ -10438,7 +9964,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getConfigOptsDimmable() {
         return configOptsDimmableEEnum;
     }
@@ -10449,7 +9974,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getConfigOptsSetPoint() {
         return configOptsSetPointEEnum;
     }
@@ -10460,9 +9984,148 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EEnum getConfigOptsSwitchSpeed() {
         return configOptsSwitchSpeedEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getDCDriveMode() {
+        return dcDriveModeEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getConfigOptsServo() {
+        return configOptsServoEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getDualButtonDevicePosition() {
+        return dualButtonDevicePositionEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getDualButtonLedSubIds() {
+        return dualButtonLedSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getDualButtonButtonSubIds() {
+        return dualButtonButtonSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getJoystickSubIds() {
+        return joystickSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getPTCSubIds() {
+        return ptcSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getIndustrialDual020mASubIds() {
+        return industrialDual020mASubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getRotaryEncoderSubIds() {
+        return rotaryEncoderSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getColorBrickletSubIds() {
+        return colorBrickletSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getLoadCellSubIds() {
+        return loadCellSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getIndustrialDualAnalogInSubIds() {
+        return industrialDualAnalogInSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getLaserRangeFinderSubIds() {
+        return laserRangeFinderSubIdsEEnum;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EEnum getAccelerometerSubIds() {
+        return accelerometerSubIdsEEnum;
     }
 
     /**
@@ -10472,7 +10135,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @since 1.3.0
      * @generated
      */
-    @Override
     public EDataType getMIPConnection() {
         return mipConnectionEDataType;
     }
@@ -10483,7 +10145,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerDevice() {
         return mTinkerDeviceEDataType;
     }
@@ -10494,7 +10155,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMLogger() {
         return mLoggerEDataType;
     }
@@ -10505,7 +10165,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMAtomicBoolean() {
         return mAtomicBooleanEDataType;
     }
@@ -10516,7 +10175,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerforgeDevice() {
         return mTinkerforgeDeviceEDataType;
     }
@@ -10527,7 +10185,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerBrickDC() {
         return mTinkerBrickDCEDataType;
     }
@@ -10548,7 +10205,86 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
+    public EDataType getMTinkerBrickletDualRelay() {
+        return mTinkerBrickletDualRelayEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getMTinkerBrickletIndustrialQuadRelay() {
+        return mTinkerBrickletIndustrialQuadRelayEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getMTinkerBrickletIndustrialDigitalIn4() {
+        return mTinkerBrickletIndustrialDigitalIn4EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getMTinkerBrickletIndustrialDigitalOut4() {
+        return mTinkerBrickletIndustrialDigitalOut4EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getSwitchState() {
+        return switchStateEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getDigitalValue() {
+        return digitalValueEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getHSBValue() {
+        return hsbValueEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getTinkerBrickletIO16() {
+        return tinkerBrickletIO16EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public EDataType getMTinkerBrickServo() {
         return mTinkerBrickServoEDataType;
     }
@@ -10559,7 +10295,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerforgeValue() {
         return mTinkerforgeValueEDataType;
     }
@@ -10570,7 +10305,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMDecimalValue() {
         return mDecimalValueEDataType;
     }
@@ -10581,7 +10315,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerBrickletHumidity() {
         return mTinkerBrickletHumidityEDataType;
     }
@@ -10592,7 +10325,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerBrickletDistanceIR() {
         return mTinkerBrickletDistanceIREDataType;
     }
@@ -10603,7 +10335,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerBrickletTemperature() {
         return mTinkerBrickletTemperatureEDataType;
     }
@@ -10614,7 +10345,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerBrickletBarometer() {
         return mTinkerBrickletBarometerEDataType;
     }
@@ -10625,7 +10355,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerBrickletAmbientLight() {
         return mTinkerBrickletAmbientLightEDataType;
     }
@@ -10636,7 +10365,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getMTinkerBrickletLCD20x4() {
         return mTinkerBrickletLCD20x4EDataType;
     }
@@ -10647,7 +10375,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletRemoteSwitch() {
         return tinkerBrickletRemoteSwitchEDataType;
     }
@@ -10658,7 +10385,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletMotionDetector() {
         return tinkerBrickletMotionDetectorEDataType;
     }
@@ -10669,7 +10395,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletMultiTouch() {
         return tinkerBrickletMultiTouchEDataType;
     }
@@ -10680,7 +10405,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletTemperatureIR() {
         return tinkerBrickletTemperatureIREDataType;
     }
@@ -10691,7 +10415,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletSoundIntensity() {
         return tinkerBrickletSoundIntensityEDataType;
     }
@@ -10702,7 +10425,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletMoisture() {
         return tinkerBrickletMoistureEDataType;
     }
@@ -10713,7 +10435,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletDistanceUS() {
         return tinkerBrickletDistanceUSEDataType;
     }
@@ -10724,7 +10445,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletVoltageCurrent() {
         return tinkerBrickletVoltageCurrentEDataType;
     }
@@ -10735,7 +10455,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletTilt() {
         return tinkerBrickletTiltEDataType;
     }
@@ -10746,7 +10465,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletIO4() {
         return tinkerBrickletIO4EDataType;
     }
@@ -10757,7 +10475,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletHallEffect() {
         return tinkerBrickletHallEffectEDataType;
     }
@@ -10768,7 +10485,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletSegmentDisplay4x7() {
         return tinkerBrickletSegmentDisplay4x7EDataType;
     }
@@ -10779,7 +10495,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletLEDStrip() {
         return tinkerBrickletLEDStripEDataType;
     }
@@ -10790,7 +10505,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getBrickletJoystick() {
         return brickletJoystickEDataType;
     }
@@ -10801,7 +10515,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletLinearPoti() {
         return tinkerBrickletLinearPotiEDataType;
     }
@@ -10812,7 +10525,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletDualButton() {
         return tinkerBrickletDualButtonEDataType;
     }
@@ -10833,7 +10545,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletPTC() {
         return tinkerBrickletPTCEDataType;
     }
@@ -10844,7 +10555,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletIndustrialDual020mA() {
         return tinkerBrickletIndustrialDual020mAEDataType;
     }
@@ -10855,7 +10565,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletSolidStateRelay() {
         return tinkerBrickletSolidStateRelayEDataType;
     }
@@ -10866,7 +10575,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletPiezoSpeaker() {
         return tinkerBrickletPiezoSpeakerEDataType;
     }
@@ -10877,7 +10585,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletRotaryEncoder() {
         return tinkerBrickletRotaryEncoderEDataType;
     }
@@ -10888,7 +10595,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletAmbientLightV2() {
         return tinkerBrickletAmbientLightV2EDataType;
     }
@@ -10899,7 +10605,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletDustDetector() {
         return tinkerBrickletDustDetectorEDataType;
     }
@@ -10910,7 +10615,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletLoadCell() {
         return tinkerBrickletLoadCellEDataType;
     }
@@ -10931,7 +10635,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletColor() {
         return tinkerBrickletColorEDataType;
     }
@@ -10942,7 +10645,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletIndustrialDualAnalogIn() {
         return tinkerBrickletIndustrialDualAnalogInEDataType;
     }
@@ -10953,7 +10655,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletAnalogInV2() {
         return tinkerBrickletAnalogInV2EDataType;
     }
@@ -10964,7 +10665,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletAnalogIn() {
         return tinkerBrickletAnalogInEDataType;
     }
@@ -10975,7 +10675,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletLaserRangeFinder() {
         return tinkerBrickletLaserRangeFinderEDataType;
     }
@@ -10986,7 +10685,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getTinkerBrickletAccelerometer() {
         return tinkerBrickletAccelerometerEDataType;
     }
@@ -10999,6 +10697,16 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      */
     public EDataType getTinkerBrickletOLED128x64() {
         return tinkerBrickletOLED128x64EDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EDataType getTinkerBrickletOLED128x64V2() {
+        return tinkerBrickletOLED128x64V2EDataType;
     }
 
     /**
@@ -11077,7 +10785,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getHSBType() {
         return hsbTypeEDataType;
     }
@@ -11088,7 +10795,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getUpDownType() {
         return upDownTypeEDataType;
     }
@@ -11099,7 +10805,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getPercentValue() {
         return percentValueEDataType;
     }
@@ -11110,7 +10815,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getDeviceOptions() {
         return deviceOptionsEDataType;
     }
@@ -11121,7 +10825,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getPercentType() {
         return percentTypeEDataType;
     }
@@ -11132,7 +10835,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getIncreaseDecreaseType() {
         return increaseDecreaseTypeEDataType;
     }
@@ -11143,7 +10845,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getDirectionValue() {
         return directionValueEDataType;
     }
@@ -11184,7 +10885,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
     public EDataType getEnum() {
         return enumEDataType;
     }
@@ -11195,51 +10895,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    @Override
-    public EDataType getMTinkerBrickletDualRelay() {
-        return mTinkerBrickletDualRelayEDataType;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EDataType getMTinkerBrickletIndustrialQuadRelay() {
-        return mTinkerBrickletIndustrialQuadRelayEDataType;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EDataType getMTinkerBrickletIndustrialDigitalIn4() {
-        return mTinkerBrickletIndustrialDigitalIn4EDataType;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
-    public EDataType getMTinkerBrickletIndustrialDigitalOut4() {
-        return mTinkerBrickletIndustrialDigitalOut4EDataType;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * 
-     * @generated
-     */
-    @Override
     public ModelFactory getModelFactory() {
         return (ModelFactory) getEFactoryInstance();
     }
@@ -11941,6 +11596,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEOperation(oledBrickletEClass, OLED_BRICKLET___SIMPLE_GAUGE__INT);
         createEOperation(oledBrickletEClass, OLED_BRICKLET___SIMPLE_GAUGE__INT_INT_INT);
 
+        mBrickletOLED128x64V2EClass = createEClass(MBRICKLET_OLED12_8X64_V2);
+        createEAttribute(mBrickletOLED128x64V2EClass, MBRICKLET_OLED12_8X64_V2__DEVICE_TYPE);
+
         mBrickletOLED128x64EClass = createEClass(MBRICKLET_OLED12_8X64);
         createEAttribute(mBrickletOLED128x64EClass, MBRICKLET_OLED12_8X64__DEVICE_TYPE);
 
@@ -12259,6 +11917,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         tinkerBrickletLaserRangeFinderEDataType = createEDataType(TINKER_BRICKLET_LASER_RANGE_FINDER);
         tinkerBrickletAccelerometerEDataType = createEDataType(TINKER_BRICKLET_ACCELEROMETER);
         tinkerBrickletOLED128x64EDataType = createEDataType(TINKER_BRICKLET_OLED12_8X64);
+        tinkerBrickletOLED128x64V2EDataType = createEDataType(TINKER_BRICKLET_OLED12_8X64_V2);
         tinkerBrickletOLED64x48EDataType = createEDataType(TINKER_BRICKLET_OLED6_4X48);
         tinkerBrickletThermocoupleEDataType = createEDataType(TINKER_BRICKLET_THERMOCOUPLE);
         tinkerBrickletUVLightEDataType = createEDataType(TINKER_BRICKLET_UV_LIGHT);
@@ -13512,6 +13171,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         g2 = createEGenericType(this.getMLCDSubDevice());
         g1.getETypeArguments().add(g2);
         mBrickletLCD20x4EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getOLEDBricklet());
+        mBrickletOLED128x64V2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMDevice());
+        g2 = createEGenericType(this.getTinkerBrickletOLED128x64V2());
+        g1.getETypeArguments().add(g2);
+        mBrickletOLED128x64V2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTextActor());
+        mBrickletOLED128x64V2EClass.getEGenericSuperTypes().add(g1);
+        g1 = createEGenericType(this.getMTFConfigConsumer());
+        g2 = createEGenericType(this.getBrickletOLEDConfiguration());
+        g1.getETypeArguments().add(g2);
+        mBrickletOLED128x64V2EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getOLEDBricklet());
         mBrickletOLED128x64EClass.getEGenericSuperTypes().add(g1);
         g1 = createEGenericType(this.getMDevice());
@@ -15197,6 +14868,12 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         addEParameter(op, theEcorePackage.getEInt(), "max", 0, 1, !IS_UNIQUE, IS_ORDERED);
         addEParameter(op, theEcorePackage.getEInt(), "value", 0, 1, !IS_UNIQUE, IS_ORDERED);
 
+        initEClass(mBrickletOLED128x64V2EClass, MBrickletOLED128x64V2.class, "MBrickletOLED128x64V2", !IS_ABSTRACT,
+                !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getMBrickletOLED128x64V2_DeviceType(), theEcorePackage.getEString(), "deviceType",
+                "bricklet_oled128x64v2", 0, 1, MBrickletOLED128x64V2.class, !IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE,
+                !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
         initEClass(mBrickletOLED128x64EClass, MBrickletOLED128x64.class, "MBrickletOLED128x64", !IS_ABSTRACT,
                 !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getMBrickletOLED128x64_DeviceType(), theEcorePackage.getEString(), "deviceType",
@@ -16043,6 +15720,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEDataType(tinkerBrickletAccelerometerEDataType, BrickletAccelerometer.class, "TinkerBrickletAccelerometer",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletOLED128x64EDataType, BrickletOLED128x64.class, "TinkerBrickletOLED128x64",
+                IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(tinkerBrickletOLED128x64V2EDataType, BrickletOLED128x64V2.class, "TinkerBrickletOLED128x64V2",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(tinkerBrickletOLED64x48EDataType, BrickletOLED64x48.class, "TinkerBrickletOLED64x48",
                 IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
