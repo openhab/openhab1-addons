@@ -844,7 +844,6 @@ public class MBrickletLCD128x64Impl extends MinimalEObjectImpl.Container impleme
     @Override
     public void initSubDevices() {
         ModelFactory factory = ModelFactory.eINSTANCE;
-        // TODO create the lcd touch buttons
 
         MLCD128x64Backlight backlight = factory.createMLCD128x64Backlight();
         backlight.setUid(uid);
@@ -864,7 +863,7 @@ public class MBrickletLCD128x64Impl extends MinimalEObjectImpl.Container impleme
     @Override
     public void write(String text) {
         try {
-            // clear lcd
+            // clear lcd when text is empty
             if (text == null || text.trim().isEmpty()) {
                 tinkerforgeDevice.clearDisplay();
                 setText(text);
@@ -912,8 +911,8 @@ public class MBrickletLCD128x64Impl extends MinimalEObjectImpl.Container impleme
     @Override
     public void enable() {
         tinkerforgeDevice = new BrickletLCD128x64(uid, ipConnection);
-        // TODO make config
         try {
+            tinkerforgeDevice.clearDisplay();
             tinkerforgeDevice.setDisplayConfiguration(14, 0, false, true);
         } catch (TimeoutException e) {
             TinkerforgeErrorHandler.handleError(this, TinkerforgeErrorHandler.TF_TIMEOUT_EXCEPTION, e);

@@ -50,6 +50,7 @@ The TinkerForge auto reconnect feature is supported. Furthermore even if the ini
     - [Joystick Bricklet](#joystick-bricklet)
     - [Laser Range Finder Bricklet](#laser-range-finder-bricklet)
     - [LCD 20x4 Display Bricklet](#lcd-20x4-display-bricklet)
+	- [LCD 128x64 Display Bricklet](#lcd-128x64-display-bricklet)
     - [LED Strip Bricklet](#led-strip-bricklet)
     - [Linear Poti Bricklet](#linear-poti-bricklet)
     - [Load Cell Bricklet](#load-cell-bricklet)
@@ -249,6 +250,8 @@ The following table shows the TinkerForge device, its device type, its subid and
 |LCD20x4 Bricklet|bricklet_LCD20x4|||
 |LCD20x4 backlight|backlight|backlight||
 |LCD20x4 Bricklet button sub devices|lcd_button|button[0-3]|interrupt|
+|LCD128x64 Bricklet|bricklet_LCD128x64|||
+|LCD128x64 backlight|backlight|backlight||
 |LED Strip Bricklet|bricklet_ledstrip|||
 |LED Strip Bricklet subdevice|ledgroup|ledgroup[1-x]|x|
 |Linear Poti Bricklet|bricklet_linear_poti||x|
@@ -2402,6 +2405,31 @@ rule "Weatherstation LCD update ambientLight"
                                 TF_AmbientLight.state.format("%.0f")
                                 ))
 end
+```
+
+---
+[Table of Contents](#table-of-contents)
+
+### LCD 128x64 Display Bricklet
+
+Technical description see [Tinkerforge Website](https://www.tinkerforge.com/en/doc/Hardware/Bricklets/LCD_128x64.html)
+
+#### Binding properties:
+
+You can send text messages to the display. To specify the position of the text you could use the prefix `TFNUM<RCC>` where `R` is the row (0-7) and `C` the column (0-21).
+For example: `TFNUM<110>Hello` will write Hello in the middle of the second line of the display.
+You could also enable or disable the lcd backlight (`subid=backlight`).
+
+Not supported at the moment:
+* touch buttons and sliders
+* inverse colors
+* gui graphs
+
+##### Items file entry (e.g. tinkerforge.items):
+
+```
+String lcd_text "LCD Text" (gTF) {tinkerforge="uid=H92"}
+Switch lcd_backlight "LCD Backlight" (gTF) {tinkerforge="uid=H92, subid=backlight"}
 ```
 
 ---

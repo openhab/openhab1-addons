@@ -515,7 +515,6 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      */
     @Override
     public void turnSwitch(OnOffValue state) {
-        // TODO set the display intensity
         int backlightValue = state == OnOffValue.ON ? 100 : 0;
         try {
             getMbrick().getTinkerforgeDevice().setDisplayConfiguration(14, backlightValue, false, true);
