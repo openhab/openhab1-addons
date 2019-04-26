@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -45,7 +46,7 @@ public class Pushover {
 
     private static final String JSON_API_URL = "https://api.pushover.net/1/messages.json";
     private static final String JSON_CANCEL_API_URL = "https://api.pushover.net/1/receipts/{receipt}/cancel.json";
-    private static final String UTF_8_ENCODING = "UTF-8";
+    private static final String UTF_8_ENCODING = StandardCharsets.UTF_8.name();
     private static final String DEFAULT_CONTENT_TYPE = "image/jpeg";
 
     private static final JsonParser parser = new JsonParser();
@@ -55,7 +56,8 @@ public class Pushover {
     private static final String API_RETURN_ERRORS_TAG = "errors";
     private static final String API_RETURN_RECEIPT_TAG = "receipt";
 
-    private static final int API_MAX_MESSAGE_LENGTH = 512;
+    private static final int API_MAX_MESSAGE_LENGTH = 1024;
+    private static final int API_MAX_TITLE_LENGTH = 250;
     private static final int API_MAX_URL_LENGTH = 512;
     private static final int API_MAX_URL_TITLE_LENGTH = 100;
     private static final int[] API_VALID_PRIORITY_LIST = { -2, -1, 0, 1, 2 };
@@ -377,11 +379,12 @@ public class Pushover {
             }
 
             if (!StringUtils.isEmpty(message)) {
-                if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH) {
+                if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH &&
+                        title.length() <= API_MAX_TITLE_LENGTH) {
                     parts.add(new StringPart(MESSAGE_KEY_MESSAGE, message, UTF_8_ENCODING));
                 } else {
-                    logger.warn("Together, the event message and title total more than {} characters.",
-                            API_MAX_MESSAGE_LENGTH);
+                    logger.warn("The message character size is greater than {} or the title is greater "
+                            + "than {}.", API_MAX_MESSAGE_LENGTH, API_MAX_TITLE_LENGTH);
                     return null;
                 }
             } else {
