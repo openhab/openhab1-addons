@@ -50,63 +50,59 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
          */
         private final static String async_cmds = "F";
 
-        private Boolean waitOnCULResponse = false;
+        /**
+         * Timeout in milliseconds the thread will wait for an response by the CUL
+         */
+        private final static int waitForResponse_ms = 2000;
 
         @Override
         public void run() {
-            int waitTimeout = 0;
             String command = null;
 
             while (!isInterrupted()) {
-                if (!waitOnCULResponse) {
-                    try {
-                        command = sendQueue.take();
-                    } catch (InterruptedException e) {
-                        logger.warn("Failed to wait for queue: " + e.toString());
-                    }
-                    if (command != null) {
-                        if (!command.endsWith("\r\n")) {
-                            command = command + "\r\n";
-                        }
-                        try {
-                            logger.trace("Writing message: {}", command);
-
-                            writeMessage(command);
-                            if (async_cmds.contains(command.subSequence(0, 1))) {
-                                waitOnCULResponse = false;
-                                continue;
-                            }
-                            waitOnCULResponse = true;
-                            waitTimeout = 0;
-                        } catch (CULCommunicationException e) {
-                            logger.warn("Error while writing command to CUL", e);
-                        }
-                    }
+                try {
+                    command = sendQueue.take();
+                } catch (InterruptedException e) {
+                    logger.warn("Failed to wait for queue: " + e.toString());
+                }
+                if (command == null) {
+                    continue;
+                }
+                if (!command.endsWith("\r\n")) {
+                    command = command + "\r\n";
                 }
                 try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    logger.debug("Error while sleeping in SendThread", e);
-                }
+                    logger.trace("Writing message: {}", command);
 
-                waitTimeout += 1;
-                if (waitOnCULResponse && waitTimeout > 200) {
-                    logger.trace("Reset wait on CUL response due to timeout");
-                    waitOnCULResponse = false;
+                    writeMessage(command);
+                    if (async_cmds.contains(command.subSequence(0, 1))) {
+                        continue;
+                    }
+                    waitOnCulResponse();
+                } catch (CULCommunicationException e) {
+                    logger.warn("Error while writing command to CUL", e);
                 }
             }
         }
 
-        @Override
-        public void dataReceived(String data) {
-            logger.trace("CUL response received: {}", data);
-            waitOnCULResponse = false;
+        private synchronized void waitOnCulResponse() {
+            try {
+                wait(waitForResponse_ms);
+            } catch (InterruptedException e) {
+                logger.debug("Error while sleeping in SendThread", e);
+            }
         }
 
         @Override
-        public void error(Exception e) {
+        public synchronized void dataReceived(String data) {
+            logger.trace("CUL response received: {}", data);
+            notify();
+        }
+
+        @Override
+        public synchronized void error(Exception e) {
             logger.trace("CUL error received: {}", e);
-            waitOnCULResponse = false;
+            notify();
         }
     }
 
