@@ -10,10 +10,10 @@ package org.openhab.io.transport.cul.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedTransferQueue;
 
 import org.openhab.io.transport.cul.CULCommunicationException;
 import org.openhab.io.transport.cul.CULDeviceException;
@@ -55,10 +55,15 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
         @Override
         public void run() {
             int waitTimeout = 0;
+            String command = null;
 
             while (!isInterrupted()) {
                 if (!waitOnCULResponse) {
-                    String command = sendQueue.poll();
+                    try {
+                        command = sendQueue.take();
+                    } catch (InterruptedException e) {
+                        logger.warn("Failed to wait for queue: " + e.toString());
+                    }
                     if (command != null) {
                         if (!command.endsWith("\r\n")) {
                             command = command + "\r\n";
@@ -141,7 +146,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
     protected List<CULListener> listeners = new ArrayList<CULListener>();
 
-    protected Queue<String> sendQueue = new ConcurrentLinkedQueue<String>();
+    protected BlockingQueue<String> sendQueue = new LinkedTransferQueue<String>();
     protected int credit10ms = 0;
 
     protected AbstractCULHandler(T config) {
@@ -200,14 +205,14 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     @Override
     public void send(String command) {
         if (isMessageAllowed(command)) {
-            sendQueue.add(command);
+            sendQueue.offer(command);
             requestCreditReport();
         }
     }
 
     @Override
     public void sendWithoutCheck(String message) throws CULCommunicationException {
-        sendQueue.add(message);
+        sendQueue.offer(message);
     }
 
     /**
