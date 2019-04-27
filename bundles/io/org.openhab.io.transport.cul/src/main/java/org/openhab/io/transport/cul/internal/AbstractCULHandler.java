@@ -35,7 +35,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     /**
      * Thread which sends all queued commands to the CUL.
      * The Thread waits on a CUL response before sending a new
-     * command to prevent race conditions. 
+     * command to prevent race conditions.
      *
      * @author Till Klocke
      * @since 1.4.0
@@ -44,13 +44,18 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     private class SendThread extends Thread implements CULListener {
 
         private final Logger logger = LoggerFactory.getLogger(SendThread.class);
-        
+
+        /**
+         * List of commands the CULfw does not response to and we shall not wait for
+         */
+        private final static String async_cmds = "F";
+
         private Boolean waitOnCULResponse = false;
 
         @Override
         public void run() {
             int waitTimeout = 0;
-            
+
             while (!isInterrupted()) {
                 if (!waitOnCULResponse) {
                     String command = sendQueue.poll();
@@ -60,8 +65,12 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
                         }
                         try {
                             logger.trace("Writing message: {}", command);
-                            
+
                             writeMessage(command);
+                            if (async_cmds.contains(command.subSequence(0, 1))) {
+                                waitOnCULResponse = false;
+                                continue;
+                            }
                             waitOnCULResponse = true;
                             waitTimeout = 0;
                         } catch (CULCommunicationException e) {
@@ -77,7 +86,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
                 waitTimeout += 1;
                 if (waitOnCULResponse && waitTimeout > 200) {
-                    logger.trace("Reset wait on CUL response due to timeout");;
+                    logger.trace("Reset wait on CUL response due to timeout");
                     waitOnCULResponse = false;
                 }
             }
@@ -161,7 +170,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     @Override
     public void open() throws CULDeviceException {
         openHardware();
-        
+
         registerListener(sendThread);
         sendThread.start();
     }
@@ -170,7 +179,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     public void close() {
         sendThread.interrupt();
         unregisterListener(sendThread);
-        
+
         closeHardware();
     }
 
