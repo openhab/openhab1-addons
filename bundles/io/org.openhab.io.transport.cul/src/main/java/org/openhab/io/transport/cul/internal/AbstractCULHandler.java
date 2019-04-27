@@ -104,7 +104,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
 
         @Override
         public synchronized void error(Exception e) {
-            logger.trace("CUL error received: {}", e);
+            logger.debug("CUL error received: {}", e);
             notify();
         }
     }
@@ -297,7 +297,7 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
      */
     private void requestCreditReport() {
         /* this requests a report which provides credit10ms */
-        log.debug("Requesting credit report");
+        log.trace("Requesting credit report");
         try {
             sendWithoutCheck("X\r\n");
         } catch (CULCommunicationException e) {
