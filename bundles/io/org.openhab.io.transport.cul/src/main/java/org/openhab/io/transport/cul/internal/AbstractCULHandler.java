@@ -78,7 +78,9 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
                     if (async_cmds.contains(command.subSequence(0, 1))) {
                         continue;
                     }
+                    long start_ms = System.nanoTime();
                     waitOnCulResponse();
+                    logger.trace("Response took {} ms", (System.nanoTime() - start_ms) / 1000000);
                 } catch (CULCommunicationException e) {
                     logger.warn("Error while writing command to CUL", e);
                 }
