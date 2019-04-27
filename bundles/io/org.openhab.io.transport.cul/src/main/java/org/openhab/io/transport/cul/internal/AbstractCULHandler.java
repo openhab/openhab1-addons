@@ -204,8 +204,12 @@ public abstract class AbstractCULHandler<T extends CULConfig> implements CULHand
     @Override
     public void send(String command) {
         if (isMessageAllowed(command)) {
-            sendQueue.offer(command);
-            requestCreditReport();
+            if (sendQueue.offer(command)) {
+                requestCreditReport();
+            } else {
+                log.warn("Send buffer overrun. Doing reset");
+                sendQueue.clear();
+            }
         }
     }
 
