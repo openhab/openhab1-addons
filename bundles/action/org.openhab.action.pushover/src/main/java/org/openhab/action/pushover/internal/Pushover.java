@@ -8,6 +8,8 @@
  */
 package org.openhab.action.pushover.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class Pushover {
 
     private static final String JSON_API_URL = "https://api.pushover.net/1/messages.json";
     private static final String JSON_CANCEL_API_URL = "https://api.pushover.net/1/receipts/{receipt}/cancel.json";
-    private static final String UTF_8_ENCODING = StandardCharsets.UTF_8.name();
+    private static final String UTF_8_ENCODING = UTF_8.name();
     private static final String DEFAULT_CONTENT_TYPE = "image/jpeg";
 
     private static final JsonParser parser = new JsonParser();
