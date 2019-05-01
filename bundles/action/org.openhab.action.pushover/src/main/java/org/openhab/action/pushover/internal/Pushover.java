@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -40,6 +39,7 @@ import com.google.gson.JsonParser;
  *
  * @author Chris Graham - Initial contribution
  * @author Christoph Weitkamp - Added Receipts and Callback API for handling of emergency-priority notifications
+ * @author Jonas Brüstel - Added HTML and Monospace formatting option
  * @since 1.5.0
  */
 public class Pushover {
