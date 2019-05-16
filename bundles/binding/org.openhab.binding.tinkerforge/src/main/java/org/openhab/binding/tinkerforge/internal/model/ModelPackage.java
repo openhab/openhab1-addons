@@ -32879,6 +32879,16 @@ public interface ModelPackage extends EPackage {
     int NFC_CONFIGURATION = 217;
 
     /**
+     * The feature id for the '<em><b>Clear Values On Error</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     * @ordered
+     */
+    int NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR = TF_CONFIG_FEATURE_COUNT + 0;
+
+    /**
      * The feature id for the '<em><b>Reset Old Values</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -32886,7 +32896,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int NFC_CONFIGURATION__RESET_OLD_VALUES = TF_CONFIG_FEATURE_COUNT + 0;
+    int NFC_CONFIGURATION__RESET_OLD_VALUES = TF_CONFIG_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Triggered Scan</b></em>' attribute.
@@ -32896,7 +32906,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int NFC_CONFIGURATION__TRIGGERED_SCAN = TF_CONFIG_FEATURE_COUNT + 1;
+    int NFC_CONFIGURATION__TRIGGERED_SCAN = TF_CONFIG_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Delay After Scan</b></em>' attribute.
@@ -32906,7 +32916,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int NFC_CONFIGURATION__DELAY_AFTER_SCAN = TF_CONFIG_FEATURE_COUNT + 2;
+    int NFC_CONFIGURATION__DELAY_AFTER_SCAN = TF_CONFIG_FEATURE_COUNT + 3;
 
     /**
      * The number of structural features of the '<em>NFC Configuration</em>' class.
@@ -32916,7 +32926,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int NFC_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 3;
+    int NFC_CONFIGURATION_FEATURE_COUNT = TF_CONFIG_FEATURE_COUNT + 4;
 
     /**
      * The number of operations of the '<em>NFC Configuration</em>' class.
@@ -42943,6 +42953,20 @@ public interface ModelPackage extends EPackage {
 
     /**
      * Returns the meta object for the attribute
+     * '{@link org.openhab.binding.tinkerforge.internal.model.NFCConfiguration#isClearValuesOnError <em>Clear Values On
+     * Error</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @return the meta object for the attribute '<em>Clear Values On Error</em>'.
+     * @see org.openhab.binding.tinkerforge.internal.model.NFCConfiguration#isClearValuesOnError()
+     * @see #getNFCConfiguration()
+     * @generated
+     */
+    EAttribute getNFCConfiguration_ClearValuesOnError();
+
+    /**
+     * Returns the meta object for the attribute
      * '{@link org.openhab.binding.tinkerforge.internal.model.NFCConfiguration#isResetOldValues <em>Reset Old
      * Values</em>}'.
      * <!-- begin-user-doc -->
@@ -51380,6 +51404,15 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass NFC_CONFIGURATION = eINSTANCE.getNFCConfiguration();
+
+        /**
+         * The meta object literal for the '<em><b>Clear Values On Error</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * 
+         * @generated
+         */
+        EAttribute NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR = eINSTANCE.getNFCConfiguration_ClearValuesOnError();
 
         /**
          * The meta object literal for the '<em><b>Reset Old Values</b></em>' attribute feature.

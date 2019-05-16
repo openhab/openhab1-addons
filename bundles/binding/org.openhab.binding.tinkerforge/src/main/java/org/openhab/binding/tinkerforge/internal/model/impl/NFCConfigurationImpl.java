@@ -20,6 +20,8 @@ import org.openhab.binding.tinkerforge.internal.model.NFCConfiguration;
  * The following features are implemented:
  * </p>
  * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.NFCConfigurationImpl#isClearValuesOnError <em>Clear
+ * Values On Error</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.NFCConfigurationImpl#isResetOldValues <em>Reset Old
  * Values</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.impl.NFCConfigurationImpl#isTriggeredScan <em>Triggered
@@ -31,6 +33,28 @@ import org.openhab.binding.tinkerforge.internal.model.NFCConfiguration;
  * @generated
  */
 public class NFCConfigurationImpl extends MinimalEObjectImpl.Container implements NFCConfiguration {
+    /**
+     * The default value of the '{@link #isClearValuesOnError() <em>Clear Values On Error</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @see #isClearValuesOnError()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean CLEAR_VALUES_ON_ERROR_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isClearValuesOnError() <em>Clear Values On Error</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @see #isClearValuesOnError()
+     * @generated
+     * @ordered
+     */
+    protected boolean clearValuesOnError = CLEAR_VALUES_ON_ERROR_EDEFAULT;
+
     /**
      * The default value of the '{@link #isResetOldValues() <em>Reset Old Values</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -124,6 +148,30 @@ public class NFCConfigurationImpl extends MinimalEObjectImpl.Container implement
      * 
      * @generated
      */
+    public boolean isClearValuesOnError() {
+        return clearValuesOnError;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public void setClearValuesOnError(boolean newClearValuesOnError) {
+        boolean oldClearValuesOnError = clearValuesOnError;
+        clearValuesOnError = newClearValuesOnError;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR,
+                    oldClearValuesOnError, clearValuesOnError));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
     public boolean isResetOldValues() {
         return resetOldValues;
     }
@@ -199,6 +247,8 @@ public class NFCConfigurationImpl extends MinimalEObjectImpl.Container implement
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
+            case ModelPackage.NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR:
+                return isClearValuesOnError();
             case ModelPackage.NFC_CONFIGURATION__RESET_OLD_VALUES:
                 return isResetOldValues();
             case ModelPackage.NFC_CONFIGURATION__TRIGGERED_SCAN:
@@ -218,6 +268,9 @@ public class NFCConfigurationImpl extends MinimalEObjectImpl.Container implement
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
+            case ModelPackage.NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR:
+                setClearValuesOnError((Boolean) newValue);
+                return;
             case ModelPackage.NFC_CONFIGURATION__RESET_OLD_VALUES:
                 setResetOldValues((Boolean) newValue);
                 return;
@@ -240,6 +293,9 @@ public class NFCConfigurationImpl extends MinimalEObjectImpl.Container implement
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
+            case ModelPackage.NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR:
+                setClearValuesOnError(CLEAR_VALUES_ON_ERROR_EDEFAULT);
+                return;
             case ModelPackage.NFC_CONFIGURATION__RESET_OLD_VALUES:
                 setResetOldValues(RESET_OLD_VALUES_EDEFAULT);
                 return;
@@ -262,6 +318,8 @@ public class NFCConfigurationImpl extends MinimalEObjectImpl.Container implement
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
+            case ModelPackage.NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR:
+                return clearValuesOnError != CLEAR_VALUES_ON_ERROR_EDEFAULT;
             case ModelPackage.NFC_CONFIGURATION__RESET_OLD_VALUES:
                 return resetOldValues != RESET_OLD_VALUES_EDEFAULT;
             case ModelPackage.NFC_CONFIGURATION__TRIGGERED_SCAN:
@@ -284,7 +342,9 @@ public class NFCConfigurationImpl extends MinimalEObjectImpl.Container implement
             return super.toString();
 
         StringBuilder result = new StringBuilder(super.toString());
-        result.append(" (resetOldValues: ");
+        result.append(" (clearValuesOnError: ");
+        result.append(clearValuesOnError);
+        result.append(", resetOldValues: ");
         result.append(resetOldValues);
         result.append(", triggeredScan: ");
         result.append(triggeredScan);

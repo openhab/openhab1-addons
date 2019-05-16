@@ -59,7 +59,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSwitchState()
      * @generated
      * @ordered
@@ -70,7 +70,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getSwitchState() <em>Switch State</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSwitchState()
      * @generated
      * @ordered
@@ -81,7 +81,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -92,7 +92,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getLogger() <em>Logger</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getLogger()
      * @generated
      * @ordered
@@ -103,7 +103,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -114,7 +114,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getUid() <em>Uid</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getUid()
      * @generated
      * @ordered
@@ -125,7 +125,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -136,7 +136,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #isPoll() <em>Poll</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #isPoll()
      * @generated
      * @ordered
@@ -147,7 +147,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -158,7 +158,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getEnabledA() <em>Enabled A</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getEnabledA()
      * @generated
      * @ordered
@@ -169,7 +169,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -180,7 +180,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getSubId() <em>Sub Id</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getSubId()
      * @generated
      * @ordered
@@ -191,7 +191,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The default value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -202,7 +202,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
      * The cached value of the '{@link #getDeviceType() <em>Device Type</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @see #getDeviceType()
      * @generated
      * @ordered
@@ -212,7 +212,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     protected MLCD128x64BacklightImpl() {
@@ -222,7 +222,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -233,7 +233,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -244,23 +244,22 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSwitchState(OnOffValue newSwitchState) {
         OnOffValue oldSwitchState = switchState;
         switchState = newSwitchState;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD12_8X64_BACKLIGHT__SWITCH_STATE,
                     oldSwitchState, switchState));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -271,23 +270,22 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setLogger(Logger newLogger) {
         Logger oldLogger = logger;
         logger = newLogger;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD12_8X64_BACKLIGHT__LOGGER, oldLogger,
                     logger));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -298,23 +296,22 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setUid(String newUid) {
         String oldUid = uid;
         uid = newUid;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD12_8X64_BACKLIGHT__UID, oldUid,
                     uid));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -325,23 +322,22 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setPoll(boolean newPoll) {
         boolean oldPoll = poll;
         poll = newPoll;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD12_8X64_BACKLIGHT__POLL, oldPoll,
                     poll));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -352,23 +348,22 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setEnabledA(AtomicBoolean newEnabledA) {
         AtomicBoolean oldEnabledA = enabledA;
         enabledA = newEnabledA;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD12_8X64_BACKLIGHT__ENABLED_A,
                     oldEnabledA, enabledA));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -379,50 +374,47 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setSubId(String newSubId) {
         String oldSubId = subId;
         subId = newSubId;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD12_8X64_BACKLIGHT__SUB_ID, oldSubId,
                     subId));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public MBrickletLCD128x64 getMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK)
             return null;
-        }
         return (MBrickletLCD128x64) eContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public MBrickletLCD128x64 basicGetMbrick() {
-        if (eContainerFeatureID() != ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK) {
+        if (eContainerFeatureID() != ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK)
             return null;
-        }
         return (MBrickletLCD128x64) eInternalContainer();
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     public NotificationChain basicSetMbrick(MBrickletLCD128x64 newMbrick, NotificationChain msgs) {
@@ -433,38 +425,33 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public void setMbrick(MBrickletLCD128x64 newMbrick) {
         if (newMbrick != eInternalContainer()
                 || (eContainerFeatureID() != ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK && newMbrick != null)) {
-            if (EcoreUtil.isAncestor(this, newMbrick)) {
+            if (EcoreUtil.isAncestor(this, newMbrick))
                 throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-            }
             NotificationChain msgs = null;
-            if (eInternalContainer() != null) {
+            if (eInternalContainer() != null)
                 msgs = eBasicRemoveFromContainer(msgs);
-            }
-            if (newMbrick != null) {
+            if (newMbrick != null)
                 msgs = ((InternalEObject) newMbrick).eInverseAdd(this, ModelPackage.MSUB_DEVICE_HOLDER__MSUBDEVICES,
                         MSubDeviceHolder.class, msgs);
-            }
             msgs = basicSetMbrick(newMbrick, msgs);
-            if (msgs != null) {
+            if (msgs != null)
                 msgs.dispatch();
-            }
-        } else if (eNotificationRequired()) {
+        } else if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK, newMbrick,
                     newMbrick));
-        }
     }
 
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -548,16 +535,15 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK:
-                if (eInternalContainer() != null) {
+                if (eInternalContainer() != null)
                     msgs = eBasicRemoveFromContainer(msgs);
-                }
                 return basicSetMbrick((MBrickletLCD128x64) otherEnd, msgs);
         }
         return super.eInverseAdd(otherEnd, featureID, msgs);
@@ -566,7 +552,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -581,7 +567,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -597,7 +583,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -616,9 +602,8 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
             case ModelPackage.MLCD12_8X64_BACKLIGHT__SUB_ID:
                 return getSubId();
             case ModelPackage.MLCD12_8X64_BACKLIGHT__MBRICK:
-                if (resolve) {
+                if (resolve)
                     return getMbrick();
-                }
                 return basicGetMbrick();
             case ModelPackage.MLCD12_8X64_BACKLIGHT__DEVICE_TYPE:
                 return getDeviceType();
@@ -629,7 +614,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -663,7 +648,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -697,7 +682,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -726,7 +711,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -767,7 +752,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -808,7 +793,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -843,7 +828,7 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
@@ -871,14 +856,13 @@ public class MLCD128x64BacklightImpl extends MinimalEObjectImpl.Container implem
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     *
+     * 
      * @generated
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
+        if (eIsProxy())
             return super.toString();
-        }
 
         StringBuilder result = new StringBuilder(super.toString());
         result.append(" (switchState: ");

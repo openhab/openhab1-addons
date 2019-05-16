@@ -1453,6 +1453,7 @@ class BrickletOLEDConfiguration extends TFConfig {
 }
 
 class NFCConfiguration extends TFConfig{
+    boolean clearValuesOnError = "false"
     boolean resetOldValues = "true"
     boolean triggeredScan = "false"
     int delayAfterScan = "3000"

@@ -11,6 +11,8 @@ package org.openhab.binding.tinkerforge.internal.model;
  * The following features are supported:
  * </p>
  * <ul>
+ * <li>{@link org.openhab.binding.tinkerforge.internal.model.NFCConfiguration#isClearValuesOnError <em>Clear Values On
+ * Error</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.NFCConfiguration#isResetOldValues <em>Reset Old
  * Values</em>}</li>
  * <li>{@link org.openhab.binding.tinkerforge.internal.model.NFCConfiguration#isTriggeredScan <em>Triggered
@@ -24,6 +26,37 @@ package org.openhab.binding.tinkerforge.internal.model;
  * @generated
  */
 public interface NFCConfiguration extends TFConfig {
+    /**
+     * Returns the value of the '<em><b>Clear Values On Error</b></em>' attribute.
+     * The default value is <code>"false"</code>.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Clear Values On Error</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * 
+     * @return the value of the '<em>Clear Values On Error</em>' attribute.
+     * @see #setClearValuesOnError(boolean)
+     * @see org.openhab.binding.tinkerforge.internal.model.ModelPackage#getNFCConfiguration_ClearValuesOnError()
+     * @model default="false" unique="false"
+     * @generated
+     */
+    boolean isClearValuesOnError();
+
+    /**
+     * Sets the value of the
+     * '{@link org.openhab.binding.tinkerforge.internal.model.NFCConfiguration#isClearValuesOnError <em>Clear Values On
+     * Error</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @param value the new value of the '<em>Clear Values On Error</em>' attribute.
+     * @see #isClearValuesOnError()
+     * @generated
+     */
+    void setClearValuesOnError(boolean value);
+
     /**
      * Returns the value of the '<em><b>Reset Old Values</b></em>' attribute.
      * The default value is <code>"true"</code>.

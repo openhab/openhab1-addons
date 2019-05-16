@@ -9870,7 +9870,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    public EAttribute getNFCConfiguration_ResetOldValues() {
+    public EAttribute getNFCConfiguration_ClearValuesOnError() {
         return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(0);
     }
 
@@ -9880,7 +9880,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    public EAttribute getNFCConfiguration_TriggeredScan() {
+    public EAttribute getNFCConfiguration_ResetOldValues() {
         return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(1);
     }
 
@@ -9890,8 +9890,18 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * 
      * @generated
      */
-    public EAttribute getNFCConfiguration_DelayAfterScan() {
+    public EAttribute getNFCConfiguration_TriggeredScan() {
         return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * 
+     * @generated
+     */
+    public EAttribute getNFCConfiguration_DelayAfterScan() {
+        return (EAttribute) nfcConfigurationEClass.getEStructuralFeatures().get(3);
     }
 
     /**
@@ -11945,6 +11955,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEAttribute(brickletOLEDConfigurationEClass, BRICKLET_OLED_CONFIGURATION__INVERT);
 
         nfcConfigurationEClass = createEClass(NFC_CONFIGURATION);
+        createEAttribute(nfcConfigurationEClass, NFC_CONFIGURATION__CLEAR_VALUES_ON_ERROR);
         createEAttribute(nfcConfigurationEClass, NFC_CONFIGURATION__RESET_OLD_VALUES);
         createEAttribute(nfcConfigurationEClass, NFC_CONFIGURATION__TRIGGERED_SCAN);
         createEAttribute(nfcConfigurationEClass, NFC_CONFIGURATION__DELAY_AFTER_SCAN);
@@ -15539,6 +15550,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         initEClass(nfcConfigurationEClass, NFCConfiguration.class, "NFCConfiguration", !IS_ABSTRACT, !IS_INTERFACE,
                 IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getNFCConfiguration_ClearValuesOnError(), theEcorePackage.getEBoolean(), "clearValuesOnError",
+                "false", 0, 1, NFCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE,
+                !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getNFCConfiguration_ResetOldValues(), theEcorePackage.getEBoolean(), "resetOldValues", "true", 0,
                 1, NFCConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
                 !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -2882,6 +2882,7 @@ After that, the switch must be triggered to start the scanning again.
 | delayAfterScan | The delay after a nfc tag was read and the next autoscan is triggered.  |  any time in ms e.g. 3000(default) |
 | resetOldValues | Resets the values of all subdevices, when a new tag is read. | True(default), False |
 | triggeredScan | If set to true, the scan for tags is triggered via *ON* command. Otherwise it is scanned permanently for tags. | False(default), True |
+| clearValuesOnError | If set to true, each time no tag is read due to an error or when no tag is available, the item states are set to UNDEF | False(default), True |
 
 | subdevice | description | 
 |-----------|-------------|
