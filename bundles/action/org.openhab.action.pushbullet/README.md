@@ -75,7 +75,7 @@ If you use an alias key, the parameters (device, icon, sound, vibration) are ove
 
 ## Rate limits
 
-As of June 2017, free accounts have a limit of 500 pushes per month.
+Free accounts have a limit of 100 pushes per month.
 This action does not evaluate the rate limiting headers though.
 
 ## Libraries
