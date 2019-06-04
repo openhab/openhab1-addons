@@ -6,7 +6,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.14.0.qualifier
 Bundle-Activator: org.openhab.io.gcal.internal.GCalActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Description: This is the Google Calendar enhancement of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,

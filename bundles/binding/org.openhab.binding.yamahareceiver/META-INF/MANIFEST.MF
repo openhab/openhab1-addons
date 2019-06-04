@@ -26,4 +26,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Private-Package: org.openhab.binding.yamahareceiver.internal
 Bundle-Description: This is the YamahaReceiver binding of the open Home Automation Bus (openHAB)
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0

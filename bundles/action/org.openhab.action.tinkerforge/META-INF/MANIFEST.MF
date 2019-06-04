@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.action.tinkerforge.internal
 Ignore-Package: org.openhab.action.tinkerforge.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB TinkerForge Action
 Bundle-SymbolicName: org.openhab.action.tinkerforge
 Bundle-Vendor: openHAB.org

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.souliss.internal
 Ignore-Package: org.openhab.binding.souliss.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: Souliss - Arduino based SmartHome Binding
 Bundle-SymbolicName: org.openhab.binding.souliss
 Bundle-Vendor: openHAB.org

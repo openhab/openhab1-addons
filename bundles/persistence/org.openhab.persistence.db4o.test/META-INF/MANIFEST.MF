@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for the db4o Persistence Bundle
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-SymbolicName: org.openhab.persistence.db4o.test
 Bundle-Version: 1.14.0.qualifier
 Bundle-Vendor: openHAB.org
