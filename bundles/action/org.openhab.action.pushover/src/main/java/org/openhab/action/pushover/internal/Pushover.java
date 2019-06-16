@@ -12,6 +12,8 @@
  */
 package org.openhab.action.pushover.internal;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ import com.google.gson.JsonParser;
  *
  * @author Chris Graham - Initial contribution
  * @author Christoph Weitkamp - Added Receipts and Callback API for handling of emergency-priority notifications
+ * @author Jonas Brüstel - Added HTML and Monospace formatting option
  * @since 1.5.0
  */
 public class Pushover {
@@ -49,7 +52,7 @@ public class Pushover {
 
     private static final String JSON_API_URL = "https://api.pushover.net/1/messages.json";
     private static final String JSON_CANCEL_API_URL = "https://api.pushover.net/1/receipts/{receipt}/cancel.json";
-    private static final String UTF_8_ENCODING = "UTF-8";
+    private static final String UTF_8_ENCODING = UTF_8.name();
     private static final String DEFAULT_CONTENT_TYPE = "image/jpeg";
 
     private static final JsonParser parser = new JsonParser();
@@ -59,7 +62,8 @@ public class Pushover {
     private static final String API_RETURN_ERRORS_TAG = "errors";
     private static final String API_RETURN_RECEIPT_TAG = "receipt";
 
-    private static final int API_MAX_MESSAGE_LENGTH = 512;
+    private static final int API_MAX_MESSAGE_LENGTH = 1024;
+    private static final int API_MAX_TITLE_LENGTH = 250;
     private static final int API_MAX_URL_LENGTH = 512;
     private static final int API_MAX_URL_TITLE_LENGTH = 100;
     private static final int[] API_VALID_PRIORITY_LIST = { -2, -1, 0, 1, 2 };
@@ -81,8 +85,11 @@ public class Pushover {
     public static final String MESSAGE_KEY_RETRY = "retry";
     public static final String MESSAGE_KEY_EXPIRE = "expire";
     public static final String MESSAGE_KEY_ATTACHMENT = "attachment";
-
     public static final String MESSAGE_KEY_CONTENT_TYPE = "content-type";
+    public static final String MESSAGE_KEY_HTML = "html";
+    public static final String MESSAGE_VALUE_HTML = "1";
+    public static final String MESSAGE_KEY_MONOSPACE = "monospace";
+    public static final String MESSAGE_VALUE_MONOSPACE = "1";
 
     static String defaultApiKey;
     static String defaultUser;
@@ -109,6 +116,8 @@ public class Pushover {
     private String sound;
     private String attachment;
     private String contentType;
+    private boolean htmlFormatting;
+    private boolean monospaceFormatting;
 
     public Pushover() {
         apiKey = Pushover.defaultApiKey;
@@ -119,6 +128,8 @@ public class Pushover {
         urlTitle = Pushover.defaultUrlTitle;
         priority = Pushover.defaultPriority;
         sound = Pushover.defaultSound;
+        htmlFormatting = false;
+        monospaceFormatting = false;
     }
 
     public Pushover withApiKey(String apiKey) {
@@ -173,6 +184,16 @@ public class Pushover {
 
     public Pushover withContentType(String contentType) {
         this.contentType = contentType;
+        return this;
+    }
+
+    public Pushover withHtmlFormatting(boolean htmlFormatting) {
+        this.htmlFormatting = htmlFormatting;
+        return this;
+    }
+
+    public Pushover withMonospaceFormatting(boolean monospaceFormatting) {
+        this.monospaceFormatting = monospaceFormatting;
         return this;
     }
 
@@ -327,19 +348,20 @@ public class Pushover {
             @ParamDoc(name = "urlTitle", text = "A title for your supplementary URL, otherwise just the URL is shown.") String urlTitle,
             @ParamDoc(name = "priority", text = "Send as -1 to always send as a quiet notification, 1 to display as high-priority and bypass the user's quiet hours, or 2 to also require confirmation from the user.") int priority,
             @ParamDoc(name = "sound", text = "The name of one of the sounds supported by device clients to override the user's default sound choice.") String sound) {
-        return pushover0(apiKey, user, message, device, title, url, urlTitle, priority, sound, null, null) != null;
+        return pushover0(apiKey, user, message, device, title, url, urlTitle, priority, sound, null, null, false, false) != null;
     }
 
     @ActionDoc(text = "Send a notification to your device. apiKey, user and message are required. All else can effectively be null.", returns = "a <code>receipt</code> (30 character string containing the character set [A-Za-z0-9]), if emergency, otherwise empty string or <code>null</code> in case of any error.")
     public static String sendPushoverMessage(
             @ParamDoc(name = "pushover", text = "The Pushover object containing all required parameters.") Pushover p) {
         return pushover0(p.apiKey, p.user, p.message, p.device, p.title, p.url, p.urlTitle, p.priority, p.sound,
-                p.attachment, p.contentType);
+                p.attachment, p.contentType, p.htmlFormatting, p.monospaceFormatting);
     }
 
     // Primary method for sending a message to the Pushover API
     private static String pushover0(String apiKey, String user, String message, String device, String title, String url,
-            String urlTitle, int priority, String sound, String attachment, String contentType) {
+            String urlTitle, int priority, String sound, String attachment, String contentType, boolean htmlFormatting,
+            boolean monospaceFormatting) {
 
         List<Part> parts = new ArrayList<>();
         try {
@@ -363,11 +385,12 @@ public class Pushover {
             }
 
             if (!StringUtils.isEmpty(message)) {
-                if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH) {
+                if ((message.length() + title.length()) <= API_MAX_MESSAGE_LENGTH &&
+                        title.length() <= API_MAX_TITLE_LENGTH) {
                     parts.add(new StringPart(MESSAGE_KEY_MESSAGE, message, UTF_8_ENCODING));
                 } else {
-                    logger.warn("Together, the event message and title total more than {} characters.",
-                            API_MAX_MESSAGE_LENGTH);
+                    logger.warn("The message character size is greater than {} or the title is greater "
+                            + "than {}.", API_MAX_MESSAGE_LENGTH, API_MAX_TITLE_LENGTH);
                     return null;
                 }
             } else {
@@ -472,6 +495,13 @@ public class Pushover {
                             attachment, e.getMessage());
                 }
             }
+
+            if (htmlFormatting) {
+                parts.add(new StringPart(MESSAGE_KEY_HTML, MESSAGE_VALUE_HTML, UTF_8_ENCODING));
+            } else if (monospaceFormatting) {
+                parts.add(new StringPart(MESSAGE_KEY_MONOSPACE, MESSAGE_VALUE_MONOSPACE, UTF_8_ENCODING));
+            }
+
             PostMethod httpPost = new PostMethod(JSON_API_URL);
 
             httpPost.setRequestEntity(
