@@ -40,7 +40,6 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
-import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Clazz;
 import net.fortuna.ical4j.model.property.Description;
@@ -51,6 +50,7 @@ import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.validate.ValidationException;
 
 public final class Util {
     private static final String HTTP_URL_PREFIX = "http://";
@@ -89,9 +89,9 @@ public final class Util {
     }
 
     public static String getFilename(String name) {
-        name = FilenameUtils.getBaseName(name);
-        name = name.replaceAll("[^a-zA-Z0-9-_]", "_");
-        return name;
+        String filename = FilenameUtils.getBaseName(name);
+        filename = filename.replaceAll("[^a-zA-Z0-9-_]", "_");
+        return filename;
     }
 
     public static File getCacheFile(String calendarId, String filename) {
@@ -126,9 +126,10 @@ public final class Util {
             if (url.startsWith(HTTP_URL_PREFIX)) {
                 log.error("do not use '{}' if no ssl is used", CalDavLoaderImpl.PROP_DISABLE_CERTIFICATE_VERIFICATION);
             }
-            log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={})",
-                    key, url, userName);
-            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setHostnameVerifier(new AllowAllHostnameVerifier());
+            log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={})", key,
+                    url, userName);
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()
+                    .setHostnameVerifier(new AllowAllHostnameVerifier());
             try {
                 httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
                     @Override
@@ -150,8 +151,7 @@ public final class Util {
                 return new SardineImpl(httpClientBuilder, userName, password);
             }
         } else {
-            log.trace("connecting to caldav '{}' (url={}, username={})",
-                    key, url, userName);
+            log.trace("connecting to caldav '{}' (url={}, username={})", key, url, userName);
             if (StringUtils.isEmpty(userName) && StringUtils.isEmpty(password)) {
                 log.trace("connecting without credentials for '{}'", key);
                 return new SardineImpl();

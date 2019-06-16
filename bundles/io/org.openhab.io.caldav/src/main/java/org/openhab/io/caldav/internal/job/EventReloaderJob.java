@@ -313,8 +313,9 @@ public class EventReloaderJob implements Job {
                 URI uri;
                 try {
                     uri = new URI(url.getProtocol(), null, url.getHost(), url.getPort(), resourcePath, null, null);
-                } catch(URISyntaxException e) {
-                    log.warn("Unable to load events; the provided string could not be parsed as a valid URI: '{}'", url);
+                } catch (URISyntaxException e) {
+                    log.warn("Unable to load events; the provided string could not be parsed as a valid URI: '{}'",
+                            url);
                     return;
                 }
                 url = uri.toURL();
@@ -365,7 +366,8 @@ public class EventReloaderJob implements Job {
         for (CalendarComponent comp : vEventComponents) {
             VEvent vEvent = (VEvent) comp;
             Summary vEventSummary = vEvent.getSummary();
-            log.trace("loading event: {}:{}", vEvent.getUid().getValue(), vEventSummary == null ? "(none)" : vEventSummary.getValue());
+            log.trace("loading event: {}:{}", vEvent.getUid().getValue(),
+                    vEventSummary == null ? "(none)" : vEventSummary.getValue());
             // fallback, because 'LastModified' in VEvent is optional
             org.joda.time.DateTime lastModifedVEvent = lastResourceChangeFS;
             if (vEvent.getLastModified() != null) {
@@ -414,8 +416,7 @@ public class EventReloaderJob implements Job {
                     log.trace("event will never occur (historic): {}", eventName);
                     eventContainer.setHistoricEvent(true);
                 }
-            }
-            else {
+            } else {
                 log.debug("No periods exist for event '{}'", eventName);
             }
 
@@ -461,7 +462,7 @@ public class EventReloaderJob implements Job {
      * @return
      */
     private List<String> readCategory(VEvent vEvent) {
-        PropertyList propertyCategoryList = vEvent.getProperties(Property.CATEGORIES);
+        PropertyList<Property> propertyCategoryList = vEvent.getProperties(Property.CATEGORIES);
         ArrayList<String> splittedCategoriesToReturn = new ArrayList<String>();
         if (propertyCategoryList != null) {
             for (int categoriesLineNum = 0; categoriesLineNum < propertyCategoryList.size(); categoriesLineNum++) {
