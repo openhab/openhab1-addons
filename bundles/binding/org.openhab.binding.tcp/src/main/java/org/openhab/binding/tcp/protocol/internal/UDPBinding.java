@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.openhab.binding.tcp.AbstractDatagramChannelBinding;
 import org.openhab.binding.tcp.Direction;
 import org.openhab.binding.tcp.internal.TCPActivator;
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * text based status messages.
  *
  * @author Karel Goderis
- * @since 1.1.0
+ * @author Helmut Lehmeyer
  */
 public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvider> implements ManagedService {
 
@@ -121,8 +122,8 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
                 if (newState != null) {
                     eventPublisher.postUpdate(itemName, newState);
                 } else {
-                    logger.warn("Cannot parse transformed input {} to match command {} on item {}",
-                            transformedResponse, command, itemName);
+                    logger.warn("Cannot parse transformed input {} to match command {} on item {}", transformedResponse,
+                            command, itemName);
                 }
 
                 return false;
@@ -206,22 +207,14 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 
         String preambleString = Objects.toString(config.get("preamble"), null);
         if (isNotBlank(preambleString)) {
-            try {
-                preAmble = preambleString.replaceAll("\\\\", "\\");
-            } catch (Exception e) {
-                preAmble = preambleString;
-            }
+            preAmble = StringEscapeUtils.unescapeJava(preambleString);
         } else {
             logger.info("The preamble for all write operations will be set to the default value of {}", preAmble);
         }
 
         String postambleString = Objects.toString(config.get("postamble"), null);
         if (isNotBlank(postambleString)) {
-            try {
-                postAmble = postambleString.replaceAll("\\\\", "\\");
-            } catch (Exception e) {
-                postAmble = postambleString;
-            }
+            postAmble = StringEscapeUtils.unescapeJava(postambleString);
         } else {
             logger.info("The postamble for all write operations will be set to the default value of {}", postAmble);
         }
