@@ -23,8 +23,8 @@
 
   <licenses>
     <license>
-      <name>Eclipse Public License</name>
-      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <name>Eclipse Public License 2.0</name>
+      <url>https://www.eclipse.org/legal/epl-2.0/</url>
     </license>
   </licenses>
 
@@ -194,18 +194,29 @@
         <plugin>
           <groupId>com.mycila</groupId>
           <artifactId>license-maven-plugin</artifactId>
-          <version>2.11</version>
+          <version>3.0</version>
           <configuration>
             <basedir>${basedir}</basedir>
-            <header>src/etc/header.txt</header>
+            <header>licenses/epl-2.0/header.txt</header>
             <quiet>false</quiet>
             <failIfMissing>true</failIfMissing>
             <strictCheck>true</strictCheck>
             <aggregate>true</aggregate>
+            <mapping>
+              <xml>xml-header-style</xml>
+            </mapping>
+            <headerDefinitions>
+              <headerDefinition>licenses/epl-2.0/xml-header-style.xml</headerDefinition>
+            </headerDefinitions>
             <includes>
               <include>**/org/openhab/**/*.java</include>
               <include>**/feature.xml</include>
               <include>**/OSGI-INF/*.xml</include>
+              <include>**/be/devlaminck/openwebnet/**/*.java</include>
+              <include>**/com/myhome/fcrisciani/**/*.java</include>
+              <include>**/de/quist/samy/remocon/**/*.java</include>
+              <include>**/org/octoller/devicecom/**/*.java</include>
+              <include>**/Moka7/**/*.java</include>
             </includes>
             <excludes>
               <exclude>target/**</exclude>
@@ -214,7 +225,7 @@
             </excludes>
             <useDefaultExcludes>true</useDefaultExcludes>
             <properties>
-              <year>2017</year>
+              <year>2019</year>
             </properties>
             <encoding>UTF-8</encoding>
           </configuration>

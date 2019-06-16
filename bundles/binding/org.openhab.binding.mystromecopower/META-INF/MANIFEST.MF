@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.mystromecopower.internal
 Ignore-Package: org.openhab.binding.mystromecopower.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB MyStromEcoPower Binding
 Bundle-SymbolicName: org.openhab.binding.mystromecopower
 Bundle-Vendor: openHAB.org

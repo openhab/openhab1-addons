@@ -1,0 +1,50 @@
+This content is produced and maintained by the openHAB project.
+
+* Project home: https://www.openhab.org
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0/.
+
+== Source Code
+
+https://github.com/openhab/openhab1-addons
+
+== Third-party Content
+
+guava
+* License: Apache 2.0 License
+* Project: https://github.com/google/guava
+* Source:  https://github.com/google/guava
+
+guice
+* License: Apache 2.0 License
+* Project: https://github.com/google/guice
+* Source:  https://github.com/google/guice
+
+harmony-java-client
+* License: EPL 1.0 License
+* Project: https://github.com/tuck182/harmony-java-client
+* Source:  https://github.com/tuck182/harmony-java-client
+
+jackson
+* License: Apache 2.0 License
+* Project: https://github.com/FasterXML/jackson
+* Source:  https://github.com/FasterXML/jackson
+
+resty
+* License: Apache 2.0 License
+* Project: https://beders.github.io/Resty
+* Source:  https://github.com/beders/Resty
+
+smack
+* License: Apache 2.0 License
+* Project: https://igniterealtime.org/projects/smack
+* Source:  https://github.com/igniterealtime/Smack
+
+xpp3
+* License: Apache 2.0 License
+* Project: http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1
+* Source:  http://www.extreme.indiana.edu/xgws/xsoap/xpp/mxp1

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.jointspace.internal
 Ignore-Package: org.openhab.binding.jointspace.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB JointSpace Binding
 Bundle-SymbolicName: org.openhab.binding.jointspace
 Bundle-Vendor: openHAB.org
