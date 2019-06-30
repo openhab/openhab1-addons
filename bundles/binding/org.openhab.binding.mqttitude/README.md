@@ -6,15 +6,6 @@ This is where openHAB steps in, with the Mqttitude binding. The idea is that the
 
 First you need to set up an MQTT broker (e.g. [Mosquitto](http://mosquitto.org/)) and install the [OwnTracks](http://owntracks.org) app on your mobile devices. At this point you should start seeing location updates appearing in your broker. 
 
-NOTE: from openHAB v1.7 the Mqttitude binding will support both the old and new versions of the [OwnTracks](http://owntracks.org) apps. Please see the OwnTracks documentation for more details about the different versions. As of now (18 April 2015) the new versions of the app have not been released.
-
-| Platform | Old       | New        |
-|----------|-----------|------------|
-| iOS      | &lt; v8.0 | &gt;= v8.0 |
-| Android  | &lt; v5.0 | &gt;= v5.0 |
-
-Where the 'new' versions will publish lat/lon values as floats (rather than strings) and region enter/leave events are published to a `/event` sub topic (see below for details).  As of 1 June 2016, the current version of the OwnTracks mobile app is 9.1.5 (iOS) and 0.6.14 (Android).
-
 Now it is time to configure the MQTT and the Mqttitude bindings...
 
 ## Broker Configuration
@@ -50,7 +41,7 @@ home.lon=xxx.xxxxx
 geofence=100`
 ```
 
-### Item Configuration
+### Item Configuration 
 
 To track the location/presence of a mobile device all you need to do is add a Switch item and specify the MQTT topic that device publishes its location to. 
 

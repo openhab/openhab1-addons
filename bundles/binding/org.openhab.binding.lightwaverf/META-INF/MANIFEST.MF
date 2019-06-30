@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.lightwaverf.internal
 Ignore-Package: org.openhab.binding.lightwaverf.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB LightwaveRf Binding
 Bundle-SymbolicName: org.openhab.binding.lightwaverf
 Bundle-Vendor: openHAB.org

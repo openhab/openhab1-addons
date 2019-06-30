@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.cardio2e.internal
 Ignore-Package: org.openhab.binding.cardio2e.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB Cardio2e Binding
 Bundle-SymbolicName: org.openhab.binding.cardio2e
 Bundle-Vendor: openHAB.org

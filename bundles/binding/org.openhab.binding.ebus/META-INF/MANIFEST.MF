@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.ebus.internal
 Ignore-Package: org.openhab.binding.ebus.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-ManifestVersion: 2
 Bundle-Name: This is the eBus binding of the open Home Aut
  omation Bus (openHAB)

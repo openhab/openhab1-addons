@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010-2019 by the respective copyright holders.
+	Copyright (c) 2010-2019 Contributors to the openHAB project
 
-    All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
-    which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+	See the NOTICE file(s) distributed with this work for additional
+	information.
+
+	This program and the accompanying materials are made available under the
+	terms of the Eclipse Public License 2.0 which is available at
+	http://www.eclipse.org/legal/epl-2.0
+
+	SPDX-License-Identifier: EPL-2.0
 
 -->
 <features name="${project.artifactId}-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.4.0">
 
   <!-- action -->
 
-  <feature name="openhab-action-mqtt" description="MQTT Action" version="${project.version}">
+  <feature name="openhab-action-mail" description="Mail Action (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.action/org.openhab.action.mail/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/mail.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mail</configfile>
+  </feature>
+
+  <feature name="openhab-action-mqtt" description="MQTT Action (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
@@ -53,7 +64,7 @@
     <configfile finalname="${openhab.conf}/services/dsmr.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/dsmr</configfile>
   </feature>
 
-  <feature name="openhab-binding-enocean1" description="EnOcean Binding" version="${project.version}">
+  <feature name="openhab-binding-enocean1" description="EnOcean Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
     <feature>openhab-transport-serial</feature>
@@ -72,6 +83,13 @@
     <feature>openhab-runtime-compat1x</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.homematic/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/homematic.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/homematic</configfile>
+  </feature>
+
+  <feature name="openhab-binding-ihc1" description="IHC Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.ihc/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/ihc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/ihc</configfile>
   </feature>
 
   <feature name="openhab-binding-irtrans1" description="IRTrans Binding (1.x)" version="${project.version}">

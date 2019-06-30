@@ -4,7 +4,7 @@
 
 * Enable telnet: from a phone connected to the FRITZ!Box, dial `#96*7*` to enable telnet, dial `#96*8*` to disable
     Note: support for enabling telnet on the FRITZ!Box has been dropped due to security reasons in firmware version 06.25 and later.
-The [Fritzbox binding (using TR06 protocol)](https://www.openhab.org/addons/bindings/fritzboxtr0641/) may be a suitable replacement.
+The [Fritzbox binding (using TR064 protocol)](https://www.openhab.org/addons/bindings/fritzboxtr0641/) may be a suitable replacement.
 
 * Activate user login: FRITZ!Box-Benutzer -> Anmeldung im Heimnetz -> Anmeldung mit dem FRITZ!Box-Kennwort
 

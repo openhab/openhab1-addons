@@ -1,0 +1,45 @@
+This content is produced and maintained by the openHAB project.
+
+* Project home: https://www.openhab.org
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0/.
+
+== Source Code
+
+https://github.com/openhab/openhab1-addons
+
+== Third-party Content
+
+gson
+* License: Apache 2.0 License
+* Project: https://github.com/google/gson
+* Source:  https://github.com/google/gson
+
+guava
+* License: Apache 2.0 License
+* Project: https://github.com/google/guava
+* Source:  https://github.com/google/guava
+
+influxdb-java
+* License: MIT License
+* Project: https://github.com/influxdata/influxdb-java
+* Source:  https://github.com/influxdata/influxdb-java
+
+okhttp
+* License: Apache License 2.0
+* Project: https://square.github.io/okhttp
+* Source:  https://github.com/square/okhttp
+
+okio
+* License: Apache License 2.0
+* Project: https://github.com/square/okio
+* Source:  https://github.com/square/okio
+
+retrofit
+* License: Apache License 2.0
+* Project: https://square.github.io/retrofit
+* Source:  https://github.com/square/retrofit

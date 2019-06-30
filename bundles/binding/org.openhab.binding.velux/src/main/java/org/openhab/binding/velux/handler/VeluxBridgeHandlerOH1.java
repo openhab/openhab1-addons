@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.velux.handler;
 
@@ -463,6 +467,14 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                                     itemName, config.getBindingItemType());
                     }
                 }
+                if (newState != null) {
+                    logger.debug("handleCommandOnChannel(): updating {} to {}.", itemName, newState);
+                    assert eventPublisher != null : "eventPublisher not initialized.";
+                    eventPublisher.postUpdate(itemName, newState);
+                } else {
+                    logger.info("handleCommandOnChannel(): updating of item {} (type {}) failed.", itemName,
+                            config.getBindingItemType().name());
+                }
             } else {
                 /*
                  * ===========================================================
@@ -587,25 +599,15 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                         logger.debug("handleCommandOnChannel(): sending command with target level {}.", targetLevel);
                         new VeluxBridgeSendCommand().sendCommand(thisBridge,
                                 thisProduct.getBridgeProductIndex().toInt(), targetLevel);
-                        newState = targetLevel.getPositionAsPercentType();
+                        if (bridgeParameters.actuators.autoRefresh(thisBridge)) {
+                            logger.trace("handleCommandOnChannel(): position of actuators are updated.");
+                        }
                         break;
 
                     default:
                         logger.trace("handleCommand() cannot handle command {} on channel {} (type {}).", command,
                                 itemName, config.getBindingItemType());
                 }
-            }
-            /*
-             * ===========================================================
-             * Common part
-             */
-            if (newState != null) {
-                logger.debug("handleCommandOnChannel(): updating {} to {}.", itemName, newState);
-                assert eventPublisher != null : "eventPublisher not initialized.";
-                eventPublisher.postUpdate(itemName, newState);
-            } else {
-                logger.info("handleCommandOnChannel(): updating of item {} (type {}) failed.", itemName,
-                        config.getBindingItemType().name());
             }
             logger.trace("handleCommandOnChannel() done.");
         }

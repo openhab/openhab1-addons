@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.velux.internal
 Ignore-Package: org.openhab.binding.velux.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB Velux Binding
 Bundle-SymbolicName: org.openhab.binding.velux
 Bundle-Vendor: openHAB.org

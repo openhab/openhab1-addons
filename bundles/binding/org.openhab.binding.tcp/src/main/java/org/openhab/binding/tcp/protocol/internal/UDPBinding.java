@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.tcp.protocol.internal;
 
@@ -19,6 +23,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.openhab.binding.tcp.AbstractDatagramChannelBinding;
 import org.openhab.binding.tcp.Direction;
 import org.openhab.binding.tcp.internal.TCPActivator;
@@ -40,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * text based status messages.
  *
  * @author Karel Goderis
- * @since 1.1.0
+ * @author Helmut Lehmeyer
  */
 public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvider> implements ManagedService {
 
@@ -117,8 +122,8 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
                 if (newState != null) {
                     eventPublisher.postUpdate(itemName, newState);
                 } else {
-                    logger.warn("Cannot parse transformed input {} to match command {} on item {}",
-                            transformedResponse, command, itemName);
+                    logger.warn("Cannot parse transformed input {} to match command {} on item {}", transformedResponse,
+                            command, itemName);
                 }
 
                 return false;
@@ -202,22 +207,14 @@ public class UDPBinding extends AbstractDatagramChannelBinding<UDPBindingProvide
 
         String preambleString = Objects.toString(config.get("preamble"), null);
         if (isNotBlank(preambleString)) {
-            try {
-                preAmble = preambleString.replaceAll("\\\\", "\\");
-            } catch (Exception e) {
-                preAmble = preambleString;
-            }
+            preAmble = StringEscapeUtils.unescapeJava(preambleString);
         } else {
             logger.info("The preamble for all write operations will be set to the default value of {}", preAmble);
         }
 
         String postambleString = Objects.toString(config.get("postamble"), null);
         if (isNotBlank(postambleString)) {
-            try {
-                postAmble = postambleString.replaceAll("\\\\", "\\");
-            } catch (Exception e) {
-                postAmble = postambleString;
-            }
+            postAmble = StringEscapeUtils.unescapeJava(postambleString);
         } else {
             logger.info("The postamble for all write operations will be set to the default value of {}", postAmble);
         }

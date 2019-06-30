@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.action.homematic.internal
 Ignore-Package: org.openhab.action.homematic.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB Homematic Action
 Bundle-SymbolicName: org.openhab.action.homematic
 Bundle-Vendor: openHAB.org

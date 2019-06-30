@@ -112,6 +112,24 @@
             <advanced>true</advanced>
         </parameter>
         
+        <parameter name="bufferCommitIntervalMillis" type="integer" min="0">        
+            <label>Buffer commit interval (ms)</label>
+            <description><![CDATA[Interval to commit (write) buffered data. In milliseconds.
+            <br />
+            <br />Use zero to commit buffered data only when buffer gets full (not recommended).]]></description>
+            <default>1000</default>
+            <advanced>true</advanced>
+        </parameter>
+        
+        <parameter name="bufferSize" type="integer" min="0">        
+            <label>Buffer size</label>
+            <description><![CDATA[Internal buffer size which is used to batch writes to DynamoDB every bufferCommitIntervalMillis.
+            <br />
+            <br />Use zero to disable buffering, and write data immediately to DynamoDB. Please note this might have adverse impact to openHAB performance.]]></description>
+            <default>1000</default>
+            <advanced>true</advanced>
+        </parameter>
+        
     </config-description>
 
 </config-description:config-descriptions>

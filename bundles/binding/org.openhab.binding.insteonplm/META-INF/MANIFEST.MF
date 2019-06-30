@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.insteonplm.internal
 Ignore-Package: org.openhab.binding.insteonplm.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB Insteon PLM Binding
 Bundle-SymbolicName: org.openhab.binding.insteonplm
 Bundle-Vendor: openHAB.org

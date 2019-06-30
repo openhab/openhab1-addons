@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.dynamodb.internal;
 
@@ -57,6 +61,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -72,6 +78,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -115,6 +123,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -128,6 +138,8 @@ public class DynamoDBConfigTest {
         assertEquals(false, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -141,6 +153,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(5, fromConfig.getReadCapacityUnits());
         assertEquals(1, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -154,6 +168,8 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(1, fromConfig.getReadCapacityUnits());
         assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
     }
 
     @Test
@@ -167,5 +183,24 @@ public class DynamoDBConfigTest {
         assertEquals(true, fromConfig.isCreateTable());
         assertEquals(3, fromConfig.getReadCapacityUnits());
         assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(1000, fromConfig.getBufferSize());
+    }
+
+    @Test
+    public void testRegionWithAccessKeysWithPrefixWithReadWriteCapacityUnitsWithBufferSettings() throws Exception {
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(
+                ImmutableMap.<String, Object> builder().put("region", "eu-west-1").put("accessKey", "access1")
+                        .put("secretKey", "secret1").put("readCapacityUnits", "3").put("writeCapacityUnits", "5")
+                        .put("bufferCommitIntervalMillis", "501").put("bufferSize", "112").build());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
+        assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
+        assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
+        assertEquals("openhab-", fromConfig.getTablePrefix());
+        assertEquals(true, fromConfig.isCreateTable());
+        assertEquals(3, fromConfig.getReadCapacityUnits());
+        assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(501L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(112, fromConfig.getBufferSize());
     }
 }

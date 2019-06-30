@@ -22,6 +22,8 @@ In most cases it will not be needed to perform special steps to access serial po
 
 where `/dev/ttyAMA0` is the path to the serial port. Remember to change all scripts used for startup (debug, automatic start in Linux, etc.).
 
+* If using a systemd based distribution, then add the Serial Ports parameters to the configuration file at /etc/default/openhab2
+
 * A Linux distro might require adding the `openhab` user to the `dialout` group to grant permission to read/write to the serial port.
 
 ```

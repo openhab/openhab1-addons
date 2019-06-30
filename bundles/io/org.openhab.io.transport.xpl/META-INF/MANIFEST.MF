@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB xPL Transport Bundle
 Bundle-SymbolicName: org.openhab.io.transport.xpl
 Bundle-Version: 1.14.0.qualifier

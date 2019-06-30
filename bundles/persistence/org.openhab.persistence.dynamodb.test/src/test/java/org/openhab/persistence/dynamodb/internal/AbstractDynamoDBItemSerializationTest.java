@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2019 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.dynamodb.internal;
 
@@ -56,22 +60,25 @@ public class AbstractDynamoDBItemSerializationTest {
      * Generic function testing serialization of item state to internal format in DB. In other words, conversion of
      * Item with state to DynamoDBItem
      *
-     * @param state item state
+     * @param state         item state
      * @param expectedState internal format in DB representing the item state
      * @return dynamo db item
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")
     public DynamoDBItem<?> testStateGeneric(State state, Object expectedState) throws IOException {
         DynamoDBItem<?> dbItem = AbstractDynamoDBItem.fromState("item1", state, date);
 
         assertEquals("item1", dbItem.getName());
         assertEquals(date, dbItem.getTime());
+        Object actualState = dbItem.getState();
         if (expectedState instanceof BigDecimal) {
-            assertTrue(DynamoDBBigDecimalItem.loseDigits(((BigDecimal) expectedState))
-                    .compareTo((((DynamoDBItem<BigDecimal>) dbItem).getState())) == 0);
+            BigDecimal expectedRounded = DynamoDBBigDecimalItem.loseDigits(((BigDecimal) expectedState));
+            assertTrue(
+                    String.format("Expected state %s (%s but with some digits lost) did not match actual state %s",
+                            expectedRounded, expectedState, actualState),
+                    expectedRounded.compareTo((BigDecimal) actualState) == 0);
         } else {
-            assertEquals(expectedState, dbItem.getState());
+            assertEquals(expectedState, actualState);
         }
         return dbItem;
     }
@@ -79,8 +86,8 @@ public class AbstractDynamoDBItemSerializationTest {
     /**
      * Test state deserialization, that is DynamoDBItem conversion to HistoricItem
      *
-     * @param dbItem dynamo db item
-     * @param item parameter for DynamoDBItem.asHistoricItem
+     * @param dbItem        dynamo db item
+     * @param item          parameter for DynamoDBItem.asHistoricItem
      * @param expectedState Expected state of the historic item. DecimalTypes are compared with reduced accuracy
      * @return
      * @throws IOException
@@ -94,8 +101,11 @@ public class AbstractDynamoDBItemSerializationTest {
         assertEquals(expectedState.getClass(), historicItem.getState().getClass());
         if (expectedState instanceof DecimalType) {
             // serialization loses accuracy, take this into consideration
-            assertTrue(DynamoDBBigDecimalItem.loseDigits(((DecimalType) expectedState).toBigDecimal())
-                    .compareTo(((DecimalType) historicItem.getState()).toBigDecimal()) == 0);
+            BigDecimal expectedRounded = DynamoDBBigDecimalItem
+                    .loseDigits(((DecimalType) expectedState).toBigDecimal());
+            BigDecimal actual = ((DecimalType) historicItem.getState()).toBigDecimal();
+            assertTrue(String.format("Expected state %s (%s but with some digits lost) did not match actual state %s",
+                    expectedRounded, expectedState, actual), expectedRounded.compareTo(actual) == 0);
         } else if (expectedState instanceof CallType) {
             // CallType has buggy equals, let's compare strings instead
             assertEquals(expectedState.toString(), historicItem.getState().toString());
@@ -181,33 +191,33 @@ public class AbstractDynamoDBItemSerializationTest {
 
     @Test
     public void testDecimalTypeWithNumberItem() throws IOException {
-        DynamoDBItem<?> dbitem = testStateGeneric(new DecimalType(3.2), new BigDecimal(3.2));
-        testAsHistoricGeneric(dbitem, new NumberItem("foo"), new DecimalType(3.2));
+        DynamoDBItem<?> dbitem = testStateGeneric(new DecimalType("3.2"), new BigDecimal("3.2"));
+        testAsHistoricGeneric(dbitem, new NumberItem("foo"), new DecimalType("3.2"));
     }
 
     @Test
     public void testPercentTypeWithColorItem() throws IOException {
-        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal(3.2)), new BigDecimal(3.2));
-        testAsHistoricGeneric(dbitem, new ColorItem("foo"), new PercentType(new BigDecimal(3.2)));
+        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal("3.2")), new BigDecimal("3.2"));
+        testAsHistoricGeneric(dbitem, new ColorItem("foo"), new PercentType(new BigDecimal("3.2")));
     }
 
     @Test
     public void testPercentTypeWithDimmerItem() throws IOException {
-        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal(3.2)), new BigDecimal(3.2));
-        testAsHistoricGeneric(dbitem, new DimmerItem("foo"), new PercentType(new BigDecimal(3.2)));
+        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal("3.2")), new BigDecimal("3.2"));
+        testAsHistoricGeneric(dbitem, new DimmerItem("foo"), new PercentType(new BigDecimal("3.2")));
     }
 
     @Test
     public void testPercentTypeWithRollerShutterItem() throws IOException {
-        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal(3.2)), new BigDecimal(3.2));
-        testAsHistoricGeneric(dbitem, new RollershutterItem("foo"), new PercentType(new BigDecimal(3.2)));
+        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal("3.2")), new BigDecimal("3.2"));
+        testAsHistoricGeneric(dbitem, new RollershutterItem("foo"), new PercentType(new BigDecimal("3.2")));
     }
 
     @Test
     public void testPercentTypeWithNumberItem() throws IOException {
-        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal(3.2)), new BigDecimal(3.2));
+        DynamoDBItem<?> dbitem = testStateGeneric(new PercentType(new BigDecimal("3.2")), new BigDecimal("3.2"));
         // note: comes back as DecimalType instead of the original PercentType
-        testAsHistoricGeneric(dbitem, new NumberItem("foo"), new DecimalType(new BigDecimal(3.2)));
+        testAsHistoricGeneric(dbitem, new NumberItem("foo"), new DecimalType(new BigDecimal("3.2")));
     }
 
     @Test

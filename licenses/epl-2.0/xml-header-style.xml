@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additionalHeaders>
+	<xml-header-style>
+		<firstLine><![CDATA[<!--EOL]]></firstLine>
+		<beforeEachLine>&#x9;</beforeEachLine>
+		<endLine><![CDATA[EOL-->]]></endLine>
+		<skipLine><![CDATA[^<\?xml.*>$]]></skipLine>
+		<firstLineDetectionPattern><![CDATA[(\s|\t)*<!--.*$]]></firstLineDetectionPattern>
+		<lastLineDetectionPattern><![CDATA[.*-->(\s|\t)*$]]></lastLineDetectionPattern>
+		<allowBlankLines>true</allowBlankLines>
+		<isMultiline>true</isMultiline>
+	</xml-header-style>
+</additionalHeaders>

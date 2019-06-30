@@ -34,14 +34,16 @@ Items marked with (\*) are fully implemented. Items marked with (+) have only pa
 
 The binding can be configured by parameters in the global configuration file `openhab.cfg`.
 
-| Property       | Default                | Required | Description                                           |
-|----------------|------------------------|:--------:|-------------------------------------------------------|
-| bridgeIPAddress|                        |   Yes    | Hostname or address for accessing the Velux Bridge.   |
-| bridgeProtocol | slip                   |    No    | Underlying communication protocol (http/https/slip).  |
-| bridgeTCPPort  | 80                     |    No    | TCP port (80 or 51200)for accessing the Velux Bridge. |
-| bridgePassword | velux123               |    No    | Password for authentication against the Velux Bridge. |
-| timeoutMsecs   | 2000                   |    No    | Initial Connection timeout in milliseconds            |
-| retries        | 6                      |    No    | Number of retries during I/O                          |
+| Property       | Default                | Required | Description                                               |
+|----------------|------------------------|:--------:|-----------------------------------------------------------|
+| bridgeIPAddress|                        |   Yes    | Hostname or address for accessing the Velux Bridge.       |
+| bridgeProtocol | slip                   |    No    | Underlying communication protocol (http/https/slip).      |
+| bridgeTCPPort  | 80                     |    No    | TCP port (80 or 51200)for accessing the Velux Bridge.     |
+| bridgePassword | velux123               |    No    | Password for authentication against the Velux Bridge.(**) |
+| timeoutMsecs   | 2000                   |    No    | Initial Connection timeout in milliseconds                |
+| retries        | 6                      |    No    | Number of retries during I/O                              |
+
+(**) Note: This password is the API password that is printed on the back of the unit. Normally it differs from the password of the web frontend.
 
 Advise: if you see a significant number of messages per day like
 

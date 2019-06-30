@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.action.ecobee.internal
 Ignore-Package: org.openhab.action.ecobee.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB Ecobee Action
 Bundle-SymbolicName: org.openhab.action.ecobee
 Bundle-Vendor: openHAB.org

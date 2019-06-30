@@ -5,7 +5,7 @@ Bundle-Vendor: openHAB.org
 Bundle-Version: 1.14.0.qualifier
 Bundle-Activator: org.openhab.persistence.sitewhere.internal.SiteWhereActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Import-Package: com.google.common.annotations,
  org.apache.commons.lang,
  org.openhab.core.events,
