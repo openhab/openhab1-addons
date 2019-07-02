@@ -37,6 +37,8 @@ public class DynamoDBConfig {
     public static final long DEFAULT_WRITE_CAPACITY_UNITS = 1;
     public static final long DEFAULT_BUFFER_COMMIT_INTERVAL_MILLIS = 1000;
     public static final int DEFAULT_BUFFER_SIZE = 1000;
+    public static final boolean DEFAULT_ENABLE_AUTO_EXPIRATION = false;
+    public static final int DEFAULT_AUTO_EXPIRATION_DAYS = 90;
 
     private static final Logger logger = LoggerFactory.getLogger(DynamoDBConfig.class);
 
@@ -48,6 +50,8 @@ public class DynamoDBConfig {
     private long writeCapacityUnits = DEFAULT_WRITE_CAPACITY_UNITS;
     private long bufferCommitIntervalMillis = DEFAULT_BUFFER_COMMIT_INTERVAL_MILLIS;
     private int bufferSize = DEFAULT_BUFFER_SIZE;
+    private boolean autoExpirationEnabled = DEFAULT_ENABLE_AUTO_EXPIRATION;
+    private int autoExpirationDays = DEFAULT_AUTO_EXPIRATION_DAYS;
 
     /**
      *
@@ -143,8 +147,28 @@ public class DynamoDBConfig {
                 bufferSize = Integer.parseInt(bufferSizeParam);
             }
 
+            final boolean autoExpirationEnabled;
+            String autoExpirationEnabledParam = (String) config.get("autoExpirationEnabled");
+            if (isBlank(autoExpirationEnabledParam)) {
+                logger.debug("Auto expiration was blank");
+                autoExpirationEnabled = DEFAULT_ENABLE_AUTO_EXPIRATION;
+            } else {
+                logger.debug("Auto expiration enabled was: {}", autoExpirationEnabledParam);
+                autoExpirationEnabled = Boolean.parseBoolean(autoExpirationEnabledParam);
+            }
+
+            final int autoExpirationDays;
+            String autoExpirationDaysParam = (String) config.get("autoExpirationDays");
+            if (isBlank(autoExpirationDaysParam)) {
+                logger.debug("Auto expiration days was blank from config. Using default");
+                autoExpirationDays = DEFAULT_AUTO_EXPIRATION_DAYS;
+            } else {
+                logger.debug("Auto expiration days was: {}", autoExpirationDaysParam);
+                autoExpirationDays = Integer.parseInt(autoExpirationDaysParam);
+            }
+
             return new DynamoDBConfig(region, credentials, table, createTable, readCapacityUnits, writeCapacityUnits,
-                    bufferCommitIntervalMillis, bufferSize);
+                    bufferCommitIntervalMillis, bufferSize, autoExpirationEnabled, autoExpirationDays);
         } catch (Exception e) {
             logger.error("Error with configuration", e);
             return null;
@@ -152,7 +176,7 @@ public class DynamoDBConfig {
     }
 
     public DynamoDBConfig(Regions region, AWSCredentials credentials, String table, boolean createTable,
-            long readCapacityUnits, long writeCapacityUnits, long bufferCommitIntervalMillis, int bufferSize) {
+            long readCapacityUnits, long writeCapacityUnits, long bufferCommitIntervalMillis, int bufferSize, boolean autoExpirationEnabled, int autoExpirationDays) {
         this.region = region;
         this.credentials = credentials;
         this.tablePrefix = table;
@@ -161,6 +185,8 @@ public class DynamoDBConfig {
         this.writeCapacityUnits = writeCapacityUnits;
         this.bufferCommitIntervalMillis = bufferCommitIntervalMillis;
         this.bufferSize = bufferSize;
+        this.autoExpirationEnabled = autoExpirationEnabled;
+        this.autoExpirationDays = autoExpirationDays;
     }
 
     public AWSCredentials getCredentials() {
@@ -194,6 +220,15 @@ public class DynamoDBConfig {
     public int getBufferSize() {
         return bufferSize;
     }
+
+    public boolean isAutoExpirationEnabled(){
+        return autoExpirationEnabled;
+    }
+
+    public int getAutoExpirationDays() {
+        return autoExpirationDays;
+    }
+
 
     private static void invalidRegionLogHelp(String region) {
         Regions[] regions = Regions.values();

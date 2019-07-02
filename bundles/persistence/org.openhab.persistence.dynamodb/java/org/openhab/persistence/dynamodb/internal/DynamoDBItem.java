@@ -34,6 +34,8 @@ public interface DynamoDBItem<T> {
 
     static final String ATTRIBUTE_NAME_ITEMSTATE = "itemstate";
 
+    static final String ATTRIBUTE_NAME_EXPIRATION = "expiration";
+
     /**
      * Convert this AbstractDynamoItem as HistoricItem.
      *
@@ -47,6 +49,10 @@ public interface DynamoDBItem<T> {
     T getState();
 
     Date getTime();
+
+    Long getExpiration();
+
+    void setExpiration(long expirationTime);
 
     void setName(String name);
 

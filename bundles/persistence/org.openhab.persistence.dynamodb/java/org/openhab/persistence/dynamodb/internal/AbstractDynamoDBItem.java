@@ -16,12 +16,14 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
@@ -95,6 +97,7 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
     protected String name;
     protected T state;
     protected Date time;
+    protected Long expirationDateEpochSeconds;
 
     public AbstractDynamoDBItem(String name, T state, Date time) {
         this.name = name;
@@ -212,4 +215,14 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
         return DateFormat.getDateTimeInstance().format(time) + ": " + name + " -> " + state.toString();
     }
 
+    @Override
+    @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_EXPIRATION)
+    public Long getExpiration() {
+        return this.expirationDateEpochSeconds;
+    }
+
+    @Override
+    public void setExpiration(long expirationDate) {
+        this.expirationDateEpochSeconds = expirationDate;
+    }
 }

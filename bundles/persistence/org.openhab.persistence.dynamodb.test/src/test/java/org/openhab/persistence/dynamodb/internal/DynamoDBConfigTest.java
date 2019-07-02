@@ -63,6 +63,8 @@ public class DynamoDBConfigTest {
         assertEquals(1, fromConfig.getWriteCapacityUnits());
         assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(1000, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
     }
 
     @Test
@@ -80,6 +82,8 @@ public class DynamoDBConfigTest {
         assertEquals(1, fromConfig.getWriteCapacityUnits());
         assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(1000, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
     }
 
     @Test
@@ -125,6 +129,8 @@ public class DynamoDBConfigTest {
         assertEquals(1, fromConfig.getWriteCapacityUnits());
         assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(1000, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
     }
 
     @Test
@@ -140,6 +146,8 @@ public class DynamoDBConfigTest {
         assertEquals(1, fromConfig.getWriteCapacityUnits());
         assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(1000, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
     }
 
     @Test
@@ -155,6 +163,8 @@ public class DynamoDBConfigTest {
         assertEquals(1, fromConfig.getWriteCapacityUnits());
         assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(1000, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
     }
 
     @Test
@@ -170,6 +180,8 @@ public class DynamoDBConfigTest {
         assertEquals(5, fromConfig.getWriteCapacityUnits());
         assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(1000, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
     }
 
     @Test
@@ -185,6 +197,8 @@ public class DynamoDBConfigTest {
         assertEquals(5, fromConfig.getWriteCapacityUnits());
         assertEquals(1000L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(1000, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
     }
 
     @Test
@@ -202,5 +216,45 @@ public class DynamoDBConfigTest {
         assertEquals(5, fromConfig.getWriteCapacityUnits());
         assertEquals(501L, fromConfig.getBufferCommitIntervalMillis());
         assertEquals(112, fromConfig.getBufferSize());
+        assertEquals(false, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
+    }
+
+    @Test
+    public void testRegionWithAccessKeysWithPrefixWithReadWriteCapacityUnitsWithBufferSettingsWithExpirationEnabled() throws Exception {
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(
+                ImmutableMap.<String, Object> builder().put("region", "eu-west-1").put("accessKey", "access1")
+                        .put("secretKey", "secret1").put("readCapacityUnits", "3").put("writeCapacityUnits", "5")
+                        .put("bufferCommitIntervalMillis", "501").put("bufferSize", "112").put("autoExpirationEnabled","true").build());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
+        assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
+        assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
+        assertEquals("openhab-", fromConfig.getTablePrefix());
+        assertEquals(true, fromConfig.isCreateTable());
+        assertEquals(3, fromConfig.getReadCapacityUnits());
+        assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(501L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(112, fromConfig.getBufferSize());
+        assertEquals(true, fromConfig.isAutoExpirationEnabled());
+        assertEquals(90, fromConfig.getAutoExpirationDays());
+    }
+
+    @Test
+    public void testRegionWithAccessKeysWithPrefixWithReadWriteCapacityUnitsWithBufferSettingsWithExpirationEnabledWithCustomExpiration() throws Exception {
+        DynamoDBConfig fromConfig = DynamoDBConfig.fromConfig(
+                ImmutableMap.<String, Object> builder().put("region", "eu-west-1").put("accessKey", "access1")
+                        .put("secretKey", "secret1").put("readCapacityUnits", "3").put("writeCapacityUnits", "5")
+                        .put("bufferCommitIntervalMillis", "501").put("bufferSize", "112").put("autoExpirationEnabled","true").put("autoExpirationDays","30").build());
+        assertEquals(Regions.EU_WEST_1, fromConfig.getRegion());
+        assertEquals("access1", fromConfig.getCredentials().getAWSAccessKeyId());
+        assertEquals("secret1", fromConfig.getCredentials().getAWSSecretKey());
+        assertEquals("openhab-", fromConfig.getTablePrefix());
+        assertEquals(true, fromConfig.isCreateTable());
+        assertEquals(3, fromConfig.getReadCapacityUnits());
+        assertEquals(5, fromConfig.getWriteCapacityUnits());
+        assertEquals(501L, fromConfig.getBufferCommitIntervalMillis());
+        assertEquals(112, fromConfig.getBufferSize());
+        assertEquals(true, fromConfig.isAutoExpirationEnabled());
+        assertEquals(30, fromConfig.getAutoExpirationDays());
     }
 }

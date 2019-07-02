@@ -12,6 +12,8 @@
  */
 package org.openhab.persistence.dynamodb.internal;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
+import com.amazonaws.services.dynamodbv2.model.*;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
@@ -50,13 +53,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig.Pagin
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
 import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.amazonaws.services.dynamodbv2.model.GlobalSecondaryIndex;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException;
-import com.amazonaws.services.dynamodbv2.model.TableDescription;
-import com.amazonaws.services.dynamodbv2.model.TableStatus;
-import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
 /**
  * This is the implementation of the DynamoDB {@link PersistenceService}. It persists item values
@@ -275,7 +271,19 @@ public class DynamoDBPersistenceService extends AbstractBufferedPersistenceServi
             }
 
             // table found or just created, wait
-            return waitForTableToBecomeActive(tableName);
+            boolean tableActive = waitForTableToBecomeActive(tableName);
+            if (tableActive && dbConfig.isAutoExpirationEnabled()){
+                db.getDynamoClient().updateTimeToLive(
+                        new UpdateTimeToLiveRequest()
+                                .withTableName(tableName)
+                                .withTimeToLiveSpecification(
+                                        new TimeToLiveSpecification()
+                                        .withEnabled(true)
+                                        .withAttributeName(DynamoDBItem.ATTRIBUTE_NAME_EXPIRATION)
+                                )
+                );
+            }
+            return tableActive;
 
         } catch (AmazonClientException e) {
             logger.error("Exception when creating table", e);
@@ -363,6 +371,12 @@ public class DynamoDBPersistenceService extends AbstractBufferedPersistenceServi
             for (Entry<String, Deque<DynamoDBItem<?>>> entry : itemsByTable.entrySet()) {
                 String tableName = entry.getKey();
                 Deque<DynamoDBItem<?>> batch = entry.getValue();
+                if (dbConfig.isAutoExpirationEnabled()){
+                    for (DynamoDBItem<?> batchItem: batch){
+                        Instant expiration = batchItem.getTime().toInstant().plus(dbConfig.getAutoExpirationDays(), ChronoUnit.DAYS);
+                        batchItem.setExpiration(expiration.getEpochSecond());
+                    }
+                }
                 if (!batch.isEmpty()) {
                     flushBatch(getDBMapper(tableName), batch);
                 }
