@@ -148,7 +148,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             closePort();
 
         } catch (InitializationException e) {
-            logger.error(e.getMessage());
+            logger.warn(e.getMessage());
         }
 
         logger.trace("execute() method is finished!");
@@ -163,8 +163,11 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
     }
 
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        logger.trace("update() method is called!");
-        if (config != null) {
+        if (config == null) {
+            logger.warn("updated() method was called, but no configuration was provided. Nothing to do!");
+            return;
+        }
+        logger.trace("updated() method was called. Processing configuration...");
             // to override the default refresh interval one has to add a
             // parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
             String refreshIntervalString = (String) config.get("refresh");
@@ -176,23 +179,26 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             String newHostName = (String) config.get("hostName"); //$NON-NLS-1$
 
             if (StringUtils.isBlank(newPort) && StringUtils.isBlank(newHostName)) {
-                logger.error("neither port neither hostname configured, no communication possible");
+            logger.warn("Neither port nor hostname were configured. No communication possible.");
                 setProperlyConfigured(false);
-            } else {
+            return;
+        }
                 if (StringUtils.isNotBlank(newPort) && StringUtils.isNotBlank(newHostName)) {
-                    logger.warn(
-                            "both properties port and hostname configured, only one should be set according communication type serial (port) or IP (hostname)");
+            logger.warn("Both port and hostname were configured, but only one should"
+                +" be set depending on communication type (port for serial"
+                +" communication or hostname for IP communication.");
+            setProperlyConfigured(false);
+            return;
                 }
 
                 if (StringUtils.isNotBlank(newPort)) {
                     typeIsSerial = true;
                     port = newPort;
                     readResponseWaitTime = defaultSerialReadResponseWaitTime;
-                } else if (StringUtils.isNotBlank(newHostName)) {
+        } else { // newHostName is not blank
                     typeIsSerial = false;
                     hostName = newHostName;
                     readResponseWaitTime = defaultIpReadResponseWaitTime;
-                } else {
                     // not possible, already treated above
                 }
 
@@ -201,22 +207,20 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
                     try {
                         readResponseWaitTime = Long.parseLong(readResponseWaitTimeString);
                     } catch (NumberFormatException e) {
-                        logger.warn("ignoring property 'readResponseWaitTime', not numeric");
+                logger.warn("Ignoring value for property 'readResponseWaitTime': not numeric");
                     }
                 }
 
                 if (typeIsSerial) {
-                    logger.info("ProperlyConfigured on port {} with readResponseWaitTime on ", port,
-                            readResponseWaitTime);
+            logger.info("ProperlyConfigured on port {} and readResponseWaitTime of {}",
+                port, readResponseWaitTime);
                 } else {
-                    logger.info("ProperlyConfigured with hostName {} with readResponseWaitTime on ", hostName,
-                            readResponseWaitTime);
+            logger.info("ProperlyConfigured with hostName {} and readResponseWaitTime of {}",
+                hostName, readResponseWaitTime);
                 }
 
                 setProperlyConfigured(true);
-            }
 
-        }
     }
 
     public void openPort() throws InitializationException {
@@ -263,9 +267,9 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
                 outputStream = ipSocket.getOutputStream();
                 logger.debug("ipSocket opened: {} on port {}", hostName, ipPortNumber);
             } catch (UnknownHostException e) {
-                throw new InitializationException("Unknown Host '" + hostName);
+                throw new InitializationException("Unknown Host '" + hostName + "'");
             } catch (IOException e) {
-                throw new InitializationException("I/O error with '" + hostName + " on port " + ipPortNumber);
+                throw new InitializationException("I/O error with '" + hostName + "' on port " + ipPortNumber);
             }
         }
     }
@@ -309,7 +313,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> im
             try {
                 openPort();
             } catch (InitializationException e) {
-                logger.error("reopening port failed!");
+                logger.warn("reopening port failed!");
             }
         }
     }

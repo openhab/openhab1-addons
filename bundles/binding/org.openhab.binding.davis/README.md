@@ -9,14 +9,15 @@ The binding is based on the [Serial Communication Reference Manual](http://www.g
 
 The binding can be configured in the file `services/davis.cfg`.
 
-Connection type may be serial (port given in property 'port') or ip (hostName property).
+Connection type must be specified as either serial (using the property 'port') or ip (using the property 'hostName').
+These are mutually exclusive and both must not be simultaneously configured.
 
 | Property             | Default  | Required                    | Description                                                           |
 |----------------------|----------|-----------------------------|-----------------------------------------------------------------------|
 | port                 |          | Yes if serial communication | The serial port of the Weather station                                |
 | hostName             |          | Yes if ip communication     | HostName of the Weather station                                       |
 | refresh              | 10000    | No                          | The refresh interval (in milliseconds)                                |
-| readResponseWaitTime | 200|1000 | No                          | Wait time for response (in milliseconds) 200 if serial - 1000 if ip   |
+| readResponseWaitTime | 200|1000 | No                          | Wait time for response (in milliseconds); default is 200 for serial, and 1000 for ip |
 
 
 
