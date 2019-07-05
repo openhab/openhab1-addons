@@ -50,9 +50,9 @@ public interface DynamoDBItem<T> {
 
     Date getTime();
 
-    Long getExpiration();
+    Long getExpirationDateEpochSeconds();
 
-    void setExpiration(long expirationTime);
+    void setExpirationDateEpochSeconds(long expirationDateEpochSeconds);
 
     void setName(String name);
 

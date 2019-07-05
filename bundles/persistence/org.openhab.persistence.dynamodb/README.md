@@ -98,7 +98,8 @@ In addition to the configuration properties above, the following are also availa
 | tablePrefix                | `openhab-` |    No    | table prefix used in the name of created tables                                                    |
 | bufferCommitIntervalMillis | 1000       |    No    | Interval to commit (write) buffered data. In milliseconds.                                         |
 | bufferSize                 | 1000       |    No    | Internal buffer size which is used to batch writes to DynamoDB every `bufferCommitIntervalMillis`. |
-
+| autoExpirationEnabled      | false      |    No    | If historical events should be removed using DyanmoDB's TTL feature. This avoids infinite growth.  |
+| autoExpirationDays         | 90         |    No    | If autoExpirationEnabled is true - how long should historical events be kept for, in days.         |
 Typically you should not need to modify parameters related to buffering. 
 
 Refer to Amazon documentation on [provisioned throughput](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ProvisionedThroughput.html) for details on read/write capacity.
@@ -112,6 +113,8 @@ All item- and event-related configuration is done in the file `persistence/dynam
 When an item is persisted via this service, a table is created (if necessary). Currently, the service will create at most two tables for different item types. The tables will be named `<tablePrefix><item-type>`, where the `<item-type>` is either `bigdecimal` (numeric items) or `string` (string and complex items).
 
 Each table will have three columns: `itemname` (item name), `timeutc` (in ISO 8601 format with millisecond accuracy), and `itemstate` (either a number or string representing item state).
+
+If `autoExpiration` is enabled, the tables will have the TTL Deletion feature turned on and an addtitional column called `expiration`. (numeric type) 
 
 ## Buffering
 

@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -217,12 +216,12 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
 
     @Override
     @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_EXPIRATION)
-    public Long getExpiration() {
+    public Long getExpirationDateEpochSeconds() {
         return this.expirationDateEpochSeconds;
     }
 
     @Override
-    public void setExpiration(long expirationDate) {
-        this.expirationDateEpochSeconds = expirationDate;
+    public void setExpirationDateEpochSeconds(long expirationDateEpochSeconds) {
+        this.expirationDateEpochSeconds = expirationDateEpochSeconds;
     }
 }

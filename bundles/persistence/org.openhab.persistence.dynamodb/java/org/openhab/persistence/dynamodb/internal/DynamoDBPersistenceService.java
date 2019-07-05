@@ -374,7 +374,7 @@ public class DynamoDBPersistenceService extends AbstractBufferedPersistenceServi
                 if (dbConfig.isAutoExpirationEnabled()){
                     for (DynamoDBItem<?> batchItem: batch){
                         Instant expiration = batchItem.getTime().toInstant().plus(dbConfig.getAutoExpirationDays(), ChronoUnit.DAYS);
-                        batchItem.setExpiration(expiration.getEpochSecond());
+                        batchItem.setExpirationDateEpochSeconds(expiration.getEpochSecond());
                     }
                 }
                 if (!batch.isEmpty()) {
