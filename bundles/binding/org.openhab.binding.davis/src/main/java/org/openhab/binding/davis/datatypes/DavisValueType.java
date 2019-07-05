@@ -719,6 +719,697 @@ public enum DavisValueType {
             data_offset = 58;
             data_size = 2;
         }
+
+    },
+
+    BAROMETER_DAY_LO {
+        {
+            key = "barometer_day_lo";
+            data_type = DataTypeBarometer.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 0;
+            data_size = 2;
+        }
+    },
+
+    BAROMETER_DAY_HI {
+        {
+            key = "barometer_day_hi";
+            data_type = DataTypeBarometer.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 2;
+            data_size = 2;
+        }
+    },
+
+    BAROMETER_MONTH_LO {
+        {
+            key = "barometer_month_lo";
+            data_type = DataTypeBarometer.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 4;
+            data_size = 2;
+        }
+    },
+
+    BAROMETER_MONTH_HI {
+        {
+            key = "barometer_month_hi";
+            data_type = DataTypeBarometer.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 6;
+            data_size = 2;
+        }
+    },
+
+    BAROMETER_YEAR_LO {
+        {
+            key = "barometer_year_lo";
+            data_type = DataTypeBarometer.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 8;
+            data_size = 2;
+        }
+    },
+
+    BAROMETER_YEAR_HI {
+        {
+            key = "barometer_year_hi";
+            data_type = DataTypeBarometer.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 10;
+            data_size = 2;
+        }
+    },
+
+    BAROMETER_DAY_LO_TIMEOFDAY {
+        {
+            key = "barometer_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 12;
+            data_size = 2;
+        }
+    },
+
+    BAROMETER_DAY_HI_TIMEOFDAY {
+        {
+            key = "barometer_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 14;
+            data_size = 2;
+        }
+    },
+
+    WIND_SPEED_DAY_HI {
+        {
+            key = "wind_speed_day_hi";
+            data_type = DataTypeWind.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 16;
+            data_size = 1;
+        }
+    },
+
+    WIND_SPEED_DAY_HI_TIMEOFDAY {
+        {
+            key = "wind_speed_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 17;
+            data_size = 2;
+        }
+    },
+
+    WIND_SPEED_MONTH_HI {
+        {
+            key = "wind_speed_month_hi";
+            data_type = DataTypeWind.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 19;
+            data_size = 1;
+        }
+    },
+
+    WIND_SPEED_YEAR_HI {
+        {
+            key = "wind_speed_year_hi";
+            data_type = DataTypeWind.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 20;
+            data_size = 1;
+        }
+    },
+
+    INSIDE_TEMP_DAY_HI {
+        {
+            key = "inside_temp_day_hi";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 21;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_TEMP_DAY_LO {
+        {
+            key = "inside_temp_day_lo";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 23;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_TEMP_DAY_HI_TIMEOFDAY {
+        {
+            key = "inside_temp_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 25;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_TEMP_DAY_LO_TIMEOFDAY {
+        {
+            key = "inside_temp_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 27;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_TEMP_MONTH_LO {
+        {
+            key = "inside_temp_month_lo";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 29;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_TEMP_MONTH_HI {
+        {
+            key = "inside_temp_month_hi";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 31;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_TEMP_YEAR_LO {
+        {
+            key = "inside_temp_year_lo";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 33;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_TEMP_YEAR_HI {
+        {
+            key = "inside_temp_year_hi";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 35;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_HUMIDITY_DAY_HI {
+        {
+            key = "inside_humidity_day_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 37;
+            data_size = 1;
+        }
+    },
+
+    INSIDE_HUMIDITY_DAY_LO {
+        {
+            key = "inside_humidity_day_lo";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 38;
+            data_size = 1;
+        }
+    },
+
+    INSIDE_HUMIDITY_DAY_HI_TIMEOFDAY {
+        {
+            key = "inside_humidity_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 39;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_HUMIDITY_DAY_LO_TIMEOFDAY {
+        {
+            key = "inside_humidity_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 41;
+            data_size = 2;
+        }
+    },
+
+    INSIDE_HUMIDITY_MONTH_HI {
+        {
+            key = "inside_humidity_month_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 43;
+            data_size = 1;
+        }
+    },
+
+    INSIDE_HUMIDITY_MONTH_LO {
+        {
+            key = "inside_humidity_month_lo";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 44;
+            data_size = 1;
+        }
+    },
+
+    INSIDE_HUMIDITY_YEAR_HI {
+        {
+            key = "inside_humidity_year_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 45;
+            data_size = 1;
+        }
+    },
+
+    INSIDE_HUMIDITY_YEAR_LO {
+        {
+            key = "inside_humidity_daily_lo";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 46;
+            data_size = 1;
+        }
+    },
+
+    OUTSIDE_TEMP_DAY_LO {
+        {
+            key = "outside_temp_day_lo";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 47;
+            data_size = 2;
+        }
+    },
+
+    OUTSIDE_TEMP_DAY_HI {
+        {
+            key = "outside_temp_day_hi";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 49;
+            data_size = 2;
+        }
+    },
+
+    OUTSIDE_TEMP_DAY_LO_TIMEOFDAY {
+        {
+            key = "outside_temp_day_lo_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 51;
+            data_size = 2;
+        }
+    },
+
+    OUTSIDE_TEMP_DAY_HI_TIMEOFDAY {
+        {
+            key = "outside_temp_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 53;
+            data_size = 2;
+        }
+    },
+
+    OUTSIDE_TEMP_MONTH_HI {
+        {
+            key = "outside_temp_month_hi";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 55;
+            data_size = 2;
+        }
+    },
+
+    OUTSIDE_TEMP_MONTH_LO {
+        {
+            key = "outside_temp_month_lo";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 57;
+            data_size = 2;
+        }
+    },
+
+    OUTSIDE_TEMP_YEAR_HI {
+        {
+            key = "outside_temp_year_hi";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 59;
+            data_size = 2;
+        }
+    },
+
+    OUTSIDE_TEMP_YEAR_LO {
+        {
+            key = "outside_temp_year_lo";
+            data_type = DataTypeTemperature.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 61;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_DAY_LO {
+        {
+            key = "dew_point_day_lo";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 63;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_DAY_HI {
+        {
+            key = "dew_point_day_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 65;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_DAY_LO_TIMEOFDAY {
+        {
+            key = "dew_point_day_lo_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 67;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_DAY_HI_TIMEOFDAY {
+        {
+            key = "dew_point_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 69;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_MONTH_HI {
+        {
+            key = "dew_point_month_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 71;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_MONTH_LO {
+        {
+            key = "dew_point_month_lo";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 73;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_YEAR_HI {
+        {
+            key = "dew_point_year_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 75;
+            data_size = 2;
+        }
+    },
+
+    DEW_POINT_YEAR_LO {
+        {
+            key = "dew_point_year_lo";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 77;
+            data_size = 2;
+        }
+    },
+
+    WIND_CHILL_DAY_LO {
+        {
+            key = "wind_chill_day_lo";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 79;
+            data_size = 2;
+        }
+    },
+
+    WIND_CHILL_DAY_LO_TIMEOFDAY {
+        {
+            key = "wind_chill_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 81;
+            data_size = 2;
+        }
+    },
+
+    WIND_CHILL_MONTH_LO {
+        {
+            key = "wind_chill_month_lo";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 83;
+            data_size = 2;
+        }
+    },
+
+    WIND_CHILL_YEAR_LO {
+        {
+            key = "wind_chill_year_lo";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 85;
+            data_size = 2;
+        }
+    },
+
+    HEAT_INDEX_DAY_HI {
+        {
+            key = "heat_index_day_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 87;
+            data_size = 2;
+        }
+    },
+
+    HEAT_INDEX_DAY_HI_TIMEOFDAY {
+        {
+            key = "heat_index_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 89;
+            data_size = 2;
+        }
+    },
+
+    HEAT_INDEX_MONTH_HI {
+        {
+            key = "heat_index_month_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 91;
+            data_size = 2;
+        }
+    },
+
+    HEAT_INDEX_YEAR_HI {
+        {
+            key = "heat_index_year_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 93;
+            data_size = 2;
+        }
+    },
+
+    THSW_INDEX_DAY_HI {
+        {
+            key = "thsw_index_day_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 95;
+            data_size = 2;
+        }
+    },
+
+    THSW_INDEX_DAY_HI_TIMEOFDAY {
+        {
+            key = "thsw_index_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 97;
+            data_size = 2;
+        }
+    },
+
+    THSW_INDEX_MONTH_HI {
+        {
+            key = "thsw_index_month_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 99;
+            data_size = 2;
+        }
+    },
+
+    THSW_INDEX_YEAR_HI {
+        {
+            key = "thsw_index_year_hi";
+            data_type = DataTypeTemperatureF.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 101;
+            data_size = 2;
+        }
+    },
+
+    SOLAR_RADIATION_DAY_HI {
+        {
+            key = "solar_radiation_day_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 103;
+            data_size = 2;
+        }
+    },
+
+    SOLAR_RADIATION_DAY_LO_TIMEOFDAY {
+        {
+            key = "solar_radiation_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 105;
+            data_size = 2;
+        }
+    },
+
+    SOLAR_RADIATION_MONTH_HI {
+        {
+            key = "solar_radiation_month_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 107;
+            data_size = 2;
+        }
+    },
+
+    SOLAR_RADIATION_YEAR_HI {
+        {
+            key = "solar_radiation_year_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 109;
+            data_size = 2;
+        }
+    },
+
+    UV_DAY_HI {
+        {
+            key = "uv_day_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 111;
+            data_size = 1;
+        }
+    },
+
+    UV_DAY_HI_TIMEOFDAY {
+        {
+            key = "uv_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 112;
+            data_size = 2;
+        }
+    },
+
+    UV_MONTH_HI {
+        {
+            key = "uv_month_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 114;
+            data_size = 1;
+        }
+    },
+
+    UV_YEAR_HI {
+        {
+            key = "uv_year_hi";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 115;
+            data_size = 1;
+        }
+    },
+
+    RAIN_RATE_DAY_HI {
+        {
+            key = "rain_rate_day_hi";
+            data_type = DataTypeRain.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 116;
+            data_size = 2;
+        }
+    },
+
+    RAIN_RATE_DAY_HI_TIMEOFDAY {
+        {
+            key = "rain_rate_day_hi_timeofday";
+            data_type = DataTypeNumber.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 118;
+            data_size = 2;
+        }
+    },
+
+    RAIN_RATE_HOUR_HI {
+        {
+            key = "rain_rate_hour_hi";
+            data_type = DataTypeRain.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 120;
+            data_size = 2;
+        }
+    },
+
+    RAIN_RATE_MONTH_HI {
+        {
+            key = "rain_rate_month_hi";
+            data_type = DataTypeRain.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 122;
+            data_size = 2;
+        }
+    },
+
+    RAIN_RATE_YEAR_HI {
+        {
+            key = "rain_rate_year_hi";
+            data_type = DataTypeRain.class;
+            command = DavisCommandType.HILOWS;
+            data_offset = 124;
+            data_size = 2;
+        }
     };
 
     Logger logger = LoggerFactory.getLogger(DavisValueType.class);
@@ -761,7 +1452,7 @@ public enum DavisValueType {
 
     /**
      * Get all commands which receive informations to update items.
-     * 
+     *
      * @return all DavisCommand's identified by keys
      */
     public static Collection<DavisCommand> getReadCommandsByKeys(List<String> keys) {
@@ -792,7 +1483,7 @@ public enum DavisValueType {
 
     /**
      * Get all commands which receive informations to update items.
-     * 
+     *
      * @return all DavisValueTypes receiving data from a specific command
      */
     public static Set<DavisValueType> getValueTypesByCommandType(DavisCommandType commandType) {
@@ -808,7 +1499,7 @@ public enum DavisValueType {
 
     /**
      * Get a specific command.
-     * 
+     *
      * @param key
      *            command key
      * @return DavisValueType identified by key
