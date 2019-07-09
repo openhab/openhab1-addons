@@ -202,6 +202,8 @@
   <feature name="openhab-binding-fatekplc1" description="Fatek PLC Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
+    <feature>openhab-transport-serial</feature>
+    <bundle start-level="80">mvn:org.simplify4u/jfatek/3.0.0</bundle>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.fatekplc/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/fatekplc.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/fatekplc</configfile>
   </feature>
