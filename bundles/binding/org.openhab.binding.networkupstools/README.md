@@ -24,9 +24,13 @@ This binding can be configured in the file `services/networkupstools.cfg`.
 
 where `<name>` is a name you choose to identify a specific UPS device that is managed by NUT servers, `ups1` for instance.  You can configure any number of UPS devices managed by NUT servers. Every UPS is identified by instance name ("ups1" in the example above). You use instance name in the item definitions.
 
+### Thing Configuration
+
+No `.things` file configuration required
+
 ### Item Configuration
 
-he syntax for the binding configuration string is explained here:
+The syntax for the binding configuration string is explained here:
 
 ```
 networkupstools="<name>:<property name>"
