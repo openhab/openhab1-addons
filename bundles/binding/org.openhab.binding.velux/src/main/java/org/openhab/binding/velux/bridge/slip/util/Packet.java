@@ -61,7 +61,7 @@ public class Packet {
     /**
      * Constructor: Create a {@link org.openhab.binding.velux.bridge.slip.util.Packet Packet} out of a sequence of
      * bytes.
-     * 
+     *
      * @param thisData Packet as Array of bytes.
      */
     public Packet(byte[] thisData) {
@@ -96,7 +96,7 @@ public class Packet {
     /**
      * Returns a part of the {@link org.openhab.binding.velux.bridge.slip.util.Packet Packet} as sequence of bytes
      * starting at position (n) up to the position (n+length-1).
-     * 
+     *
      * @param position Position (n) within the packet.
      * @param length Length of the intended slice as int.
      * @return <b>packet</b> of type Array-of-byte.
@@ -160,7 +160,7 @@ public class Packet {
      * <P>
      * Note: Big-endian LSB-0 encoding.
      * </P>
-     * 
+     *
      * @param position Position (n) within the packet.
      * @return <b>value</b> of type int.
      */
@@ -173,7 +173,7 @@ public class Packet {
      * <P>
      * Note: Big-endian LSB-0 encoding.
      * </P>
-     * 
+     *
      * @param position Position (n) within the packet.
      * @param value of type int.
      */
@@ -187,7 +187,7 @@ public class Packet {
      * <P>
      * Note: Big-endian LSB-0 encoding.
      * </P>
-     * 
+     *
      * @param position Position (n) within the packet.
      * @return <b>value</b> of type int.
      */
@@ -201,7 +201,7 @@ public class Packet {
      * <P>
      * Note: Big-endian LSB-0 encoding.
      * </P>
-     * 
+     *
      * @param position Position (n) within the packet.
      * @param value of type int.
      */
@@ -217,7 +217,7 @@ public class Packet {
      * <P>
      * Note: Any trailing null char will be eliminated.
      * </P>
-     * 
+     *
      * @param position Position (n) within the packet.
      * @param length Length of the intended slice as int.
      * @return <b>value</b> of type String.
@@ -232,7 +232,7 @@ public class Packet {
      * <P>
      * Note: The trailing null char will not be stored.
      * </P>
-     * 
+     *
      * @param position Position (n) within the packet.
      * @param text of type String.
      */
@@ -247,7 +247,7 @@ public class Packet {
 
     /**
      * Returns the hex char string representing the byte.
-     * 
+     *
      * @param oneByte of type byte to be converted.
      * @return <b>hexByteString</b> of type String.
      */
@@ -261,13 +261,13 @@ public class Packet {
 
     /**
      * Returns the dotted string representing an IP address.
-     * 
+     *
      * @param ipAddress of type int to be converted.
      * @return <b>ipAddressString</b> of type String.
      */
     public static String intToIPAddressString(int ipAddress) {
-        return String.format("%d.%d.%d.%d", (byte) ((ipAddress >>> 24) & 0xFF), (byte) ((ipAddress >>> 16) & 0xFF),
-                (byte) ((ipAddress >>> 8) & 0xFF), (byte) (ipAddress & 0xFF));
+        return String.format("%d.%d.%d.%d", ((ipAddress >>> 24) & 0xFF), ((ipAddress >>> 16) & 0xFF),
+                ((ipAddress >>> 8) & 0xFF), (ipAddress & 0xFF));
     }
 
 }

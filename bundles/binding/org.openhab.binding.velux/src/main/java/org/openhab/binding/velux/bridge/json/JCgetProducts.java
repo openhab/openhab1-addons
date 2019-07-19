@@ -40,7 +40,7 @@ public class JCgetProducts extends GetProducts implements JsonBridgeCommunicatio
     private static final String URL = "/api/v1/products";
     private static final String DESCRIPTION = "get Products";
 
-    private Request request;
+    private Request request = new Request();
     private Response response;
 
     /**

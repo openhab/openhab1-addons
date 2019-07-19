@@ -214,6 +214,13 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
     @Override
     public void finalize() {
         logger.trace("finalize({}) called.", this);
+        if (myJsonBridge != null) {
+            myJsonBridge.shutdown();
+        }
+        if (mySlipBridge != null) {
+            mySlipBridge.shutdown();
+        }
+        logger.trace("finalize() done.");
     }
 
     /***
@@ -267,8 +274,19 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
         }
 
         veluxBridgeConfiguration.hasChanged = false;
-        logger.info("{} Bridge is online, now.", VeluxBindingConstants.BINDING_ID);
+        logger.info("{} Bridge is online with {} scenes and {} actuators, now.", VeluxBindingConstants.BINDING_ID,
+                bridgeParameters.scenes.getChannel().existingScenes.getNoMembers(),
+                bridgeParameters.actuators.getChannel().existingProducts.getNoMembers());
         logger.trace("bridgeParamsUpdated() successfully finished.");
+    }
+
+    private boolean _actuatorIsInverted(String actuatorSerial) {
+        return actuatorSerial.charAt(actuatorSerial.length() - 1) == '*';
+    }
+
+    private String _actuatorCleanupSerial(String actuatorSerial) {
+        return _actuatorIsInverted(actuatorSerial) ? actuatorSerial.substring(0, actuatorSerial.length() - 1)
+                : actuatorSerial;
     }
 
     /**
@@ -324,6 +342,12 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                             }
                             break;
 
+                        case BRIDGE_TIMESTAMP:
+                            DecimalType timestampValue = new DecimalType(
+                                    thisBridge.bridgeAPI().bridgeLastSuccessfullCommunication());
+                            newState = timestampValue;
+                            break;
+
                         case BRIDGE_FIRMWARE:
                             bridgeParameters.firmware = new VeluxBridgeGetFirmware().retrieve(thisBridge);
                             if (bridgeParameters.firmware != null && bridgeParameters.firmware.isRetrieved) {
@@ -335,7 +359,7 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                         case BRIDGE_SUBNETMASK:
                         case BRIDGE_DEFAULTGW:
                         case BRIDGE_DHCP:
-                            bridgeParameters.lanConfig = new VeluxBridgeLANConfig().retrieve(myJsonBridge);
+                            bridgeParameters.lanConfig = new VeluxBridgeLANConfig().retrieve(thisBridge);
                             if (bridgeParameters.lanConfig != null && bridgeParameters.lanConfig.isRetrieved) {
                                 switch (config.getBindingItemType()) {
                                     case BRIDGE_IPADDRESS:
@@ -427,6 +451,9 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                             }
                             actuatorSerial = config.getBindingConfig();
                             logger.trace("handleCommandOnChannel(): actuatorSerial={}", actuatorSerial);
+                            boolean isInverted = _actuatorIsInverted(actuatorSerial);
+                            actuatorSerial = _actuatorCleanupSerial(actuatorSerial);
+                            logger.trace("handleCommandOnChannel(): actuatorSerial={}", actuatorSerial);
 
                             if (!bridgeParameters.actuators.getChannel().existingProducts
                                     .isRegistered(actuatorSerial)) {
@@ -449,10 +476,14 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                                 if (bcp.isCommunicationSuccessful()) {
                                     try {
                                         PercentType positionAsPercent = new VeluxProductPosition(
-                                                thisProduct.getCurrentPosition()).getPositionAsPercentType();
-                                        logger.trace("handleCommandOnChannel(): found actuator at level {}.",
-                                                positionAsPercent);
-                                        newState = positionAsPercent;
+                                                thisProduct.getCurrentPosition()).getPositionAsPercentType(isInverted);
+                                        if (positionAsPercent != null) {
+                                            logger.trace("handleCommandOnChannel(): found actuator at level {}.",
+                                                    positionAsPercent);
+                                            newState = positionAsPercent;
+                                        } else {
+                                            logger.trace("handleCommandOnChannel(): level of actuator is unknown.");
+                                        }
                                     } catch (Exception e) {
                                         logger.warn("handleCommandOnChannel(): getProducts() exception: {}.",
                                                 e.getMessage());
@@ -484,6 +515,15 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                 String sceneName;
 
                 switch (config.getBindingItemType()) {
+                    case BRIDGE_RELOAD:
+                        if (command.equals(OnOffType.ON)) {
+                            logger.trace("handleCommandOnChannel(): about to reload informations from veluxBridge.");
+                            bridgeParamsUpdated();
+                        } else {
+                            logger.trace("handleCommandOnChannel(): ignoring OFF command.");
+                        }
+                        break;
+
                     case SCENE_ACTION:
                         assert bridgeParameters.scenes
                                 .getChannel().existingScenes != null : "VeluxBridgeHandlerOH1.existingScenes not initialized.";
@@ -506,28 +546,34 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                         break;
 
                     case BRIDGE_SHUTTER:
-                        if (true) {
-                            logger.trace("handleCommandOnChannel(): working on virtual rollershutter.");
-                            VeluxRSBindingConfig thisRSBindingConfig = (VeluxRSBindingConfig) config;
-                            Integer rollershutterLevel = thisRSBindingConfig.getLevel();
-                            logger.trace("handleCommandOnChannel(): current level is {}.", rollershutterLevel);
-                            if ((UpDownType) command == UpDownType.UP) {
-                                rollershutterLevel = thisRSBindingConfig.getNextDescendingLevel();
-                            } else if ((UpDownType) command == UpDownType.DOWN) {
-                                rollershutterLevel = thisRSBindingConfig.getNextAscendingLevel();
-                            } else {
-                                logger.info("handleCommandOnChannel(): ignoring command {}.", command);
-                                break;
-                            }
-                            logger.trace("handleCommandOnChannel(): next level is {}.", rollershutterLevel);
-                            sceneName = thisRSBindingConfig.getSceneName();
-                            assert eventPublisher != null : "eventPublisher not initialized.";
-                            eventPublisher.postUpdate(itemName, new PercentType(rollershutterLevel));
-                            VeluxScene thisScene = bridgeParameters.scenes.getChannel().existingScenes
-                                    .get(new SceneName(sceneName));
-                            logger.trace("handleCommandOnChannel(): execution scene {}.", thisScene);
-                            new VeluxBridgeRunScene().execute(thisBridge, thisScene.getBridgeSceneIndex().toInt());
+                        logger.trace("handleCommandOnChannel(): working on virtual rollershutter.");
+                        VeluxRSBindingConfig thisRSBindingConfig = (VeluxRSBindingConfig) config;
+                        Integer rollershutterLevel = thisRSBindingConfig.getLevel();
+                        logger.trace("handleCommandOnChannel(): current level is {}.", rollershutterLevel);
+                        if ((UpDownType) command == UpDownType.UP) {
+                            rollershutterLevel = thisRSBindingConfig.getNextDescendingLevel();
+                        } else if ((UpDownType) command == UpDownType.DOWN) {
+                            rollershutterLevel = thisRSBindingConfig.getNextAscendingLevel();
+                        } else {
+                            logger.info("handleCommandOnChannel(): ignoring command {}.", command);
+                            break;
                         }
+                        logger.trace("handleCommandOnChannel(): next level is {}.", rollershutterLevel);
+                        sceneName = thisRSBindingConfig.getSceneName();
+                        logger.trace("handleCommandOnChannel(): scene name is {}.", sceneName);
+                        assert eventPublisher != null : "eventPublisher not initialized.";
+                        eventPublisher.postUpdate(itemName, new PercentType(rollershutterLevel));
+                        VeluxScene thisScene2 = bridgeParameters.scenes.getChannel().existingScenes
+                                .get(new SceneName(sceneName));
+                        if (thisScene2 == null) {
+                            logger.warn(
+                                    "handleCommandOnChannel(): aborting command as scene with name {} is not registered; please check your KLF scene definitions.",
+                                    sceneName);
+                            break;
+                        }
+                        logger.trace("handleCommandOnChannel(): executing scene {} with index {}.", thisScene2,
+                                thisScene2.getBridgeSceneIndex().toInt());
+                        new VeluxBridgeRunScene().execute(thisBridge, thisScene2.getBridgeSceneIndex().toInt());
                         break;
 
                     case SCENE_SILENTMODE:
@@ -566,6 +612,9 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                         }
                         actuatorSerial = config.getBindingConfig();
                         logger.trace("handleCommandOnChannel(): actuatorSerial={}", actuatorSerial);
+                        boolean isInverted = _actuatorIsInverted(actuatorSerial);
+                        actuatorSerial = _actuatorCleanupSerial(actuatorSerial);
+                        logger.trace("handleCommandOnChannel(): actuatorSerial={}", actuatorSerial);
 
                         if (!bridgeParameters.actuators.getChannel().existingProducts.isRegistered(actuatorSerial)) {
                             logger.info("handleCommandOnChannel(): cannot work on unknown actuator: {}.",
@@ -580,16 +629,21 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                         VeluxProductPosition targetLevel;
                         if ((command instanceof UpDownType) && ((UpDownType) command == UpDownType.UP)) {
                             logger.trace("handleCommandOnChannel(): found UP command.");
-                            targetLevel = new VeluxProductPosition(new PercentType(0));
+                            targetLevel = isInverted ? new VeluxProductPosition(PercentType.HUNDRED)
+                                    : new VeluxProductPosition(PercentType.ZERO);
                         } else if ((command instanceof UpDownType) && ((UpDownType) command == UpDownType.DOWN)) {
                             logger.trace("handleCommandOnChannel(): found DOWN command.");
-                            targetLevel = new VeluxProductPosition(new PercentType(100));
+                            targetLevel = isInverted ? new VeluxProductPosition(PercentType.ZERO)
+                                    : new VeluxProductPosition(PercentType.HUNDRED);
                         } else if ((command instanceof StopMoveType) && ((StopMoveType) command == StopMoveType.STOP)) {
                             logger.trace("handleCommandOnChannel(): found STOP command.");
                             targetLevel = new VeluxProductPosition();
                         } else if (command instanceof PercentType) {
                             logger.trace("handleCommandOnChannel(): found command of type PercentType.");
                             PercentType ptCommand = (PercentType) command;
+                            if (isInverted) {
+                                ptCommand = new PercentType(PercentType.HUNDRED.intValue() - ptCommand.intValue());
+                            }
                             logger.trace("handleCommandOnChannel(): found command to set level to {}.", ptCommand);
                             targetLevel = new VeluxProductPosition(ptCommand);
                         } else {
@@ -599,6 +653,8 @@ public class VeluxBridgeHandlerOH1 extends VeluxBridge implements VeluxBridgeIns
                         logger.debug("handleCommandOnChannel(): sending command with target level {}.", targetLevel);
                         new VeluxBridgeSendCommand().sendCommand(thisBridge,
                                 thisProduct.getBridgeProductIndex().toInt(), targetLevel);
+                        logger.trace(
+                                "handleCommandOnChannel(): The new shutter level will be send through the home monitoring events.");
                         if (bridgeParameters.actuators.autoRefresh(thisBridge)) {
                             logger.trace("handleCommandOnChannel(): position of actuators are updated.");
                         }

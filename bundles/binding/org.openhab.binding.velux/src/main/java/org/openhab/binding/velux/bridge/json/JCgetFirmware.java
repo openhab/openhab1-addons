@@ -37,7 +37,7 @@ public class JCgetFirmware extends GetFirmware implements JsonBridgeCommunicatio
     private static final String URL = "/api/v1/settings";
     private static final String DESCRIPTION = "get firmware version";
 
-    private Request request;
+    private Request request = new Request();
     private Response response;
 
     /*

@@ -192,7 +192,7 @@ public class SCgetProduct extends GetProduct implements SlipBridgeCommunicationP
                     break;
                 }
 
-                logger.trace("setResponse(): nodeId={} (requested {}).", ntfNodeID);
+                logger.trace("setResponse(): nodeId={}.", ntfNodeID);
                 logger.trace("setResponse(): nodeName={}.", nodeName);
                 logger.trace("setResponse(): productNodeTypeSubType={}.", productNodeTypeSubType);
                 logger.trace("setResponse(): productNodeTypeSubTypeSYMBOLIC={}.",
@@ -201,10 +201,20 @@ public class SCgetProduct extends GetProduct implements SlipBridgeCommunicationP
                 logger.trace("setResponse(): productCurrentPosition={}.", productCurrentPosition);
                 logger.trace("setResponse(): productNodeVariation={}.", productNodeVariation);
 
+                String commonSerialNumber = new Packet(productSerialNumber).toString(":");
+                if ((productSerialNumber[0] == 0) && (productSerialNumber[1] == 0) && (productSerialNumber[2] == 0)
+                        && (productSerialNumber[3] == 0) && (productSerialNumber[4] == 0)
+                        && (productSerialNumber[5] == 0) && (productSerialNumber[6] == 0)
+                        && (productSerialNumber[7] == 0)) {
+                    commonSerialNumber = new String(nodeName);
+                    logger.info("setResponse(): device provided invalid serial number, using name '{}' instead.",
+                            commonSerialNumber);
+                }
+
                 product = new VeluxProduct(new VeluxProductName(nodeName), VeluxProductType.get(productNodeTypeSubType),
                         new ProductBridgeIndex(ntfNodeID), nodeOrder, nodePlacement, productVelocity,
-                        productNodeVariation, productPowerMode, new Packet(productSerialNumber).toString(":"),
-                        productState, productCurrentPosition, productTarget, productRemainingTime, productTimeStamp);
+                        productNodeVariation, productPowerMode, commonSerialNumber, productState,
+                        productCurrentPosition, productTarget, productRemainingTime, productTimeStamp);
                 success = true;
                 break;
 

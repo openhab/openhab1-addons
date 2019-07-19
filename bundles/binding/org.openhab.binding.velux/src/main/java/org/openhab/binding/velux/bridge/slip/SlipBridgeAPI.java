@@ -112,6 +112,11 @@ public class SlipBridgeAPI extends SlipVeluxBridge implements BridgeAPI {
     }
 
     @Override
+    public long bridgeLastSuccessfullCommunication() {
+        return this.lastSuccessfullCommunicationMillis;
+    }
+
+    @Override
     public CheckLostNodes checkLostNodes() {
         return CHECKLOSTNODES;
     }

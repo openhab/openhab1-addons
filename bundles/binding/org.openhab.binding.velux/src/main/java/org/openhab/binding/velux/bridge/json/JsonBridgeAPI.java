@@ -88,6 +88,11 @@ public class JsonBridgeAPI extends JsonVeluxBridge implements BridgeAPI {
     }
 
     @Override
+    public long bridgeLastSuccessfullCommunication() {
+        return this.lastSuccessfullCommunicationMillis;
+    }
+
+    @Override
     public CheckLostNodes checkLostNodes() {
         return CHECKLOSTNODES;
     }

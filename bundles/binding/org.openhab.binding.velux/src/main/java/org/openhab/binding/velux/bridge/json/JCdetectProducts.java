@@ -37,7 +37,7 @@ public class JCdetectProducts extends DetectProducts implements JsonBridgeCommun
     private static final String URL = "/api/v1/products";
     private static final String DESCRIPTION = "discover products";
 
-    private Request request;
+    private Request request = new Request();
     private Response response;
 
     /*

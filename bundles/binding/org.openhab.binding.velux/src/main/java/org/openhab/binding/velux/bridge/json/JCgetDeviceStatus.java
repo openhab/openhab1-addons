@@ -40,7 +40,7 @@ public class JCgetDeviceStatus extends GetDeviceStatus implements JsonBridgeComm
     private static final String URL = "/api/v1/device";
     private static final String DESCRIPTION = "get device status";
 
-    private Request request;
+    private Request request = new Request();
     private Response response;
 
     /*

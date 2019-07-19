@@ -40,7 +40,7 @@ public class JCgetScenes extends GetScenes implements JsonBridgeCommunicationPro
     private static final String URL = "/api/v1/scenes";
     private static final String DESCRIPTION = "get Scenes";
 
-    private Request request;
+    private Request request = new Request();
     private Response response;
 
     /**

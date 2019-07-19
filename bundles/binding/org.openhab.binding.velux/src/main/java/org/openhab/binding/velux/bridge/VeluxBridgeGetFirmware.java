@@ -90,7 +90,7 @@ public class VeluxBridgeGetFirmware {
 
         GetFirmware bcp = bridge.bridgeAPI().getFirmware();
         if (bridge.bridgeCommunicate(bcp) && bcp.isCommunicationSuccessful()) {
-            this.channel.firmwareVersion = new StringType(bcp.getFirmware().toString());
+            this.channel.firmwareVersion = new StringType(bcp.getFirmware().getfirmwareVersion());
             this.channel.isRetrieved = true;
             logger.trace("retrieve() found successfully firmware {}.", this.channel.firmwareVersion);
             return channel;

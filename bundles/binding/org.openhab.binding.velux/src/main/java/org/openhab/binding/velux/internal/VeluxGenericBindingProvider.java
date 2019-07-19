@@ -240,6 +240,12 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
                     case VeluxBindingConstants.CHANNEL_BRIDGE_STATUS:
                         config = new VeluxBindingConfig(VeluxItemType.BRIDGE_STATUS, bindingConfig);
                         break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_RELOAD:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_RELOAD, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_TIMESTAMP:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_TIMESTAMP, bindingConfig);
+                        break;
                     case VeluxBindingConstants.CHANNEL_BRIDGE_DO_DETECTION:
                         config = new VeluxBindingConfig(VeluxItemType.BRIDGE_DO_DETECTION, bindingConfig);
                         break;
@@ -260,6 +266,9 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
                         break;
                     case VeluxBindingConstants.CHANNEL_BRIDGE_WLANSSID:
                         config = new VeluxBindingConfig(VeluxItemType.BRIDGE_WLANSSID, bindingConfig);
+                        break;
+                    case VeluxBindingConstants.CHANNEL_BRIDGE_WLANPASSWORD:
+                        config = new VeluxBindingConfig(VeluxItemType.BRIDGE_WLANPASSWORD, bindingConfig);
                         break;
                     case VeluxBindingConstants.CHANNEL_BRIDGE_PRODUCTS:
                         config = new VeluxBindingConfig(VeluxItemType.BRIDGE_PRODUCTS, bindingConfig);
@@ -329,7 +338,7 @@ public class VeluxGenericBindingProvider extends AbstractGenericBindingProvider 
         } else if (super.bindingConfigs.containsKey(itemName)) {
             config = (VeluxBindingConfig) super.bindingConfigs.get(itemName);
         }
-        logger.trace("getConfigForItemName() returns {}.", config.getBindingConfig());
+        logger.trace("getConfigForItemName() returns {}.", (config != null) ? config.getBindingConfig() : "**null**");
         return config;
     }
 

@@ -116,7 +116,7 @@ public class SCgetWLANConfig extends GetWLANConfig implements SlipBridgeCommunic
     public VeluxGwWLAN getWLANConfig() {
         logger.trace("getWLANConfig() called.");
         // ToDo: Velux will provide an API for retrieving the SSID.
-        return new VeluxGwWLAN("SSID", "Password");
+        return new VeluxGwWLAN("***yet-unsupported-by-firmware**", "***yet-unsupported-by-firmware**");
     }
 
 }

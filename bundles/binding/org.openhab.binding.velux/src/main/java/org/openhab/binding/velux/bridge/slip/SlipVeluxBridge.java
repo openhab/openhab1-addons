@@ -64,6 +64,12 @@ public class SlipVeluxBridge extends VeluxBridge {
      */
     public Set<String> supportedProtocols = new TreeSet<String>();
 
+    /**
+     * Timestamp of last successfull communication in milliseconds.
+     *
+     */
+    protected long lastSuccessfullCommunicationMillis = 0;
+
     private SSLconnection connectivity = null;
     private final byte[] emptyPacket = new byte[0];
 
@@ -86,6 +92,27 @@ public class SlipVeluxBridge extends VeluxBridge {
         super(bridgeInstance);
         logger.trace("SlipVeluxBridge(constructor) called.");
         supportedProtocols.add("slip");
+    }
+
+    /**
+     * Destructor.
+     * <P>
+     * Deinitializes the binding-wide instance.
+     *
+     */
+    @Override
+    public void shutdown() {
+        logger.trace("shutdown() called.");
+        if (connectivity != null) {
+            logger.trace("shutdown(): shutting down connection.");
+            try {
+                connectivity.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                logger.warn("shutdown(): raised an error during connection close: {}.", e.getMessage());
+            }
+            connectivity = null;
+        }
     }
 
     /**
@@ -151,6 +178,7 @@ public class SlipVeluxBridge extends VeluxBridge {
                         connectivity.send(request);
                     } catch (Exception e) {
                         logger.warn("io(): raised an error during sending: {}.", e.getMessage());
+                        break;
                     }
 
                     // Give the bridge some time to breathe
@@ -172,6 +200,7 @@ public class SlipVeluxBridge extends VeluxBridge {
                 } else {
                     logger.debug("io(): received packet with {} bytes.", packet.length);
                 }
+                lastSuccessfullCommunicationMillis = System.currentTimeMillis();
                 logger.trace("io() finished.");
                 return packet;
             } catch (IOException ioe) {
@@ -188,7 +217,9 @@ public class SlipVeluxBridge extends VeluxBridge {
                 }
             }
         } while (retryCount++ < bridgeInstance.veluxBridgeConfiguration().retries);
-        logger.info("io(): socket I/O failed {} times.", bridgeInstance.veluxBridgeConfiguration().retries);
+        if (retryCount >= bridgeInstance.veluxBridgeConfiguration().retries) {
+            logger.info("io(): socket I/O failed {} times.", bridgeInstance.veluxBridgeConfiguration().retries);
+        }
         logger.trace("io(): shutting down connection.");
         connectivity.close();
         connectivity = null;

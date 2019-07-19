@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.openhab.binding.velux.VeluxBindingConstants;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -73,12 +74,16 @@ import org.slf4j.LoggerFactory;
  *
  */
 public enum VeluxItemType {
+    BRIDGE_RELOAD(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_RELOAD,
+            SwitchItem.class, false, false, true, false),
     SCENE_ACTION(VeluxBindingConstants.THING_VELUX_SCENE, VeluxBindingConstants.CHANNEL_SCENE_ACTION, SwitchItem.class,
             false, false, true, false),
     SCENE_SILENTMODE(VeluxBindingConstants.THING_VELUX_SCENE, VeluxBindingConstants.CHANNEL_SCENE_SILENTMODE,
             SwitchItem.class, false, true, false, false),
     BRIDGE_STATUS(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_STATUS,
             StringItem.class, true, true, true, true, 1),
+    BRIDGE_TIMESTAMP(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_TIMESTAMP,
+            NumberItem.class, true, true, true, true, 1),
     BRIDGE_DO_DETECTION(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_DO_DETECTION,
             SwitchItem.class, false, false, true, false),
     BRIDGE_FIRMWARE(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_FIRMWARE,
@@ -94,7 +99,7 @@ public enum VeluxItemType {
     BRIDGE_WLANSSID(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_WLANSSID,
             StringItem.class, true, false, false, false),
     BRIDGE_WLANPASSWORD(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_WLANPASSWORD,
-            SwitchItem.class, true, false, false, false),
+            StringItem.class, true, false, false, false),
     BRIDGE_PRODUCTS(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_PRODUCTS,
             StringItem.class, true, false, false, true, 15),
     BRIDGE_SCENES(VeluxBindingConstants.THING_VELUX_BRIDGE, VeluxBindingConstants.CHANNEL_BRIDGE_SCENES,

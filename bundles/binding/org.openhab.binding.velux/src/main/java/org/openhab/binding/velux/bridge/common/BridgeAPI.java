@@ -28,6 +28,8 @@ package org.openhab.binding.velux.bridge.common;
 public interface BridgeAPI {
     public boolean bridgeDirectCommunicate(BridgeCommunicationProtocol communication, boolean useAuthentication);
 
+    public long bridgeLastSuccessfullCommunication();
+
     public CheckLostNodes checkLostNodes();
 
     public DetectProducts detectProducts();

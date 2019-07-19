@@ -95,6 +95,10 @@ public class VeluxProductPosition {
         return position;
     }
 
+    public PercentType getPositionAsPercentType(boolean toBeInverted) {
+        return toBeInverted ? new PercentType(PercentType.HUNDRED.intValue() - position.intValue()) : position;
+    }
+
     public int getPositionAsVeluxType() {
         if (this.position != null) {
             float result = (ONE * position.intValue() - VPP_OPENHAB_MIN) / (VPP_OPENHAB_MAX - VPP_OPENHAB_MIN);

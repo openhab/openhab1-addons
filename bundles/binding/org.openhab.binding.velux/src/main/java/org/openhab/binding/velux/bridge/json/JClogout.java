@@ -37,7 +37,7 @@ public class JClogout extends Logout implements JsonBridgeCommunicationProtocol 
     private static final String URL = "/api/v1/auth";
     private static final String DESCRIPTION = "deauthenticate / logout";
 
-    private Request request;
+    private Request request = new Request();
     private Response response;
 
     /*
