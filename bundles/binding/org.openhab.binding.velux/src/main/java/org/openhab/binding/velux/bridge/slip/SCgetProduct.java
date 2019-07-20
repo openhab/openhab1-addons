@@ -207,7 +207,7 @@ public class SCgetProduct extends GetProduct implements SlipBridgeCommunicationP
                         && (productSerialNumber[5] == 0) && (productSerialNumber[6] == 0)
                         && (productSerialNumber[7] == 0)) {
                     commonSerialNumber = new String(nodeName);
-                    logger.info("setResponse(): device provided invalid serial number, using name '{}' instead.",
+                    logger.debug("setResponse(): device provided invalid serial number, using name '{}' instead.",
                             commonSerialNumber);
                 }
 

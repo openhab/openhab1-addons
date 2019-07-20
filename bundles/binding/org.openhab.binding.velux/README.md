@@ -38,10 +38,11 @@ The binding can be configured by parameters in the global configuration file `op
 |----------------|------------------------|:--------:|-----------------------------------------------------------|
 | bridgeIPAddress|                        |   Yes    | Hostname or address for accessing the Velux Bridge.       |
 | bridgeProtocol | slip                   |    No    | Underlying communication protocol (http/https/slip).      |
-| bridgeTCPPort  | 80                     |    No    | TCP port (80 or 51200)for accessing the Velux Bridge.     |
+| bridgeTCPPort  | 51200                  |    No    | TCP port (80 or 51200) for accessing the Velux Bridge.    |
 | bridgePassword | velux123               |    No    | Password for authentication against the Velux Bridge.(**) |
-| timeoutMsecs   | 2000                   |    No    | Initial Connection timeout in milliseconds                |
-| retries        | 6                      |    No    | Number of retries during I/O                              |
+| timeoutMsecs   | 1000                   |    No    | Initial Connection timeout in milliseconds                |
+| retries        | 5                      |    No    | Number of retries during I/O                              |
+| refreshMsecs   | 15000                  |    No    | Refresh interval in milliseconds.                          |
 
 (**) Note: This password is the API password that is printed on the back of the unit. Normally it differs from the password of the web frontend.
 
@@ -94,6 +95,8 @@ Optionally the subtype is enhanced with parameters like the appropriate name of 
 | action       | Switch        | Activates a set of predefined product settings                  | scene      | required  |
 | silentMode   | Switch        | Modification of the silent mode of the defined product settings | scene      | required  |
 | status       | String        | Current Bridge State (\*\*\*)                                      | bridge     | N/A       |
+| reload       | Switch        | Reload information from bridge into binding                     | bridge     | N/A       |
+| timestamp    | Number        | Timestamp of last successful device interaction                 | bridge     | N/A       |
 | doDetection  | Switch        | Start of the product detection mode                             | bridge     | N/A       |
 | firmware     | String        | Software version of the Bridge                                  | bridge     | N/A       |
 | ipAddress    | String        | IP address of the Bridge                                        | bridge     | N/A       |
@@ -106,10 +109,15 @@ Optionally the subtype is enhanced with parameters like the appropriate name of 
 | scenes       | String        | List of all defined scenes                                      | bridge     | N/A       |
 | check        | String        | Checks of current item configuratio                             | bridge     | N/A       |
 | shutter      | Rollershutter | Virtual rollershutter as combination of different scenes        | bridge     | required  |
-| serial       | Rollershutter | IO-Homecontrol'ed device        				 | actuator   | required  |
-| serial       | Switch        | IO-Homecontrol'ed device        				 | actuator   | required  |
+| serial       | Rollershutter | IO-Homecontrol'ed device (\*\*\*\*) (\*\*\*\*\*)		 | actuator   | required  |
 
-Note (\*\*\*): The existence of this item triggers the continuous realtime status updates of any Velux item like shutters even if they are manually controlled by other controllers.
+Notes:
+(\*\*\*) The existence of this item triggers the continuous realtime status updates of any Velux item like shutters even if they are manually controlled by other controllers.
+
+(\*\*\*\*) To enable a complete invertion of all parameter values (i.e. for Velux windows), add a trailing star to the eight-byte serial number. For an example,
+see below at item `Velux DG Window Bathroom`.
+
+(\*\*\*\*\*) Somfy devices does not provides a valid serial number to the Velux KLF200 gateway: The bridge reports a registration of the serial number 00:00:00:00:00:00:00:00. Therefore the binding implements a fallback to allow an item specification with a actuator name instead of actuator serial number whenever such an invalid serial number occurs. For an example, see below at item `Velux OG Somfy Shutter`.
 
 
 ### Subtype Parameters
@@ -164,9 +172,18 @@ Switch  V_DG_CLOSED "Velux DG closed"           (gV)    { velux="thing=scene;cha
 
 // Velux Bridge parameters
 
-String  V_FIRMWARE  "Firmware [%s]"                 { velux="thing=bridge;channel=firmware" }
+Switch  V_RELOAD    "Reload info from bridge"       { velux="thing=bridge;channel=reload" }
 String  V_STATUS    "Status [%s]"                   { velux="thing=bridge;channel=status" }
-String  V_CHECK     "Velux Config Check [%s]"           { velux="thing=bridge;channel=check" }
+String  V_TIMESTAMP "Timestamp [%.1f]"              { velux="thing=bridge;channel=timestamp" }
+String  V_CHECK     "Velux Config Check [%s]"       { velux="thing=bridge;channel=check" }
+String  V_FIRMWARE  "Firmware [%s]"                 { velux="thing=bridge;channel=firmware" }
+String	V_CONF_LAN_IP	"KLF LAN IP [%s]"	{ velux="thing=bridge;channel=ipAddress" }
+String	V_CONF_LAN_SUBNET "KLF LAN Subnet [%s]"	{ velux="thing=bridge;channel=subnetMask" }
+String	V_CONF_LAN_GW	"KLF LAN Gateway [%s]"	{ velux="thing=bridge;channel=defaultGW" }
+Switch	V_CONF_LAN_DHCP	"KLF LAN DHCP [%s]"	{ velux="thing=bridge;channel=DHCP" }
+String	V_CONF_WLAN_SSID "KLF WLAN SSID [%s]"	{ velux="thing=bridge;channel=WLANSSID" }
+String	V_CONF_WLAN_PW	"KLF WLAN Password [%s]"{ velux="thing=bridge;channel=WLANPassword" }
+
 
 // Velux Shutters
 
@@ -192,9 +209,17 @@ sitemap velux label="Velux Environment"
         Switch  item=V_DG_M_W
     }
     Frame label="Velux Bridge" {
-        Text    item=V_CHECK
+        Switch  item=V_RELOAD
         Text    item=V_STATUS
+        Text    item=V_TIMESTAMP
+        Text    item=V_CHECK
         Text    item=V_FIRMWARE
+        Text    item=V_CONF_LAN_IP
+        Text    item=V_CONF_LAN_SUBNET
+        Text    item=V_CONF_LAN_GW
+        Switch  item=V_CONF_LAN_DHCP
+        Text    item=V_CONF_WLAN_SSID
+        Text    item=V_CONF_WLAN_PW
     }
 }
 ```
@@ -228,16 +253,27 @@ rule "PushButton of group gV"
 ```
 // Velux Bridge parameters
 
-String  V_FIRMWARE  "Firmware [%s]"                     { velux="thing=bridge;channel=firmware" }
-String  V_STATUS    "Status [%s]"                       { velux="thing=bridge;channel=status" }
-String  V_CHECK     "Velux Config Check [%s]"           { velux="thing=bridge;channel=check" }
+Switch  V_RELOAD    "Reload info from bridge"           { velux="thing=bridge;channel=reload" }
+String  V_STATUS    "Status [%s]"                   	{ velux="thing=bridge;channel=status" }
+String  V_TIMESTAMP "Timestamp [%.1f]"              	{ velux="thing=bridge;channel=timestamp" }
+String  V_CHECK     "Velux Config Check [%s]"       	{ velux="thing=bridge;channel=check" }
+String  V_FIRMWARE  "Firmware [%s]"                 	{ velux="thing=bridge;channel=firmware" }
+String	V_CONF_LAN_IP	"KLF LAN IP [%s]"		{ velux="thing=bridge;channel=ipAddress" }
+String	V_CONF_LAN_SUBNET "KLF LAN Subnet [%s]"		{ velux="thing=bridge;channel=subnetMask" }
+String	V_CONF_LAN_GW	"KLF LAN Gateway [%s]"		{ velux="thing=bridge;channel=defaultGW" }
+Switch	V_CONF_LAN_DHCP	"KLF LAN DHCP [%s]"		{ velux="thing=bridge;channel=DHCP" }
+String	V_CONF_WLAN_SSID "KLF WLAN SSID [%s]"		{ velux="thing=bridge;channel=WLANSSID" }
+String	V_CONF_WLAN_PW	"KLF WLAN Password [%s]"	{ velux="thing=bridge;channel=WLANPassword" }
+
 
 // Velux Shutters
 
-Rollershutter V_DG_M_W	"Velux DG Window Bathroom [%d]"	{ velux="thing=actuator;channel=serial#01:52:21:3E:26:0C:1B:01"}
+Rollershutter V_DG_M_W	"Velux DG Window Bathroom [%d]"	{ velux="thing=actuator;channel=serial#01:52:21:3E:26:0C:1B:01*"}
 Rollershutter V_DG_M_S	"Velux DG Shutter Bathroom [%d]"{ velux="thing=actuator;channel=serial#01:52:00:21:00:07:00:02"}
 Rollershutter V_DG_W_S	"Velux DG Shutter West [%d]"	{ velux="thing=actuator;channel=serial#01:53:09:40:21:0C:2A:03" }
 Rollershutter V_DG_E_S	"Velux DG Shutter East [%d]"	{ velux="thing=actuator;channel=serial#11:56:32:14:5A:21:1C:04" }
+Rollershutter V_OG_W_S	"Velux OG Somfy Shutter [%d]"	{ velux="thing=actuator;channel=serial#Bathroom" }
+
 ```
 
 ### Sitemap
@@ -252,9 +288,18 @@ sitemap velux label="Velux Environment"
         Switch  item=V_DG_M_W
     }
     Frame label="Velux Bridge" {
-        Text    item=V_CHECK
+        Switch  item=V_RELOAD
         Text    item=V_STATUS
+        Text    item=V_TIMESTAMP
+        Text    item=V_CHECK
         Text    item=V_FIRMWARE
+        Text    item=V_CONF_LAN_IP
+        Text    item=V_CONF_LAN_SUBNET
+        Text    item=V_CONF_LAN_GW
+        Switch  item=V_CONF_LAN_DHCP
+        Text    item=V_CONF_WLAN_SSID
+        Text    item=V_CONF_WLAN_PW
+    }
     }
 }
 ```
@@ -263,7 +308,29 @@ sitemap velux label="Velux Environment"
 
 For those who are interested in more detailed insight of the processing of this binding, a deeper look can be achieved by increased loglevel.
 
+With Karaf you can use the following command sequence:
+```
+log:set TRACE org.openhab.binding.velux
+log:tail
+```
+
+This, of course, is possible on command line with the commands:
+
+```
+% openhab-cli console log:set TRACE org.openhab.binding.velux 
+% openhab-cli console log:tail org.openhab.binding.velux
+```
+
+On the other hand, if you prefer a textual configuration, you can append the logging definition with:
+
+```
+	<logger name="org.openhab.binding.velux" level="TRACE">
+		<appender-ref ref="FILE" />
+	</logger>
+```
+
 During startup of normal operations, there should be only some few messages within the logfile, like:
+
 ```
 [INFO ] [.velux.internal.VeluxActivator] - velux binding has been started.
 [INFO ] [.b.velux.internal.VeluxBinding] - Active items are: [V_DG_M_W, ..., V_DG_M_S].
@@ -306,12 +373,26 @@ Notes:
 
 ## How to run it under openHAB2?
 
-Use the Karaf console to install the openHAB1 compatibility layer with `feature:install openhab-runtime-compat1x`.
-Create the basic configuration of the service i.e. with a file `services/velux.cfg`, define the items within i.e. `items/velux.items` and finally generate a UI within i.e. `sitemap/default.sitemap`.
+Use the [Karaf console](https://www.openhab.org/docs/administration/console.html) to install the openHAB1 compatibility layer with help of the command `feature:install openhab-runtime-compat1x`. Activate the binding by placing the jar-file into the [extension directory](https://www.openhab.org/docs/configuration/addons.html#through-manually-provided-add-ons). Then, create the basic configuration of the service i.e. with a file `services/velux.cfg`, define the items within i.e. `items/velux.items` and finally generate a UI within i.e. `sitemap/default.sitemap`.
+
+
+## Is it possible to run the both communication methods in parallel?
+
+For environments with the firmware version 0.1.* on the gateway, the interaction with the bridge is limited to the HTTP/JSON based communication, of course. On the other hand, after upgrading the gateway firmware to version 2, it is possible to run the binding either using HTTP/JSON if there is a permanent connectivity towards the WLAN interface of the KLF200 or using SLIP towards the LAN interface of the gateway. For example the Raspberry PI can directly be connected via WLAN to the Velux gateway and providing the other services via the LAN interface (but not vice versa).
+
+
+## Known Limitations
+
+The communication based on HTTP/JSON is limited to one connection: If the binding is operational, you won't get access to the Web Frontend in parallel.
+
+The SLIP communication is limited to two connections in parallel, i.e. two different openHAB bindings - or - one openHAB binding and another platform connection.
+
+Both interfacing methods, HTTP/JSON and SLIP, can be run in parallel. Therefore, on the one hand you can use the Web Frontend for manual control and on the other hand a binding can do all automatic jobs.
+
 
 ## Unknown Velux devices
 
-All known <B>Velux</B> devices can be handled by this binding. However, there might be some new ones which will be reported within the logfiles.Therefore, error messages like the one below should be reported to the maintainers so that the new Velux device type can be incorporated."
+All known <B>Velux</B> devices can be handled by this binding. However, there might be some new ones which will be reported within the logfiles. Therefore, error messages like the one below should be reported to the maintainers so that the new Velux device type can be incorporated."
 
 ```
 [ERROR] [g.velux.things.VeluxProductReference] - PLEASE REPORT THIS TO MAINTAINER: VeluxProductReference(3) has found an unregistered ProductTypeId.

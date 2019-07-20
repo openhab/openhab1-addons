@@ -225,7 +225,7 @@ public class SCgetProducts extends GetProducts implements SlipBridgeCommunicatio
                         && (ntfSerialNumber[3] == 0) && (ntfSerialNumber[4] == 0) && (ntfSerialNumber[5] == 0)
                         && (ntfSerialNumber[6] == 0) && (ntfSerialNumber[7] == 0)) {
                     commonSerialNumber = new String(ntfName);
-                    logger.info("setResponse(): device provided invalid serial number, using name '{}' instead.",
+                    logger.debug("setResponse(): device provided invalid serial number, using name '{}' instead.",
                             commonSerialNumber);
                 }
 
