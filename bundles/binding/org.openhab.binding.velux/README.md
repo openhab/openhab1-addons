@@ -300,11 +300,68 @@ sitemap velux label="Velux Environment"
         Text    item=V_CONF_WLAN_SSID
         Text    item=V_CONF_WLAN_PW
     }
-    }
 }
 ```
 
-### Debugging
+## More automation samples
+
+At this point some interesting automation rules are included to demonstrate the power of this gateway to the io-homecontrol world.
+
+
+### Closing windows after a period of time
+
+Especially in the colder months, it is advisable to close the window after adequate ventilation. Therefore, automatic closing after one minute is good to save on heating costs.
+However, to allow the case of intentional prolonged opening, an automatic closure is made only with the window fully open.
+
+```
+/*
+ * Start of imports
+ */
+
+import org.openhab.core.library.types.*
+
+/*
+ * Start of rules
+ */
+
+rule "V_WINDOW_changed"
+when
+	Item V_WINDOW changed
+then
+	logInfo("rules.V_WINDOW",	"V_WINDOW_changes() called.")
+	//
+	// Get the sensor value
+	//
+	val Number windowState = V_WINDOW.state as DecimalType
+	logWarn("rules.V_WINDOW", "Window state is "+windowState+".")
+	if (windowState < 80) {
+		if (windowState == 0) {
+			logWarn("rules.V_WINDOW", "V-WINDOW changed to fully open.")
+
+			var int interval = 1
+	
+        		createTimer(now.plusMinutes(interval)) [|
+				logWarn("rules.V_WINDOW:event", "event-V_WINDOW(): setting V-WINDOW to 100.")
+                		sendCommand(V_WINDOW,100)
+				V_WINDOW.postUpdate(100)
+    				logWarn("rules.V_WINDOW:event", "event-V_WINDOW done.")
+        		]
+    		} else {
+			logWarn("rules.V_WINDOW", "V-WINDOW changed to partially open.")
+		}
+    	}
+	//
+	// Check type of item
+	//
+	logDebug("rules.V_WINDOW",	"V_WINDOW_changes finished.")
+end
+
+/*
+ * end-of-rules/V_WINDOW.rules
+ */
+```
+
+## Debugging
 
 For those who are interested in more detailed insight of the processing of this binding, a deeper look can be achieved by increased loglevel.
 
