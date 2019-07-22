@@ -575,6 +575,13 @@
     <configfile finalname="${openhab.conf}/services/upb.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/upb</configfile>
   </feature>
 
+  <feature name="openhab-binding-velux" description="Velux Binding" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.velux/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/velux.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/velux</configfile>
+  </feature>
+
   <feature name="openhab-binding-weather1" description="Weather Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
