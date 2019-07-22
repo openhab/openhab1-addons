@@ -84,6 +84,18 @@ public class VeluxBridge {
         this.bridgeInstance = bridgeInstance;
     }
 
+    // Destructor methods
+
+    /**
+     * Destructor.
+     * <P>
+     * Deinitializes the binding-wide instance.
+     *
+     */
+    public void shutdown() {
+        logger.trace("shutdown() called.");
+    }
+
     // Class access methods
 
     /**

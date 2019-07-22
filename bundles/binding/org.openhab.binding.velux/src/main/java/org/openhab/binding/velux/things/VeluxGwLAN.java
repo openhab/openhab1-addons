@@ -47,24 +47,28 @@ public class VeluxGwLAN {
     // Class access methods
 
     public String getIpAddress() {
+        logger.trace("getIpAddress() returns {}.", this.ipAddress);
         return this.ipAddress;
     }
 
     public String getSubnetMask() {
+        logger.trace("getSubnetMask() returns {}.", this.subnetMask);
         return this.subnetMask;
     }
 
     public String getDefaultGW() {
+        logger.trace("getDefaultGW() returns {}.", this.defaultGW);
         return this.defaultGW;
     }
 
     public boolean getDHCP() {
+        logger.trace("getDHCP() returns {}.", this.enabledDHCP ? "enabled" : "disabled");
         return this.enabledDHCP;
     }
 
     @Override
     public String toString() {
-        return String.format("ip %d, nm %d, gw %d, DHCP %s", this.ipAddress, this.subnetMask, this.defaultGW,
+        return String.format("ip %s, nm %s, gw %s, DHCP %s", this.ipAddress, this.subnetMask, this.defaultGW,
                 this.enabledDHCP ? "enabled" : "disabled");
     }
 

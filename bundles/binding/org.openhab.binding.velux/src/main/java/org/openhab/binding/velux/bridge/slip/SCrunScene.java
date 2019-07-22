@@ -165,15 +165,65 @@ public class SCrunScene extends RunScene implements SlipBridgeCommunicationProto
                 break;
 
             case GW_COMMAND_RUN_STATUS_NTF:
-                logger.warn("setResponse(): received GW_COMMAND_RUN_STATUS_NTF, continuing.");
+                logger.trace("setResponse(): received GW_COMMAND_RUN_STATUS_NTF, continuing.");
+                if (!KLF200Response.isLengthValid(logger, responseCommand, thisResponseData, 13)) {
+                    logger.trace("setResponse(): GW_COMMAND_RUN_STATUS_NTF received with invalid length.");
+                    finished = true;
+                    break;
+                }
+                // Extracting information items
+                int ntfSessionID = responseData.getTwoByteValue(0);
+                int ntfStatusID = responseData.getOneByteValue(2);
+                int ntfIndex = responseData.getOneByteValue(3);
+                int ntfNodeParameter = responseData.getOneByteValue(4);
+                int ntfParameterValue = responseData.getTwoByteValue(5);
+                int ntfRunStatus = responseData.getOneByteValue(7);
+                int ntfStatusReply = responseData.getOneByteValue(8);
+                int ntfInformationCode = responseData.getFourByteValue(9);
+
+                logger.trace("setResponse(): SessionID={}.", ntfSessionID);
+                logger.trace("setResponse(): StatusID={}.", ntfStatusID);
+                logger.trace("setResponse(): Index={}.", ntfIndex);
+                logger.trace("setResponse(): NodeParameter={}.", ntfNodeParameter);
+                logger.trace("setResponse(): ParameterValue={}.", ntfParameterValue);
+                logger.trace("setResponse(): RunStatus={}.", ntfRunStatus);
+                logger.trace("setResponse(): StatusReply={}.", ntfStatusReply);
+                logger.trace("setResponse(): InformationCode={}.", ntfInformationCode);
+
                 break;
 
             case GW_COMMAND_REMAINING_TIME_NTF:
-                logger.warn("setResponse(): received GW_COMMAND_REMAINING_TIME_NTF, continuing.");
+                logger.trace("setResponse(): received GW_COMMAND_REMAINING_TIME_NTF, continuing.");
+                if (!KLF200Response.isLengthValid(logger, responseCommand, thisResponseData, 6)) {
+                    logger.trace("setResponse(): GW_COMMAND_REMAINING_TIME_NTF received with invalid length.");
+                    finished = true;
+                    break;
+                }
+                // Extracting information items
+                ntfSessionID = responseData.getTwoByteValue(0);
+                ntfIndex = responseData.getOneByteValue(2);
+                ntfNodeParameter = responseData.getOneByteValue(3);
+                int ntfSeconds = responseData.getTwoByteValue(4);
+
+                logger.trace("setResponse(): SessionID={}.", ntfSessionID);
+                logger.trace("setResponse(): Index={}.", ntfIndex);
+                logger.trace("setResponse(): NodeParameter={}.", ntfNodeParameter);
+                logger.trace("setResponse(): Seconds={}.", ntfSeconds);
+
                 break;
 
             case GW_SESSION_FINISHED_NTF:
-                logger.warn("setResponse(): received GW_SESSION_FINISHED_NTF.");
+                logger.trace("setResponse(): received GW_SESSION_FINISHED_NTF.");
+                if (!KLF200Response.isLengthValid(logger, responseCommand, thisResponseData, 2)) {
+                    logger.trace("setResponse(): GW_SESSION_FINISHED_NTF received with invalid length.");
+                    finished = true;
+                    break;
+                }
+                // Extracting information items
+                ntfSessionID = responseData.getTwoByteValue(0);
+
+                logger.trace("setResponse(): SessionID={}.", ntfSessionID);
+
                 success = true;
                 finished = true;
                 break;

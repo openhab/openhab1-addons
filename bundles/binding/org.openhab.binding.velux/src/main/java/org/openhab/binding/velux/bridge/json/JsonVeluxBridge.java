@@ -66,6 +66,12 @@ public class JsonVeluxBridge extends VeluxBridge {
     public Set<String> supportedProtocols;
 
     /**
+     * Timestamp of last successfull communication in milliseconds.
+     *
+     */
+    protected long lastSuccessfullCommunicationMillis = 0;
+
+    /**
      * Handler passing the interface methods to other classes.
      * Can be accessed via method {@link org.openhab.binding.velux.bridge.common.json.bridgeAPI bridgeAPI}.
      *
@@ -104,12 +110,12 @@ public class JsonVeluxBridge extends VeluxBridge {
     /**
      * Base level communication with the <b>Velux</b> bridge.
      *
-     * @param url as String describing the Service Access Point location i.e. http://localhost/api .
-     * @param authentication as String providing the Authentication token to be passed with the request header.
-     * @param Request as Object representing the structure of the message request body to be converted into
-     *            JSON.
+     * @param url             as String describing the Service Access Point location i.e. http://localhost/api .
+     * @param authentication  as String providing the Authentication token to be passed with the request header.
+     * @param Request         as Object representing the structure of the message request body to be converted into
+     *                            JSON.
      * @param classOfResponse as Class representing the expected structure of the message response body to be converted
-     *            from JSON.
+     *                            from JSON.
      * @return <b>response</b> of type Object containing all resulting informations, i.e. device status, errors a.s.o.
      *         Will
      *         return
@@ -154,6 +160,7 @@ public class JsonVeluxBridge extends VeluxBridge {
                 logger.trace("io() cleaned response {}.", jsonResponse);
                 try {
                     Object response = gson.fromJson(jsonResponse, classOfResponse);
+                    lastSuccessfullCommunicationMillis = System.currentTimeMillis();
                     return response;
                 } catch (JsonSyntaxException jse) {
                     logger.info("io(): Exception occurred on deserialization: {}, aborting.", jse.getMessage());
@@ -180,12 +187,12 @@ public class JsonVeluxBridge extends VeluxBridge {
     /**
      * Initializes an authenticated communication with the {@link JsonVeluxBridge <b>Velux</b> bridge}.
      *
-     * @param url as String describing the Service Access Point location i.e. http://localhost/api .
-     * @param authentication as String providing the Authentication token to be passed with the request header.
-     * @param Request as Object representing the structure of the message request body to be converted into
-     *            JSON.
+     * @param url             as String describing the Service Access Point location i.e. http://localhost/api .
+     * @param authentication  as String providing the Authentication token to be passed with the request header.
+     * @param Request         as Object representing the structure of the message request body to be converted into
+     *                            JSON.
      * @param classOfResponse as Class representing the expected structure of the message response body to be converted
-     *            from JSON.
+     *                            from JSON.
      * @return <b>response</b> of type T containing all resulting informations, i.e. device status, errors a.s.o. Will
      *         return
      *         <B>null</B> in case of communication or decoding error.
@@ -201,12 +208,12 @@ public class JsonVeluxBridge extends VeluxBridge {
     /**
      * Initializes an unauthenticated communication with the {@link JsonVeluxBridge <b>Velux</b> bridge}.
      *
-     * @param url as String describing the Service Access Point location i.e. http://localhost/api .
-     * @param Request as Object representing the structure of the message request body to be converted into
-     *            JSON.
+     * @param url             as String describing the Service Access Point location i.e. http://localhost/api .
+     * @param Request         as Object representing the structure of the message request body to be converted into
+     *                            JSON.
      * @param classOfResponse as Class representing the expected structure of the message response body to be converted
-     *            from JSON.
-     * @param <T> generic response based on classOfResponse.
+     *                            from JSON.
+     * @param <T>             generic response based on classOfResponse.
      * @return <b>response</b> of type Object containing all resulting informations, i.e. device status, errors a.s.o.
      *         Will
      *         return
@@ -225,10 +232,10 @@ public class JsonVeluxBridge extends VeluxBridge {
      * based on the Basic I/O interface {@link VeluxBridge} and parameters
      * passed as arguments (see below) and provided by {@link VeluxBridgeConfiguration}.
      *
-     * @param communication Structure of interface type {@link JsonBridgeCommunicationProtocol} describing the
-     *            intended
-     *            communication,
-     *            that is request and response interactions as well as appropriate URL definition.
+     * @param communication     Structure of interface type {@link JsonBridgeCommunicationProtocol} describing the
+     *                              intended
+     *                              communication,
+     *                              that is request and response interactions as well as appropriate URL definition.
      * @param useAuthentication boolean flag to decide whether to use authenticated communication.
      * @return <b>response</b> of type boolean will indicate the success of the communication.
      */
@@ -243,6 +250,11 @@ public class JsonVeluxBridge extends VeluxBridge {
                 .concat(communication.getURL());
         logger.trace("bridgeCommunicate(): using SAP {}.", sapURL);
         Object getRequest = communication.getObjectOfRequest();
+        if (getRequest == null) {
+            logger.warn("bridgeCommunicate(): Internal error: Empty object structure ({}), should never occur.",
+                    communication.name());
+            return false;
+        }
         Class<?> classOfResponse = communication.getClassOfResponse();
         Object response;
 
@@ -252,9 +264,9 @@ public class JsonVeluxBridge extends VeluxBridge {
             } else {
                 response = ioUnauthenticated(sapURL, getRequest, classOfResponse);
             }
+            communication.setResponse(response);
             logger.trace("bridgeCommunicate(): communication result is {}, returning details.",
                     communication.isCommunicationSuccessful());
-            communication.setResponse(response);
             return true;
         } catch (IOException ioe) {
             logger.warn("bridgeCommunicate(): Exception occurred on accessing {}: {}.", sapURL, ioe.getMessage());

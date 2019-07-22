@@ -39,6 +39,8 @@ public class VeluxBindingConstants {
 
     // List of all bridge channel ids
     public static final String CHANNEL_BRIDGE_STATUS = "status";
+    public static final String CHANNEL_BRIDGE_RELOAD = "reload";
+    public static final String CHANNEL_BRIDGE_TIMESTAMP = "timestamp";
     public static final String CHANNEL_BRIDGE_DO_DETECTION = "doDetection";
     public static final String CHANNEL_BRIDGE_FIRMWARE = "firmware";
     public static final String CHANNEL_BRIDGE_IPADDRESS = "ipAddress";

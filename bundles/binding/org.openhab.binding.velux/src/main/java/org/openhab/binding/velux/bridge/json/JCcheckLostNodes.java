@@ -37,7 +37,7 @@ public class JCcheckLostNodes extends CheckLostNodes implements JsonBridgeCommun
     private static final String URL = "/api/v1/device";
     private static final String DESCRIPTION = "check lost nodes";
 
-    private Request request;
+    private Request request = new Request();
     private Response response;
 
     /*

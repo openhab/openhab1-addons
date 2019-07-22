@@ -102,6 +102,7 @@ public class SCgetScenes extends GetScenes implements SlipBridgeCommunicationPro
                 if (ntfTotalNumberOfObjects == 0) {
                     logger.trace("setResponse(): no scenes defined.");
                     success = true;
+                    finished = true;
                 } else {
                     logger.trace("setResponse(): {} scenes defined.", ntfTotalNumberOfObjects);
                 }
