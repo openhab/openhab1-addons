@@ -17,6 +17,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.fortuna.ical4j.util.MapTimeZoneCache;
+
+
 /**
  * Extension of the default OSGi bundle activator
  *
@@ -28,6 +31,10 @@ public final class CalDavActivator implements BundleActivator {
     private static Logger logger = LoggerFactory.getLogger(CalDavActivator.class);
 
     private static BundleContext context;
+
+    public CalDavActivator() {
+        System.setProperty("net.fortuna.ical4j.timezone.cache.impl", MapTimeZoneCache.class.getName());
+    }
 
     /**
      * Called whenever the OSGi framework starts our bundle
