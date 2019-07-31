@@ -372,6 +372,13 @@ public enum HeatpumpCommandType {
             itemClass = NumberItem.class;
         }
     },
+    // in german AT-Unterschreitung
+    TYPE_COOLING_STOP_AFTER_HOURS {
+        {
+            command = "cooling_stop_hours";
+            itemClass = NumberItem.class;
+        }
+    },
     // in german AV (Abtauventil)
     TYPE_OUTPUT_AV {
         {
