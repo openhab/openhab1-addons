@@ -452,8 +452,17 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             case 2:
                 returnValue = Messages.HeatPumpBinding_APPEAR;
                 break;
+            case 4:
+                returnValue = Messages.HeatPumpBinding_ERROR;
+                break;
             case 5:
                 returnValue = Messages.HeatPumpBinding_DEFROSTING;
+                break;
+            case 7:
+                returnValue = Messages.HeatPumpBinding_COMPRESSOR_HEATING;
+                break;
+            case 8:
+                returnValue = Messages.HeatPumpBinding_PUMP_FLOW;
                 break;
             default:
                 logger.info(
