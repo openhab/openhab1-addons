@@ -15,7 +15,7 @@ package org.openhab.binding.novelanheatpump;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.SwitchItem;
 
 /**
  * Represents all valid commands which could be processed by this binding
@@ -383,203 +383,203 @@ public enum HeatpumpCommandType {
     TYPE_OUTPUT_AV {
         {
             command = "output_av";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german BUP (Brauchwasserpumpe/Umstellventil)
     TYPE_OUTPUT_BUP {
         {
             command = "output_bup";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german HUP (Heizungsumwälzpumpe)
     TYPE_OUTPUT_HUP {
         {
             command = "output_hup";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german MA1 (Mischkreis 1 auf)
     TYPE_OUTPUT_MA1 {
         {
             command = "output_ma1";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german MZ1 (Mischkreis 1 zu)
     TYPE_OUTPUT_MZ1 {
         {
             command = "output_mz1";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VEN (Ventilation/Lüftung)
     TYPE_OUTPUT_VEN {
         {
             command = "output_ven";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VBO (Solepumpe/Ventilator)
     TYPE_OUTPUT_VBO {
         {
             command = "output_vbo";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VD1 (Verdichter 1)
     TYPE_OUTPUT_VD1 {
         {
             command = "output_vd1";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VD2 (Verdichter 2)
     TYPE_OUTPUT_VD2 {
         {
             command = "output_vd2";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german ZIP (Zirkulationspumpe)
     TYPE_OUTPUT_ZIP {
         {
             command = "output_zip";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german ZUP (Zusatzumwälzpumpe)
     TYPE_OUTPUT_ZUP {
         {
             command = "output_zup";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german ZW1 (Steuersignal Zusatzheizung v. Heizung)
     TYPE_OUTPUT_ZW1 {
         {
             command = "output_zw1";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german ZW2 (Steuersignal Zusatzheizung/Störsignal)
     TYPE_OUTPUT_ZW2SST {
         {
             command = "output_zw2sst";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german ZW3 (Zusatzheizung 3)
     TYPE_OUTPUT_ZW3SST {
         {
             command = "output_zw3sst";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german FP2 (Pumpe Mischkreis 2)
     TYPE_OUTPUT_FP2 {
         {
             command = "output_fp2";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german SLP (Solarladepumpe)
     TYPE_OUTPUT_SLP {
         {
             command = "output_slp";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german SUP (Schwimmbadpumpe)
     TYPE_OUTPUT_SUP {
         {
             command = "output_sup";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german MA2 (Mischkreis 2 auf)
     TYPE_OUTPUT_MA2 {
         {
             command = "output_ma2";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german MZ2 (Mischkreis 2 zu)
     TYPE_OUTPUT_MZ2 {
         {
             command = "output_mz2";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german MA3 (Mischkreis 3 auf)
     TYPE_OUTPUT_MA3 {
         {
             command = "output_ma3";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german MZ3 (Mischkreis 3 zu)
     TYPE_OUTPUT_MZ3 {
         {
             command = "output_mz3";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german FP3 (Pumpe Mischkreis 3)
     TYPE_OUTPUT_FP3 {
         {
             command = "output_fp3";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VSK
     TYPE_OUTPUT_VSK {
         {
             command = "output_vsk";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german FRH
     TYPE_OUTPUT_FRH {
         {
             command = "output_frh";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VDH (Verdichterheizung)
     TYPE_OUTPUT_VDH {
         {
             command = "output_vdh";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german AV2 (Abtauventil 2)
     TYPE_OUTPUT_AV2 {
         {
             command = "output_av2";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VBO2 (Solepumpe/Ventilator)
     TYPE_OUTPUT_VBO2 {
         {
             command = "output_vbo2";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VD12 (Verdichter 1/2)
     TYPE_OUTPUT_VD12 {
         {
             command = "output_vd12";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     },
     // in german VDH2 (Verdichterheizung 2)
     TYPE_OUTPUT_VDH2 {
         {
             command = "output_vdh2";
-            itemClass = ContactItem.class;
+            itemClass = SwitchItem.class;
         }
     };
 

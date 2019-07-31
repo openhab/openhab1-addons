@@ -22,7 +22,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
-import org.openhab.core.library.items.ContactItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -74,10 +74,10 @@ public class HeatPumpGenericBindingProvider extends AbstractGenericBindingProvid
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof ContactItem)) {
+        if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof SwitchItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-                            + "', only Number-, String- and ContactItems are allowed - please check your *.items configuration");
+                            + "', only Number-, String- and SwitchItems are allowed - please check your *.items configuration");
         }
     }
 
