@@ -288,14 +288,18 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                     HeatpumpCommandType.TYPE_OUTPUT_VSK);
             handleEventType((heatpumpValues[167] == 0) ? OnOffType.OFF : OnOffType.ON, 
                     HeatpumpCommandType.TYPE_OUTPUT_FRH);
-            handleEventType((heatpumpValues[213] == 0) ? OnOffType.OFF : OnOffType.ON, 
-                    HeatpumpCommandType.TYPE_OUTPUT_AV2);
-            handleEventType((heatpumpValues[214] == 0) ? OnOffType.OFF : OnOffType.ON, 
-                    HeatpumpCommandType.TYPE_OUTPUT_VBO2);
-            handleEventType((heatpumpValues[215] == 0) ? OnOffType.OFF : OnOffType.ON, 
-                    HeatpumpCommandType.TYPE_OUTPUT_VD12);
-            handleEventType((heatpumpValues[216] == 0) ? OnOffType.OFF : OnOffType.ON, 
-                    HeatpumpCommandType.TYPE_OUTPUT_VDH2);
+
+            if (heatpumpValues.length > 213)
+            {
+                handleEventType((heatpumpValues[213] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_AV2);
+                handleEventType((heatpumpValues[214] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_VBO2);
+                handleEventType((heatpumpValues[215] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_VD12);
+                handleEventType((heatpumpValues[216] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_VDH2);
+            }
 
         } catch (UnknownHostException e) {
             logger.warn("the given hostname '{}' of the Novelan heatpump is unknown", ip);
