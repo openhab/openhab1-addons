@@ -30,6 +30,7 @@ import org.openhab.binding.novelanheatpump.internal.HeatPumpGenericBindingProvid
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -237,6 +238,64 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                     HeatpumpCommandType.TYPE_COOLING_START_AFTER_HOURS);
             handleEventType(new DecimalType(heatpumpParams[PARAM_COOLING_STOP] / 10.),
                     HeatpumpCommandType.TYPE_COOLING_STOP_AFTER_HOURS);
+
+            // read all boolean output signals
+            handleEventType((heatpumpValues[37] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_AV);
+            handleEventType((heatpumpValues[38] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_BUP);
+            handleEventType((heatpumpValues[39] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_HUP);
+            handleEventType((heatpumpValues[40] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MA1);
+            handleEventType((heatpumpValues[41] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MZ1);
+            handleEventType((heatpumpValues[42] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VEN);
+            handleEventType((heatpumpValues[43] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VBO);
+            handleEventType((heatpumpValues[44] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VD1);
+            handleEventType((heatpumpValues[45] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VD2);
+            handleEventType((heatpumpValues[46] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZIP);
+            handleEventType((heatpumpValues[47] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZUP);
+            handleEventType((heatpumpValues[48] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZW1);
+            handleEventType((heatpumpValues[49] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZW2SST);
+            handleEventType((heatpumpValues[50] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZW3SST);
+            handleEventType((heatpumpValues[51] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_FP2);
+            handleEventType((heatpumpValues[52] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_SLP);
+            handleEventType((heatpumpValues[53] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_SUP);
+            handleEventType((heatpumpValues[54] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MZ2);
+            handleEventType((heatpumpValues[55] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MA2);
+            handleEventType((heatpumpValues[138] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MZ3);
+            handleEventType((heatpumpValues[139] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MA3);
+            handleEventType((heatpumpValues[140] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_FP3);
+            handleEventType((heatpumpValues[166] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VSK);
+            handleEventType((heatpumpValues[167] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_FRH);
+            handleEventType((heatpumpValues[213] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_AV2);
+            handleEventType((heatpumpValues[214] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VBO2);
+            handleEventType((heatpumpValues[215] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VD12);
+            handleEventType((heatpumpValues[216] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VDH2);
 
         } catch (UnknownHostException e) {
             logger.warn("the given hostname '{}' of the Novelan heatpump is unknown", ip);
