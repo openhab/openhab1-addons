@@ -416,6 +416,9 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             case 17:
                 returnValue = Messages.HeatPumpBinding_ZWE_OPERATION;
                 break;
+            case 18:
+                returnValue = Messages.HeatPumpBinding_COMPRESSOR_HEATING;
+                break;
             case 19:
                 returnValue = Messages.HeatPumpBinding_SERVICE_WATER_ADDITIONAL_HEATING;
                 break;
