@@ -95,6 +95,20 @@ public enum HeatpumpCommandType {
         }
     },
 
+    TYPE_HEATPUMP_SIMPLE_STATE_NUM {
+        {
+            command = "simple_state_num";
+            itemClass = NumberItem.class;
+        }
+    },
+
+    TYPE_HEATPUMP_SWITCHOFF_REASON_0 {
+        {
+            command = "switchoff_reason_0";
+            itemClass = NumberItem.class;
+        }
+    },
+
     TYPE_HEATPUMP_EXTENDED_STATE {
         {
             command = "extended_state";
