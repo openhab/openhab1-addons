@@ -217,6 +217,8 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 
             handleEventType(new DecimalType(heatpumpValues[106]), HeatpumpCommandType.TYPE_HEATPUMP_SWITCHOFF_REASON_0);
 
+            handleEventType(new DecimalType(heatpumpValues[100]), HeatpumpCommandType.TYPE_HEATPUMP_SWITCHOFF_CODE_0);
+
             String heatpumpExtendedState = getExtendeStateString(heatpumpValues) + ": " //$NON-NLS-1$
                     + formatHours(heatpumpValues[120]);
             handleEventType(new StringType(heatpumpExtendedState), HeatpumpCommandType.TYPE_HEATPUMP_EXTENDED_STATE);

@@ -109,6 +109,13 @@ public enum HeatpumpCommandType {
         }
     },
 
+    TYPE_HEATPUMP_SWITCHOFF_CODE_0 {
+        {
+            command = "switchoff_code_0";
+            itemClass = NumberItem.class;
+        }
+    },
+
     TYPE_HEATPUMP_EXTENDED_STATE {
         {
             command = "extended_state";
