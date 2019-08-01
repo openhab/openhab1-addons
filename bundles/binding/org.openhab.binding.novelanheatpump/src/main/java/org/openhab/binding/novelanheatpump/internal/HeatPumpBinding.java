@@ -150,6 +150,15 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             // all temperatures are 0.2 degree Celsius exact
             // but use int to save values
             // example 124 is 12.4 degree Celsius
+
+            // workaround for thermal energies
+            // the thermal energies can be unreasonably high in some cases, probably due to a sign bug in the firmware
+            // trying to correct this issue here
+            if (heatpumpValues[151] >= 214748364) heatpumpValues[151] -= 214748364;
+            if (heatpumpValues[152] >= 214748364) heatpumpValues[152] -= 214748364;
+            if (heatpumpValues[153] >= 214748364) heatpumpValues[153] -= 214748364;
+            if (heatpumpValues[154] >= 214748364) heatpumpValues[154] -= 214748364;
+
             handleEventType(new DecimalType((double) heatpumpValues[10] / 10),
                     HeatpumpCommandType.TYPE_TEMPERATURE_SUPPLAY);
             handleEventType(new DecimalType((double) heatpumpValues[11] / 10),
