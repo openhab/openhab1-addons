@@ -28,14 +28,14 @@ install:
         done
     }
     function print_reactor_summary() {
-        sed -ne '/\[INFO\] Reactor Summary:/,$ p' "$1" | sed 's/\[INFO\] //'
+        sed -ne '/\[INFO\] Reactor Summary.*:/,$ p' "$1" | sed 's/\[INFO\] //'
     }
     function mvnp() {
         set -o pipefail # exit build with error when pipes fail
         local command=(mvn $@)
         exec "${command[@]}" 2>&1 | # execute, redirect stderr to stdout
             tee .build.log | # write output to log
-            stdbuf -oL grep -E '^\[INFO\] Building .+ \[.+\]$' | # filter progress
+            stdbuf -oL grep -aE '^\[INFO\] Building .+ \[.+\]$' | # filter progress
             sed -uE 's/^\[INFO\] Building (.*[^ ])[ ]+\[([0-9]+\/[0-9]+)\]$/\2| \1/' | # prefix project name with progress
             sed -e :a -e 's/^.\{1,6\}|/ &/;ta' & # right align progress with padding
         local pid=$!
