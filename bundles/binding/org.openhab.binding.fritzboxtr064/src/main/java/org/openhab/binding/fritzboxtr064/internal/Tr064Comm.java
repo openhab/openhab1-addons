@@ -789,7 +789,7 @@ public class Tr064Comm {
                         if (url != null) {
                             Document xmlTamInfo = getFboxXmlResponse(url);
                             if (xmlTamInfo != null) {
-                                logger.debug("Parsing xml message TAM info {}", Helper.documentToString(xmlTamInfo));
+                                logger.trace("Parsing xml message TAM info {}", Helper.documentToString(xmlTamInfo));
                                 NodeList nlNews = xmlTamInfo.getElementsByTagName("New"); // get all Nodes containing
                                                                                           // "new", indicating message
                                                                                           // was not listened to
@@ -845,7 +845,7 @@ public class Tr064Comm {
                             logger.debug("Downloading call list using url {}", url);
                             Document callListInfo = getFboxXmlResponse(url); // download call list
                             if (callListInfo != null) {
-                                logger.debug("Parsing xml message call list info {}",
+                                logger.trace("Parsing xml message call list info {}",
                                         Helper.documentToString(callListInfo));
                                 NodeList nlTypes = callListInfo.getElementsByTagName("Type"); // get all Nodes
                                                                                               // containing "Type". Type
