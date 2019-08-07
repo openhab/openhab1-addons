@@ -53,8 +53,7 @@ public class BaseIntegrationTest {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
     }
 
-    @BeforeClass
-    public static void initService() throws InterruptedException {
+    public static void initServiceWithConfig(Map<String,Object> config) throws InterruptedException {
         items.put("dimmer", new DimmerItem("dimmer"));
         items.put("number", new NumberItem("number"));
         items.put("string", new StringItem("string"));
@@ -110,15 +109,6 @@ public class BaseIntegrationTest {
             }
         });
 
-        HashMap<String, Object> config = new HashMap<>();
-        config.put("region", System.getProperty("DYNAMODBTEST_REGION"));
-        config.put("accessKey", System.getProperty("DYNAMODBTEST_ACCESS"));
-        config.put("secretKey", System.getProperty("DYNAMODBTEST_SECRET"));
-        config.put("tablePrefix", "dynamodb-integration-tests-");
-
-        // Disable buffering
-        config.put("bufferSize", "0");
-
         for (Entry<String, Object> entry : config.entrySet()) {
             if (entry.getValue() == null) {
                 logger.warn(String.format(
@@ -132,8 +122,7 @@ public class BaseIntegrationTest {
         service.activate(null, config);
 
         // Clear data
-        for (String table : new String[] { "dynamodb-integration-tests-bigdecimal",
-                "dynamodb-integration-tests-string" }) {
+        for (String table : tableNames()) {
             try {
                 service.getDb().getDynamoClient().deleteTable(table);
                 service.getDb().getDynamoDB().getTable(table).waitForDelete();
@@ -141,6 +130,30 @@ public class BaseIntegrationTest {
             }
         }
 
+    }
+
+    @BeforeClass
+    public static void initService() throws InterruptedException {
+        Map<String, Object> config = getDefaultServiceConfiguration();
+        initServiceWithConfig(config);
+    }
+
+    public static String[] tableNames(){
+        return new String[] { "dynamodb-integration-tests-bigdecimal",
+                "dynamodb-integration-tests-string" };
+    }
+
+    public static Map<String,Object> getDefaultServiceConfiguration(){
+        HashMap<String, Object> config = new HashMap<>();
+        config.put("region", System.getProperty("DYNAMODBTEST_REGION", System.getenv("DYNAMODBTEST_REGION")));
+        config.put("accessKey", System.getProperty("DYNAMODBTEST_ACCESS", System.getenv("DYNAMODBTEST_ACCESS")));
+        config.put("secretKey", System.getProperty("DYNAMODBTEST_SECRET", System.getenv("DYNAMODBTEST_SECRET")));
+        config.put("tablePrefix", "dynamodb-integration-tests-");
+
+        // Disable buffering
+        config.put("bufferSize", "0");
+
+        return config;
     }
 
 }

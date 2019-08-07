@@ -54,6 +54,12 @@ public class DynamoDBStringItem extends AbstractDynamoDBItem<String> {
     }
 
     @Override
+    @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_EXPIRATION)
+    public Long getExpirationDateEpochSeconds() {
+        return this.expirationDateEpochSeconds;
+    }
+
+    @Override
     public void accept(org.openhab.persistence.dynamodb.internal.DynamoDBItemVisitor visitor) {
         visitor.visit(this);
     }
@@ -72,4 +78,7 @@ public class DynamoDBStringItem extends AbstractDynamoDBItem<String> {
     public void setTime(Date time) {
         this.time = time;
     }
+
+    @Override
+    public void setExpirationDateEpochSeconds(long expirationDateEpochSeconds) { this.expirationDateEpochSeconds = expirationDateEpochSeconds; }
 }

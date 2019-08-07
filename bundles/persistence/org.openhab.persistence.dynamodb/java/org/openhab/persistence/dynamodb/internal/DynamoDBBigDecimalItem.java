@@ -67,6 +67,12 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
     }
 
     @Override
+    @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_EXPIRATION)
+    public Long getExpirationDateEpochSeconds() {
+        return this.expirationDateEpochSeconds;
+    }
+
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -80,6 +86,9 @@ public class DynamoDBBigDecimalItem extends AbstractDynamoDBItem<BigDecimal> {
     public void setTime(Date time) {
         this.time = time;
     }
+
+    @Override
+    public void setExpirationDateEpochSeconds(long expirationDateEpochSeconds) { this.expirationDateEpochSeconds = expirationDateEpochSeconds; }
 
     @Override
     public void accept(org.openhab.persistence.dynamodb.internal.DynamoDBItemVisitor visitor) {

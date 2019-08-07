@@ -213,15 +213,4 @@ public abstract class AbstractDynamoDBItem<T> implements DynamoDBItem<T> {
     public String toString() {
         return DateFormat.getDateTimeInstance().format(time) + ": " + name + " -> " + state.toString();
     }
-
-    @Override
-    @DynamoDBAttribute(attributeName = ATTRIBUTE_NAME_EXPIRATION)
-    public Long getExpirationDateEpochSeconds() {
-        return this.expirationDateEpochSeconds;
-    }
-
-    @Override
-    public void setExpirationDateEpochSeconds(long expirationDateEpochSeconds) {
-        this.expirationDateEpochSeconds = expirationDateEpochSeconds;
-    }
 }
