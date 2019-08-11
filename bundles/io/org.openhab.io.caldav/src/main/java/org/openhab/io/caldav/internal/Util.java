@@ -23,10 +23,10 @@ import java.security.cert.X509Certificate;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.joda.time.DateTimeZone;
 import org.openhab.io.caldav.CalDavEvent;
 import org.slf4j.Logger;
@@ -129,7 +129,7 @@ public final class Util {
             log.trace("connecting to caldav '{}' with disabled certificate verification (url={}, username={})", key,
                     url, userName);
             HttpClientBuilder httpClientBuilder = HttpClientBuilder.create()
-                    .setHostnameVerifier(new AllowAllHostnameVerifier());
+                    .setSSLHostnameVerifier(new NoopHostnameVerifier());
             try {
                 httpClientBuilder.setSslcontext(new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
                     @Override
