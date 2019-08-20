@@ -25,7 +25,9 @@ import java.util.TooManyListenersException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -79,6 +81,8 @@ public class SerialDevice implements SerialPortEventListener {
         boolean base64;
         String onCommand;
         String offCommand;
+        String openCommand;
+        String closedCommand;
         String upCommand;
         String downCommand;
         String stopCommand;
@@ -90,8 +94,9 @@ public class SerialDevice implements SerialPortEventListener {
         return configMap.isEmpty();
     }
 
-    public void addConfig(String itemName, Class<?> type, String pattern, boolean base64, String onCommand,
-            String offCommand, String upCommand, String downCommand, String stopCommand, String format) {
+    public void addConfig(Item item, String pattern, boolean base64, String onCommand, String offCommand,
+            String openCommand, String closedCommand, String upCommand, String downCommand, String stopCommand,
+            String format) {
         if (configMap == null) {
             configMap = new HashMap<>();
         }
@@ -99,15 +104,17 @@ public class SerialDevice implements SerialPortEventListener {
         ItemType typeItem = new ItemType();
         typeItem.pattern = pattern;
         typeItem.base64 = base64;
-        typeItem.type = type;
+        typeItem.type = item.getClass();
         typeItem.onCommand = onCommand;
         typeItem.offCommand = offCommand;
+        typeItem.openCommand = onCommand;
+        typeItem.closedCommand = offCommand;
         typeItem.upCommand = upCommand;
         typeItem.downCommand = downCommand;
         typeItem.stopCommand = stopCommand;
         typeItem.format = format;
 
-        configMap.put(itemName, typeItem);
+        configMap.put(item.getName(), typeItem);
     }
 
     public void removeConfig(String itemName) {
@@ -195,6 +202,22 @@ public class SerialDevice implements SerialPortEventListener {
     public String getDownCommand(String itemName) {
         if (configMap.get(itemName) != null) {
             return configMap.get(itemName).downCommand;
+        }
+
+        return "";
+    }
+
+    public String getOpenCommand(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).openCommand;
+        }
+
+        return "";
+    }
+
+    public String getClosedCommand(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).closedCommand;
         }
 
         return "";
@@ -341,6 +364,10 @@ public class SerialDevice implements SerialPortEventListener {
                                                     state = new DecimalType(match);
                                                 } else if (entry.getValue().type == RollershutterItem.class) {
                                                     state = new PercentType(match);
+                                                } else if (entry.getValue().type == SwitchItem.class) {
+                                                    state = OnOffType.valueOf(match);
+                                                } else if (entry.getValue().type == ContactItem.class) {
+                                                    state = OpenClosedType.valueOf(match);
                                                 } else {
                                                     state = new StringType(match);
                                                 }
@@ -364,29 +391,29 @@ public class SerialDevice implements SerialPortEventListener {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
-                                    } else if (result.equals(getOnCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOnCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
-                                    } else if (result.equals(getOffCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOffCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
                                     }
                                 } else if (entry.getValue().type == ContactItem.class) {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.CLOSED);
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.OPEN);
-                                    } else if (result.equals(getOnCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOnCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.CLOSED);
-                                    } else if (result.equals(getOffCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOffCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.OPEN);
                                     }
                                 } else if (entry.getValue().type == RollershutterItem.class
                                         || entry.getValue().type == DimmerItem.class) {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), new PercentType(50));
-                                    } else if (result.equals(getUpCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getUpCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), PercentType.HUNDRED);
-                                    } else if (result.equals(getDownCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getDownCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), PercentType.ZERO);
-                                    } else if (result.equals(getStopCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getStopCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), new PercentType(50));
                                     }
                                 }
@@ -409,6 +436,11 @@ public class SerialDevice implements SerialPortEventListener {
      */
     public void writeString(String msg) {
         logger.debug("Writing '{}' to serial port {}", msg, port);
+
+        if (msg == null) {
+            return;
+        }
+
         try {
             // write string to serial port
             if (msg.startsWith("BASE64:")) {
