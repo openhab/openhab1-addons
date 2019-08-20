@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
@@ -28,6 +27,7 @@ import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
@@ -36,7 +36,6 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * GenericItemProvider}.
  *
  * The format of the binding configuration is simple and looks like this:
- *     serial="<port>@<baudrate>"
+ * serial="<port>@<baudrate>"
  *
  * `port` is the identification of the serial port on the host system, e.g.
  * "COM1" on Windows, "/dev/ttyS0" on Linux or "/dev/tty.PL2303-0000103D" on
@@ -116,6 +115,12 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                     serialDevice.writeString(serialDevice.getOnCommand(itemName));
                 } else {
                     serialDevice.writeString(serialDevice.getOffCommand(itemName));
+                }
+            } else if (command instanceof OpenClosedType) {
+                if (command == OpenClosedType.OPEN) {
+                    serialDevice.writeString(serialDevice.getOpenCommand(itemName));
+                } else {
+                    serialDevice.writeString(serialDevice.getClosedCommand(itemName));
                 }
             } else if (command instanceof UpDownType) {
                 if (command == UpDownType.UP) {
@@ -188,6 +193,8 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         boolean base64 = false;
         String onCommand = null;
         String offCommand = null;
+        String openCommand = null;
+        String closedCommand = null;
         String upCommand = null;
         String downCommand = null;
         String stopCommand = null;
@@ -200,10 +207,10 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
             String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length()).split("\\),");
             for (int i = 0; i < split.length; i++) {
                 String substring = split[i];
-                
-                //Remove the closing bracket on the last setting, because this isn't removed by the split.
-                if (i == split.length - 1 && substring.endsWith(")"))
-                	substring = substring.substring(0, substring.length() - 1);
+                // Remove the closing bracket on the last setting, because this isn't removed by the split.
+                if (i == split.length - 1 && substring.endsWith(")")) {
+                    substring = substring.substring(0, substring.length() - 1);
+                }
 
                 if (substring.startsWith("REGEX(")) {
                     pattern = substring.substring(6, substring.length());
@@ -220,6 +227,12 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 } else if (substring.startsWith("OFF(")) {
                     offCommand = substring.substring(4, substring.length());
                     logger.debug("OFF: '{}'", offCommand);
+                } else if (substring.startsWith("OPEN(")) {
+                    onCommand = substring.substring(5, substring.length());
+                    logger.debug("OPEN: '{}'", openCommand);
+                } else if (substring.startsWith("CLOSED(")) {
+                    offCommand = substring.substring(7, substring.length());
+                    logger.debug("CLOSED: '{}'", closedCommand);
                 } else if (substring.startsWith("UP(")) {
                     upCommand = substring.substring(3, substring.length());
                     logger.debug("UP: '{}'", upCommand);
@@ -277,9 +290,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         }
 
         itemMap.put(item.getName(), port);
-
-        serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64, onCommand, offCommand, upCommand,
-                downCommand, stopCommand, format);
+        serialDevice.addConfig(item, pattern, base64, onCommand, offCommand, openCommand, closedCommand, upCommand, downCommand, stopCommand, format);
 
         Set<String> itemNames = contextMap.get(context);
         if (itemNames == null) {
