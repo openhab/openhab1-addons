@@ -34,7 +34,6 @@
     <module>org.openhab.persistence.mqtt</module>
     <module>org.openhab.persistence.mysql</module>
     <module>org.openhab.persistence.rrd4j</module>
-    <module>org.openhab.persistence.sense</module>
     <module>org.openhab.persistence.sitewhere</module>
   </modules>
 
