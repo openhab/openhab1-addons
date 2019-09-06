@@ -48,6 +48,13 @@
     <configfile finalname="${openhab.conf}/services/astro.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/astro</configfile>
   </feature>
 
+  <feature name="openhab-binding-denon1" description="Denon Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.denon/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/denon.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/denon</configfile>
+  </feature>
+
   <feature name="openhab-binding-dmx1" description="DMX OLA Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -100,6 +107,13 @@
     <configfile finalname="${openhab.conf}/services/irtrans.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/irtrans</configfile>
   </feature>
   
+  <feature name="openhab-binding-km1001" description="KM200 Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.km200/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/km200.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/km200</configfile>
+  </feature>
+
   <feature name="openhab-binding-knx1" description="KNX Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -137,6 +151,13 @@
     <bundle start-level="80">mvn:org.openhab.io/org.openhab.io.transport.mqtt/${project.version}</bundle>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.mqttitude/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/mqttitude.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/mqttitude</configfile>
+  </feature>
+
+  <feature name="openhab-binding-neohub1" description="Neohub Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.neohub/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/neohub.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/neohub</configfile>
   </feature>
 
   <feature name="openhab-binding-nest1" description="Nest Binding (1.x)" version="${project.version}">
@@ -219,6 +240,14 @@
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.satel/${project.version}</bundle>
     <configfile finalname="${openhab.conf}/services/satel.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/satel</configfile>
   </feature>
+
+  <feature name="openhab-binding-snmp1" description="SNMP Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.snmp/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/snmp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/snmp</configfile>
+  </feature>
+
 
   <feature name="openhab-binding-systeminfo1" description="System Info Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>

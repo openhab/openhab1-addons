@@ -144,13 +144,6 @@
     <configfile finalname="${openhab.conf}/services/comfoair.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/comfoair</configfile>
   </feature>
 
-  <feature name="openhab-binding-denon1" description="Denon Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.denon/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/denon.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/denon</configfile>
-  </feature>
-
   <feature name="openhab-binding-ebus1" description="eBUS Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -321,13 +314,6 @@
     <configfile finalname="${openhab.conf}/services/jointspace.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/jointspace</configfile>
   </feature>
 
-  <feature name="openhab-binding-km1001" description="KM200 Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.km200/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/km200.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/km200</configfile>
-  </feature>
-
   <feature name="openhab-binding-koubachi1" description="Koubachi Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -416,13 +402,6 @@
     <configfile finalname="${openhab.conf}/services/myq.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/myq</configfile>
   </feature>
 
-  <feature name="openhab-binding-neohub1" description="Neohub Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.neohub/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/neohub.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/neohub</configfile>
-  </feature>
-
   <feature name="openhab-binding-networkupstools1" description="Network UPS Tools Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
@@ -507,13 +486,6 @@
     <feature>openhab-runtime-compat1x</feature>
     <feature>openhab-transport-serial</feature>
     <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.serial/${project.version}</bundle>
-  </feature>
-
-  <feature name="openhab-binding-snmp1" description="SNMP Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.snmp/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/snmp.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/snmp</configfile>
   </feature>
 
   <feature name="openhab-binding-sonance1" description="Sonance Binding" version="${project.version}">
