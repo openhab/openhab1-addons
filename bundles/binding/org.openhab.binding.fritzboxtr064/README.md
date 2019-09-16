@@ -92,8 +92,10 @@ Number  fboxDslCRCErrors "DSL CRC Errors [%s]" {fritzboxtr064="dslCRCErrors"}
 // only when using call monitor
 Switch  fboxRinging         "Phone ringing [%s]"                {fritzboxtr064="callmonitor_ringing" }
 Switch  fboxRinging_Out     "Phone ringing [%s]"                {fritzboxtr064="callmonitor_outgoing" }
+Switch  fboxCallConnecting  "Call established [%s]"             {fritzboxtr064="callmonitor_active" }
 Call    fboxIncomingCall    "Incoming call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_ringing" } 
 Call    fboxOutgoingCall    "Outgoing call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_outgoing" }
+Call    fboxConnectedCall   "Call established [%1$s to %2$s]"   {fritzboxtr064="callmonitor_active" }
 
 // resolve numbers to names based on phonebook
 Call    fboxIncomingCallResolved    "Incoming call: [%1$s to %2$s]"     {fritzboxtr064="callmonitor_ringing:resolveName" } 
