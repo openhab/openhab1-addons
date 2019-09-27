@@ -2,9 +2,9 @@
 
 Monitor and control Anel NET-PwrCtrl devices.
 
-| [Anel NET-PwrCtrl HUT](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [Anel NET-PwrCtrl IO](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [Anel NET-PwrCtrl HOME](http://anel-elektronik.de/SITE/produkte/home/home.htm) |
+| [Anel NET-PwrCtrl HUT2](https://de.anel.eu/?src=produkte/hut_2/hut_2.htm) | [Anel NET-PwrCtrl IO](https://de.anel.eu/?src=produkte/io/io.htm) | [Anel NET-PwrCtrl HOME](https://de.anel.eu/?src=produkte/home/home.htm) |
 | --- | --- | --- |
-| [![Anel NET-PwrCtrl HUT](https://anel-elektronik.de/SITE/image/leisten/HUT-120.gif)](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [![Anel NET-PwrCtrl PRO](https://anel-elektronik.de/SITE/image/leisten/PRO-120.gif)](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [![Anel NET-PwrCtrl HOME](https://anel-elektronik.de/SITE/image/leisten/HOME-DE-120.gif)](http://anel-elektronik.de/SITE/produkte/home/home.htm)
+| [![Anel NET-PwrCtrl HUT 2](https://de.anel.eu/image/leisten/HUT2LV-P_500.jpg)](https://de.anel.eu/?src=produkte/hut_2/hut_2.htm) | [![Anel NET-PwrCtrl IO](https://de.anel.eu/image/leisten/IO-Stecker.png)](https://de.anel.eu/?src=produkte/io/io.htm) | [![Anel NET-PwrCtrl HOME](https://de.anel.eu/image/leisten/HOME-DE-500.gif)](https://de.anel.eu/?src=produkte/home/home.htm)
 
 NET-PwrCtrl devices are power sockets / relays that can be configured via browser but they can also be controlled over the network, e.g. with an Android or iPhone app - and also with openHAB via this binding.
 The NET-PwrCtrl HUT and NET-PwrCtrl IO also have 8 I/O pins which can either be used to directly switch the sockets, or they can be used as general input switches in openHAB.
