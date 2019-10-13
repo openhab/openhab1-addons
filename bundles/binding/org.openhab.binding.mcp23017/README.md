@@ -19,7 +19,7 @@ Since MCP23017 is digital IO expander on I2C bus, only two types of items are su
 Contact Test1 "Test 1" (Tests) { mcp23017="{ address:21, pin:'A0', mode:'DIGITAL_INPUT'}" }
 ```
 
-configures pin 0 at bank A (GPA0 on datasheet) as input of the IC on address 0x20
+configures pin 0 at bank A (GPA0 on datasheet) as input of the IC on address 0x21
 
 ```
 Switch Test2 "Test 2" (Tests) { mcp23017="{ address:21, pin:'B1', mode:'DIGITAL_OUTPUT', defaultState:'LOW'}" }
