@@ -181,6 +181,13 @@
     <configfile finalname="${openhab.conf}/services/networkhealth.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkhealth</configfile>
   </feature>
 
+  <feature name="openhab-binding-networkupstools1" description="Network UPS Tools Binding (1.x)" version="${project.version}">
+    <feature>openhab-runtime-base</feature>
+    <feature>openhab-runtime-compat1x</feature>
+    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.networkupstools/${project.version}</bundle>
+    <configfile finalname="${openhab.conf}/services/networkupstools.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkupstools</configfile>
+  </feature>
+
   <feature name="openhab-binding-nibeheatpump1" description="Nibe Heatpump Binding (1.x)" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>

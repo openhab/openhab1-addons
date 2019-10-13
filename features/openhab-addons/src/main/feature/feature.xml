@@ -402,13 +402,6 @@
     <configfile finalname="${openhab.conf}/services/myq.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/myq</configfile>
   </feature>
 
-  <feature name="openhab-binding-networkupstools1" description="Network UPS Tools Binding" version="${project.version}">
-    <feature>openhab-runtime-base</feature>
-    <feature>openhab-runtime-compat1x</feature>
-    <bundle start-level="80">mvn:org.openhab.binding/org.openhab.binding.networkupstools/${project.version}</bundle>
-    <configfile finalname="${openhab.conf}/services/networkupstools.cfg" override="false">mvn:${project.groupId}/openhab-addons-external/${project.version}/cfg/networkupstools</configfile>
-  </feature>
-
   <feature name="openhab-binding-nikobus1" description="Nikobus Binding" version="${project.version}">
     <feature>openhab-runtime-base</feature>
     <feature>openhab-runtime-compat1x</feature>
