@@ -9,6 +9,7 @@ It has been tested on:
 * 7360SL (v6.30)
 * 7390
 * 6360 Cable (v6.04)
+* 6490 Cable (v7.02)
 * 7490
 * 7590 (v6.92)
 
