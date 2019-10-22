@@ -22,8 +22,7 @@ import org.openhab.core.types.State;
  * door opener. It contains the following information:
  *
  * <ul>
- * <li>The Device index of the device returned from the MyQ AP (0 would be the
- * first device)</li>
+ * <li>The Device Serial Number of the device returned from the MyQ AP</li>
  * <li>The type is the item type</li>
  * <ul>
  *
@@ -32,8 +31,7 @@ import org.openhab.core.types.State;
  */
 public class MyqBindingConfig implements BindingConfig {
 
-    int deviceIndex;
+    String deviceID;
     List<Class<? extends State>> acceptedDataTypes;
 
-    String attribute;
 }

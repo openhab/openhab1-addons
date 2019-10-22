@@ -87,7 +87,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
     /**
      * When polling quickly, how often do we poll
      */
-    private int rapidRefresh = 2000;
+    private int rapidRefresh = 5000;
 
     /**
      * Cap the time we poll rapidly to not overwhelm the servers with api
@@ -100,11 +100,6 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
      * our configuration is changed
      */
     private boolean invalidCredentials;
-
-    /**
-     * Use Craftman URL and APPID
-     */
-    private boolean useCraftman = false;
 
     /**
      * Called by the SCR to activate the component with its configuration read
@@ -155,14 +150,10 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
             timeout = Integer.parseInt(timeoutString);
         }
 
-        String craftmanString = Objects.toString(configuration.get("craftman"), null);
-        if (StringUtils.isNotBlank(craftmanString)) {
-            useCraftman = Boolean.parseBoolean(craftmanString);
-        }
 
         // reinitialize connection object if username and password is changed
         if (StringUtils.isNotBlank(usernameString) && StringUtils.isNotBlank(passwordString)) {
-            myqOnlineData = new MyqData(usernameString, passwordString, appId, timeout, useCraftman);
+            myqOnlineData = new MyqData(usernameString, passwordString, appId, timeout);
 
             invalidCredentials = false;
             schedulePoll(refreshInterval);
@@ -217,19 +208,12 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
                 for (String mygItemName : provider.getInBindingItemNames()) {
                     MyqBindingConfig deviceConfig = getConfigForItemName(mygItemName);
                     if (deviceConfig != null) {
-                        MyqDevice device = myqStatus.getDevice(deviceConfig.deviceIndex);
+                        MyqDevice device = myqStatus.getDevice(deviceConfig.deviceID);
                         if (device != null) {
                             if (device instanceof GarageDoorDevice) {
                                 GarageDoorDevice garageopener = (GarageDoorDevice) device;
                                 State newState = UnDefType.UNDEF;
-                                if (!deviceConfig.attribute.isEmpty()
-                                        && garageopener.hasAttribute(deviceConfig.attribute)) {
-                                    newState = TypeParser.parseState(deviceConfig.acceptedDataTypes,
-                                            garageopener.getAttribute(deviceConfig.attribute));
-                                    if (newState == null) {
-                                        newState = UnDefType.UNDEF;
-                                    }
-                                } else {
+
                                     for (Class<? extends State> type : deviceConfig.acceptedDataTypes) {
                                         if (OpenClosedType.class == type) {
                                             if (garageopener.getStatus().isClosed()) {
@@ -270,7 +254,7 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
                                             newState = new StringType(garageopener.getStatus().getLabel());
                                             break;
                                         }
-                                    }
+                                    
                                 }
                                 eventPublisher.postUpdate(mygItemName, newState);
 
@@ -281,21 +265,14 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
                             } else if (device instanceof LampDevice) {
                                 LampDevice lampDevice = (LampDevice) device;
                                 State newState = UnDefType.UNDEF;
-                                if (!deviceConfig.attribute.isEmpty()
-                                        && lampDevice.hasAttribute(deviceConfig.attribute)) {
-                                    newState = TypeParser.parseState(deviceConfig.acceptedDataTypes,
-                                            lampDevice.getAttribute(deviceConfig.attribute));
-                                    if (newState == null) {
-                                        newState = UnDefType.UNDEF;
-                                    }
-                                } else {
+
                                     for (Class<? extends State> type : deviceConfig.acceptedDataTypes) {
                                         if (OnOffType.class == type) {
                                             newState = lampDevice.getState();
                                             break;
                                         }
                                     }
-                                }
+                                
                                 eventPublisher.postUpdate(mygItemName, newState);
                             }
                         }
@@ -344,15 +321,15 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
 
         try {
             MyqDeviceData myqStatus = myqOnlineData.getMyqData();
-            MyqDevice device = myqStatus.getDevice(deviceConfig.deviceIndex);
+            MyqDevice device = myqStatus.getDevice(deviceConfig.deviceID);
             if (device != null) {
                 if (device instanceof GarageDoorDevice) {
                     GarageDoorDevice garageopener = (GarageDoorDevice) device;
                     if (command.equals(OnOffType.ON) || command.equals(UpDownType.UP)) {
-                        myqOnlineData.executeMyQCommand(garageopener.getDeviceId(), "desireddoorstate", 1);
+                        myqOnlineData.executeMyQCommand(garageopener.getDeviceId(), "open");
                         beginRapidPoll(true);
                     } else if (command.equals(OnOffType.OFF) || command.equals(UpDownType.DOWN)) {
-                        myqOnlineData.executeMyQCommand(garageopener.getDeviceId(), "desireddoorstate", 0);
+                        myqOnlineData.executeMyQCommand(garageopener.getDeviceId(), "close");
                         beginRapidPoll(true);
                     } else {
                         logger.warn("Unknown command {}", command);
@@ -360,17 +337,17 @@ public class MyqBinding extends AbstractBinding<MyqBindingProvider> {
                 } else if (device instanceof LampDevice) {
                     LampDevice lampModule = (LampDevice) device;
                     if (command.equals(OnOffType.ON)) {
-                        myqOnlineData.executeMyQCommand(lampModule.getDeviceId(), "desiredlightstate", 1);
+                        myqOnlineData.executeMyQCommand(lampModule.getDeviceId(), "turnon");
                         doFuturePoll(rapidRefresh);
                     } else if (command.equals(OnOffType.OFF)) {
-                        myqOnlineData.executeMyQCommand(lampModule.getDeviceId(), "desiredlightstate", 0);
+                        myqOnlineData.executeMyQCommand(lampModule.getDeviceId(), "turnoff");
                         doFuturePoll(rapidRefresh);
                     } else {
                         logger.warn("Unknown command {}", command);
                     }
                 }
             } else {
-                logger.warn("no MyQ device found with index: {}", deviceConfig.deviceIndex);
+                logger.warn("no MyQ device found with deviceID: {}", deviceConfig.deviceID);
             }
         } catch (InvalidLoginException e) {
             logger.error("Could not log in, please check your credentials.", e);

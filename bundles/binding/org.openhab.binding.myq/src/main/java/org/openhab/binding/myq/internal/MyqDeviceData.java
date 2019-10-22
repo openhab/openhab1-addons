@@ -42,28 +42,31 @@ public class MyqDeviceData {
      *            The Json node returned from the myq website.
      */
     public MyqDeviceData(JsonNode rootNode) throws IOException {
-        if (rootNode.has("Devices")) {
-            JsonNode node = rootNode.get("Devices");
+        if (rootNode.has("items")) {
+            JsonNode node = rootNode.get("items");
             if (node.isArray()) {
                 logger.debug("Chamberlain MyQ Devices:");
                 int arraysize = node.size();
+				logger.trace("Json Device Count: {}", arraysize);
                 for (int i = 0; i < arraysize; i++) {
-                    int deviceId = node.get(i).get("MyQDeviceId").asInt();
-                    String deviceType = node.get(i).get("MyQDeviceTypeName").asText();
-                    int deviceTypeId = node.get(i).get("MyQDeviceTypeId").asInt();
-
-                    // GarageDoorOpener have MyQDeviceTypeId of 2,5,7,17
-                    if (deviceTypeId == 2 || deviceTypeId == 5 || deviceTypeId == 7 || deviceTypeId == 17) {
-                        devices.add(new GarageDoorDevice(deviceId, deviceType, deviceTypeId, node.get(i)));
-                    } else if (deviceTypeId == 3) { // Light have MyQDeviceTypeId of 3
-                        devices.add(new LampDevice(deviceId, deviceType, deviceTypeId, node.get(i)));
+                    String deviceId = node.get(i).get("serial_number").asText();
+                    String deviceName = node.get(i).get("name").asText();
+                    String deviceType = node.get(i).get("device_type").asText();
+                    if (deviceType.compareTo("garagedooropener") == 0) {
+                        devices.add(new GarageDoorDevice(deviceId, deviceType, deviceName, node.get(i)));
+                    } else if (deviceType.compareTo("lamp") == 0) {
+                        devices.add(new LampDevice(deviceId, deviceType, deviceName, node.get(i)));
                     }
                 }
             }
         }
     }
 
-    public MyqDevice getDevice(int index) {
-        return index >= devices.size() ? null : devices.get(index);
+    public MyqDevice getDevice(String deviceID) {
+        for (MyqDevice device : devices) {
+             if(device.getDeviceId().compareTo(deviceID) == 0)
+                 return device;
+        }
+        return null;
     }
 }

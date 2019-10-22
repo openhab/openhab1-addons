@@ -24,43 +24,27 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li>DeviceId: DeviceId from API, need for http Posts</li>
  * <li>DeviceType: MYQ Device Type. GarageDoorOpener, LampModule or Gateway</li>
- * <li>deviceTypeID: MYQ Device TypeID.</li>
+ * <li>deviceName: MYQ Device Name.</li>
  * </ul>
  * 
  * @author Scott Hanson
  * @since 1.9.0
  */
 public class MyqDevice {
-    protected int deviceId;
+    protected String deviceId;
     protected String deviceType;
-    protected int deviceTypeID;
-    protected HashMap<String, String> deviceAttributes = new HashMap<String, String>();
+	protected String deviceName;
 
     static final Logger logger = LoggerFactory.getLogger(MyqDevice.class);
 
-    public MyqDevice(int deviceId, String deviceType, int deviceTypeID, JsonNode deviceJson) {
+    public MyqDevice(String deviceId, String deviceType, String deviceName, JsonNode deviceJson) {
         this.deviceId = deviceId;
         this.deviceType = deviceType;
-        this.deviceTypeID = deviceTypeID;
+		this.deviceName = deviceName;
 
-        deviceAttributes.put("MyQDeviceId", Integer.toString(deviceId));
-        deviceAttributes.put("MyQDeviceTypeName", deviceType);
-        deviceAttributes.put("MyQDeviceTypeId", Integer.toString(deviceTypeID));
-        deviceAttributes.put("SerialNumber", deviceJson.get("SerialNumber").asText());
-
-        JsonNode otherAttributes = deviceJson.get("Attributes");
-        if (otherAttributes.isArray()) {
-            int attributesSize = otherAttributes.size();
-            for (int j = 0; j < attributesSize; j++) {
-                String attributeName = otherAttributes.get(j).get("AttributeDisplayName").asText();
-                String attributeValue = otherAttributes.get(j).get("Value").asText();
-                logger.trace("AttributeName: {} AttributeValue: {}", attributeName, attributeValue);
-                deviceAttributes.put(attributeName, attributeValue);
-            }
-        }
     }
 
-    public int getDeviceId() {
+    public String getDeviceId() {
         return this.deviceId;
     }
 
@@ -68,19 +52,11 @@ public class MyqDevice {
         return this.deviceType;
     }
 
-    public int getDeviceTypeID() {
-        return this.deviceTypeID;
-    }
-
-    public boolean hasAttribute(String AttributeName) {
-        return this.deviceAttributes.containsKey(AttributeName);
-    }
-
-    public String getAttribute(String AttributeName) {
-        return this.deviceAttributes.get(AttributeName);
+    public String getDeviceName() {
+        return this.deviceName;
     }
 
     public String toString() {
-        return this.deviceType;
+        return this.deviceId;
     }
 }

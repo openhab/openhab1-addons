@@ -28,23 +28,15 @@ class GarageDoorDevice extends MyqDevice {
 
     private GarageDoorStatus status;
 
-    public GarageDoorDevice(int deviceId, String deviceType, int deviceTypeID, JsonNode deviceJson) {
-        super(deviceId, deviceType, deviceTypeID, deviceJson);
-        JsonNode attributes = deviceJson.get("Attributes");
-        if (attributes.isArray()) {
-            int attributesSize = attributes.size();
-            for (int j = 0; j < attributesSize; j++) {
-                String attributeName = attributes.get(j).get("AttributeDisplayName").asText();
-                if (attributeName.contains("doorstate")) {
-                    int doorstate = attributes.get(j).get("Value").asInt();
-                    this.status = GarageDoorStatus.GetDoorStatus(doorstate);
-                    deviceAttributes.put("UpdatedDate", attributes.get(j).get("UpdatedDate").asText());
-                    logger.debug("GarageDoorOpener DeviceID: {} DeviceType: {} Doorstate : {}", deviceId, deviceType,
-                            doorstate);
-                    break;
-                }
-            }
-        }
+    public GarageDoorDevice(String deviceId, String deviceType, String deviceName, JsonNode deviceJson) {
+        super(deviceId, deviceType, deviceName, deviceJson);
+
+		JsonNode state = deviceJson.get("state");
+		if (state != null && state.has("door_state")) {
+			this.status = GarageDoorStatus.GetDoorStatus(state.get("door_state").asText());
+			logger.debug("GarageDoorOpener DeviceID: {} DeviceType: {} DeviceName: {} Doorstate : {}", deviceId, deviceType, deviceName,
+                            state.get("door_state").asText());
+		}
     }
 
     public GarageDoorStatus getStatus() {
@@ -52,25 +44,24 @@ class GarageDoorDevice extends MyqDevice {
     }
 
     public enum GarageDoorStatus {
-        OPEN("Open", 1),
-        CLOSED("Closed", 2),
-        PARTIAL("Partially Open/Closed", 3),
-        OPENING("Opening", 4),
-        CLOSING("Closing", 5),
-        MOVING("Moving", 8),
-        OPEN2("Open", 9),
-        UNKNOWN("Unknown", -1);
+        OPEN("Open", "open"),
+        CLOSED("Closed", "closed"),
+        PARTIAL("Partially Open/Closed", "stopped"),
+        OPENING("Opening", "opening"),
+        CLOSING("Closing", "closing"),
+        MOVING("Moving", "transition"),
+        UNKNOWN("Unknown", "unknown");
 
         /**
          * The label used to display status to a user
          */
         private String label;
         /**
-         * The int value returned from the MyQ API
+         * The String value returned from the MyQ API
          */
-        private int value;
+        private String value;
 
-        private GarageDoorStatus(String label, int value) {
+        private GarageDoorStatus(String label, String value) {
             this.label = label;
             this.value = value;
         }
@@ -87,9 +78,9 @@ class GarageDoorDevice extends MyqDevice {
         /**
          * Int value of the door status
          * 
-         * @return int value of the door status
+         * @return String value of the door status
          */
-        public int getValue() {
+        public String getValue() {
             return value;
         }
 
@@ -117,7 +108,7 @@ class GarageDoorDevice extends MyqDevice {
          * @return is open or partial open
          */
         public boolean isOpen() {
-            return (this == OPEN || this == OPEN2 || this == PARTIAL);
+            return (this == OPEN || this == PARTIAL);
         }
 
         /**
@@ -130,14 +121,14 @@ class GarageDoorDevice extends MyqDevice {
         }
 
         /**
-         * Lookup a door status by its int value
+         * Lookup a door status by its String value
          * 
          * @param value
          * @return a door status enum
          */
-        public static GarageDoorStatus GetDoorStatus(int value) {
+        public static GarageDoorStatus GetDoorStatus(String value) {
             for (GarageDoorStatus ds : values()) {
-                if (ds.getValue() == value)
+                if (ds.getValue().compareTo(value)==0)
                     return ds;
             }
             return UNKNOWN;

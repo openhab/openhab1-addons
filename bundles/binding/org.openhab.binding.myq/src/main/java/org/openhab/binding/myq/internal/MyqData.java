@@ -45,11 +45,9 @@ import org.slf4j.LoggerFactory;
 public class MyqData {
     static final Logger logger = LoggerFactory.getLogger(MyqData.class);
 
-    private static final String WEBSITE = "https://myqexternal.myqdevice.com";
-    public static final String DEFAULT_APP_ID = "NWknvuBd7LoFHfXmKNMBcgajXtZEgKUh4V7WNzMidrpUUluDpVYVZx+xT4PCM5Kx";
+    private static final String WEBSITE = "https://api.myqdevice.com";
+    public static final String DEFAULT_APP_ID = "JVM/G9Nwih5BwKgNCjLxiFUQxQijAebyyg8QUHr7JOrP+tuPb8iHfRHKwTmDzHOu";
 
-    private static final String CRAFTSMAN_WEBSITE = "https://craftexternal.myqdevice.com";
-    public static final String CRAFTSMAN_DEFAULT_APP_ID = "eU97d99kMG4t3STJZO/Mu2wt69yTQwM0WXZA5oZ74/ascQ2xQrLD/yjeVhEQccBZ";
     public static final int DEFAUALT_TIMEOUT = 5000;
 
     private static final String CULTURE = "en";
@@ -62,6 +60,7 @@ public class MyqData {
     private int timeout;
 
     private String sercurityToken;
+	private String accountId;
     private Properties header;
 
     /**
@@ -83,27 +82,18 @@ public class MyqData {
      * @param craftman
      *            Use Craftman url instead of MyQ
      */
-    public MyqData(String username, String password, String appId, int timeout, boolean craftman) {
+    public MyqData(String username, String password, String appId, int timeout) {
         this.userName = username;
         this.password = password;
 
         if (appId != null) {
             this.appId = appId;
         } else {
-            if (craftman) {
-                this.appId = CRAFTSMAN_DEFAULT_APP_ID;
-            } else {
-                this.appId = DEFAULT_APP_ID;
-            }
+           this.appId = DEFAULT_APP_ID;
         }
 
-        if (craftman) {
-            this.websiteUrl = CRAFTSMAN_WEBSITE;
-            this.brandId = "3";
-        } else {
-            this.websiteUrl = WEBSITE;
-            this.brandId = "2";
-        }
+        this.websiteUrl = WEBSITE;
+        this.brandId = "2";
 
         if (timeout > 0) {
             this.timeout = timeout;
@@ -118,6 +108,7 @@ public class MyqData {
         header.put("ApiVersion", "4.1");
         header.put("Culture", CULTURE);
         header.put("MyQApplicationId", this.appId);
+		header.put("Content-Type", "application/json");
     }
 
     /**
@@ -127,9 +118,9 @@ public class MyqData {
      */
     public MyqDeviceData getMyqData() throws InvalidLoginException, IOException {
         logger.trace("Retrieving door data");
-        String url = String.format("%s/api/v4/userdevicedetails/get", websiteUrl);
+        String url = String.format("%s/api/v5.1/Accounts/%s/Devices", websiteUrl, getAccountID());
         header.put("SecurityToken", getSecurityToken());
-        JsonNode data = request("GET", url, null, null, true);
+        JsonNode data = request("GET", url, null, null, true, false);
 
         return new MyqDeviceData(data);
     }
@@ -139,12 +130,12 @@ public class MyqData {
      */
     private void login() throws InvalidLoginException, IOException {
         logger.trace("attempting to login");
-        String url = String.format("%s/api/v4/User/Validate", websiteUrl);
+        String url = String.format("%s/api/v5/Login", websiteUrl);
 
         String message = String.format(
-                "{\"username\":\"%s\",\"password\":\"%s\"}",
+                "{\"Username\":\"%s\",\"Password\":\"%s\"}",
                 userName,  password);
-        JsonNode data = request("POST", url, message,"application/json", true);
+        JsonNode data = request("POST", url, message,"application/json", true, false);
         LoginData login = new LoginData(data);
         sercurityToken = login.getSecurityToken();
     }
@@ -160,17 +151,14 @@ public class MyqData {
      *            Attribute Name "desireddoorstate" or "desiredlightstate"
      *
      * @param state
-     *            Desired state to put the door in, 1 = open, 0 = closed
-     *            Desired state to put the lamp in, 1 = on, 0 = off
+     *            Desired state to put the door in, open, closed
+     *            Desired state to put the lamp in, on, off
      */
-    public void executeMyQCommand(int deviceID, String name, int state) throws InvalidLoginException, IOException {
-        String message = String.format(
-                "{\"ApplicationId\":\"%s\"," + "\"SecurityToken\":\"%s\"," + "\"MyQDeviceId\":\"%d\","
-                        + "\"AttributeName\":\"%s\"," + "\"AttributeValue\":\"%d\"}",
-                appId, sercurityToken, deviceID, name, state);
-        String url = String.format("%s/api/v4/DeviceAttribute/PutDeviceAttribute", websiteUrl);
+    public void executeMyQCommand(String deviceID, String state) throws InvalidLoginException, IOException {
+        String message = String.format( "{\"action_type\":\"%s\"}", state);
+        String url = String.format("%s/api/v5.1/Accounts/%s/Devices/%s/actions", websiteUrl, getAccountID(), deviceID);
         header.put("SecurityToken", getSecurityToken());
-        request("PUT", url, message, "application/json", true);
+        request("PUT", url, message, "application/json", true, true);
     }
 
     /**
@@ -189,6 +177,39 @@ public class MyqData {
     }
 
     /**
+     * Get the Account ID for the current user
+     */
+    private void findAccount() throws InvalidLoginException, IOException {
+		if (sercurityToken == null) {
+            login();
+        }
+        logger.trace("attempting to get acount");
+        String url = String.format("%s/api/v5/My/?expand=account", websiteUrl);
+
+        String message = "{\"expand\":\"account\"}";
+		header.put("SecurityToken", getSecurityToken());
+        JsonNode data = request("GET", url, null, null, true, false);
+        AccountData account = new AccountData(data);
+        accountId = account.getAccountId();
+    }
+
+    /**
+     * Returns the currently cached Account ID, this will make a call to
+     * findAccount if the Account ID is not known.
+     *
+     * @return The cached Account ID
+     * @throws IOException
+     * @throws InvalidLoginException
+     */
+    private String getAccountID() throws IOException, InvalidLoginException {
+
+        if (accountId == null) {
+            findAccount();
+        }
+        return accountId;
+    }
+
+    /**
      * Make a request to the server, optionally retry the call if there is a
      * login issue. Will throw a InvalidLoginExcpetion if the account is
      * invalid, locked or soon to be locked.
@@ -203,11 +224,13 @@ public class MyqData {
      *            Payload content type for put operations
      * @param retry
      *            Retry the attempt if our session key is not valid
+     * @param retry
+     *            "commands" have no return string, just return id empty.
      * @return The JsonNode representing the response data
      * @throws IOException
      * @throws InvalidLoginException
      */
-    private synchronized JsonNode request(String method, String url, String payload, String payloadType, boolean retry)
+    private synchronized JsonNode request(String method, String url, String payload, String payloadType, boolean retry, boolean command)
             throws IOException, InvalidLoginException {
 
         logger.trace("Requesting URL {}", url);
@@ -216,6 +239,9 @@ public class MyqData {
                 payloadType, timeout);
 
         logger.trace("Received MyQ JSON: {}", dataString);
+		
+		if(command && dataString == null)
+			return null;
 
         if (dataString == null) {
             throw new IOException("Null response from MyQ server");
@@ -224,11 +250,16 @@ public class MyqData {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(dataString);
-            int returnCode = rootNode.get("ReturnCode").asInt();
+			
+			if(!rootNode.has("code"))
+			{
+				return rootNode;
+			}
+            double returnCode = rootNode.get("code").asDouble();
             logger.trace("myq ReturnCode: {}", returnCode);
 
-            MyQResponseCode rc = MyQResponseCode.fromCode(returnCode);
-
+            MyQResponseCode rc = MyQResponseCode.fromCode((int)returnCode);
+			logger.trace("myq ReturnCode: {}", returnCode);
             switch (rc) {
                 case OK: {
                     return rootNode;
@@ -244,7 +275,7 @@ public class MyqData {
                     // Our session key has expired, request a new one
                     if (retry) {
                         login();
-                        return request(method, url, payload, payloadType, false);
+                        return request(method, url, payload, payloadType, false, command);
                     }
                     // fall through to default
                 default:

@@ -30,29 +30,22 @@ public class LampDevice extends MyqDevice {
      */
     private OnOffType state;
 
-    public LampDevice(int deviceId, String deviceType, int deviceTypeID, JsonNode deviceJson) {
-        super(deviceId, deviceType, deviceTypeID, deviceJson);
-        JsonNode attributes = deviceJson.get("Attributes");
-        if (attributes.isArray()) {
-            int attributesSize = attributes.size();
-            for (int j = 0; j < attributesSize; j++) {
-                String attributeName = attributes.get(j).get("AttributeDisplayName").asText();
-                if (attributeName.contains("lightstate")) {
-                    int lightstate = attributes.get(j).get("Value").asInt();
-                    deviceAttributes.put("UpdatedDate", attributes.get(j).get("UpdatedDate").asText());
-                    this.state = getLampState(lightstate);
-                    logger.debug("Lamp DeviceID: {} DeviceType: {} Lightstate : {}", deviceId, deviceType, lightstate);
-                    break;
-                }
-            }
-        }
+    public LampDevice(String deviceId, String deviceType, String deviceName, JsonNode deviceJson) {
+        super(deviceId, deviceType, deviceName, deviceJson);
+
+		JsonNode state = deviceJson.get("state");
+		if (state != null && state.has("lamp_state")) {
+			this.state = getLampState(state.get("lamp_state").asText());
+			logger.debug("Lamp DeviceID: {} DeviceType: {} DeviceName: {} Lightstate : {}", deviceId, deviceType, deviceName, state.get("lamp_state").asText());
+		}
+
     }
 
     /**
      * Internal Method to convert API value to ON/OFF state
      */
-    private OnOffType getLampState(int value) {
-        if (value == 1) {
+    private OnOffType getLampState(String value) {
+        if (value.compareTo("on") == 0) {
             return OnOffType.ON;
         }
         return OnOffType.OFF;

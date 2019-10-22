@@ -81,16 +81,10 @@ public class MyqGenericBindingProvider extends AbstractGenericBindingProvider im
 
         logger.trace("bindingConfig: {}", bindingConfig);
 
-        if (bindingConfig.contains("#")) {
-            String[] newbindingConfig = bindingConfig.split("#");
-            config.deviceIndex = Integer.parseInt(newbindingConfig[0]);
-            config.attribute = newbindingConfig[1];
-            logger.trace("deviceIndex: {} attribute: {}", config.deviceIndex, config.attribute);
-        } else {
-            config.deviceIndex = Integer.parseInt(bindingConfig);
-            config.attribute = new String();
-            logger.trace("deviceIndex: {} attribute: {}", config.deviceIndex, config.attribute);
-        }
+		config.deviceID = bindingConfig;
+
+		logger.trace("deviceID: {}", config.deviceID);
+
 
         return config;
     }

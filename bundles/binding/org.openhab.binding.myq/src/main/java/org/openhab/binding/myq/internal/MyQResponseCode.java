@@ -24,7 +24,7 @@ package org.openhab.binding.myq.internal;
 public enum MyQResponseCode {
 
     OK(0, "OK"),
-    LOGIN_ERROR(-3333, "Login error. Please login again."), // token has expired
+    LOGIN_ERROR(401, "Login error. Please login again."), // token has expired
     ACCOUNT_INVALID(203, "The username or password you entered is incorrect. Try again."),
     ACCOUNT_NOT_FOUND(204, "The username was not found or is locked out."),
     ACCOUNT_LOCKED_PENDING(205, "This user will be locked out."),
