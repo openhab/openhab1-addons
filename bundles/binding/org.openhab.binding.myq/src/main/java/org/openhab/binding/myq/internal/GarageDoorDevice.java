@@ -31,12 +31,12 @@ class GarageDoorDevice extends MyqDevice {
     public GarageDoorDevice(String deviceId, String deviceType, String deviceName, JsonNode deviceJson) {
         super(deviceId, deviceType, deviceName, deviceJson);
 
-		JsonNode state = deviceJson.get("state");
-		if (state != null && state.has("door_state")) {
-			this.status = GarageDoorStatus.GetDoorStatus(state.get("door_state").asText());
-			logger.debug("GarageDoorOpener DeviceID: {} DeviceType: {} DeviceName: {} Doorstate : {}", deviceId, deviceType, deviceName,
-                            state.get("door_state").asText());
-		}
+        JsonNode state = deviceJson.get("state");
+        if (state != null && state.has("door_state")) {
+            this.status = GarageDoorStatus.GetDoorStatus(state.get("door_state").asText());
+            logger.debug("GarageDoorOpener DeviceID: {} DeviceType: {} DeviceName: {} Doorstate : {}", 
+            deviceId, deviceType, deviceName, state.get("door_state").asText());
+        }
     }
 
     public GarageDoorStatus getStatus() {

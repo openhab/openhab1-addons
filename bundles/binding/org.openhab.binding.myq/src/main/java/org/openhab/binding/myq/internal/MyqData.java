@@ -108,7 +108,7 @@ public class MyqData {
         header.put("ApiVersion", "4.1");
         header.put("Culture", CULTURE);
         header.put("MyQApplicationId", this.appId);
-		header.put("Content-Type", "application/json");
+        header.put("Content-Type", "application/json");
     }
 
     /**
@@ -180,7 +180,7 @@ public class MyqData {
      * Get the Account ID for the current user
      */
     private void findAccount() throws InvalidLoginException, IOException {
-		if (sercurityToken == null) {
+        if (sercurityToken == null) {
             login();
         }
         logger.trace("attempting to get acount");
@@ -239,9 +239,9 @@ public class MyqData {
                 payloadType, timeout);
 
         logger.trace("Received MyQ JSON: {}", dataString);
-		
-		if(command && dataString == null)
-			return null;
+
+        if(command && dataString == null)
+            return null;
 
         if (dataString == null) {
             throw new IOException("Null response from MyQ server");
@@ -250,16 +250,16 @@ public class MyqData {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(dataString);
-			
-			if(!rootNode.has("code"))
-			{
-				return rootNode;
-			}
+
+            if(!rootNode.has("code"))
+            {
+                return rootNode;
+            }
             double returnCode = rootNode.get("code").asDouble();
             logger.trace("myq ReturnCode: {}", returnCode);
 
             MyQResponseCode rc = MyQResponseCode.fromCode((int)returnCode);
-			logger.trace("myq ReturnCode: {}", returnCode);
+            logger.trace("myq ReturnCode: {}", returnCode);
             switch (rc) {
                 case OK: {
                     return rootNode;

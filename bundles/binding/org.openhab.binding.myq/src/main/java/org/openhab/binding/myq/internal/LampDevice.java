@@ -33,11 +33,12 @@ public class LampDevice extends MyqDevice {
     public LampDevice(String deviceId, String deviceType, String deviceName, JsonNode deviceJson) {
         super(deviceId, deviceType, deviceName, deviceJson);
 
-		JsonNode state = deviceJson.get("state");
-		if (state != null && state.has("lamp_state")) {
-			this.state = getLampState(state.get("lamp_state").asText());
-			logger.debug("Lamp DeviceID: {} DeviceType: {} DeviceName: {} Lightstate : {}", deviceId, deviceType, deviceName, state.get("lamp_state").asText());
-		}
+        JsonNode state = deviceJson.get("state");
+        if (state != null && state.has("lamp_state")) {
+            this.state = getLampState(state.get("lamp_state").asText());
+            logger.debug("Lamp DeviceID: {} DeviceType: {} DeviceName: {} Lightstate : {}", 
+            deviceId, deviceType, deviceName, state.get("lamp_state").asText());
+        }
 
     }
 

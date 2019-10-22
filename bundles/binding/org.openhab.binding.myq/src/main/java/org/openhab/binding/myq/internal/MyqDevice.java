@@ -40,7 +40,7 @@ public class MyqDevice {
     public MyqDevice(String deviceId, String deviceType, String deviceName, JsonNode deviceJson) {
         this.deviceId = deviceId;
         this.deviceType = deviceType;
-		this.deviceName = deviceName;
+        this.deviceName = deviceName;
 
     }
 

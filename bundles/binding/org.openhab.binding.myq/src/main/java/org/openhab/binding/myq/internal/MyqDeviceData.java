@@ -47,7 +47,6 @@ public class MyqDeviceData {
             if (node.isArray()) {
                 logger.debug("Chamberlain MyQ Devices:");
                 int arraysize = node.size();
-				logger.trace("Json Device Count: {}", arraysize);
                 for (int i = 0; i < arraysize; i++) {
                     String deviceId = node.get(i).get("serial_number").asText();
                     String deviceName = node.get(i).get("name").asText();
@@ -64,7 +63,8 @@ public class MyqDeviceData {
 
     public MyqDevice getDevice(String deviceID) {
         for (MyqDevice device : devices) {
-             if(device.getDeviceId().compareTo(deviceID) == 0)
+             if(device.getDeviceId().compareTo(deviceID) == 0 ||
+             device.getDeviceName().compareTo(deviceID) == 0)
                  return device;
         }
         return null;

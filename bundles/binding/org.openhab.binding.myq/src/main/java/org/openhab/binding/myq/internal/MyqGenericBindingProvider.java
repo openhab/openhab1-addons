@@ -80,12 +80,8 @@ public class MyqGenericBindingProvider extends AbstractGenericBindingProvider im
         config.acceptedDataTypes = new ArrayList<Class<? extends State>>(item.getAcceptedDataTypes());
 
         logger.trace("bindingConfig: {}", bindingConfig);
-
-		config.deviceID = bindingConfig;
-
-		logger.trace("deviceID: {}", config.deviceID);
-
-
+        config.deviceID = bindingConfig;
+        logger.trace("deviceID: {}", config.deviceID);
         return config;
     }
 
