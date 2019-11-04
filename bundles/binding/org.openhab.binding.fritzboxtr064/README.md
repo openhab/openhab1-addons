@@ -15,25 +15,25 @@ It has been tested on:
 
 ## Features
 
-* detect if MAC is online in network (presence detection)
-* switching on/off 2,4Hz Wifi, 5GHz Wifi and Guest Wifi (if any)
-* getting external IP address of fbox
-* getting fbox model name
-* call monitor
+* Detect if MAC is online in network (presence detection)
+* Switching on/off 2,4Hz Wi-Fi, 5GHz Wi-Fi and Guest Wi-Fi (if any)
+* Getting external IP address of fbox
+* Getting fbox model name
+* Call monitor
  * Switch Item: Receives "ON" state when call is incoming
- * Call Items: Shows external an internal number for incoming/outgoing calls
+ * Call Items: Shows external and internal number for incoming/outgoing calls
  * Resolve external call number to phonebook name
-* enabling/disabling telephone answering machines (TAMs)
-* enabling/disabling of call deflection
-* getting new messages per TAM
-* getting missed calls for the last x days
-* getting DSL/WAN statistics for monitoring connection quality
-* reboot
+* Enabling/disabling telephone answering machines (TAMs)
+* Enabling/disabling of call deflection
+* Getting new messages per TAM
+* Getting missed calls for the last x days
+* Getting DSL/WAN statistics for monitoring connection quality
+* Reboot
 
 ## Prerequisites
 
 * Enable TR064: In the webui goto "Heimnetz" - "Netzwerkeinstellungen": enable option "Zugriff für Anwendungen zulassen" (enabled by default)
-* Only if you want to use the call monitor feature (items starting with callmonitor_...), enable the interface by dialing #96\*5\* You may disable it again by dialing #96\*4\*
+* Only if you want to use the call monitor feature (items starting with callmonitor_...), enable the interface by dialing `#96*5*`. You may disable it again by dialing `#96*4*`.
 
 ## Binding Configuration
 
@@ -59,10 +59,10 @@ String  fboxVersion         "FBox Version [%s]"         {fritzboxtr064="software
 String  fboxWanIP           "FBox WAN IP [%s]"          {fritzboxtr064="wanip"}
 // get wan ip if FritzBox uses internet connection of external router
 String  fboxWanIPExternal   "FBox external WAN IP [%s]" {fritzboxtr064="externalWanip"}
-Switch  fboxWifi24          "2,4GHz Wifi"               {fritzboxtr064="wifi24Switch"}
-Switch  fboxWifi50          "5,0GHz Wifi"               {fritzboxtr064="wifi50Switch"}
-Switch  fboxGuestWifi       "Guest Wifi"                {fritzboxtr064="wifiGuestSwitch"}
-Contact cFboxMacOnline      "Presence (WiFi) [%s]"      {fritzboxtr064="maconline:11-11-11-11-11-11" }
+Switch  fboxWifi24          "2,4GHz Wi-Fi"               {fritzboxtr064="wifi24Switch"}
+Switch  fboxWifi50          "5,0GHz Wi-Fi"               {fritzboxtr064="wifi50Switch"}
+Switch  fboxGuestWifi       "Guest Wi-Fi"                {fritzboxtr064="wifiGuestSwitch"}
+Contact cFboxMacOnline      "Presence (Wi-Fi) [%s]"      {fritzboxtr064="maconline:11-11-11-11-11-11" }
 Switch  fboxReboot          "Reboot"                    {fritzboxtr064="reboot"}
 
 // WAN statistics
@@ -121,7 +121,7 @@ Switch  fboxCD0Switch    "Call Deflection ID 0"         {fritzboxtr064="callDefl
 
 ### Sitemap
 
-For the "Call" items use "Text" in your sitemap 
+For the `Call` items use `Text` elements in your sitemap.
 
 ### Map for Presence Detection
 
@@ -151,7 +151,7 @@ when
     // fboxRinging is a switch item which switches to ON if call is detected
     Item fboxRinging changed from OFF to ON 
 then
-    logInfo("Anrufermeldung", "Generating caller name message...")
+    logInfo("Call recognition", "Generating caller name message...")
     
     val incCall = fboxIncomingCall.state as StringListType
     val callerNumber = incCall.getValue(1)
