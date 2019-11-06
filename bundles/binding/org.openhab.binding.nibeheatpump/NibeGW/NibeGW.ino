@@ -272,7 +272,7 @@ int checkNibeMessage(const byte* const data, byte len)
         
         if (len >= 3)
         {
-            if (data[1] != 0x00 && data[2] != 0x20)
+            if (data[1] != 0x00 || data[2] != 0x20)
                 return -1;
         }
         
