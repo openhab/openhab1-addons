@@ -39,12 +39,18 @@ public class AccountData {
      */
     @SuppressWarnings("unchecked")
     public AccountData(JsonNode root) throws IOException, InvalidDataException {
-        JsonNode data = root.get("UserId");
+        JsonNode data = root.get("Account");
+
         if (data == null) {
-            throw new InvalidDataException("Could not find Account in JSON data");
+            throw new InvalidDataException("Could not find 'Account' in JSON data");
         }
 
-        accountId = data.isTextual() ? data.asText() : "";
+        JsonNode jsonID = data.get("Id");
+        if (jsonID == null) {
+            throw new InvalidDataException("Could not find 'Id' in JSON data");
+        }
+
+        accountId = jsonID.isTextual() ? jsonID.asText() : "";
         logger.trace("myq accountId: {}", accountId);
     }
 

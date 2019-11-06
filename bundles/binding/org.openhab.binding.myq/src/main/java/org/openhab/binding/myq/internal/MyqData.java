@@ -12,7 +12,7 @@
  */
 package org.openhab.binding.myq.internal;
 
-import static org.openhab.io.net.http.HttpUtil.executeUrl;
+import static org.openhab.io.net.http.HttpUtil.createHttpMethod;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -26,6 +26,28 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
+
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 /**
  * This Class handles the Chamberlain myQ http connection.
  *
@@ -60,7 +82,7 @@ public class MyqData {
     private int timeout;
 
     private String sercurityToken;
-	private String accountId;
+    private String accountId;
     private Properties header;
 
     /**
@@ -103,7 +125,7 @@ public class MyqData {
 
         header = new Properties();
         header.put("Accept", "application/json");
-        header.put("User-Agent", "Chamberlain/3.73");
+        //header.put("User-Agent", "Chamberlain/3.73");
         header.put("BrandId", this.brandId);
         header.put("ApiVersion", "4.1");
         header.put("Culture", CULTURE);
@@ -118,7 +140,7 @@ public class MyqData {
      */
     public MyqDeviceData getMyqData() throws InvalidLoginException, IOException {
         logger.trace("Retrieving door data");
-        String url = String.format("%s/api/v5.1/Accounts/%s/Devices", websiteUrl, getAccountID());
+        String url = String.format("%s/api/v5/Accounts/%s/Devices", websiteUrl, getAccountID());
         header.put("SecurityToken", getSecurityToken());
         JsonNode data = request("GET", url, null, null, true, false);
 
@@ -156,7 +178,7 @@ public class MyqData {
      */
     public void executeMyQCommand(String deviceID, String state) throws InvalidLoginException, IOException {
         String message = String.format( "{\"action_type\":\"%s\"}", state);
-        String url = String.format("%s/api/v5.1/Accounts/%s/Devices/%s/actions", websiteUrl, getAccountID(), deviceID);
+        String url = String.format("%s/api/v5/Accounts/%s/Devices/%s/actions", websiteUrl, getAccountID(), deviceID);
         header.put("SecurityToken", getSecurityToken());
         request("PUT", url, message, "application/json", true, true);
     }
@@ -187,7 +209,7 @@ public class MyqData {
         String url = String.format("%s/api/v5/My/?expand=account", websiteUrl);
 
         String message = "{\"expand\":\"account\"}";
-		header.put("SecurityToken", getSecurityToken());
+        header.put("SecurityToken", getSecurityToken());
         JsonNode data = request("GET", url, null, null, true, false);
         AccountData account = new AccountData(data);
         accountId = account.getAccountId();
@@ -235,8 +257,14 @@ public class MyqData {
 
         logger.trace("Requesting URL {}", url);
 
-        String dataString = executeUrl(method, url, header, payload == null ? null : IOUtils.toInputStream(payload),
-                payloadType, timeout);
+        String dataString = null;
+        try {
+
+            dataString = MYQExecuteUrl(method, url, header, payload == null ? null : IOUtils.toInputStream(payload),
+                payloadType, timeout, !command);
+        } catch (Exception e) {
+            logger.trace("MYQExecuteUrl Error {}", e);;
+        }
 
         logger.trace("Received MyQ JSON: {}", dataString);
 
@@ -285,6 +313,69 @@ public class MyqData {
         } catch (JsonProcessingException e) {
             throw new IOException("Could not parse response", e);
         }
+    }
+
+    /**
+     * Executes the given <code>url</code> with the given <code>httpMethod</code>
+     *
+     * @param httpMethod the HTTP method to use
+     * @param url the url to execute (in milliseconds)
+     * @param httpHeaders optional HTTP headers which has to be set on request
+     * @param content the content to be send to the given <code>url</code> or
+     *            <code>null</code> if no content should be send.
+     * @param contentType the content type of the given <code>content</code>
+     * @param timeout the socket timeout to wait for data
+     * @param shouldReturn will the call return data to stream back
+     * @return the response body or <code>NULL</code> when the request went wrong
+     */
+    public static String MYQExecuteUrl(String httpMethod, String url, Properties httpHeaders, InputStream content,
+            String contentType, int timeout, boolean shouldReturn) {
+        HttpClient client = new HttpClient();
+
+        HttpMethod method = createHttpMethod(httpMethod, url);
+        method.getParams().setSoTimeout(timeout);
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+        if (httpHeaders != null) {
+            for (String httpHeaderKey : httpHeaders.stringPropertyNames()) {
+                method.addRequestHeader(new Header(httpHeaderKey, httpHeaders.getProperty(httpHeaderKey)));
+            }
+        }
+        // add content if a valid method is given ...
+        if (method instanceof EntityEnclosingMethod && content != null) {
+            EntityEnclosingMethod eeMethod = (EntityEnclosingMethod) method;
+            eeMethod.setRequestEntity(new InputStreamRequestEntity(content, contentType));
+        }
+
+        try {
+            logger.trace("About to execute '{}'", method.getURI());
+        } catch (URIException e) {
+            logger.debug("{}", e.getMessage());
+        }
+
+        try {
+            int statusCode = client.executeMethod(method);
+            if (statusCode != HttpStatus.SC_OK) {
+                logger.debug("Method failed: {}", method.getStatusLine());
+            }
+
+            if(!shouldReturn)
+                return null;
+
+            String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
+            if (!responseBody.isEmpty()) {
+                logger.debug("{}", responseBody);
+            }
+
+            return responseBody;
+        } catch (HttpException he) {
+            logger.error("Fatal protocol violation: {}", he.toString());
+        } catch (IOException ioe) {
+            logger.error("Fatal transport error: {}", ioe.toString());
+        } finally {
+            method.releaseConnection();
+        }
+
+        return null;
     }
 
     /**
