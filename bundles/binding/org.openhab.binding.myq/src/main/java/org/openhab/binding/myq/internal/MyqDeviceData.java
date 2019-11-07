@@ -51,9 +51,10 @@ public class MyqDeviceData {
                     String deviceId = node.get(i).get("serial_number").asText();
                     String deviceName = node.get(i).get("name").asText();
                     String deviceType = node.get(i).get("device_type").asText();
-                    if (deviceType.compareTo("garagedooropener") == 0) {
+                    String deviceFamily = node.get(i).get("device_family").asText();
+                    if (deviceFamily.compareTo("garagedoor") == 0) {
                         devices.add(new GarageDoorDevice(deviceId, deviceType, deviceName, node.get(i)));
-                    } else if (deviceType.compareTo("lamp") == 0) {
+                    } else if (deviceFamily.compareTo("lamp") == 0) {
                         devices.add(new LampDevice(deviceId, deviceType, deviceName, node.get(i)));
                     }
                 }
