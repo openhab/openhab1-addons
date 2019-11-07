@@ -55,6 +55,7 @@ String  fboxName            "FBox Model [%s]"           {fritzboxtr064="modelNam
 String  fboxManufacturer    "FBox Manufacturer [%s]"    {fritzboxtr064="manufacturerName"}
 String  fboxSerial          "FBox Serial [%s]"          {fritzboxtr064="serialNumber"}
 String  fboxVersion         "FBox Version [%s]"         {fritzboxtr064="softwareVersion"}
+Number  fboxUptime          "FBox Uptime [%d s]"        {fritzboxtr064="upTime"}
 // get wan ip if FritzBox establishes the internet connection (e. g. via DSL)
 String  fboxWanIP           "FBox WAN IP [%s]"          {fritzboxtr064="wanip"}
 // get wan ip if FritzBox uses internet connection of external router
