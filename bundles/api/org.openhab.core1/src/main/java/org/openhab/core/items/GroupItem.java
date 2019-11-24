@@ -13,12 +13,13 @@
 package org.openhab.core.items;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections.ListUtils;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -121,21 +122,20 @@ public class GroupItem extends GenericItem implements StateChangeListener {
      * @return the accepted data types of this group item
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Class<? extends State>> getAcceptedDataTypes() {
         if (baseItem != null) {
             return baseItem.getAcceptedDataTypes();
         } else {
             List<Class<? extends State>> acceptedDataTypes = null;
-
             for (Item item : members) {
-                if (acceptedDataTypes == null) {
+                if (acceptedDataTypes == null || acceptedDataTypes.isEmpty()) {
                     acceptedDataTypes = item.getAcceptedDataTypes();
                 } else {
-                    acceptedDataTypes = ListUtils.intersection(acceptedDataTypes, item.getAcceptedDataTypes());
+                    acceptedDataTypes = item.getAcceptedDataTypes().stream().distinct()
+                            .filter(acceptedDataTypes::contains).collect(Collectors.toList());
                 }
             }
-            return acceptedDataTypes == null ? ListUtils.EMPTY_LIST : acceptedDataTypes;
+            return acceptedDataTypes == null ? Collections.emptyList() : acceptedDataTypes;
         }
     }
 
@@ -147,21 +147,20 @@ public class GroupItem extends GenericItem implements StateChangeListener {
      * @return the accepted command types of this group item
      */
     @Override
-    @SuppressWarnings("unchecked")
     public List<Class<? extends Command>> getAcceptedCommandTypes() {
         if (baseItem != null) {
             return baseItem.getAcceptedCommandTypes();
         } else {
             List<Class<? extends Command>> acceptedCommandTypes = null;
-
             for (Item item : members) {
-                if (acceptedCommandTypes == null) {
+                if (acceptedCommandTypes == null || acceptedCommandTypes.isEmpty()) {
                     acceptedCommandTypes = item.getAcceptedCommandTypes();
                 } else {
-                    acceptedCommandTypes = ListUtils.intersection(acceptedCommandTypes, item.getAcceptedCommandTypes());
+                    acceptedCommandTypes = item.getAcceptedCommandTypes().stream().distinct()
+                            .filter(acceptedCommandTypes::contains).collect(Collectors.toList());
                 }
             }
-            return acceptedCommandTypes == null ? ListUtils.EMPTY_LIST : acceptedCommandTypes;
+            return acceptedCommandTypes == null ? Collections.emptyList() : acceptedCommandTypes;
         }
     }
 
@@ -174,9 +173,6 @@ public class GroupItem extends GenericItem implements StateChangeListener {
         }
     }
 
-    /**
-     * @{inheritDoc
-     */
     @Override
     protected void internalSend(Command command) {
         if (eventPublisher != null) {
@@ -187,9 +183,6 @@ public class GroupItem extends GenericItem implements StateChangeListener {
         }
     }
 
-    /**
-     * @{inheritDoc
-     */
     @Override
     public State getStateAs(Class<? extends State> typeClass) {
         State newState = function.getStateAs(getAllMembers(), typeClass);
@@ -204,9 +197,6 @@ public class GroupItem extends GenericItem implements StateChangeListener {
         return newState;
     }
 
-    /**
-     * @{inheritDoc
-     */
     @Override
     public String toString() {
         return getName() + " (" + "Type=" + getClass().getSimpleName() + ", "
@@ -214,17 +204,11 @@ public class GroupItem extends GenericItem implements StateChangeListener {
                 + members.size() + ", " + "State=" + getState() + ")";
     }
 
-    /**
-     * @{inheritDoc
-     */
     @Override
     public void stateChanged(Item item, State oldState, State newState) {
         setState(function.calculate(members));
     }
 
-    /**
-     * @{inheritDoc
-     */
     @Override
     public void stateUpdated(Item item, State state) {
         setState(function.calculate(members));
