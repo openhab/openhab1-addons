@@ -2788,6 +2788,20 @@
 		</Product>
 	</Manufacturer>
 	<Manufacturer>
+		<Id>0151</Id>
+		<Name>Technisat</Name>
+		<Product>
+			 <Reference>
+			 	<Type>0001</Type>
+			 	<Id>0001</Id>
+			 </Reference>
+			 <Model>Spirit</Model>
+			 <Label lang="en">Thermostatic Valve 3</Label>
+			 <Label lang="de">Heizkörperthermostat 3</Label>
+			 <ConfigFile>technisat/spirit.xml</ConfigFile>
+		</Product>
+	</Manufacturer>
+	<Manufacturer>
 		<Id>0111</Id>
 		<Name>Airline Mechanical</Name>
 		<Product>
