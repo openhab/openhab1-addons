@@ -11,6 +11,7 @@ It has been tested on:
 * 6360 Cable (v6.04)
 * 6490 Cable (v7.02)
 * 7490
+* 7580 (v7.12)
 * 7590 (v6.92)
 
 ## Features
