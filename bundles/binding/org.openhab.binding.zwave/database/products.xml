@@ -2800,6 +2800,16 @@
 			 <Label lang="de">Heizkörperthermostat 3</Label>
 			 <ConfigFile>technisat/spirit.xml</ConfigFile>
 		</Product>
+		<Product>
+			<Reference>
+				<Type>0002</Type>
+				<Id>0002</Id>
+			</Reference>
+			<Model>DoorContact2</Model>
+			<Label lang="en">Door/Window Contact 2</Label>
+			<Label lang="de">Tür/Fenster Kontakt 2</Label>
+			<ConfigFile>technisat/doorcontact.xml</ConfigFile>
+		</Product>
 	</Manufacturer>
 	<Manufacturer>
 		<Id>0111</Id>
