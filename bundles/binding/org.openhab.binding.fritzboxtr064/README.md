@@ -90,7 +90,9 @@ Number  fboxDslFECErrors "DSL FEC Errors [%s]" {fritzboxtr064="dslFECErrors"}
 Number  fboxDslHECErrors "DSL HEC Errors [%s]" {fritzboxtr064="dslHECErrors"}
 Number  fboxDslCRCErrors "DSL CRC Errors [%s]" {fritzboxtr064="dslCRCErrors"}
 
-// only when using call monitor
+// Please note: To be able to connect to the monitor port, the "CallMonitor" must be
+// activated by dialing "#96*5*" once on a telephone that is connected to the Fritz!Box.
+// When using call monitor
 Switch  fboxRinging         "Phone ringing [%s]"                {fritzboxtr064="callmonitor_ringing" }
 Switch  fboxRinging_Out     "Phone ringing [%s]"                {fritzboxtr064="callmonitor_outgoing" }
 Switch  fboxCallConnecting  "Call established [%s]"             {fritzboxtr064="callmonitor_active" }
