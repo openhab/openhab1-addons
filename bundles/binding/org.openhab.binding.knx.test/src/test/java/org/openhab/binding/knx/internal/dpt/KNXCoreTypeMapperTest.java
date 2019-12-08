@@ -16,7 +16,9 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -68,8 +70,17 @@ public class KNXCoreTypeMapperTest {
 
     private final KNXCoreTypeMapper knxCoreTypeMapper = new KNXCoreTypeMapper();
 
+    private TimeZone timeZoneBackup;
+
     @Before
     public void init() throws KNXFormatException {
+        timeZoneBackup = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
+
+    @After
+    public void cleanup() {
+        TimeZone.setDefault(timeZoneBackup);
     }
 
     /**
