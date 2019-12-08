@@ -70,7 +70,7 @@ where:
 * `BASE64` enables the Base64 mode. With this mode all data received on the serial port is saved in Base64 format. All data that is sent to the serial port also has to be Base64 encoded. (This was implemented because some serial devices are using bytes that are not supported by the REST interface).
 * `ON(<On string>),OFF(<Off string>)` used in conjunction with a Switch, this mapping will send specific commands to serial port and also match a serial command to specific ON/OFF state. This makes it unnecessary to use a rule to send a command to serial.
 * `UP(<Up string>),DOWN(<Down string>),STOP(<Stop string>)` used in conjunction with a Rollershutter, this mapping will send specific commands to serial port. Use REGEX to parse Rollershutter postion (0-100%) coming as feedback over serial link.
-* `CHARSET(<charset>)` set's the charset to be used for converting to a String and back to bytes when writing. (e.g. UTF-8, ISO-8859-1, etc.)
+* `CHARSET(<charset>)` sets the charset to be used for converting to a String and back to bytes when writing. (e.g. UTF-8, ISO-8859-1, etc.)
 
 Base64 can be decoded in the rules by importing `javax.xml.bind.DatatypeConverter` and then decoding the value like this:
 
