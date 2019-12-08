@@ -97,6 +97,10 @@ class AnelConnectorThread extends Thread {
         connector = new AnelUDPConnector(host, udpReceivePort, udpSendPort);
     }
 
+    private String maskPwd(String s) {
+        return s == null || password == null ? s : s.replace(password, "*****");
+    }
+
     /**
      * Switch relay on or off.
      *
@@ -127,11 +131,11 @@ class AnelConnectorThread extends Thread {
                 // Format to switch off: Sw_off<nr><user><pwd>
                 // Example: Sw_on3adminanel
                 final String cmd = "Sw_" + (newState ? "on" : "off") + switchNr + user + password;
-                logger.debug("Sending to " + connector.host + ":" + connector.receivePort + " -> " + cmd);
+                logger.debug(maskPwd("Sending to " + connector.host + ":" + connector.receivePort + " -> " + cmd));
                 try {
                     connector.sendDatagram(cmd.getBytes());
                 } catch (Exception e) {
-                    logger.error("Error occurred when sending UDP data to Anel device: " + cmd, e);
+                    logger.error(maskPwd("Error occurred when sending UDP data to Anel device: " + cmd, e));
                 }
             } else {
                 logger.debug("switch " + switchNr + " is locked, nothing sent.");
@@ -176,14 +180,14 @@ class AnelConnectorThread extends Thread {
         // Format to switch off: IO_off<nr><user><pwd>
         // Example: IO_on3adminanel
         final String cmd = "IO_" + (newState ? "on" : "off") + ioNr + user + password;
-        logger.debug("Sending to " + state.host + ": " + cmd);
+        logger.debug(maskPwd("Sending to " + state.host + ": " + cmd));
         try {
             connector.sendDatagram(cmd.getBytes());
         } catch (Exception e) {
             if (e.getCause() instanceof UnknownHostException) {
                 logger.error("Could not check status of Anel device '" + state.host + "'");
             } else {
-                logger.error("Error occurred when sending UDP data to Anel device: " + cmd, e);
+                logger.error(maskPwd("Error occurred when sending UDP data to Anel device: " + cmd), e);
             }
         }
     }
