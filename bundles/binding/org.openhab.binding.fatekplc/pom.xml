@@ -14,9 +14,12 @@
 
   <name>openHAB Fatek PLC Binding</name>
 
-  <properties>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.simplify4u</groupId>
+      <artifactId>jfatek</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+  </dependencies>
 
 </project>

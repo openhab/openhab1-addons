@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.openhab.binding.fatekplc.items.CommandException;
 import org.openhab.binding.fatekplc.items.FatekPLCItem;
+import org.openhab.binding.fatekplc.serial.SerialFatekConnectionFactory;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
@@ -53,6 +54,10 @@ public class FatekPLCSlave {
 
 	private FatekPLC fatekPLC = null;
 
+	static {
+		FatekPLC.registerConnectionFactory(new SerialFatekConnectionFactory());
+	}
+
 	public FatekPLCSlave(String name, EventPublisher eventPublisher) {
 		this.name = name;
 		this.eventPublisher = eventPublisher;
@@ -73,28 +78,28 @@ public class FatekPLCSlave {
 	/**
 	 * Configure slave property
 	 *
-	 * @param name property name
+	 * @param configName property configName
 	 * @param value config value
 	 * @throws ConfigurationException if something wrong with configuration, eg. Unknown property
 	 */
-	public void configure(String name, Object value) throws ConfigurationException {
+	public void configure(String configName, Object value) throws ConfigurationException {
 
-		logger.debug("Configure item: {} to {}", name, value);
+		logger.debug("Configure item: {} to {}", configName, value);
 
-		if ("connectionUri".equals(name)) {
+		if ("connectionUri".equals(configName)) {
 			try {
 				disconnect();
 				fatekPLC = new FatekPLC((String) value);
-				logger.info("New Fatek PLC connectionUri={}", value);
+				logger.info("New Fatek PLC name={}, connectionUri={}", name, value);
 			} catch (Exception e) {
 				fatekPLC = null;
-				throw new ConfigurationException(name, e.getMessage());
+				throw new ConfigurationException(configName, e.getMessage(), e);
 			}
 		} else {
-			throw new ConfigurationException(name, "Unknown property");
+			throw new ConfigurationException(configName, "Unknown property");
 		}
 
-		logger.debug("Configure item: {} end", name);
+		logger.debug("Configure item: {} end", configName);
 	}
 
 	/**
