@@ -57,6 +57,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
     private int udpPort = 9998;
     private String serialPort = null;
     private boolean simulator = false;
+    private int throttleTime = 0;
 
     /** Thread to handle messages from heat pump */
     private MessageListener messageListener = null;
@@ -115,6 +116,11 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
             String simulateString = (String) config.get("simulate");
             if (StringUtils.isNotBlank(simulateString)) {
                 simulator = Boolean.parseBoolean(simulateString);
+            }
+
+            String throttleTimeString = (String) config.get("throttleTime");
+            if (StringUtils.isNotBlank(throttleTimeString)) {
+                throttleTime = Integer.parseInt(throttleTimeString);
             }
         }
 
@@ -223,7 +229,7 @@ public class SwegonVentilationBinding extends AbstractBinding<SwegonVentilationB
                     logger.trace("Received data (len={}): {}", data.length, DatatypeConverter.printHexBinary(data));
 
                     HashMap<SwegonVentilationCommandType, Integer> regValues = SwegonVentilationDataParser
-                            .parseData(data);
+                            .parseData(data, throttleTime);
 
                     if (regValues != null) {
 

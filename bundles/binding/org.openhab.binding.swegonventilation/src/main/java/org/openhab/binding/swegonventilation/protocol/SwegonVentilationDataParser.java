@@ -16,6 +16,8 @@ import java.util.HashMap;
 
 import org.openhab.binding.swegonventilation.internal.SwegonVentilationCommandType;
 import org.openhab.binding.swegonventilation.internal.SwegonVentilationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for parse data packets from Swegon ventilation system.
@@ -24,8 +26,20 @@ import org.openhab.binding.swegonventilation.internal.SwegonVentilationException
  * @since 1.4.0
  */
 public class SwegonVentilationDataParser {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SwegonVentilationDataParser.class);
 
-    public static HashMap<SwegonVentilationCommandType, Integer> parseData(byte[] data)
+    private static HashMap<Byte, Long> updateTimes = new HashMap<Byte, Long>();
+
+    private static long getLastUpdateTime(byte msgType) {
+        Long throttleTime = updateTimes.get(msgType);
+        return throttleTime != null ? throttleTime : 0;
+    }
+
+    private static void setLastUpdateTime(byte msgType, long time) {
+        updateTimes.put(msgType, time);
+    }
+
+    public static HashMap<SwegonVentilationCommandType, Integer> parseData(byte[] data, int throttleTime)
             throws SwegonVentilationException {
 
         if (data[0] == (byte) 0x64) {
@@ -45,15 +59,28 @@ public class SwegonVentilationDataParser {
                 d[i - 8] = data[i];
             }
 
-            switch (msgType) {
-                case (byte) 0x21:
-                    return parseMessage21(d);
-                case (byte) 0x71:
-                    return parseMessage71(d);
-                case (byte) 0x73:
-                    return parseMessage73(d);
+            boolean parse = true;
+
+            LOGGER.debug("Received message type '{}'", msgType);
+            if (throttleTime > 0) {
+                if ((getLastUpdateTime(msgType) + throttleTime) > System.currentTimeMillis()) {
+                    LOGGER.debug("Skipping message parsing");
+                    parse = false;
+                }
             }
 
+            if (parse) {
+                LOGGER.debug("Parsing message");
+                setLastUpdateTime(msgType, System.currentTimeMillis());
+                switch (msgType) {
+                    case (byte) 0x21:
+                        return parseMessage21(d);
+                    case (byte) 0x71:
+                        return parseMessage71(d);
+                    case (byte) 0x73:
+                        return parseMessage73(d);
+                }
+            }
         } else {
             throw new SwegonVentilationException("Illegal data received, first byte mismatch!");
         }
