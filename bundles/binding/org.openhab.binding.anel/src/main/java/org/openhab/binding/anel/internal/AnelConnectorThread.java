@@ -135,7 +135,7 @@ class AnelConnectorThread extends Thread {
                 try {
                     connector.sendDatagram(cmd.getBytes());
                 } catch (Exception e) {
-                    logger.error(maskPwd("Error occurred when sending UDP data to Anel device: " + cmd, e));
+                    logger.error(maskPwd("Error occurred when sending UDP data to Anel device: " + cmd), e);
                 }
             } else {
                 logger.debug("switch " + switchNr + " is locked, nothing sent.");
