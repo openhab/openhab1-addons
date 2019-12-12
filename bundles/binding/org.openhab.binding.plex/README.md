@@ -93,33 +93,33 @@ token=abcdefghijklmnopqrst
 items/plexdemo.items
 
 ```
-Switch PlexTVPower		"Power"         <video>		{plex="playerid#power"}
-String PlexTVStatus		"Status [%s]"	<video>		{plex="playerid#state"}
-String PlexTVTitle		"Title [%s]"	<video>		{plex="playerid#title"}
-String PlexTVType		"Type [%s]"		<video>		{plex="playerid#type"}
-String PlexTVCover		"Cover"			<video>		{plex="playerid#playback/cover"}
+Switch PlexTVPower	"Power"         <video>		{plex="playerid#power"}
+String PlexTVStatus	"Status [%s]"	<video>		{plex="playerid#state"}
+String PlexTVTitle	"Title [%s]"	<video>		{plex="playerid#title"}
+String PlexTVType	"Type [%s]"		<video>		{plex="playerid#type"}
+String PlexTVCover	"Cover"			<video>		{plex="playerid#playback/cover"}
 
 Dimmer PlexTVProgress   "Progress [%.1f%%]"    <video>    {plex="playerid#playback/progress"}
 DateTime PlexTVEndTime  "End time [%1$tR]"     <video>    {plex="playerid#playback/endTime"}
 
-Dimmer PlexTVVolume		"Volume"		<video>		{plex="playerid#playback/volume"}
-Switch PlexTVPause		"Pause"			<video>		{plex="playerid#playback/pause"}
-Switch PlexTVPlay		"Play"			<video>		{plex="playerid#playback/play"}
+Dimmer PlexTVVolume	"Volume"		<video>		{plex="playerid#playback/volume"}
+Switch PlexTVPause	"Pause"			<video>		{plex="playerid#playback/pause"}
+Switch PlexTVPlay	"Play"			<video>		{plex="playerid#playback/play"}
 Switch PlexTVPlayPause	"PlayPause"		<video>		{plex="playerid#playback/playpause"}
-Switch PlexTVStop		"Stop"			<video>		{plex="playerid#playback/stop"}
+Switch PlexTVStop	"Stop"			<video>		{plex="playerid#playback/stop"}
 
-Switch PlexTVSelect		"Select"		<video>		{plex="playerid#navigation/select"}
-Switch PlexTVBack		"Back"			<video>		{plex="playerid#navigation/back"}
-Switch PlexTVUp			"Up"			<video>		{plex="playerid#navigation/moveUp"}
-Switch PlexTVDown		"Down"			<video>		{plex="playerid#navigation/moveDown"}
-Switch PlexTVLeft		"Left"			<video>		{plex="playerid#navigation/moveLeft"}
-Switch PlexTVRight		"Right"			<video>		{plex="playerid#navigation/moveRight"}
+Switch PlexTVSelect	"Select"		<video>		{plex="playerid#navigation/select"}
+Switch PlexTVBack	"Back"			<video>		{plex="playerid#navigation/back"}
+Switch PlexTVUp		"Up"			<video>		{plex="playerid#navigation/moveUp"}
+Switch PlexTVDown	"Down"			<video>		{plex="playerid#navigation/moveDown"}
+Switch PlexTVLeft	"Left"			<video>		{plex="playerid#navigation/moveLeft"}
+Switch PlexTVRight	"Right"			<video>		{plex="playerid#navigation/moveRight"}
 
 Switch PlexTVForward	"Forward"		<video>		{plex="playerid#playback/stepForward"}
 Switch PlexTVReverse	"Reverse"		<video>		{plex="playerid#playback/stepBack"}
 ```
 
-items/plexdemo.sitemap
+sitemaps/plexdemo.sitemap
 
 ```
 sitemap plexdemo label="Main Menu"
@@ -160,8 +160,8 @@ val Functions$Function1 dimLiving = [ int dimlevel |
 	
 	 // Only dim lights when a certain scene is selected
     if(scene) {
-		sendCommand(Lamp_Living_Small, dimlevel)
-		sendCommand(Lamp_Living_Floor, dimlevel)
+		Lamp_Living_Small.sendCommand(dimlevel)
+		Lamp_Living_Floor.sendCommand(dimlevel)
 	}
 ]
 

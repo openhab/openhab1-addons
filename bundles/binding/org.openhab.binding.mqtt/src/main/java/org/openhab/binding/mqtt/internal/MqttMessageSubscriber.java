@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.mqtt.internal;
 
@@ -31,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements MqttMessageConsumer {
 
-    private static Logger logger = LoggerFactory.getLogger(MqttMessageSubscriber.class);
+    private Logger logger = LoggerFactory.getLogger(MqttMessageSubscriber.class);
 
     private EventPublisher eventPublisher;
 
@@ -72,7 +76,6 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
 
         String[] config = splitConfigurationString(configuration);
         try {
-
             if (config.length != 4 && config.length != 5) {
                 throw new BindingConfigParseException("Configuration requires 4 or 5 parameters separated by ':'");
             }
@@ -109,25 +112,21 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
             if (config.length > 4) {
                 setMsgFilter(config[4].trim());
             }
-
         } catch (BindingConfigParseException e) {
             throw new BindingConfigParseException(
                     "Configuration '" + configuration + "' is not a valid inbound configuration: " + e.getMessage());
         }
-
     }
 
     @Override
     public void processMessage(String topic, byte[] message) {
-
         try {
-
             if (getTransformationServiceName() != null && getTransformationService() == null) {
                 logger.debug("Received message before transformation service '{}' was initialized.");
                 initTransformService();
             }
 
-            String value = new String(message);
+            String value = new String(message, "UTF-8");
 
             if (!msgFilterApplies(value)) {
                 logger.debug("Skipped message '{}' because Message Filter '{}' does not apply.", value, msgFilter);
@@ -150,9 +149,8 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
                 eventPublisher.postUpdate(getItemName(), state);
             }
         } catch (Exception e) {
-            logger.error("Error processing MQTT message.", e);
+            logger.warn("Error processing MQTT message.", e);
         }
-
     }
 
     /**
@@ -168,8 +166,8 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
 
     /**
      * Set a Msg filter to the Subscriber. All Messages that do not match the
-     * filter will be ignored. The filter will be interpreted as regular
-     * expression. Set null to remove filter
+     * filter will be ignored. The filter will be interpreted as a regular
+     * expression. Set to null to remove filter.
      * 
      * @param filter
      *            Regular Expression String
@@ -184,7 +182,7 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
 
     /**
      * Checks whether an incoming message matches a predefined regular
-     * expression filter
+     * expression filter.
      * 
      * @param msg
      * @return true if the msg matches the filter specified, or if no filter is
@@ -193,11 +191,13 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
     private boolean msgFilterApplies(String msg) {
         if (msg == null) {
             return false;
-        } else if (msgFilter == null) {
-            return true;
-        } else {
-            return msg.matches(msgFilter);
         }
+
+        if (msgFilter == null) {
+            return true;
+        }
+
+        return msg.matches(msgFilter);
     }
 
     /**
@@ -210,7 +210,6 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
      * @return State
      */
     protected State getState(String value, List<Class<? extends State>> acceptedDataTypes) {
-
         return TypeParser.parseState(acceptedDataTypes, value);
     }
 
@@ -224,7 +223,6 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
      * @return Command
      */
     protected Command getCommand(String value, List<Class<? extends Command>> acceptedCommands) {
-
         return TypeParser.parseCommand(acceptedCommands, value);
     }
 
@@ -232,5 +230,4 @@ public class MqttMessageSubscriber extends AbstractMqttMessagePubSub implements 
     public String getTopic() {
         return StringUtils.replace(super.getTopic(), "${item}", "+");
     }
-
 }

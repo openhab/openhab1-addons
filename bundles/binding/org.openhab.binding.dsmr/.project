@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.openhab.binding.dsmr</name>
+	<name>org.openhab.binding.dsmr1</name>
 	<comment>This is the DSMR binding of the open Home Automation Bus (openHAB)</comment>
 	<projects>
 	</projects>

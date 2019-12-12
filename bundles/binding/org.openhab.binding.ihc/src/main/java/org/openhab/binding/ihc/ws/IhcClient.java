@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.ihc.ws;
 
@@ -46,7 +50,7 @@ public class IhcClient {
     /*
      * If you wonder, why e.g. Axis(2) or JAX-WS is not used to handle SOAP
      * interface...
-     * 
+     *
      * WSDL files are included, so feel free to try ;)
      */
 
@@ -164,7 +168,7 @@ public class IhcClient {
 
     /**
      * Open connection and authenticate session to IHC / ELKO LS controller.
-     * 
+     *
      * @return
      */
     public void closeConnection() throws IhcExecption {
@@ -182,7 +186,7 @@ public class IhcClient {
 
     /**
      * Open connection and authenticate session to IHC / ELKO LS controller.
-     * 
+     *
      * @throws IhcExecption
      */
     public void openConnection() throws IhcExecption {
@@ -235,7 +239,7 @@ public class IhcClient {
 
     /**
      * Query project information from the controller.
-     * 
+     *
      * @return project information.
      * @throws IhcExecption
      */
@@ -246,7 +250,7 @@ public class IhcClient {
 
     /**
      * Query controller current state.
-     * 
+     *
      * @return controller's current state.
      */
     public WSControllerState getControllerState() {
@@ -256,7 +260,7 @@ public class IhcClient {
 
     /**
      * Load IHC / ELKO LS project file.
-     * 
+     *
      */
     private synchronized void loadProject() throws IhcExecption {
 
@@ -333,7 +337,7 @@ public class IhcClient {
 
     /**
      * Wait controller state change notification.
-     * 
+     *
      * @param previousState
      *            Previous controller state.
      * @param timeoutInSeconds
@@ -349,7 +353,7 @@ public class IhcClient {
 
     /**
      * Returns all possible enumerated values for corresponding enum type.
-     * 
+     *
      * @param typedefId
      *            Enum type definition identifier.
      * @return list of enum values.
@@ -361,7 +365,7 @@ public class IhcClient {
 
     /**
      * Enable resources runtime value notifications.
-     * 
+     *
      * @param resourceIdList
      *            List of resource Identifiers.
      * @return True is connection successfully opened.
@@ -374,10 +378,10 @@ public class IhcClient {
 
     /**
      * Wait runtime value notifications.
-     * 
+     *
      * Runtime value notification should firstly be activated by
      * enableRuntimeValueNotifications function.
-     * 
+     *
      * @param timeoutInSeconds
      *            How many seconds to wait notifications.
      * @return List of received runtime value notifications.
@@ -398,8 +402,8 @@ public class IhcClient {
 
     /**
      * Query resource value from controller.
-     * 
-     * 
+     *
+     *
      * @param resoureId
      *            Resource Identifier.
      * @return Resource value.
@@ -412,13 +416,13 @@ public class IhcClient {
 
     /**
      * Get resource value information.
-     * 
+     *
      * Function return resource value from internal memory, if data is not
      * available information is read from the controller.
-     * 
+     *
      * Resource value's value field (e.g. floatingPointValue) could be old
      * information.
-     * 
+     *
      * @param resoureId
      *            Resource Identifier.
      * @return Resource value.
@@ -439,8 +443,8 @@ public class IhcClient {
 
     /**
      * Update resource value to controller.
-     * 
-     * 
+     *
+     *
      * @param value
      *            Resource value.
      * @return True if value is successfully updated.
@@ -452,10 +456,10 @@ public class IhcClient {
 
     /**
      * The IhcReader runs as a separate thread.
-     * 
+     *
      * Thread listen resource value notifications from IHC / ELKO LS controller
      * and post updates to openHAB bus when notifications are received.
-     * 
+     *
      */
     private class IhcResourceValueNotificationListener extends Thread {
 
@@ -529,10 +533,10 @@ public class IhcClient {
 
     /**
      * The IhcReader runs as a separate thread.
-     * 
+     *
      * Thread listen controller state change notifications from IHC / ELKO LS
      * controller and .
-     * 
+     *
      */
     private class IhcControllerStateListener extends Thread {
 
@@ -566,7 +570,7 @@ public class IhcClient {
                     logger.trace("Controller state {}", currentState.getState());
 
                     if (oldState.getState().equals(currentState.getState()) == false) {
-                        logger.info("Controller state change detected ({} -> {})", oldState.getState(),
+                        logger.debug("Controller state change detected ({} -> {})", oldState.getState(),
                                 currentState.getState());
 
                         // send message to event listeners

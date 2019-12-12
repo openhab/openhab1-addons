@@ -1,15 +1,21 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.fritzboxtr064.internal;
 
+import java.util.List;
+
 /**
- * {@link ItemMap} for a SOAP service which takes an input parameter.
+ * {@link ItemMap} for a SOAP service which takes input arguments.
  *
  * @author Michael Koch <tensberg@gmx.net>
  * @since 1.11.0
@@ -17,8 +23,14 @@ package org.openhab.binding.fritzboxtr064.internal;
 public interface ParametrizedItemMap extends ItemMap {
 
     /**
-     * @return XML element name of the data in parameter of the SOAP service.
+     * Get the list of input arguments for a particular configuration.
+     * Creates the {@link InputArgument input arguments} list by combining the
+     * argument names of the item map with the {@link ItemConfiguration#getArgumentValues() argument values} configured
+     * by the user.
+     *
+     * @param config Configuration of the item.
+     * @return List of input arguments for the given configuration.
      */
-    String getReadDataInName();
+    List<InputArgument> getConfigInputArguments(ItemConfiguration config);
 
 }

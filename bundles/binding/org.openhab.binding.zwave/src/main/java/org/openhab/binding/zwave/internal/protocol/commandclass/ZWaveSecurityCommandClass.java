@@ -1,10 +1,14 @@
-/*
- * Copyright (c) 2010-2015, openHAB.org and others.
+/**
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
@@ -445,7 +449,7 @@ public abstract class ZWaveSecurityCommandClass extends ZWaveCommandClass {
     public void sendNonceReport() {
         SerialMessage nonceReportMessage = nonceGeneration.generateAndBuildNonceReport();
         if (nonceReportMessage == null) {
-            logger.error("NODE {}: generateAndBuildNonceReport returned null");
+            logger.error("NODE {}: generateAndBuildNonceReport returned null", this.getNode().getNodeId());
         } else {
             transmitMessage(nonceReportMessage);
         }
@@ -632,7 +636,7 @@ public abstract class ZWaveSecurityCommandClass extends ZWaveCommandClass {
         if (hasMultipleParts) {
             if (!iter.hasNext()) {
                 logger.warn("NODE {}: security payload frame was marked as having 2 parts, "
-                        + "but only found 1 in payloadEncapsulationQueue: {}", frameToRemove);
+                        + "but only found 1 in payloadEncapsulationQueue: {}", this.getNode().getNodeId(), frameToRemove);
             } else {
                 ZWaveSecurityPayloadFrame secondFrame = iter.next(); // Go to the 2nd part
                 logger.info("NODE {}: Removing 2nd part from payloadEncapsulationQueue: {}", getNode().getNodeId(),

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2017, openHAB.org and others.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package com.myhome.fcrisciani.connector;
 
@@ -35,8 +39,10 @@ import com.myhome.fcrisciani.queue.PriorityQueueThread;
  * plant
  *
  * @author Flavio Crisciani
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
+ *
  */
 public class MyHomeJavaConnector {
 
@@ -151,7 +157,7 @@ public class MyHomeJavaConnector {
         this.ip = ip;
         this.port = port;
         this.passwd = passwd;
-        logger.debug("Created MyHomeJavaConnector with ip = {}, port = {} and password {}", ip, port, passwd);
+        logger.debug("Created MyHomeJavaConnector with ip = {}, port = {}", ip, port);
         this.commandMutex = new Semaphore(1, true);
         this.commandQueue = new PriorityCommandQueue();
         this.commandQueueThread = new Thread(new PriorityQueueThread(this, commandQueue), "TailThread");

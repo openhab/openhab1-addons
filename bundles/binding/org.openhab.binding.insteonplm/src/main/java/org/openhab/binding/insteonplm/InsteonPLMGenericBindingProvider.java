@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.insteonplm;
 
@@ -84,19 +88,6 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
     }
 
     /**
-     * Inherited from AbstractGenericBindingProvider.
-     * {@inheritDoc}
-     */
-    @Override
-    public Boolean autoUpdate(String itemName) {
-        // By default, all features are auto-updating, i.e. we do not rely
-        // on the openhab environment to tell us the status of a device,
-        // but rather resort to polling and listening to update messages
-        // on the insteon network.
-        return true;
-    }
-
-    /**
      * Inherited from InsteonPLMBindingProvider.
      * {@inheritDoc}
      */
@@ -107,9 +98,9 @@ public class InsteonPLMGenericBindingProvider extends AbstractGenericBindingProv
 
     /**
      * Parses binding configuration string. The config string has the format:
-     * 
+     *
      * xx.xxx.xxx:productKey#feature,param1=yyy,param2=zzz
-     * 
+     *
      * @param bindingConfig string with binding parameters
      * @return String array with split arguments: [address,prodKey,features+params]
      * @throws BindingConfigParseException if parameters are invalid

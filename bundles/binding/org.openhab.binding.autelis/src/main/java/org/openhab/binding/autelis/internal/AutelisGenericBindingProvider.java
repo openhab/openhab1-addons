@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.autelis.internal;
 
@@ -13,7 +17,6 @@ import java.util.Set;
 import org.openhab.binding.autelis.AutelisBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -57,7 +60,7 @@ public class AutelisGenericBindingProvider extends AbstractGenericBindingProvide
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof NumberItem
+        if (!(item instanceof SwitchItem || item instanceof NumberItem
                 || item instanceof StringItem)) {
             throw new BindingConfigParseException("item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()

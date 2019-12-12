@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Product>
+    <Model>EU-2</Model>
+    <Label lang="en">Light Switch 2 Channel</Label>
+
+    <CommandClasses>
+        <Class>
+            <id>0x00</id>             <!-- NO_OPERATION -->
+        </Class>
+        <Class>
+            <id>0x20</id>             <!-- BASIC -->
+        </Class>
+        <Class>
+            <id>0x25</id>             <!-- SWITCH_BINARY -->
+        </Class>
+        <Class>
+            <id>0x27</id>             <!-- SWITCH_ALL -->
+        </Class>
+        <Class>
+            <id>0x59</id>             <!-- ASSOCIATION_GROUP_INFO -->
+        </Class>
+        <Class>
+            <id>0x5A</id>             <!-- DEVICE_RESET_LOCALLY -->
+        </Class>
+        <Class>
+            <id>0x5E</id>             <!-- ZWAVE_PLUS_INFO -->
+        </Class>
+        <Class>
+            <id>0x60</id>             <!-- MULTI_INSTANCE -->
+        </Class>
+        <Class>
+            <id>0x70</id>             <!-- CONFIGURATION -->
+        </Class>
+        <Class>
+            <id>0x72</id>             <!-- MANUFACTURER_SPECIFIC -->
+        </Class>
+        <Class>
+            <id>0x73</id>             <!-- POWERLEVEL -->
+        </Class>
+        <Class>
+            <id>0x85</id>             <!-- ASSOCIATION -->
+        </Class>
+        <Class>
+            <id>0x86</id>             <!-- VERSION -->
+        </Class>
+        <Class>
+            <id>0x8E</id>             <!-- MULTI_INSTANCE_ASSOCIATION -->
+        </Class>
+    </CommandClasses>
+
+    <Configuration>
+
+        <Parameter>
+            <Index>1</Index>
+            <Label lang="en">Back light Enable</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Disable back light LED</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Enable back light LED</Label>
+            </Item>
+            <Help><![CDATA[Enable back light when Light Switch is powered on.
+<p>This parameter defines the back light state of touch buton. The back light LED would be on when Light Switch is powered on if this parameter is set to '1'; otherwise the back light LED would be off.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>2</Index>
+            <Label lang="en">Relay On/Off Indicate</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Do not change LED state when on</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Pink LED state when on</Label>
+            </Item>
+            <Help><![CDATA[Switch on LED indicator.
+<p>This parameter defines the relay state. The LED will be turned on with pink color when the button is touched to turn on relay if this parameter is set to '1'; otherwise the LED state is not changed.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>3</Index>
+            <Label lang="en">Relay On/Off Status Saved Enable</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">Do not save the On/Off status</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Save and restore the relay On/Off status</Label>
+            </Item>
+            <Help><![CDATA[Restore switch status on power restore.
+<p>This parameter defines the on/off status of relay needs saving or not. The status will be saved when relay status is changed if this parameter is set to '1'; otherwise the relay status is not saved. The Light Switch will restore the relay status when is powered on again.</p>
+            ]]></Help>
+        </Parameter>
+
+        <Parameter>
+            <Index>4</Index>
+            <Label lang="en">Root Device Mapped Setting</Label>
+            <Type>list</Type>
+            <Default>1</Default>
+            <Minimum>0</Minimum>
+            <Maximum>1</Maximum>
+            <Size>1</Size>
+            <Item>
+                <Value>0</Value>
+                <Label lang="en">No endpoint</Label>
+            </Item>
+            <Item>
+                <Value>1</Value>
+                <Label lang="en">Endpoint 1</Label>
+            </Item>
+            <Item>
+                <Value>2</Value>
+                <Label lang="en">Endpoint 2</Label>
+            </Item>
+            <Item>
+                <Value>3</Value>
+                <Label lang="en"> Endpoint 1 and 2</Label>
+            </Item>
+            <Help><![CDATA[Endpoint device mapping setting for associated devices.
+<p>This parameter defines which endpoint is mapped to root device (Endpoint 0). Devices that send BASIC_SET = 0xFF command to Light Switch the configured endpoints will be turned on.</p>
+            ]]></Help>
+        </Parameter>
+
+    </Configuration>
+
+    <Associations>
+
+        <Group>
+            <Index>1</Index>
+            <Label lang="en">Lifeline</Label>
+            <Maximum>5</Maximum>
+            <SetToController>true</SetToController>
+        </Group>
+
+        <Group>
+            <Index>2</Index>
+            <Label lang="en">Group 2</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+        <Group>
+            <Index>3</Index>
+            <Label lang="en">Group 3</Label>
+            <Maximum>5</Maximum>
+        </Group>
+
+    </Associations>
+
+</Product>
+
+ 

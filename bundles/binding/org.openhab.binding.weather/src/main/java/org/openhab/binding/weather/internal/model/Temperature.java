@@ -1,15 +1,20 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.weather.internal.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 
@@ -21,50 +26,46 @@ import org.openhab.binding.weather.internal.annotation.ProviderMappings;
  */
 public class Temperature {
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.temp_c"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "main.temp"),
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "main.temp"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "temp.day"),
             @Provider(name = ProviderName.FORECASTIO, property = "currently.temperature"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "temp_C"),
-            @Provider(name = ProviderName.YAHOO, property = "condition.temp"),
             @Provider(name = ProviderName.HAMWEATHER, property = "tempC"),
-            @Provider(name = ProviderName.METEOBLUE, property = "temperature") })
+            @Provider(name = ProviderName.METEOBLUE, property = "temperature"),
+            @Provider(name = ProviderName.APIXU, property = "temp_c"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "temp") })
     private Double current;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "low.celsius"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "main.temp_min"),
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "main.temp_min"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "temp.min"),
             @Provider(name = ProviderName.FORECASTIO, property = "temperatureMin"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "tempMinC"),
-            @Provider(name = ProviderName.YAHOO, property = "forecast.low"),
             @Provider(name = ProviderName.HAMWEATHER, property = "minTempC"),
-            @Provider(name = ProviderName.METEOBLUE, property = "temperature_min") })
+            @Provider(name = ProviderName.METEOBLUE, property = "temperature_min"),
+            @Provider(name = ProviderName.APIXU, property = "mintemp_c"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "min_temp") })
     private Double min;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "high.celsius"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "main.temp_max"),
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "main.temp_max"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "temp.max"),
             @Provider(name = ProviderName.FORECASTIO, property = "temperatureMax"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "tempMaxC"),
-            @Provider(name = ProviderName.YAHOO, property = "forecast.high"),
             @Provider(name = ProviderName.HAMWEATHER, property = "maxTempC"),
-            @Provider(name = ProviderName.METEOBLUE, property = "temperature_max") })
+            @Provider(name = ProviderName.METEOBLUE, property = "temperature_max"),
+            @Provider(name = ProviderName.APIXU, property = "maxtemp_c"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "max_temp") })
     private Double max;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.feelslike_c"),
-            @Provider(name = ProviderName.FORECASTIO, property = "apparentTemperature"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "feelslikeC") })
+    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "apparentTemperature"),
+            @Provider(name = ProviderName.HAMWEATHER, property = "feelslikeC"),
+            @Provider(name = ProviderName.APIXU, property = "feelslike_c"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "app_temp") })
     private Double feel;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.dewpoint_c"),
-            @Provider(name = ProviderName.FORECASTIO, property = "dewPoint"),
+    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "dewPoint"),
             @Provider(name = ProviderName.HAMWEATHER, property = "dewpointC"),
-            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "DewPointC") })
+            @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "DewPointC"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "dewpt") })
     private Double dewpoint;
 
     /**
@@ -145,5 +146,4 @@ public class Temperature {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("current", current).append("min", min)
                 .append("max", max).append("feel", feel).append("dewpoint", dewpoint).toString();
     }
-
 }

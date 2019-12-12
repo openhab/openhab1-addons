@@ -88,9 +88,9 @@ when
 then
 	var ret_val = sendHttpGetRequest('http://192.168.1.206:62137/DeviceDescription.xml')
 	if (ret_val != null) {
-		postUpdate(horizon_power, ON)
+		horizon_power.postUpdate(ON)
 	} else {
-		postUpdate(horizon_power, OFF)
+		horizon_power.postUpdate(OFF)
 	}
 end
 ```

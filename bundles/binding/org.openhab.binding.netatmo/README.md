@@ -4,7 +4,7 @@ The Netatmo binding integrates the Netatmo Personal Weather Station into openHAB
 
 The Netatmo Welcome Camera is also supported; it is a home camera with face recognition. It notifies you when it sees someone it knows, but also when it sees a stranger. See information below to obtain the necessary informations to setup your Netatmo Gear, also see [the Netatmo website](http://www.netatmo.com/) for details on their products.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/netatmo/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/netatmo/).
 
 > The Netatmo Binding (1.x) is considered a legacy binding and does not show up by default as an add-on in the OpenHAB 2 Paper UI. In order for the binding to show up as a add-on, you need to go to Configuration->System and enable both **Access Remote Repositories** and **Include Legacy 1.x Bindings** and save the setting. Once you have done this, you will see both **Netatmo Binding** and **Netatmo Binding (1.x)** in Add-ons, you will want to install **Netatmo Binding**.
 
@@ -41,7 +41,7 @@ The variables to fill in are:
 * `<CLIENT_ID>` Your client ID taken from your App at https://dev.netatmo.com/dev/listapps
 * `<SCOPE>` A list of devices and capabilities. The full scope would be `read_station read_thermostat write_thermostat read_camera access_camera`, see the [Netatmo Scope Documentation](https://dev.netatmo.com/doc/authentication/scopes) for more info. Please ensure that the variable is [URL encoded](http://www.w3schools.com/tags/ref_urlencode.asp) if your browser doesn't do it automatically, e.g. the URL encoded complete list of scopes would be `read_station%20read_thermostat%20write_thermostat%20read_camera%20access_camera`
 
-When entering the URL to your browser it will take you to the Netatmo Webpage asking you to authorize your application to access your Netatmo data. The page should look something like [this](https://dev.netatmo.com/images/dev/auth_app.jpg). After this step your Application should appear as an authorized application in your Netatmo profile. Please make sure it is there, the setup can not continue if your app is not authorized.
+When entering the URL to your browser it will take you to the Netatmo Webpage asking you to authorize your application to access your Netatmo data. The page should look something like [this](https://dev.netatmo.com/images/dev/auth_app.jpg). After this step your Application should appear as an authorized application in your Netatmo profile. Please make sure it is there, the setup cannot continue if your app is not authorized.
 
 ### 3. Retrieve a refresh token
 [Retrieve a refresh token](https://dev.netatmo.com/doc/authentication/refreshtoken) from Netatmo API, using e.g. curl. 

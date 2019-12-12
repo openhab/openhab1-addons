@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.fritzboxtr064.internal;
 
@@ -25,15 +29,17 @@ import java.util.Set;
 public interface ItemMap {
     /**
      * @return Names of the item commands which are provided by the response to the
-     *         {@link #getReadDataOutName(String) SOAP service command} of this map.
+     *         {@link #getItemArgumentName(String) SOAP service command} of this map.
      */
     Set<String> getItemCommands();
 
     /**
-     * @param itemCommand
-     * @return Name of the XML element in the service response which contains the value of the given command.
+     * Get the name of the XML element in the TR064 service call which contains the value of the given command.
+     * For writing calls, this is an element in the service request, for reading calls in the service response.
+     *
+     * @return Name of the XML element for the item value.
      */
-    String getReadDataOutName(String itemCommand);
+    String getItemArgumentName(String itemCommand);
 
     String getServiceId();
 

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2017, openHAB.org and others.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.cardio2e.internal;
 
@@ -34,7 +38,6 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
@@ -74,7 +77,7 @@ public class Cardio2eGenericBindingProvider extends
 	@Override
 	public void validateItemType(Item item, String bindingConfig)
 			throws BindingConfigParseException {
-		if (!(item instanceof SwitchItem || item instanceof DimmerItem
+		if (!(item instanceof SwitchItem
 				|| item instanceof RollershutterItem
 				|| item instanceof ContactItem || item instanceof NumberItem || item instanceof DateTimeItem)) {
 			throw new BindingConfigParseException(
@@ -143,7 +146,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = lightingTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for LIGHTING object number.");
 							}
@@ -171,7 +174,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = relayTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for RELAY object number.");
 							}
@@ -205,7 +208,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(1).transaction = relayTransactionDown;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept values '"
+										"Cannot accept values '"
 												+ parameters[1]
 												+ "' or '"
 												+ parameters[2]
@@ -235,7 +238,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = hvacTemperatureTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for HVAC_TEMPERATURE object number.");
 							}
@@ -269,7 +272,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = hvacControlTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for HVAC_CONTROL object number.");
 							}
@@ -304,7 +307,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = hvacControlTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for HVAC_CONTROL object number.");
 							}
@@ -343,7 +346,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = zonesTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1] + "' or '"
 												+ parameters[2]
 												+ "' for ZONES object.");
@@ -372,7 +375,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = zonesBypassTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for ZONES_BYPASS object.");
 							}
@@ -471,7 +474,7 @@ public class Cardio2eGenericBindingProvider extends
 								configItems.get(0).transaction = curtainTransaction;
 							} catch (IllegalArgumentException e1) {
 								throw new BindingConfigParseException(
-										"Can not accept value '"
+										"Cannot accept value '"
 												+ parameters[1]
 												+ "' for CURTAIN object number.");
 							}

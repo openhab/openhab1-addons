@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.caldav_personal.internal;
 
@@ -167,12 +171,18 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
      */
     @Override
     public void eventBegins(CalDavEvent event) {
+        logger.debug("eventBegins() called for event '{}'", event.getShortName());
+
         if (!calendars.contains(event.getCalendarId())) {
+            logger.trace("event calendarId does not exist in calendars");
             return;
         }
 
+        logger.debug("check start of event '{}'", event.getShortName());
         if (event.getStart().isBeforeNow()) {
-            return;
+            logger.debug("event is before now; ignoring and updating anyway.");
+            logger.trace("event start time: {} ", event.getStart());
+            logger.trace("now:              {} ", DateTime.now());
         }
 
         logger.debug("adding event to map: {}", event.getShortName());
@@ -206,12 +216,19 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
     }
 
     private void updateItemsForEvent() {
+        if (calDavLoader == null) {
+            logger.debug("calDavLoader not available. Unable to update items for event.");
+            return;
+        }
+
         CalDavBindingProvider bindingProvider = null;
+
         for (CalDavBindingProvider bindingProvider_ : this.providers) {
             bindingProvider = bindingProvider_;
         }
+
         if (bindingProvider == null) {
-            logger.error("no binding provider found");
+            logger.warn("No binding provider found");
             return;
         }
 
@@ -220,10 +237,16 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
         for (String item : bindingProvider.getItemNames()) {
             CalDavConfig config = bindingProvider.getConfig(item);
             List<CalDavEvent> events = eventCache.get(config.getUniqueEventListKey());
-            if (events == null && this.calDavLoader != null) {
+            if (events == null) {
+                logger.debug("No events found in event cache for item '{}'. Attempting to load from calendar.", item);
                 CalDavQuery query = getQueryForConfig(config);
-                events = this.calDavLoader.getEvents(query);
+                events = calDavLoader.getEvents(query);
                 eventCache.put(config.getUniqueEventListKey(), events);
+            }
+
+            if (events == null) {
+                logger.debug("No events found for item '{}'. Nothing to update.", item);
+                continue;
             }
             this.updateItem(item, config, events);
         }

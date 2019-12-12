@@ -2,7 +2,7 @@
 
 The MAX!Cube binding allows openHAB to connect to [(ELV) MAX!Cube Lan Gateway](http://www.elv.de/max-cube-lan-gateway.html) installations. The binding allows openHAB to communicate with the MAX! devices through the MAX!Cube Lan Gateway.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/max/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/max/).
 
 ## Prerequisites
 
@@ -47,7 +47,7 @@ Contact Office_Window "Office Window [MAP(en.map):%s]" (MyGroup) { maxcube="JEQ0
 For a heating thermostat, an identical configuration will provide the setpoint temperature of the heating thermostat (4.5° corresponds to OFF shown on the thermostat display). To show the temperature setpoint you need to use a number item.
 
 ```
-    Number Heating_Max "Heating Thermostat [%.1f °C]" (MyGroup) { maxcube="JEQ0336148" }
+Number Heating_Max "Heating Thermostat [%.1f °C]" (MyGroup) { maxcube="JEQ0336148" }
 ```
 
 The above examples would be shown as 
@@ -85,7 +85,7 @@ rule "Bedtime"
 when
    Time cron "0 0 23 * * ?"
 then
-   sendCommand (Heating_Max_Valve, 15 )
+   Heating_Max_Valve.sendCommand( 15 )
 end
 ```
 

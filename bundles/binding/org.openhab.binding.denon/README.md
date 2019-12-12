@@ -82,7 +82,7 @@ Switch item=DenonCommand label="Surround Mode" mappings=[MSSTANDARD="Standard", 
 In scripts:
 
 ```
-sendCommand(DenonCommand, "MNMEN ON")
+DenonCommand.sendCommand("MNMEN ON")
 ```
 
 

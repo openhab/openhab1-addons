@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.zibase.internal;
 
@@ -76,31 +80,31 @@ abstract class ZibaseBindingConfig implements BindingConfig {
 
     /**
      * Send the appropriate command to zibase depending on zibase item type
-     * 
+     *
      * @param zibase
      * @param command
-     * @param int set to megative value if no dim is needed
+     * @param         int set to negative value if no dim is needed
      */
     abstract public void sendCommand(Zibase zibase, Command command, int dim);
 
     /**
      * Tell whether given config string is valid
-     * 
+     *
      * @param zibase
      * @param parameters
      */
     abstract protected boolean isItemConfigValid();
 
     /**
-     * Tell wether given config string is valid
-     * 
+     * Tell whether given config string is valid
+     *
      * @param zbResponseStr a ZbResponse instance as string
      */
     abstract public State getOpenhabStateFromZibaseValue(Zibase zibase, String zbResponseStr);
 
     /**
      * delegate config verification to the corresponding type of class
-     * 
+     *
      * @param bindingConfig
      */
     static public boolean isConfigValid(String bindingConfig) {
@@ -116,7 +120,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
 
     /**
      * factory to get config from given parameters
-     * 
+     *
      * @param configParameters
      * @return
      */
@@ -137,7 +141,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
                 logger.error(ex.toString());
             }
         } else {
-            logger.error("item type not supported : " + configParameters[POS_TYPE]);
+            logger.error("item type not supported : {}", configParameters[POS_TYPE]);
         }
 
         return null;
@@ -145,18 +149,19 @@ abstract class ZibaseBindingConfig implements BindingConfig {
 
     /**
      * Constructor
-     * 
-     * @param pId Rfid of the item
+     *
+     * @param pId       Rfid of the item
      * @param pProtocol protocol for command item, type of value to get for value to update
      */
     public ZibaseBindingConfig(String[] configParameters) {
 
         this.values = configParameters;
+        logger.debug("Item Constructor - saved value(s) : {}", StringUtils.join(this.values, ","));
     }
 
     /**
      * get id
-     * 
+     *
      * @return
      */
     public String getId() {
@@ -165,7 +170,7 @@ abstract class ZibaseBindingConfig implements BindingConfig {
 
     /**
      * get type
-     * 
+     *
      * @return
      */
     public String getType() {

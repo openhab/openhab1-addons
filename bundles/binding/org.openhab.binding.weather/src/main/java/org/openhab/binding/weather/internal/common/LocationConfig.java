@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.weather.internal.common;
 
@@ -75,6 +79,7 @@ public class LocationConfig {
 
     /**
      * Returns the woeid.
+     * @deprecated The Yahoo weather API has ceased to exist. This method will be removed eventually.
      */
     public String getWoeid() {
         return woeid;
@@ -82,6 +87,7 @@ public class LocationConfig {
 
     /**
      * Sets the woeid.
+     * @deprecated The Yahoo weather API has ceased to exist. This method will be removed eventually.
      */
     public void setWoeid(String woeid) {
         this.woeid = woeid;
@@ -166,11 +172,7 @@ public class LocationConfig {
             return false;
         }
 
-        if (providerName == ProviderName.YAHOO) {
-            return woeid != null;
-        } else {
-            return latitude != null && longitude != null;
-        }
+        return latitude != null && longitude != null;
     }
 
     /**
@@ -180,8 +182,7 @@ public class LocationConfig {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("providerName", providerName)
                 .append("language", language).append("updateInterval", updateInterval).append("latitude", latitude)
-                .append("longitude", longitude).append("woeid", woeid).append("locationId", locationId)
-                .append("name", name).toString();
+                .append("longitude", longitude).append("locationId", locationId).append("name", name).toString();
     }
 
 }

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.novelanheatpump.internal;
 
@@ -26,6 +30,7 @@ import org.openhab.binding.novelanheatpump.internal.HeatPumpGenericBindingProvid
 import org.openhab.core.binding.AbstractActiveBinding;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.types.Command;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
@@ -145,6 +150,15 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             // all temperatures are 0.2 degree Celsius exact
             // but use int to save values
             // example 124 is 12.4 degree Celsius
+
+            // workaround for thermal energies
+            // the thermal energies can be unreasonably high in some cases, probably due to a sign bug in the firmware
+            // trying to correct this issue here
+            if (heatpumpValues[151] >= 214748364) heatpumpValues[151] -= 214748364;
+            if (heatpumpValues[152] >= 214748364) heatpumpValues[152] -= 214748364;
+            if (heatpumpValues[153] >= 214748364) heatpumpValues[153] -= 214748364;
+            if (heatpumpValues[154] >= 214748364) heatpumpValues[154] -= 214748364;
+
             handleEventType(new DecimalType((double) heatpumpValues[10] / 10),
                     HeatpumpCommandType.TYPE_TEMPERATURE_SUPPLAY);
             handleEventType(new DecimalType((double) heatpumpValues[11] / 10),
@@ -206,6 +220,14 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
 
             String heatpumpState = getStateString(heatpumpValues) + ": " + getStateTime(heatpumpValues); //$NON-NLS-1$
             handleEventType(new StringType(heatpumpState), HeatpumpCommandType.TYPE_HEATPUMP_STATE);
+            String heatpumpSimpleState = getStateString(heatpumpValues);
+            handleEventType(new StringType(heatpumpSimpleState), HeatpumpCommandType.TYPE_HEATPUMP_SIMPLE_STATE);
+            handleEventType(new DecimalType(heatpumpValues[117]), HeatpumpCommandType.TYPE_HEATPUMP_SIMPLE_STATE_NUM);
+
+            handleEventType(new DecimalType(heatpumpValues[106]), HeatpumpCommandType.TYPE_HEATPUMP_SWITCHOFF_REASON_0);
+
+            handleEventType(new DecimalType(heatpumpValues[100]), HeatpumpCommandType.TYPE_HEATPUMP_SWITCHOFF_CODE_0);
+
             String heatpumpExtendedState = getExtendeStateString(heatpumpValues) + ": " //$NON-NLS-1$
                     + formatHours(heatpumpValues[120]);
             handleEventType(new StringType(heatpumpExtendedState), HeatpumpCommandType.TYPE_HEATPUMP_EXTENDED_STATE);
@@ -231,6 +253,68 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
                     HeatpumpCommandType.TYPE_COOLING_START_AFTER_HOURS);
             handleEventType(new DecimalType(heatpumpParams[PARAM_COOLING_STOP] / 10.),
                     HeatpumpCommandType.TYPE_COOLING_STOP_AFTER_HOURS);
+
+            // read all boolean output signals
+            handleEventType((heatpumpValues[37] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_AV);
+            handleEventType((heatpumpValues[38] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_BUP);
+            handleEventType((heatpumpValues[39] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_HUP);
+            handleEventType((heatpumpValues[40] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MA1);
+            handleEventType((heatpumpValues[41] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MZ1);
+            handleEventType((heatpumpValues[42] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VEN);
+            handleEventType((heatpumpValues[43] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VBO);
+            handleEventType((heatpumpValues[44] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VD1);
+            handleEventType((heatpumpValues[45] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VD2);
+            handleEventType((heatpumpValues[46] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZIP);
+            handleEventType((heatpumpValues[47] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZUP);
+            handleEventType((heatpumpValues[48] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZW1);
+            handleEventType((heatpumpValues[49] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZW2SST);
+            handleEventType((heatpumpValues[50] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_ZW3SST);
+            handleEventType((heatpumpValues[51] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_FP2);
+            handleEventType((heatpumpValues[52] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_SLP);
+            handleEventType((heatpumpValues[53] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_SUP);
+            handleEventType((heatpumpValues[54] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MZ2);
+            handleEventType((heatpumpValues[55] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MA2);
+            handleEventType((heatpumpValues[138] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MZ3);
+            handleEventType((heatpumpValues[139] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_MA3);
+            handleEventType((heatpumpValues[140] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_FP3);
+            handleEventType((heatpumpValues[166] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_VSK);
+            handleEventType((heatpumpValues[167] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                    HeatpumpCommandType.TYPE_OUTPUT_FRH);
+
+            if (heatpumpValues.length > 213)
+            {
+                handleEventType((heatpumpValues[213] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_AV2);
+                handleEventType((heatpumpValues[214] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_VBO2);
+                handleEventType((heatpumpValues[215] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_VD12);
+                handleEventType((heatpumpValues[216] == 0) ? OnOffType.OFF : OnOffType.ON, 
+                        HeatpumpCommandType.TYPE_OUTPUT_VDH2);
+            }
 
         } catch (UnknownHostException e) {
             logger.warn("the given hostname '{}' of the Novelan heatpump is unknown", ip);
@@ -351,6 +435,9 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             case 17:
                 returnValue = Messages.HeatPumpBinding_ZWE_OPERATION;
                 break;
+            case 18:
+                returnValue = Messages.HeatPumpBinding_COMPRESSOR_HEATING;
+                break;
             case 19:
                 returnValue = Messages.HeatPumpBinding_SERVICE_WATER_ADDITIONAL_HEATING;
                 break;
@@ -387,8 +474,17 @@ public class HeatPumpBinding extends AbstractActiveBinding<HeatPumpBindingProvid
             case 2:
                 returnValue = Messages.HeatPumpBinding_APPEAR;
                 break;
+            case 4:
+                returnValue = Messages.HeatPumpBinding_ERROR;
+                break;
             case 5:
                 returnValue = Messages.HeatPumpBinding_DEFROSTING;
+                break;
+            case 7:
+                returnValue = Messages.HeatPumpBinding_COMPRESSOR_HEATING;
+                break;
+            case 8:
+                returnValue = Messages.HeatPumpBinding_PUMP_FLOW;
                 break;
             default:
                 logger.info(

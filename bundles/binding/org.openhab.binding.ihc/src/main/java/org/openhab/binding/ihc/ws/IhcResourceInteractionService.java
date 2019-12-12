@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.ihc.ws;
 
@@ -59,8 +63,8 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
     /**
      * Query resource value from controller.
-     * 
-     * 
+     *
+     *
      * @param resoureId
      *            Resource Identifier.
      * @return Resource value.
@@ -82,11 +86,11 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
         try {
             nodeList = parseList(response, "/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:getRuntimeValue2");
 
-            if (nodeList.getLength() == 1) {
+            if (nodeList != null && nodeList.getLength() == 1) {
 
                 WSResourceValue val = parseResourceValue(nodeList.item(0), 2);
 
-                if (val.getResourceID() == resoureId) {
+                if (val != null && val.getResourceID() == resoureId) {
                     return val;
                 } else {
                     throw new IhcExecption("No resource id found");
@@ -336,8 +340,8 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
     /**
      * Update resource value to controller.
-     * 
-     * 
+     *
+     *
      * @param value
      *            Resource value.
      * @return True if value is successfully updated.
@@ -524,7 +528,7 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
     /**
      * Enable resources runtime value notifications.
-     * 
+     *
      * @param resourceIdList
      *            List of resource Identifiers.
      * @return True is connection successfully opened.
@@ -551,10 +555,10 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
     /**
      * Wait runtime value notifications.
-     * 
+     *
      * Runtime value notification should firstly be activated by
      * enableRuntimeValueNotifications function.
-     * 
+     *
      * @param timeoutInSeconds
      *            How many seconds to wait notifications.
      * @return List of received runtime value notifications.
@@ -576,24 +580,32 @@ public class IhcResourceInteractionService extends IhcHttpsClient {
 
         List<WSResourceValue> resourceValueList = new ArrayList<WSResourceValue>();
 
-        NodeList nodeList;
         try {
-            nodeList = parseList(response,
+            NodeList nodeList = parseList(response,
                     "/SOAP-ENV:Envelope/SOAP-ENV:Body/ns1:waitForResourceValueChanges2/ns1:arrayItem");
 
-            if (nodeList.getLength() == 1) {
-                String resourceId = getValue(nodeList.item(0), "ns1:resourceID");
-                if (resourceId == null || resourceId == "") {
-                    throw new SocketTimeoutException();
+            if (nodeList != null) {
+
+                if (nodeList.getLength() == 1) {
+                    String resourceId = getValue(nodeList.item(0), "ns1:resourceID");
+                    if (resourceId == null || resourceId.isEmpty()) {
+                        // IHC controller indicates timeout
+                        throw new SocketTimeoutException();
+                    }
                 }
-            }
 
-            for (int i = 0; i < nodeList.getLength(); i++) {
+                for (int i = 0; i < nodeList.getLength(); i++) {
 
-                int index = i + 2;
+                    int index = i + 2;
 
-                WSResourceValue newVal = parseResourceValue(nodeList.item(i), index);
-                resourceValueList.add(newVal);
+                    WSResourceValue newVal = parseResourceValue(nodeList.item(i), index);
+                    if (newVal != null) {
+                        resourceValueList.add(newVal);
+                    }
+                }
+            } else {
+                // TCP stream
+                throw new IhcExecption("Illegal resource value notification response received");
             }
 
             return resourceValueList;

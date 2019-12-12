@@ -82,10 +82,10 @@ then
                 startTarif2 = Tarif2.minimumSince(now.toDateMidnight).state as DecimalType
                 
                 tmp = stopTarif1 - startTarif1
-                postUpdate(Tarif1Today, tmp)
+                Tarif1Today.postUpdate(tmp)
         
                 tmp = stopTarif2 - startTarif2
-                postUpdate(Tarif2Today, tmp)
+                Tarif2Today.postUpdate(tmp)
     }
 end
 ```

@@ -1,14 +1,17 @@
 /**
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- *  Copyright (c) 2010-2015, openHAB.org and others.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
  *
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
  *
- * ----------------------------------------------------------------------------
- *
+ * SPDX-License-Identifier: EPL-2.0
+ */
+
+/**
  *  This application listening data from RFM12Pi module and send valid frames
  *  to configurable IP/port address by UDP packets.
  *
@@ -26,7 +29,6 @@
  *
  *  15.09.2013	v1.00	Initial version
  *  19.10.2013	v1.10	Added RFM12Pi initialization command support
- *
  */
 
 #include <signal.h>

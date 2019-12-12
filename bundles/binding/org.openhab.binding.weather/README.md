@@ -1,10 +1,9 @@
 # Weather Binding
 
-The Weather binding collects current and forecast weather data from different providers with a free weather API. You can also display weather data with highly customizable html layouts and icons.
+The Weather binding collects current and forecast weather data from different providers with a free weather API.
+It can also be used to display weather data with highly customizable html layouts and icons.
 
 ![](https://farm4.staticflickr.com/3946/15407522168_7ea34d51e1_o.png)
-
-There is also a binding specifically openHAB 2 [here](http://docs.openhab.org/addons/bindings/yahooweather/readme.html) for Yahoo! Weather.
 
 ## Table of Contents
 
@@ -39,51 +38,54 @@ The binding can be configured in the file `services/weather.cfg`.
 
 Before you can use a weather provider, you need to register a free apikey on the website of the provider.  
 
-The apikey for the different weather providers, at least one must be specified.
-
-> [Hamweather](http://hamweather.com) has two apikeys (client_id, secret_id).
-> [Yahoo](https://weather.yahoo.com) does not need an apikey.
+The table below shows the apikey properties for the different weather providers; at least one must be specified.
 
 | Property                  | Description |
 |---------------------------|-------------|
 | apikey.ForecastIo         | API key for [ForecastIo](http://forecast.io) |
 | apikey.OpenWeatherMap     | API key for [OpenWeatherMap](http://openweathermap.org) |
 | apikey.WorldWeatherOnline | API key for [WorldWeatherOnline](http://worldweatheronline.com) |
-| apikey.Wunderground       | API key for [Wunderground](http://wunderground.com) |
 | apikey.Hamweather         | `client_id` for [Hamweather](http://hamweather.com) |
 | apikey2.Hamweather        | `client_secret` for [Hamweather](http://hamweather.com) |
 | apikey.Meteoblue          | API key for [MeteoBlue](https://www.meteoblue.com/) |
+| apikey.ApiXU              | API key for [ApiXU](https://www.apixu.com/) |
+| apikey.Weatherbit         | API key for [Weatherbit](https://www.weatherbit.io/) |
+
+> [Hamweather](http://hamweather.com) is the only provider with multiple keys; both are required.
+
 
 ### Location Configuration
 
-Now you can specify your location(s). Each location has a `<locationId>` that can be referenced from an item.
+Each location has a `<locationId>` that can be referenced from an item.
 
-You can specify multiple locations by repeating these properties with different values for `<locationId>`.
+Multiple locations can be specified by repeating these properties with different values for `<locationId>`.
 
 | Property                               | Description |
 |----------------------------------------|-------------|
 | location.`<locationId>`.name           | the name of the location, useful for displaying in html layouts (optional) |
-| location.`<locationId>`.latitude       | the latitude the weather is retrieved from (not required for Yahoo) |
-| location.`<locationId>`.longitude      | the longitude the weather is retrieved from (not required for Yahoo) |
-| location.`<locationId>`.woeid          | required for Yahoo, the numeric Where On Earth ID, found at end of your weather.yahoo.com URL |
+| location.`<locationId>`.latitude       | the latitude the weather is retrieved from |
+| location.`<locationId>`.longitude      | the longitude the weather is retrieved from |
 | location.`<locationId>`.provider       | reference to a provider name |
 | location.`<locationId>`.language       | the language of the weather condition text (see provider homepage for supported languages) |
 | location.`<locationId>`.updateInterval | the interval in minutes the weather is retrieved |
 | location.`<locationId>`.units          | whether to use metric (SI) or imperial (US) values; may not be supported by all providers
 
-**Important:** Each weather provider has a daily request limit for the free weather API. Also the weather does not change quickly, so please choose a moderate updateInterval. The request limit can be found on the weather provider website. 
+**Important:** Each weather provider has a daily request limit for the free weather API. Since the weather does not change quickly, please choose a moderate updateInterval. The request limit can be found on the weather provider website.
 
 ### Configuration Example
 
-Let's display the current temperature and humidity in Salzburg (AT) from Yahoo.  
+Let's display the current temperature and humidity in Salzburg (AT).
+The apikeys below are not registered and are for example purposes only.
 
 services/weather.cfg
 
 ```
-location.home.woeid=547826
-location.home.provider=Yahoo
+apikey.ForecastIo=sdf7g69fdgdfg679dfg69sdgkj
+location.home.provider=ForecastIo
 location.home.language=de
 location.home.updateInterval=10
+location.home.latitude=47.8011
+location.home.longitude=13.0448
 ```
 
 yourweather.items
@@ -93,24 +95,8 @@ Number   Temperature   "Temperature [%.2f °C]"   {weather="locationId=home, typ
 Number   Humidity      "Humidity [%d %%]"        {weather="locationId=home, type=atmosphere, property=humidity"}
 ```
 
-For Yahoo, you don't need an apikey, but you do need a woeid (which you can find as the numeric digits at the end of your weather.yahoo.com URL). The location has the locationId *home* and updates the weather data every 10 minutes.  
 
-In the items file, you reference the `<locationId>` and the type and property to display (see below for more).
-
-Let's say you want to switch to another provider, ForecastIo. All you have to do is register your apikey, configure it, supply your latitude and longitude, and change the provider in your location:  
-
-The apikeys below are not registered and are for example purposes only.
-
-services/weather.cfg 
-
-```
-apikey.ForecastIo=sdf7g69fdgdfg679dfg69sdgkj
-location.home.latitude=47.8011
-location.home.longitude=13.0448
-location.home.provider=ForecastIo
-```
-
-Now the weather data is retrieved from ForecastIo, your item file does not need to be changed! Let's say you want to have the current temperature from ForecastIo and the humidity from OpenWeatherMap.  
+If you want to have the current temperature from ForecastIo and the humidity from OpenWeatherMap, use a setup similar to this:
 
 services/weather.cfg
 
@@ -186,9 +172,9 @@ String   Temperatur_MinMax   "Min/Max [%s °C]"   {weather="locationId=home, for
 
 ### Units
 
-Some providers (eg. ForecastIO) allow passing a units parameter in method calls in order to specify which units (metric (SI) or imperial (US)) should be used by returned data.  Not all providers support this, however.
+Some, but not all, providers (eg. ForecastIO) allow passing a units parameter in method calls in order to specify which units (metric (SI) or imperial (US)) should be used by returned data.
 
-Starting with the 1.10.0 release of the binding, the configuration contains a new setting to allow this to be user configurable:
+The configuration contains a setting to allow this to be user configurable:
 
     #location.<locationId1>.units=
 
@@ -201,10 +187,10 @@ The values used for this setting will depend on the provider being used. As an e
 
 The default units are:
 
-* speed: kilometer per hour
+* speed: kilometers per hour
 * temperature: celsius
-* precipitation: rain in millimeters and snow in centimeter
-* pressure: millibar
+* precipitation: rain in millimeters and snow in centimeters
+* pressure: millibars
 
 You can convert numeric values to other units with the `unit` parameter. Example to convert the temperature from Celsius to Fahrenheit:
 
@@ -212,7 +198,6 @@ You can convert numeric values to other units with the `unit` parameter. Example
 Number   Temperature_F    "Temperature [%.2f °F]"   {weather="locationId=home, type=temperature, property=current, unit=fahrenheit"}
 ``` 
 
-All possible conversions can be found in the following Items section.
 
 ### Examples
 
@@ -245,9 +230,6 @@ Number   Rain_Inches   "Rain [%.2f in/h]"   {weather="locationId=home, type=prec
 Number   Snow          "Snow [%.2f mm/h]"   {weather="locationId=home, type=precipitation, property=snow"}
 Number   Snow_Inches   "Snow [%.2f in/h]"   {weather="locationId=home, type=precipitation, property=snow, unit=inches"}
 Number   Precip_Probability   "Precip probability [%d %%]"   {weather="locationId=home, type=precipitation, property=probability"}
-// new total property in 1.8, only Wunderground
-Number   Precip_Total         "Precip total [%d mm]"   {weather="locationId=home, type=precipitation, property=total"}
-Number   Precip_Total_Inches  "Precip total [%d in]"   {weather="locationId=home, type=precipitation, property=total, unit=inches"}
 
 // temperature
 Number   Temperature      "Temperature [%.2f °C]"       {weather="locationId=home, type=temperature, property=current"}
@@ -255,8 +237,7 @@ Number   Temperature_F    "Temperature [%.2f °F]"       {weather="locationId=ho
 Number   Temp_Feel        "Temperature feel [%.2f °C]"  {weather="locationId=home, type=temperature, property=feel"}
 Number   Temp_Feel_F      "Temperature feel [%.2f °F]"  {weather="locationId=home, type=temperature, property=feel, unit=fahrenheit"}
 Number   Temp_Dewpoint    "Dewpoint [%.2f °C]"          {weather="locationId=home, type=temperature, property=dewpoint"}
-Number   Temp_Dewpoint_F  "Dewpoint [%.2f °F]"          {weather="locationId=home, type=temperature, 
-property=dewpoint, unit=fahrenheit"}
+Number   Temp_Dewpoint_F  "Dewpoint [%.2f °F]"          {weather="locationId=home, type=temperature, property=dewpoint, unit=fahrenheit"}
 // min and max values only available in forecasts
 Number   Temp_Min         "Temperature min [%.2f °C]"   {weather="locationId=home, type=temperature, property=min"}
 Number   Temp_Min_F       "Temperature min [%.2f °F]"   {weather="locationId=home, type=temperature, property=min, unit=fahrenheit"}
@@ -281,18 +262,17 @@ Number   Wind_Gust_Mph        "Wind gust [%.2f mph]"     {weather="locationId=ho
 Number   Wind_Chill           "Wind chill [%.2f °C]"     {weather="locationId=home, type=wind, property=chill"}
 Number   Wind_Chill_F         "Wind chill [%.2f °F]"     {weather="locationId=home, type=wind, property=chill, unit=fahrenheit"}
 
-// weather station (only Wunderground and Hamweather), needs version 1.7 or greater of the binding
+// weather station (only Hamweather)
 String   Station_Name         "Station Name [%s]"        {weather="locationId=home, type=station, property=name"}
 String   Station_Id           "Station Id [%s]"          {weather="locationId=home, type=station, property=id"}
 Number   Station_Latitude     "Station Latitude [%.6f]"  {weather="locationId=home, type=station, property=latitude, scale=6"}
 Number   Station_Longitude    "Station Longitude [%.6f]" {weather="locationId=home, type=station, property=longitude, scale=6"}
-
 ```
 
 ### Forecast
 
 All bindings can also be used for forecasts. You only have to add the forecast day in the item.  
-Display tomorrows min and max temperature forecast:
+Display tomorrow's min and max temperature forecast:
 
 ```
 Number   Temp_Min         "Temperature min [%.2f °C]"   {weather="locationId=home, forecast=1, type=temperature, property=min"}
@@ -306,20 +286,21 @@ Each provider sends different forecast days.
 - ForecastIo: 8 days (0-7)
 - OpenWeatherMap: 5 days (0-4)
 - WorldWeatherOnline: 5 days (0-4)
-- Wunderground: 10 days (0-9)
 - Hamweather: 5 days (0-4)
-- Yahoo: 10 days (0-9)
+- Meteoblue: 10 days (0-9)
+- ApiXU: 7 days (0-6)
+- Weatherbit: 10 days (0-9)
 
 **Note:** If you omit the forecast property, the *current* conditions are shown, if you specify forecast=0, the forecast for *today* is shown.
 
 ### Data accuracy
 
-It highly depends on your location and which weather provider you choose. Some providers updates the data in realtime, others only once in a hour. You have to test yourself and find the best provider for your location.
+The accuracy depends on your location and which weather provider you choose. Some providers update the data in realtime, others only periodically.
 
 ### Common Id
 
-The common id property `(locationId=..., type=condition, property=commonId)` is an attempt to have a unique weather id for all providers. This is useful for displaying weather icons and a short condition text message. The documentation from the different weather providers are partially poor, hence the mapping is partially a guess and needs to be optimized with your help. If you think the commonId/weather icon is wrong, just [contact me](mailto:gerrieg.openhab@icloud.com).  
-If you want to see the current mapping, you can open the file `common-id-mappings.xml` in the binding jar.
+The common id property `(locationId=..., type=condition, property=commonId)` is an attempt to have a unique weather id for all providers. This is useful for displaying weather icons and a short condition text message. The documentation from the different weather providers are partially poor, hence the mapping is partially a guess and needs to be optimized.
+To see the current mapping, open the file `common-id-mappings.xml` in the binding jar.
 
 Example to use a common condition text message:
 
@@ -334,7 +315,7 @@ Example map files for english and german are in the [download section](#download
 The binding provides a url to serve highly customizable html layouts for displaying weather data and icons. You have to add some folders/files to the openhab webapps folder:  
 ![](https://farm6.staticflickr.com/5602/14973200854_0b374490a5_o.png)
 
-The weather-data folder is the root, the images folder contains the different iconsets with 32 weather icons. In the layouts folder are the layout html files. You can add as many html layout files you want. You can use tokens to map weather data into the html layout.
+The weather-data folder is the root, the images folder contains the different iconsets with 32 weather icons. In the layouts folder are the layout html files. You can add as many html layout files as you want. You can use tokens to map weather data into the html layout.
 
 **Tokens:**
 
@@ -346,7 +327,7 @@ The weather-data folder is the root, the images folder contains the different ic
 **Example:**
 
 ```
-// locationConfig data from openhab.cfg
+// locationConfig data from weather.cfg
 ${config:name}
 ${config:latitude}
 ${config:longitude}
@@ -374,7 +355,7 @@ See `example.html` in the layouts folder. You can download the weather-data fold
 
 **Using the layout file:**  
 
-You must specify a locationId and a layout parameter, iconset is optional (default=colorful)  
+You must specify a locationId and a layout parameter; iconset is optional (default=colorful)  
 Either directly:  
 
 ```
@@ -391,7 +372,7 @@ Webview url="/weather?locationId=home&layout=example&iconset=colorful" height=7
 
 ### HTML Layout Gallery
 
-I would like to create a weather layout gallery. If you have a great looking html weather layout you want it to share, just [send it to me](mailto:gerrieg.openhab@icloud.com) an i will put it on this wiki page.
+If you have a great looking html weather layout you want it to share, just [send it to me](mailto:gerrieg.openhab@icloud.com) and I will put it on this wiki page.
 
 ## Debugging and Tracing
 
@@ -400,8 +381,6 @@ The root logger for this binding is `org.openhab.binding.weather`. If you want t
 If you want to see even more, set the level to `TRACE` to also see the communication with the provider.
 
 ## Troubleshooting
-
-I assume, the binding is installed.
 
 * In the openHAB logfile you must see for each configured apikey one line with  
 
@@ -412,12 +391,12 @@ ProviderConfig[providerName=xx, apiKey=xxx]
 and for each configured location  
 
 ```
-LocationConfig[providerName=xxx, language=xx, updateInterval=xx, latitude=xx.xxxx, longitude=xx.xxxx, woeid=xxx, locationId=xxx, name=xxx]
+LocationConfig[providerName=xxx, language=xx, updateInterval=xx, latitude=xx.xxxx, longitude=xx.xxxx, locationId=xxx, name=xxx]
 ```
 
 If these entries do not exist, there is a problem in your weather.cfg. A common problem is a space in front of the config properties.
 
-* If the items are still not populated, switch the binding to [DEBUG mode](#debugging-and-tracing) and start openHab. Now you should see for every weather item a entry in your logfile:
+* If the items are still not populated, switch the binding to [DEBUG mode](#debugging-and-tracing) and start openHAB. Now you should see for every weather item an entry in your logfile:
 
 ```
 Adding item ... with WeatherBindingConfig[locationId=..., type=..., property=..., roundingMode=..., scale=...]
@@ -427,7 +406,7 @@ If you don't see these entries, check your items file.
 
 * As mentioned earlier, every weather provider sends different data and not all available binding properties are set. If you want to know which provider sends which properties to optimize your items, switch the binding to [DEBUG mode](#debugging-and-tracing). At every refresh the weather data is logged to the logfile.
 
-* important note if you're installing from a debian based distribution: openhab-addon-action-weather and openhab-addon-binding-weather are not compatible with each other and will silently fail (at least since 1.7.1). If you made sure your openhab.cfg and your items are fine but you still don't see any `ProviderConfig` lines you might wan't to check the installed openhab addons.
+* important note if you're installing from a debian based distribution: openhab-addon-action-weather and openhab-addon-binding-weather are not compatible with each other and will silently fail (at least since 1.7.1). If you made sure your openhab.cfg and your items are fine but you still don't see any `ProviderConfig` lines you might want to check the installed openhab addons.
 
 ## Downloads
 

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.ihc.internal;
 
@@ -151,8 +155,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         if (StringUtils.isNotBlank(ip) && StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 
-            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}'].", ip, username);
 
             ihc = new IhcClient(ip, username, password, timeout);
             ihc.setProjectFile(projectFile);
@@ -163,8 +166,8 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         } else {
             logger.warn(
-                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password={}].",
+                    ip, username, StringUtils.isBlank(password) ? "Missing" : "Configured");
         }
     }
 
@@ -418,12 +421,13 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                     // new type
 
                     Integer val = provider.getValue(itemName, (Command) type);
+                    Type finalType = type;
                     boolean trigger = false;
                     if (val != null) {
                         if (val == 0) {
-                            type = OnOffType.OFF;
+                            finalType = OnOffType.OFF;
                         } else if (val == 1) {
-                            type = OnOffType.ON;
+                            finalType = OnOffType.ON;
                         } else {
                             trigger = true;
                         }
@@ -432,7 +436,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                     }
 
                     if (!trigger) {
-                        value = IhcDataConverter.convertCommandToResourceValue(type, value, enumValues);
+                        value = IhcDataConverter.convertCommandToResourceValue(finalType, value, enumValues);
 
                         boolean result = updateResource(value);
 
@@ -449,7 +453,9 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
                         if (result == true) {
                             logger.debug("Item '{}' trigger started", itemName);
 
-                            Thread.sleep(val);
+                            if (val != null) {
+                                Thread.sleep(val);
+                            }
 
                             value = IhcDataConverter.convertCommandToResourceValue(OnOffType.OFF, value, enumValues);
 
@@ -567,7 +573,17 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
         logger.trace("Controller state {}", state.getState());
 
         if (controllerState.getState().equals(state.getState()) == false) {
-            logger.info("Controller state change detected ({} -> {})", controllerState.getState(), state.getState());
+            logger.debug("Controller state change detected ({} -> {})", controllerState.getState(), state.getState());
+
+            switch (state.getState()) {
+                case IhcClient.CONTROLLER_STATE_INITIALIZE:
+                    logger.info("Controller state changed to initializing state, waiting for ready state");
+                    break;
+                case IhcClient.CONTROLLER_STATE_READY:
+                    logger.info("Controller state changed to ready state");
+                    break;
+                default:
+            }
 
             if (controllerState.getState().equals(IhcClient.CONTROLLER_STATE_INITIALIZE)
                     || state.getState().equals(IhcClient.CONTROLLER_STATE_READY)) {

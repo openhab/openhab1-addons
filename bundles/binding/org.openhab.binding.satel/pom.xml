@@ -1,33 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<parent>
-		<groupId>org.openhab.bundles</groupId>
-		<artifactId>binding</artifactId>
-		<version>1.12.0-SNAPSHOT</version>
-	</parent>
+  <modelVersion>4.0.0</modelVersion>
 
-	<name>openHAB Satel Binding</name>
+  <parent>
+    <groupId>org.openhab.bundles</groupId>
+    <artifactId>binding</artifactId>
+    <version>1.14.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.openhab.binding</groupId>
+  <artifactId>org.openhab.binding.satel</artifactId>
 
-	<properties>
-		<bundle.symbolicName>org.openhab.binding.satel</bundle.symbolicName>
-		<bundle.namespace>org.openhab.binding.satel</bundle.namespace>
-		<deb.name>openhab-addon-binding-satel</deb.name>
-		<deb.description>${project.name}</deb.description>
-	</properties>
+  <packaging>eclipse-plugin</packaging>
 
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openhab.binding</groupId>
-	<artifactId>org.openhab.binding.satel</artifactId>
-
-	<packaging>eclipse-plugin</packaging>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.vafer</groupId>
-				<artifactId>jdeb</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+  <name>openHAB Satel Binding</name>
 
 </project>

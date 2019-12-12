@@ -3,10 +3,10 @@ Private-Package: org.openhab.binding.ntp.internal
 Ignore-Package: org.openhab.binding.ntp.internal
 Bundle-Name: openHAB NTP Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.12.0.qualifier
+Bundle-Version: 1.14.0.qualifier
 Bundle-Activator: org.openhab.binding.ntp.internal.NtpActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Description: This is the NTP binding of the open Home Aut
  omation Bus (openHAB)
 Import-Package: org.apache.commons.lang,

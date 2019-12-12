@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.io.gpio.linux;
 
@@ -64,10 +68,10 @@ public class GPIOPinLinux implements GPIOPin {
     /**
      * Initializes paths to special files exposed to user space by kernel
      * GPIO framework.
-     * 
-     * @param pinNumber the pin number as seen by the kernel
+     *
+     * @param pinNumber        the pin number as seen by the kernel
      * @param gpioPinDirectory path to pin directory in <code>sysfs</code>,
-     *            e.g. "/sys/class/gpio/gpio1"
+     *                             e.g. "/sys/class/gpio/gpio1"
      * @param debounceInterval default debounce interval
      */
     public GPIOPinLinux(int pinNumber, String gpioPinDirectory, long debounceInterval) {
@@ -101,9 +105,9 @@ public class GPIOPinLinux implements GPIOPin {
 
     /**
      * Stops all spawned pin threads.
-     * 
+     *
      * @throws IOException if can't obtain pin lock in timely fashion
-     *             or was interrupted while waiting for lock
+     *                         or was interrupted while waiting for lock
      */
     public void stopEventProcessing() throws IOException {
 
@@ -593,9 +597,6 @@ public class GPIOPinLinux implements GPIOPin {
                 ByteByReference value = new ByteByReference();
                 NativeLong zero = new NativeLong(0);
 
-                /* Last time (in milliseconds) when the interrupt was generated */
-                long lastInterruptTime = 0;
-
                 fd = LibC.INSTANCE.open(pin.valuePath.toString(), LibC.O_RDONLY | LibC.O_NONBLOCK);
 
                 pollfdset[0].fd = fd;
@@ -624,14 +625,15 @@ public class GPIOPinLinux implements GPIOPin {
                         case 0:
                             continue;
 
-                            /* There is one file descriptor ready */
+                        /* There is one file descriptor ready */
                         case 1:
                             /* Is interrupt received? */
                             if ((pollfdset[0].revents & LibC.POLLPRI) > 0) {
 
-                                /* Calculate times for software debounce */
-                                long interruptTime = System.currentTimeMillis();
-                                long timeDifference = interruptTime - lastInterruptTime;
+                                /* Software debounce */
+                                if (pin.debounceInterval > 0) {
+                                    Thread.sleep(pin.debounceInterval);
+                                }
 
                                 /* Go to file start and read first byte */
                                 LibC.INSTANCE.lseek(fd, zero, LibC.SEEK_SET);
@@ -644,18 +646,11 @@ public class GPIOPinLinux implements GPIOPin {
                                     try {
                                         if (pinLock.readLock().tryLock(PINLOCK_TIMEOUT, PINLOCK_TIMEOUT_UNITS)) {
                                             try {
-
-                                                /* Software debounce */
-                                                if ((timeDifference > pin.debounceInterval) || (timeDifference < 0)) {
-
-                                                    for (GPIOPinEventHandler eventHandler : pin.eventHandlers) {
-                                                        EventHandlerExecutor eventHandlerExecutor = new EventHandlerExecutor(
-                                                                pin, eventHandler,
-                                                                Character.getNumericValue(value.getValue()));
-                                                        executorService.execute(eventHandlerExecutor);
-                                                    }
-
-                                                    lastInterruptTime = interruptTime;
+                                                for (GPIOPinEventHandler eventHandler : pin.eventHandlers) {
+                                                    EventHandlerExecutor eventHandlerExecutor = new EventHandlerExecutor(
+                                                            pin, eventHandler,
+                                                            Character.getNumericValue(value.getValue()));
+                                                    executorService.execute(eventHandlerExecutor);
                                                 }
                                             } finally {
                                                 pin.pinLock.readLock().unlock();

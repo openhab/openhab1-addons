@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.io.caldav.internal;
 
@@ -12,6 +16,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.fortuna.ical4j.util.MapTimeZoneCache;
+
 
 /**
  * Extension of the default OSGi bundle activator
@@ -24,6 +31,10 @@ public final class CalDavActivator implements BundleActivator {
     private static Logger logger = LoggerFactory.getLogger(CalDavActivator.class);
 
     private static BundleContext context;
+
+    public CalDavActivator() {
+        System.setProperty("net.fortuna.ical4j.timezone.cache.impl", MapTimeZoneCache.class.getName());
+    }
 
     /**
      * Called whenever the OSGi framework starts our bundle

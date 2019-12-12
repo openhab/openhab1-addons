@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.dscalarm1.internal.protocol;
 
@@ -324,7 +328,7 @@ public class APIMessage {
                         break;
                     case PartitionNotReady: /* 651 */
                         apiName = "Partition Not Ready";
-                        apiDescription = apiCodeReceived + ": Partition can not be armed.";
+                        apiDescription = apiCodeReceived + ": Partition cannot be armed.";
                         partition = Integer.parseInt(apiMessage.substring(3, 4));
                         apiMessageType = APIMessageType.PARTITION_EVENT;
                         break;

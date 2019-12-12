@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2017, openHAB.org and others.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.cardio2e.internal;
 
@@ -543,10 +547,10 @@ public class Cardio2eBinding extends
 					}
 				}
 			} else {
-				logger.warn("No command will sent to Cardio 2é because no provider is available");
+				logger.warn("No command will be sent to Cardio 2é because no provider is available");
 			}
 		} else {
-			logger.warn("Can not send command to Cardio 2é because we are not logged in");
+			logger.warn("Cannot send command to Cardio 2é because we are not logged in");
 		}
 	}
 
@@ -658,10 +662,10 @@ public class Cardio2eBinding extends
 					}
 				}
 			} else {
-				logger.warn("No state will sent to Cardio 2é because no provider is available");
+				logger.warn("No state will be sent to Cardio 2é because no provider is available");
 			}
 		} else {
-			logger.warn("Can not send state to Cardio 2é because we are not logged in");
+			logger.warn("Cannot send state to Cardio 2é because we are not logged in");
 		}
 	}
 

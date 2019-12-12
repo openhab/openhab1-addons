@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.jpa.internal;
 
@@ -15,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -25,7 +28,6 @@ import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
@@ -111,8 +113,6 @@ public class JpaHistoricItem implements HistoricItem {
             state = OpenClosedType.valueOf(pItem.getValue());
         } else if (item instanceof RollershutterItem) {
             state = PercentType.valueOf(pItem.getValue());
-        } else if (item instanceof ColorItem) {
-            state = new HSBType(pItem.getValue());
         } else if (item instanceof DateTimeItem) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date(Long.valueOf(pItem.getValue())));

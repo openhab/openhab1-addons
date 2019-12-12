@@ -1,15 +1,20 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.weather.internal.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
@@ -22,47 +27,44 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  */
 public class Atmosphere {
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.relative_humidity", converter = ConverterType.PERCENT_INTEGER),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "avehumidity"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "humidity"),
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "humidity"),
             @Provider(name = ProviderName.FORECASTIO, property = "humidity", converter = ConverterType.FRACTION_INTEGER),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "humidity"),
-            @Provider(name = ProviderName.YAHOO, property = "atmosphere.humidity"),
             @Provider(name = ProviderName.HAMWEATHER, property = "humidity"),
-            @Provider(name = ProviderName.METEOBLUE, property = "relative_humidity_avg") })
+            @Provider(name = ProviderName.METEOBLUE, property = "relative_humidity_avg"),
+            @Provider(name = ProviderName.APIXU, property = "humidity"),
+            @Provider(name = ProviderName.APIXU, property = "day.avghumidity"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "rh") })
     private Integer humidity;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.visibility_km"),
-            @Provider(name = ProviderName.FORECASTIO, property = "visibility"),
+    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "visibility"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "visibility"),
-            @Provider(name = ProviderName.YAHOO, property = "atmosphere.visibility"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "visibilityKM") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "visibilityKM"),
+            @Provider(name = ProviderName.APIXU, property = "vis_km"),
+            @Provider(name = ProviderName.APIXU, property = "day.avgvis_km"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "vis") })
     private Double visibility;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.pressure_mb"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "pressure"),
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "pressure"),
             @Provider(name = ProviderName.FORECASTIO, property = "pressure"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "pressure"),
-            @Provider(name = ProviderName.YAHOO, property = "atmosphere.pressure"),
             @Provider(name = ProviderName.HAMWEATHER, property = "pressureMB"),
-            @Provider(name = ProviderName.METEOBLUE, property = "pressure_hpa") })
+            @Provider(name = ProviderName.METEOBLUE, property = "pressure_hpa"),
+            @Provider(name = ProviderName.APIXU, property = "pressure_mb"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "pres") })
     private Double pressure;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.pressure_trend", converter = ConverterType.PRESSURE_TREND) })
     private String pressureTrend;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.FORECASTIO, property = "ozone") })
+    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "ozone"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "ozone") })
     private Integer ozone;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.UV"),
+    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "uvIndex"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "uvIndex"),
-            @Provider(name = ProviderName.METEOBLUE, property = "uv_index") })
+            @Provider(name = ProviderName.METEOBLUE, property = "uv_index"),
+            @Provider(name = ProviderName.APIXU, property = "uv"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "uv") })
     private Integer uvIndex;
 
     /**
@@ -158,5 +160,4 @@ public class Atmosphere {
                 .append("visibility", visibility).append("pressure", pressure).append("pressureTrend", pressureTrend)
                 .append("ozone", ozone).append("uvIndex", uvIndex).toString();
     }
-
 }

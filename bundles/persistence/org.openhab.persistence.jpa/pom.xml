@@ -1,60 +1,49 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <parent>
-        <groupId>org.openhab.bundles</groupId>
-        <artifactId>persistence</artifactId>
-        <version>1.12.0-SNAPSHOT</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <name>openHAB JPA Persistence</name>
+  <parent>
+    <groupId>org.openhab.bundles</groupId>
+    <artifactId>persistence</artifactId>
+    <version>1.14.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.openhab.persistence</groupId>
+  <artifactId>org.openhab.persistence.jpa</artifactId>
 
-    <properties>
-        <bundle.symbolicName>org.openhab.persistence.jpa</bundle.symbolicName>
-        <bundle.namespace>org.openhab.persistence.jpa</bundle.namespace>
-        <deb.name>openhab-addon-persistence-jpa</deb.name>
-        <deb.description>${project.name}</deb.description>
-    </properties>
+  <packaging>eclipse-plugin</packaging>
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.openhab.persistence</groupId>
-    <artifactId>org.openhab.persistence.jpa</artifactId>
+  <name>openHAB JPA Persistence</name>
 
-    <packaging>eclipse-plugin</packaging>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.vafer</groupId>
-                <artifactId>jdeb</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.openjpa</groupId>
-                <artifactId>openjpa-maven-plugin</artifactId>
-                <version>2.4.0</version>
-                <configuration>
-                    <includes>**/model/*.class</includes>
-                    <addDefaultConstructor>true</addDefaultConstructor>               
-                    <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>enhancer</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>enhance</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.openjpa</groupId>
-                        <artifactId>openjpa</artifactId>
-                        <!-- set the version to be the same as the level in your runtime -->
-                        <version>2.4.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.openjpa</groupId>
+        <artifactId>openjpa-maven-plugin</artifactId>
+        <version>2.4.0</version>
+        <configuration>
+          <includes>**/model/*.class</includes>
+          <addDefaultConstructor>true</addDefaultConstructor>
+          <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+            <!-- set the version to be the same as the level in your runtime -->
+            <version>2.4.0</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>enhancer</id>
+            <goals>
+              <goal>enhance</goal>
+            </goals>
+            <phase>process-classes</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

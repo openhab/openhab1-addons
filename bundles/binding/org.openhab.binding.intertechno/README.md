@@ -53,10 +53,26 @@ For all supported, you simply have to read the position of the switches and use 
 { culintertechno="type=classic;group=I;address=1" }
 ```
 
+### Intertechno V3
+
+```
+{ culintertechno="type=v3;id=01101011000011110000000000;channel=2" }
+```
+
+You have to provide the 26-digit id and the channel (0-15). 
+Optional, you can provide the group parameter (with value "1") , which results in switching all items with the given id.
+
+```
+{ culintertechno="type=v3;id=01101011000011110000000000;group=1" }
+```
+ 
+
+### Raw mode
+
 If you have an unsupported intertechno device you can fallback to the raw mode
 
 ```
-{ culintertechno="type=raw;address=FF00FF00;commandOn=FF;commandOff=F0" }
+{ culintertechno="type=raw;commandOn=FF00FF00FF;commandOff=FF00FF00F0" }
 ```
 
-This configuration allows you to manual specify the base address and the appended on and off command.
+This configuration allows you to manually specify the complete commands to send in either ON or OFF state. The given commands will be sent directly to the CUL (prefixed with "is").

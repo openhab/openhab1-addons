@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.plugwise.internal;
 
@@ -172,7 +176,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
     /**
      * Initialize this device and open the serial port
      *
-     * @throws PlugwiseInitializationException if port can not be opened
+     * @throws PlugwiseInitializationException if port cannot be opened
      */
     @SuppressWarnings("rawtypes")
     private void initialize() throws PlugwiseInitializationException {
@@ -738,7 +742,7 @@ public class Stick extends PlugwiseDevice implements SerialPortEventListener {
             if (target != null) {
                 result = target.processMessage(message);
             } else {
-                // if we can not find the target MAC for this message, we let the stick deal with it
+                // if we cannot find the target MAC for this message, we let the stick deal with it
                 result = stick.processMessage(message);
             }
 

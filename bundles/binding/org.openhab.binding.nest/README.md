@@ -84,6 +84,7 @@ String   NestHome_time_zone "Time Zone [%s]"          {nest="<[structures(Home).
 String   NestHome_away "Away [%s]"                    {nest="=[structures(Home).away]"}
 String   NestHome_structure_id "Structure Id [%s]"    {nest="<[structures(Home).structure_id]"}
 Switch   NestHome_rhr_enrollment "Rush Hour Rewards Enrollment [%s]" {nest="<[structures(Home).rhr_enrollment]"} // as of 1.9
+String   NestHome_wwn_security_state "Structure security state [%s]" {nest="<[structures(Home).wwn_security_state]"} // "ok" or "deter"
 String   NestHome_co_alarm_state "Home CO [%s]"       {nest="<[structures(Home).co_alarm_state]"} // as of 1.9
 String   NestHome_smoke_alarm_state "Home Smoke [%s]" {nest="<[structures(Home).smoke_alarm_state]"} // as of 1.9
 

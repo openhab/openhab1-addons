@@ -1,17 +1,24 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.openenergymonitor.protocol;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.openhab.binding.openenergymonitor.internal.OpenEnergyMonitorBinding;
 import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorParserRule.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for parse data packets from Open Energy Monitor devices.
@@ -21,18 +28,24 @@ import org.openhab.binding.openenergymonitor.protocol.OpenEnergyMonitorParserRul
  */
 public class OpenEnergyMonitorDataParser {
 
+    private final Logger logger = LoggerFactory.getLogger(OpenEnergyMonitorBinding.class);
+
     private HashMap<String, OpenEnergyMonitorParserRule> parsingRules = null;
 
-    public OpenEnergyMonitorDataParser(HashMap<String, OpenEnergyMonitorParserRule> parsingRules) {
+    private HashMap<Byte, Long> updateTimes = new HashMap<Byte, Long>();
+    private int throttleTime = 0;
+
+    public OpenEnergyMonitorDataParser(HashMap<String, OpenEnergyMonitorParserRule> parsingRules, int throttleTime) {
 
         this.parsingRules = parsingRules;
+        this.throttleTime = throttleTime;
     }
 
     /**
      * Method to parse Open Energy Monitoring device datagram to variables by defined parsing rules.
-     * 
+     *
      * @param data datagram from Open Energy Monitoring device
-     * 
+     *
      * @return Hash table which contains all parsed variables.
      */
     public HashMap<String, Number> parseData(byte[] data) {
@@ -40,18 +53,39 @@ public class OpenEnergyMonitorDataParser {
         HashMap<String, Number> variables = new HashMap<String, Number>();
 
         byte address = data[0];
+        boolean parse = true;
 
-        for (Entry<String, OpenEnergyMonitorParserRule> entry : parsingRules.entrySet()) {
+        logger.debug("Received message from address '{}'", address);
 
-            OpenEnergyMonitorParserRule rule = entry.getValue();
-
-            if (rule.getAddress() == address) {
-                Number obj = convertTo(rule.getDataType(), getBytes(rule.getParseBytes(), data));
-                variables.put(entry.getKey(), obj);
+        if (throttleTime > 0) {
+            if ((getLastUpdateTime(address) + throttleTime) > System.currentTimeMillis()) {
+                logger.debug("Skipping message parsing");
+                parse = false;
             }
         }
 
+        if (parse) {
+            logger.debug("Parsing message");
+            setLastUpdateTime(address, System.currentTimeMillis());
+            for (Entry<String, OpenEnergyMonitorParserRule> entry : parsingRules.entrySet()) {
+                OpenEnergyMonitorParserRule rule = entry.getValue();
+
+                if (rule.getAddress() == address) {
+                    Number obj = convertTo(rule.getDataType(), getBytes(rule.getParseBytes(), data));
+                    variables.put(entry.getKey(), obj);
+                }
+            }
+        }
         return variables;
+    }
+
+    private long getLastUpdateTime(byte address) {
+        Long upudateTime = updateTimes.get(address);
+        return upudateTime != null ? upudateTime : 0;
+    }
+
+    private void setLastUpdateTime(byte address, long time) {
+        updateTimes.put(address, time);
     }
 
     private byte[] getBytes(int[] byteIndexes, byte[] data) {

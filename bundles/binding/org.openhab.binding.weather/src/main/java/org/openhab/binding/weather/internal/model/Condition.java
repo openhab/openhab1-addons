@@ -1,20 +1,25 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.weather.internal.model;
 
-import java.util.Calendar;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
 import org.openhab.binding.weather.internal.annotation.Provider;
 import org.openhab.binding.weather.internal.annotation.ProviderMappings;
 import org.openhab.binding.weather.internal.converter.ConverterType;
+
+import java.util.Calendar;
 
 /**
  * Common provider model for current condition data.
@@ -24,51 +29,45 @@ import org.openhab.binding.weather.internal.converter.ConverterType;
  */
 public class Condition {
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.weather"),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "conditions"),
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.description"),
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.description"),
             @Provider(name = ProviderName.FORECASTIO, property = "currently.summary"),
             @Provider(name = ProviderName.FORECASTIO, property = "daily.data.summary"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "weatherDesc.value"),
-            @Provider(name = ProviderName.YAHOO, property = "text"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "weather") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "weather"),
+            @Provider(name = ProviderName.APIXU, property = "condition.text"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "weather.description") })
     private String text;
 
     @ProviderMappings({
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.observation_epoch", converter = ConverterType.UNIX_DATE),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "date.epoch", converter = ConverterType.UNIX_DATE),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "dt", converter = ConverterType.UNIX_DATE),
             @Provider(name = ProviderName.FORECASTIO, property = "time", converter = ConverterType.UNIX_DATE),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "localObsDateTime", converter = ConverterType.UTC_DATE),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "date", converter = ConverterType.DATE),
-            @Provider(name = ProviderName.YAHOO, property = "lastBuildDate", converter = ConverterType.FULL_UTC_DATE),
-            @Provider(name = ProviderName.YAHOO, property = "forecast.date", converter = ConverterType.SIMPLE_DATE),
             @Provider(name = ProviderName.HAMWEATHER, property = "ob.timestamp", converter = ConverterType.UNIX_DATE),
             @Provider(name = ProviderName.HAMWEATHER, property = "periods.timestamp", converter = ConverterType.UNIX_DATE),
-            @Provider(name = ProviderName.METEOBLUE, property = "last_model_update", converter = ConverterType.JSON_DATE) })
+            @Provider(name = ProviderName.METEOBLUE, property = "last_model_update", converter = ConverterType.JSON_DATE),
+            @Provider(name = ProviderName.APIXU, property = "last_updated_epoch", converter = ConverterType.UNIX_DATE),
+            @Provider(name = ProviderName.APIXU, property = "date_epoch", converter = ConverterType.UNIX_DATE),
+            @Provider(name = ProviderName.WEATHERBIT, property = "ts", converter = ConverterType.UNIX_DATE) })
     private Calendar observationTime;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.id"),
-            @Provider(name = ProviderName.YAHOO, property = "code"),
+    @ProviderMappings({ @Provider(name = ProviderName.OPENWEATHERMAP, property = "weather.id"),
             @Provider(name = ProviderName.WORLDWEATHERONLINE, property = "weatherCode"),
             @Provider(name = ProviderName.HAMWEATHER, property = "weatherPrimaryCoded", converter = ConverterType.MULTI_ID),
             @Provider(name = ProviderName.METEOBLUE, property = "pictocode"),
-            @Provider(name = ProviderName.METEOBLUE, property = "pictocode_day") })
+            @Provider(name = ProviderName.METEOBLUE, property = "pictocode_day"),
+            @Provider(name = ProviderName.APIXU, property = "condition.code"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "weather.code") })
     private String id;
-
     private String commonId;
 
-    @ProviderMappings({
-            @Provider(name = ProviderName.FORECASTIO, property = "currently.icon"),
+    @ProviderMappings({ @Provider(name = ProviderName.FORECASTIO, property = "currently.icon"),
             @Provider(name = ProviderName.FORECASTIO, property = "daily.data.icon"),
             @Provider(name = ProviderName.OPENWEATHERMAP, property = "icon"),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "current_observation.icon"),
-            @Provider(name = ProviderName.WUNDERGROUND, property = "simpleforecast.forecastday.icon"),
-            @Provider(name = ProviderName.HAMWEATHER, property = "icon") })
+            @Provider(name = ProviderName.HAMWEATHER, property = "icon"),
+            @Provider(name = ProviderName.APIXU, property = "condition.icon"),
+            @Provider(name = ProviderName.WEATHERBIT, property = "weather.icon") })
     private String icon;
-
     private Calendar lastUpdate;
 
     /**
@@ -161,9 +160,8 @@ public class Condition {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("text", text)
-                .append("lastUpdate", lastUpdate == null ? null : lastUpdate.getTime())
-                .append("observationTime", observationTime == null ? null : observationTime.getTime()).append("id", id)
-                .append("icon", icon).append("commonId", commonId).toString();
+                .append("lastUpdate", (lastUpdate == null) ? null : lastUpdate.getTime())
+                .append("observationTime", (observationTime == null) ? null : observationTime.getTime())
+                .append("id", id).append("icon", icon).append("commonId", commonId).toString();
     }
-
 }

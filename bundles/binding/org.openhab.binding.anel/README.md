@@ -2,17 +2,17 @@
 
 Monitor and control Anel NET-PwrCtrl devices.
 
-| [Anel NET-PwrCtrl HUT](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [Anel NET-PwrCtrl IO](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [Anel NET-PwrCtrl HOME](http://anel-elektronik.de/SITE/produkte/home/home.htm) |
+| [Anel NET-PwrCtrl HUT2](https://de.anel.eu/?src=produkte/hut_2/hut_2.htm) | [Anel NET-PwrCtrl IO](https://de.anel.eu/?src=produkte/io/io.htm) | [Anel NET-PwrCtrl HOME](https://de.anel.eu/?src=produkte/home/home.htm) |
 | --- | --- | --- |
-| [![Anel NET-PwrCtrl HUT](http://anel-elektronik.de/SITE/image/leisten/HUT-120.gif)](http://anel-elektronik.de/SITE/produkte/hut/hut.htm) | [![Anel NET-PwrCtrl PRO](http://anel-elektronik.de/SITE/image/leisten/PRO-120.gif)](http://anel-elektronik.de/SITE/produkte/io/io.htm) | [![Anel NET-PwrCtrl HOME](http://anel-elektronik.de/SITE/image/leisten/HOME-DE-120.gif)](http://anel-elektronik.de/SITE/produkte/home/home.htm)
+| [![Anel NET-PwrCtrl HUT 2](https://de.anel.eu/image/leisten/HUT2LV-P_500.jpg)](https://de.anel.eu/?src=produkte/hut_2/hut_2.htm) | [![Anel NET-PwrCtrl IO](https://de.anel.eu/image/leisten/IO-Stecker.png)](https://de.anel.eu/?src=produkte/io/io.htm) | [![Anel NET-PwrCtrl HOME](https://de.anel.eu/image/leisten/HOME-DE-500.gif)](https://de.anel.eu/?src=produkte/home/home.htm)
 
 NET-PwrCtrl devices are power sockets / relays that can be configured via browser but they can also be controlled over the network, e.g. with an Android or iPhone app - and also with openHAB via this binding.
 The NET-PwrCtrl HUT and NET-PwrCtrl IO also have 8 I/O pins which can either be used to directly switch the sockets, or they can be used as general input switches in openHAB.
 Here is a video demonstrating a switch and a dimmer (voice is German), explanation of the setup is given in the diagram below:
 
-[![Anel example](http://img.youtube.com/vi/31ycP53jZVs/0.jpg)](http://www.youtube.com/watch?v=31ycP53jZVs)
+[![Anel example](https://img.youtube.com/vi/31ycP53jZVs/0.jpg)](http://www.youtube.com/watch?v=31ycP53jZVs)
 
-[Anel demo setup](http://2.bp.blogspot.com/-XbiK9Fe1Ek0/VFPc2lwMKeI/AAAAAAAABDM/wEdTETUfo0w/s1600/Anel-demo-setup.png)
+[Anel demo setup](https://2.bp.blogspot.com/-XbiK9Fe1Ek0/VFPc2lwMKeI/AAAAAAAABDM/wEdTETUfo0w/s1600/Anel-demo-setup.png)
 
 **Note that the binding is still untested for other devices than the _NET-PwrCtrl HUT_, because I do not own any of the others. I suppose the binding works well with the _NET-PwrCtrl IO_ because it has the same features, but it may not yet work for the others!**
 
@@ -141,7 +141,7 @@ Although the device's configuration can be used to directly switch a relay with 
 ```
 rule "regular switch on Anel1 IO1 input for relay 1"
 when Item io1 changed then
-    sendCommand(f1, io1.state)
+    f1.sendCommand(io1.state)
 end
 ```
 
@@ -150,7 +150,7 @@ An input channel can also be used as a push button (also demonstrated in the [vi
 ```
 rule "push button switch on Anel1 IO2 input for relay 2"
 when Item io2 changed to ON then
-    sendCommand(f2, if (f2.state != ON) ON else OFF)
+    f2.sendCommand(if (f2.state != ON) ON else OFF)
 end
 ```
 
@@ -163,13 +163,13 @@ var org.openhab.model.script.actions.Timer timer2
 
 rule "switch dimmer on Anel1 IO3"
 when Item io3 changed to OFF then
-    sendCommand(milight_zone1, 10)
+    milight_zone1.sendCommand(10)
     timer2 = createTimer(now.plusMillis(333)) [|
         val int newValue = (milight_zone1.state as DecimalType).intValue + 5
         if (newValue > 100) {
             timer2 = null
         } else if (timer2 != null) {
-            sendCommand(milight_zone1, newValue)
+            milight_zone1.sendCommand(newValue)
             if (io3.state == OFF)
                 timer2.reschedule(now.plusMillis(333))
         }

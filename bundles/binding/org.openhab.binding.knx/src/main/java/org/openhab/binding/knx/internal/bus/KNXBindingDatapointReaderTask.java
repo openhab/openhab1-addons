@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 /**
  *
@@ -49,7 +53,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Runnable#run()
      */
     @Override
@@ -61,27 +65,24 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
                 dp = readQueue.take();
                 sLogger.debug("Autorefresh: got new item {} in reader queue", dp.getName());
 
-                if (dp != null) {
-                    if (mKNXConnected) {
-                        sLogger.debug("Autorefresh: Trying to read from KNX bus: {}", dp);
-                        readFromKNXBus(dp);
+                if (mKNXConnected) {
+                    sLogger.debug("Autorefresh: Trying to read from KNX bus: {}", dp);
+                    readFromKNXBus(dp);
 
-                        long readingPause = KNXConnection.getReadingPause();
-                        if (readingPause > 0) {
-                            try {
-                                sLogger.debug(
-                                        "Autorefresh: DatapointReaderTask Waiting {} msecs to prevent KNX bus overload",
-                                        readingPause);
-                                Thread.sleep(readingPause);
-                            } catch (InterruptedException e) {
-                                sLogger.debug(
-                                        "Autorefresh: DatapointReaderTask KNX reading pause has been interrupted: {}",
-                                        e.getMessage());
-                            }
+                    long readingPause = KNXConnection.getReadingPause();
+                    if (readingPause > 0) {
+                        try {
+                            sLogger.debug(
+                                    "Autorefresh: DatapointReaderTask Waiting {} msecs to prevent KNX bus overload",
+                                    readingPause);
+                            Thread.sleep(readingPause);
+                        } catch (InterruptedException e) {
+                            sLogger.debug("Autorefresh: DatapointReaderTask KNX reading pause has been interrupted: {}",
+                                    e.getMessage());
                         }
-                    } else {
-                        sLogger.debug("Autorefresh: Not connected. Skipping bus read.");
                     }
+                } else {
+                    sLogger.debug("Autorefresh: Not connected. Skipping bus read.");
                 }
             }
         } catch (InterruptedException ex) {
@@ -129,7 +130,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
      * Adds or re-adds a datapoint to readQueue,
      * if datapoint is known in dpReadRetries, retries will be reduced.
      * Otherwise it will be registered in dpReadRetries with retriesLimit.
-     * 
+     *
      * @param datapoint
      */
     private void addToReadQueue(Datapoint datapoint) throws InterruptedException {
@@ -148,7 +149,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionEstablished()
      */
     @Override
@@ -158,7 +159,7 @@ public class KNXBindingDatapointReaderTask extends Thread implements KNXConnecti
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.knx.internal.connection.KNXConnectionListener#connectionLost()
      */
     @Override

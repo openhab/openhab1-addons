@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
@@ -212,11 +216,11 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
     /**
      * Sets a parameter as Read Only
-     * Some parameters in some devices can not be written to. Trying to write them results
+     * Some parameters in some devices cannot be written to. Trying to write them results
      * in a timeout and this should be avoided.
      *
      * @param index the parameter index
-     * @param readOnly true if the parameter can not be read
+     * @param readOnly true if the parameter cannot be read
      */
     public void setParameterReadOnly(Integer index, boolean readOnly) {
         ConfigurationParameter configurationParameter;
@@ -233,11 +237,11 @@ public class ZWaveConfigurationCommandClass extends ZWaveCommandClass {
 
     /**
      * Sets a parameter as Write Only
-     * Some parameters in some devices can not be read. Trying to read them results
+     * Some parameters in some devices cannot be read. Trying to read them results
      * in a timeout and this should be avoided.
      *
      * @param index the parameter index
-     * @param writeOnly true if the parameter can not be read
+     * @param writeOnly true if the parameter cannot be read
      */
     public void setParameterWriteOnly(Integer index, Integer size, boolean writeOnly) {
         ConfigurationParameter configurationParameter;

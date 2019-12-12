@@ -33,7 +33,7 @@ Tested Receivers:
 
 Please add your own successfully tested receiver to this list!
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/yamahareceiver/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/yamahareceiver/).
 
 ## Binding Configuration
 

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.stiebelheatpump.protocol;
 
@@ -165,14 +169,14 @@ public class DataParser {
         short newValue = 0;
 
         if (recordDefinition.getDataType() != Type.Settings) {
-            logger.warn("The record {} can not be set as it is not a setable value!", recordDefinition.getName());
+            logger.warn("The record {} cannot be set as it is not a setable value!", recordDefinition.getName());
             throw new StiebelHeatPumpException("record is not a setting!");
         }
 
         double number = Double.parseDouble(value);
 
         if (number > recordDefinition.getMax() || number < recordDefinition.getMin()) {
-            logger.warn("The record {} can not be set to value {} as allowed range is {}<-->{} !",
+            logger.warn("The record {} cannot be set to value {} as allowed range is {}<-->{} !",
                     recordDefinition.getName(), value, recordDefinition.getMax(), recordDefinition.getMin());
             throw new StiebelHeatPumpException("invalid value !");
         }

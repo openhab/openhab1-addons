@@ -7,7 +7,7 @@ The binding is fairly complete and supports the following functionality.
 * Read circuit, auxiliary, temperature, pump, chemistry and system values  
 * Control circuit, auxiliary lighting scenes, and temperature set points
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/autelis/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/autelis/).
 
 ## Binding Configuration
 

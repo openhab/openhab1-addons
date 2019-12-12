@@ -2,7 +2,7 @@
 
 This binding communicates with Somfy URTSI II devices over a serial connection.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/urtsi/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/urtsi/).
 
 ## Binding Configuration
 

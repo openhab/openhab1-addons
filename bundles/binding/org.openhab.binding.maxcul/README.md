@@ -4,7 +4,7 @@ The aim of this binding is to allow the connection from openHAB to MAX! devices 
 
 A lot of credit must go to the [FHEM project](http://fhem.de/fhem.html): without their implementation of the MAX interface with CUL this would be taking a lot longer to implement!
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/max/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/max/).
 
 ## Status
 
@@ -186,7 +186,7 @@ Number heating_wallThermMeasured "Wall Meas [%.1f °C]" { maxcul="WallThermostat
 A device needs to be associated with the Max!CUL binding to work correctly. This is a simple process:
 
 1. Ensure you have an item that has the correct device serial and settings you want configured in openhab
-1. If you haven't already then create a seperate item and sitemap entry that is a switch that allows you to turn on pairing mode (NB. it will turn off automatically after 30s)
+1. If you haven't already then create a separate item and sitemap entry that is a switch that allows you to turn on pairing mode (NB. it will turn off automatically after 30s)
 1. Switch on pairing mode
 1. Once pairing mode is activated then you need to pair the device by pressing and holding the pairing button the device (see your device manual). You should see it start to count down a timer from 30. Once the pairing process has begun then you will see AC displayed (on Wall and Radiator thermostats at least) or for devices without a display the LED will flash as described in the manual.
 
@@ -226,6 +226,6 @@ These are in no particular priority and are simply ideas. They may not get imple
 1. If there is a pending SET_TEMPERATURE message in the queue and we receive a SET_TEMPERATURE from the thermostat we are waiting to send to then we should clear the message from the queue as it will be outdated.
 1. Add the ability to interface with the window contact devices
 1. Add the ability pretend to be a wall thermostat. This would allow us to associate with a radiator thermostat and send measured temperatures to it. These could be then sent from another binding for example.
-1. Add the ability to simulated a window contact. This would allow us to associate with a radiator thermostat and send window events to it.
+1. Add the ability to simulate a window contact. This would allow us to associate with a radiator thermostat and send window events to it.
 1. Explore how to avoid the queue getting too long due to lack of credits with many devices.
-1. Add ability to setup device groups which should help reduce lack of credit issue
+1. Add ability to set up device groups which should help reduce lack of credit issue

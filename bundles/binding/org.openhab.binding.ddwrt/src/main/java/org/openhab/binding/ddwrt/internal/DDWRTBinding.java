@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.ddwrt.internal;
 
@@ -258,7 +262,6 @@ public class DDWRTBinding extends AbstractActiveBinding<DDWRTBindingProvider> im
                     send(client, username);
                 }
                 receive(client); // password:
-                logger.trace("TelnetCommandThread password ({})", password);
                 send(client, password);
                 receive(client); // welcome text
                 send(client, cmdString);

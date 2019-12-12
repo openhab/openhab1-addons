@@ -3,10 +3,10 @@ Private-Package: org.openhab.binding.weather.internal
 Ignore-Package: org.openhab.binding.weather.internal
 Bundle-Name: openHAB Weather Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.12.0.qualifier
+Bundle-Version: 1.14.0.qualifier
 Bundle-Activator: org.openhab.binding.weather.internal.bus.WeatherActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Description: This is the Weather binding of the open Home Automation Bus (openHAB)
 Import-Package: javax.servlet,
  javax.servlet.http,

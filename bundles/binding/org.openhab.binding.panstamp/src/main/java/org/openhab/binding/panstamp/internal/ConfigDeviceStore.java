@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.panstamp.internal;
 
@@ -54,7 +58,7 @@ class ConfigDeviceStore implements DeviceStateStore {
         val[7] = (byte) (prodId);
         if (map.containsKey(address)) {
             byte oldVal[] = map.get(address);
-            if (Arrays.equals(oldVal, val)) {
+            if (!Arrays.equals(oldVal, val)) {
                 logger.warn("Product code for device {} re-assigned from {}/{} to {}/{}.", address,
                         bytesToInt(oldVal, 0, 4), bytesToInt(oldVal, 4, 4), manId, prodId);
             }
@@ -81,7 +85,7 @@ class ConfigDeviceStore implements DeviceStateStore {
 
     private int bytesToInt(byte bytes[], int idx, int len) {
         int val = 0;
-        for (int i = 0; i < len; ++len) {
+        for (int i = 0; i < len; i++) {
             val = val << 8;
             val = val | bytes[idx + i];
         }

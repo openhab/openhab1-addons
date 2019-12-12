@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.io.transport.cul.internal;
 
@@ -49,6 +53,8 @@ public class CULManager {
      * @return config factory for the device type
      */
     public CULConfigFactory getConfigFactory(String deviceType) {
+        logger.trace("Requesting deviceTypeFactory for type '{}'", deviceType);
+        logger.trace("{} factories registered", deviceTypeConfigFactories.size());
         return deviceTypeConfigFactories.get(deviceType);
     }
 
@@ -66,15 +72,14 @@ public class CULManager {
     public <T extends CULConfig> CULHandlerInternal<T> getOpenCULHandler(T config) throws CULDeviceException {
         CULMode mode = config.getMode();
         String deviceName = config.getDeviceName();
-        logger.debug("Trying to open device " + deviceName + " in mode " + mode.toString());
+        logger.debug("Trying to open device {} in mode {}", deviceName, mode.toString());
         synchronized (openDevices) {
 
             if (openDevices.containsKey(deviceName)) {
                 @SuppressWarnings("unchecked")
                 CULHandlerInternal<T> handler = (CULHandlerInternal<T>) openDevices.get(deviceName);
                 if (handler.getConfig().equals(config)) {
-                    logger.debug("Device " + deviceName + " is already open in mode " + mode.toString()
-                            + ", returning already openend handler");
+                    logger.debug("Device {} is already open in mode {}, returning already openend handler", deviceName, mode.toString());
                     return handler;
                 } else {
                     throw new CULDeviceException(
@@ -114,7 +119,7 @@ public class CULManager {
 
     public void registerHandlerClass(String deviceType, Class<? extends CULHandlerInternal<?>> clazz,
             CULConfigFactory configFactory) {
-        logger.debug("Registering class " + clazz.getCanonicalName() + " for device type " + deviceType);
+        logger.debug("Registering class {} for device type {}", clazz.getCanonicalName(), deviceType);
         deviceTypeClasses.put(deviceType, clazz);
         deviceTypeConfigFactories.put(deviceType, configFactory);
     }
@@ -122,7 +127,7 @@ public class CULManager {
     private <T extends CULConfig> CULHandlerInternal<T> createNewHandler(T config) throws CULDeviceException {
         String deviceType = config.getDeviceType();
         CULMode mode = config.getMode();
-        logger.debug("Searching class for device type " + deviceType);
+        logger.debug("Searching class for device type {}", deviceType);
         @SuppressWarnings("unchecked")
         Class<? extends CULHandlerInternal<T>> culHandlerclass = (Class<? extends CULHandlerInternal<T>>) deviceTypeClasses
                 .get(deviceType);
@@ -140,8 +145,8 @@ public class CULManager {
             CULHandlerInternal<T> culHandler = culHanlderConstructor.newInstance(parameters);
             List<String> initCommands = mode.getCommands();
             if (!(culHandler instanceof CULHandlerInternal)) {
-                logger.error(
-                        "Class " + culHandlerclass.getCanonicalName() + " does not implement the internal interface");
+                logger.error("Class {} does not implement the internal interface",
+                        culHandlerclass.getCanonicalName());
                 throw new CULDeviceException("This CULHandler class does not implement the internal interface: "
                         + culHandlerclass.getCanonicalName());
             }

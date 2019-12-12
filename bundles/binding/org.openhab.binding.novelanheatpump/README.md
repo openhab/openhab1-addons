@@ -45,8 +45,12 @@ where `<eventType>` is one of the following values:
 | `temperature_supplay` | Number | the temperature sent to the floor heating |
 | `temperature_servicewater_reference` | Number | the reference temperature of the servicewater |
 | `temperature_servicewater` | Number | the temperature of the servicewater |
-| `state` | String | contains the time of the state and the state; Possible states are error, running, stoped, defrosting |
+| `state` | String | contains the time of the state and the state; Possible states are error, running, stopped, defrosting |
+| `simple_state` | String | contains only the short statename; Possible states are error, running, stopped, defrosting |
+| `simple_state_num` | Number | same information as `simple_state`, but as a numeric value |
 | `extended_state` | String | contains the time of the state and the state; Possible states are error, heating, standby, switch-on delay, switching cycle | blocked, provider lock time, service water, screed heat up, defrosting, pump flow, desinfection, cooling, pool water, heating ext., service water ext., | flow monitoring, ZWE operation |
+| `switchoff_reason_0` | Number | contains the last shutdown reason |
+| `switchoff_code_0` | Number | contains the last heatpump error code |
 | `temperature_solar_collector` | Number | the temperature of the sensor in the solar collector |
 | `temperature_hot_gas` | Number | 
 | `temperature_probe_in` | Number | temperature flowing to probe head |
@@ -83,7 +87,34 @@ where `<eventType>` is one of the following values:
 | `cooling_inlet_temperature` | Number | cooling inlet temeprature |
 | `cooling_start_hours` | Number | cooling start after hours |
 | `cooling_stop_hours` | Number | cooling stop after hours |
-
+| `output_av` | Switch | Output: defrosting (= Abtauventil) |
+| `output_bup` | Switch | Output: water pump (= Brauchwasserpumpe) |
+| `output_hup` | Switch | Output: heat pump (= Heizungsumwälzpumpe) |
+| `output_mz1` | Switch | |
+| `output_ven` | Switch | Output: ventilation |
+| `output_vbo` | Switch | |
+| `output_vd1` | Switch | Output: compressor 1 |
+| `output_vd2` | Switch | Output: compressor 2 |
+| `output_zip` | Switch | Output: water circulation pump |
+| `output_zup` | Switch | Output: additional water pump |
+| `output_zw1` | Switch | Output: additional heater 1 |
+| `output_zw2sst` | Switch | Output: additional heater 2 |
+| `output_zw3sst` | Switch | Output: additional heater 3 |
+| `output_fp2` | Switch | |
+| `output_slp` | Switch | |
+| `output_sup` | Switch | |
+| `output_ma2` | Switch | |
+| `output_mz2` | Switch | |
+| `output_ma3` | Switch | |
+| `output_mz3` | Switch | |
+| `output_fp3` | Switch | |
+| `output_vsk` | Switch | |
+| `output_frh` | Switch | |
+| `output_vdh` | Switch | Output: compressor heating |
+| `output_av2` | Switch | Output: defrosting 2 (= Abtauventil 2) |
+| `output_vbo2` | Switch | |
+| `output_vd12` | Switch | Output: compressor 1/2 |
+| `output_vdh2` | Switch | Output: compressor heating 2 |
 
 ## Examples
 
@@ -126,7 +157,7 @@ Number HeatPump_Thermalenergy_Warmwater     "Waermemenge Brauchwasser [%.1f KWh]
 Number HeatPump_Thermalenergy_Pool  "Waermemenge Schwimmbad [%.1f KWh]" <energy> (gHeatpump) { novelanheatpump="thermalenergy_pool" }
 Number HeatPump_Thermalenergy_Total     "Waermemenge gesamt seit Reset [%.1f KWh]"  <energy> (gHeatpump) { novelanheatpump="thermalenergy_total" }
 Number HeatPump_Massflow    "Massentrom [%.1f L/h]" <energy> (gHeatpump) { novelanheatpump="massflow" }
-String HeatPump_State   "Status [%s]"   <temperature> (gHeatpump) { novelanheatpump="extended_state" }
+String HeatPump_State_Ext   "Status [%s]"   <temperature> (gHeatpump) { novelanheatpump="extended_state" }
 
 Number HeatPump_heating_operation_mode   "Heizung Betriebsart [%.0f]"  (gHeatpump) { novelanheatpump="heating_operation_mode" }
 Number HeatPump_heating_temperature   "Heizung Temperatur [%.1f]"  (gHeatpump) { novelanheatpump="heating_temperature" }
@@ -137,6 +168,9 @@ Number HeatPump_Cooling_Release "Freigabe [%.1f °C]" (gHeatpump) { novelanheatp
 Number HeatPump_Cooling_Inlet "Vorlauf Soll [%.1f °C]" (gHeatpump) { novelanheatpump="cooling_inlet_temperature" }
 Number HeatPump_Cooling_Start "AT Überschreitung[%.1f hrs]" (gHeatpump) { novelanheatpump="cooling_start_hours" }
 Number HeatPump_Cooling_Stop "AT Unterschreitung[%.1f hrs]" (gHeatpump) { novelanheatpump="cooling_stop_hours" }
+
+Switch HeatPump_HUP  "Heizungsumwälzpumpe [%s]"   <switch>   (gHeatpump)   { novelanheatpump="output_hup" }
+
 ```
 
 ### Sitemap (fragment)

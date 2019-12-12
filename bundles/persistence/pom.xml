@@ -1,40 +1,39 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>bundles</artifactId>
-    <version>1.12.0-SNAPSHOT</version>
+    <version>1.14.0-SNAPSHOT</version>
   </parent>
-
-  <modelVersion>4.0.0</modelVersion>
   <groupId>org.openhab.bundles</groupId>
   <artifactId>persistence</artifactId>
 
-  <name>openHAB Persistence Components</name>
-
   <packaging>pom</packaging>
 
+  <name>openHAB Persistence Components</name>
+
   <modules>
-    <module>org.openhab.persistence.caldav</module>    
+    <module>org.openhab.persistence.caldav</module>
+    <module>org.openhab.persistence.cosm</module>
     <module>org.openhab.persistence.db4o</module>
     <module>org.openhab.persistence.db4o.test</module>
     <module>org.openhab.persistence.dynamodb</module>
     <module>org.openhab.persistence.dynamodb.test</module>
-    <module>org.openhab.persistence.logging</module>
-    <module>org.openhab.persistence.sense</module>
-    <module>org.openhab.persistence.rrd4j</module>
     <module>org.openhab.persistence.exec</module>
     <module>org.openhab.persistence.exec.test</module>
-    <module>org.openhab.persistence.mysql</module>
-    <module>org.openhab.persistence.cosm</module>
     <module>org.openhab.persistence.gcal</module>
-    <module>org.openhab.persistence.mqtt</module>
-    <module>org.openhab.persistence.mongodb</module>
     <module>org.openhab.persistence.influxdb08</module>
     <module>org.openhab.persistence.influxdb</module>
-    <module>org.openhab.persistence.jpa</module>
     <module>org.openhab.persistence.jdbc</module>
+    <module>org.openhab.persistence.jpa</module>
+    <module>org.openhab.persistence.logging</module>
     <module>org.openhab.persistence.mapdb</module>
+    <module>org.openhab.persistence.mongodb</module>
+    <module>org.openhab.persistence.mqtt</module>
+    <module>org.openhab.persistence.mysql</module>
+    <module>org.openhab.persistence.rrd4j</module>
     <module>org.openhab.persistence.sitewhere</module>
   </modules>
 

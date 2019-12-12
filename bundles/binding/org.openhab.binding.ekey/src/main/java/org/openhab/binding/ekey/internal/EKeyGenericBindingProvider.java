@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.ekey.internal;
 
@@ -61,7 +65,7 @@ public class EKeyGenericBindingProvider extends AbstractGenericBindingProvider i
         if (bindingConfig == null) {
             throw new BindingConfigParseException("Your binding configuration is illegal!\n"
                     + "Possible values are: ACTION, USERNAME, USERID, TERMINALID, TERMINALNAME, "
-                    + "FINGERID, KEYID, INPUTID, RELAISID, MODE\nExample: {ekey=\"ACTION\"}");
+                    + "FINGERID, KEYID, INPUTID, RELAYID, MODE\nExample: {ekey=\"ACTION\"}");
         }
 
         config.itemType = item.getClass();
@@ -76,7 +80,7 @@ public class EKeyGenericBindingProvider extends AbstractGenericBindingProvider i
             throw new BindingConfigParseException("eKey does not know the configuration value " + "'" + value
                     + "' that you passed in the item binding configuration!\n"
                     + "Possible values are: ACTION, USERNAME, USERID, TERMINALID, TERMINALNAME, "
-                    + "FINGERID, KEYID, INPUTID, RELAISID, MODE\nExample: {ekey=\"ACTION\"}");
+                    + "FINGERID, KEYID, INPUTID, RELAYID, MODE\nExample: {ekey=\"ACTION\"}");
         }
 
         addBindingConfig(item, config);

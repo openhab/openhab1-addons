@@ -1,0 +1,55 @@
+This content is produced and maintained by the openHAB project.
+
+* Project home: https://www.openhab.org
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0/.
+
+== Source Code
+
+https://github.com/openhab/openhab1-addons
+
+== Third-party Content
+
+aws-sdk-java
+* License: Apache 2.0 License
+* Project: https://aws.amazon.com/sdk-for-java
+* Source:  https://github.com/aws/aws-sdk-java
+
+commons-codec
+* License: Apache 2.0 License
+* Project; https://commons.apache.org/proper/commons-codec
+* Source:  https://github.com/apache/commons-codec
+
+commons-logging
+* License: Apache 2.0 License
+* Project: https://commons.apache.org/proper/commons-logging/
+* Source:  https://gitbox.apache.org/repos/asf/?p=commons-logging.git
+
+httpclient
+* License: Apache 2.0 License
+* Project: https://hc.apache.org/httpcomponents-client-ga
+* Source:  https://hc.apache.org/httpcomponents-client-ga
+
+httpcore
+* License: Apache 2.0 License
+* Project: http://hc.apache.org/httpcomponents-core-ga
+* Source:  http://hc.apache.org/httpcomponents-core-ga
+
+ion-java
+* License: Apache 2.0 License
+* Project: https://github.com/amzn/ion-java
+* Source:  https://github.com/amzn/ion-java
+
+jackson
+* License: Apache 2.0 License
+* Project: https://github.com/FasterXML/jackson
+* Source:  https://github.com/FasterXML/jackson
+
+joda-time
+* License: Apache 2.0 License
+* Project: https://www.joda.org/joda-time
+* Source:  https://github.com/JodaOrg/joda-time

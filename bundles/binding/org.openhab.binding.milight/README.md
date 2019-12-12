@@ -4,7 +4,7 @@ The Milight binding allows openHAB to send commands to multiple Milight bridges.
 
 [![openHAB Milight](http://img.youtube.com/vi/zNe9AkQbfmc/0.jpg)](http://www.youtube.com/watch?v=zNe9AkQbfmc)
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/milight/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/milight/).
 
 ## Binding Configuration
 
@@ -68,7 +68,7 @@ The following command is valid for RGBW bulbs only :
 
 * `<steps>` is valid for RGBW bulbs only and has to be used with `commandType=brightness`.
 
-This optional setting can be used if your RGBW bulbs are not dimming in 27 steps as this is the default [(See the API)](http://www.limitlessled.com/dev/). 
+This optional setting can be used if your RGBW bulbs are not dimming in 27 steps as this is the default [(See an archive of the API)](https://github.com/Fantasmos/LimitlessLED-DevAPI). 
 
 ## Limitations
 

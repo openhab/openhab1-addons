@@ -1,19 +1,29 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.action.telegram.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
@@ -41,6 +51,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.scriptengine.action.ActionDoc;
 import org.openhab.core.scriptengine.action.ParamDoc;
 import org.slf4j.Logger;
@@ -70,26 +81,30 @@ public class Telegram {
         groupTokens.put(group, new TelegramBot(chatId, token));
     }
 
+    public static void addToken(String group, String chatId, String token, String parseMode) {
+        groupTokens.put(group, new TelegramBot(chatId, token, parseMode));
+    }
+
     @ActionDoc(text = "Sends a Telegram via Telegram REST API - direct message")
-    static public boolean sendTelegram(@ParamDoc(name = "group") String group,
+    public static boolean sendTelegram(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "message") String message) {
 
-        if (groupTokens.get(group) == null) {
+        TelegramBot bot = groupTokens.get(group);
+        if (bot == null) {
             logger.warn("Bot '{}' not defined; action skipped.", group);
             return false;
         }
 
-        String url = String.format(TELEGRAM_URL, groupTokens.get(group).getToken());
+        String url = String.format(TELEGRAM_URL, bot.getToken());
 
         HttpClient client = new HttpClient();
 
-        PostMethod postMethod = new PostMethod(url);
-        postMethod.getParams().setContentCharset("UTF-8");
-        postMethod.getParams().setSoTimeout(HTTP_TIMEOUT);
-        postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(HTTP_RETRIES, false));
-        NameValuePair[] data = { new NameValuePair("chat_id", groupTokens.get(group).getChatId()),
-                new NameValuePair("text", message) };
+        PostMethod postMethod = createPostMethod(url, HTTP_TIMEOUT, HTTP_RETRIES);
+        NameValuePair[] data = {
+                new NameValuePair("chat_id", bot.getChatId()),
+                new NameValuePair("text", message),
+                new NameValuePair("parse_mode", bot.getParseMode())
+        };
         postMethod.setRequestBody(data);
 
         try {
@@ -135,22 +150,31 @@ public class Telegram {
         }
     }
 
+    private static PostMethod createPostMethod(String url, int timeOut, int retries) {
+        PostMethod postMethod = new PostMethod(url);
+        postMethod.getParams().setContentCharset("UTF-8");
+        postMethod.getParams().setSoTimeout(timeOut);
+        postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(retries, false));
+        return postMethod;
+    }
+
     @ActionDoc(text = "Sends a Telegram via Telegram REST API - build message with format and args")
-    static public boolean sendTelegram(@ParamDoc(name = "group") String group, @ParamDoc(name = "format") String format,
+    public static boolean sendTelegram(@ParamDoc(name = "group") String group, @ParamDoc(name = "format") String format,
             @ParamDoc(name = "args") Object... args) {
 
         return sendTelegram(group, String.format(format, args));
     }
 
     @ActionDoc(text = "Sends a Picture via Telegram REST API")
-    static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
+    public static boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption) {
 
         return sendTelegramPhoto(group, photoURL, caption, null, null, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
     }
 
     @ActionDoc(text = "Sends a Picture via Telegram REST API, using custom HTTP timeout")
-    static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
+    public static boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
             @ParamDoc(name = "timeoutMillis") Integer timeoutMillis) {
 
@@ -158,20 +182,21 @@ public class Telegram {
     }
 
     @ActionDoc(text = "Sends a Picture, protected by username/password authentication, via Telegram REST API")
-    static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
+    public static boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
             @ParamDoc(name = "username") String username, @ParamDoc(name = "password") String password) {
-        return sendTelegramPhoto(group, photoURL, caption, null, null, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
+        return sendTelegramPhoto(group, photoURL, caption, username, password, HTTP_PHOTO_TIMEOUT, HTTP_RETRIES);
 
     }
 
     @ActionDoc(text = "Sends a Picture, protected by username/password authentication, using custom HTTP timeout and retries, via Telegram REST API")
-    static public boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
+    public static boolean sendTelegramPhoto(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "photoURL") String photoURL, @ParamDoc(name = "caption") String caption,
             @ParamDoc(name = "username") String username, @ParamDoc(name = "password") String password,
             @ParamDoc(name = "timeoutMillis") int timeoutMillis, @ParamDoc(name = "retries") int retries) {
 
-        if (groupTokens.get(group) == null) {
+        TelegramBot bot = groupTokens.get(group);
+        if (bot == null) {
             logger.warn("Bot '{}' not defined; action skipped.", group);
             return false;
         }
@@ -181,50 +206,85 @@ public class Telegram {
             return false;
         }
 
-        // load image from url
-        byte[] imageFromURL;
+        byte[] image;
 
-        HttpClient getClient = new HttpClient();
+        if (photoURL.toLowerCase().startsWith("http")) {
+            // load image from url
+            logger.debug("Photo URL provided.");
 
-        if (username != null && password != null) {
-            getClient.getParams().setAuthenticationPreemptive(true);
-            Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
-            getClient.getState().setCredentials(AuthScope.ANY, defaultcreds);
-        }
+            HttpClient getClient = new HttpClient();
 
-        GetMethod getMethod = new GetMethod(photoURL);
-        getMethod.getParams().setSoTimeout(timeoutMillis);
-        getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(retries, false));
-        try {
-            int statusCode = getClient.executeMethod(getMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.warn("Failed to retrieve an image. Received status: {}", getMethod.getStatusLine());
-                return false;
+            if (username != null && password != null) {
+                getClient.getParams().setAuthenticationPreemptive(true);
+                Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
+                getClient.getState().setCredentials(AuthScope.ANY, defaultcreds);
             }
 
-            // if the content-length is 0 (which shouldn't happen),
-            // flag an appropriate error
-            if (getMethod.getResponseContentLength() == 0) {
-                logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
+            GetMethod getMethod = new GetMethod(photoURL);
+            getMethod.getParams().setSoTimeout(timeoutMillis);
+            getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(retries, false));
+            try {
+                int statusCode = getClient.executeMethod(getMethod);
+                if (statusCode != HttpStatus.SC_OK) {
+                    logger.warn("Failed to retrieve an image. Received status: {}", getMethod.getStatusLine());
+                    return false;
+                }
+
+                // if the content-length is 0 (which shouldn't happen),
+                // flag an appropriate error
+                if (getMethod.getResponseContentLength() == 0) {
+                    logger.warn("Failed to retrieve an image. Fetched URL returned no data.");
+                    return false;
+                }
+
+                image = getMethod.getResponseBody();
+            } catch (HttpException e) {
+                logger.warn("HTTP protocol violation: {}", e);
+                return false;
+            } catch (IOException e) {
+                logger.warn("Transport error: {}", e);
+                return false;
+            } finally {
+                getMethod.releaseConnection();
+            }
+        } else if (photoURL.toLowerCase().startsWith("file")) {
+            // Load image from local file system
+            logger.debug("Read file from local file system: {}", photoURL);
+            URL url;
+            try {
+                url = new URL(photoURL);
+                image = Files.readAllBytes(Paths.get(url.getPath()));
+            } catch (MalformedURLException e) {
+                logger.warn("File specification {} is not properly formed: {}", photoURL, e.getMessage());
+                return false;
+            } catch (IOException e) {
+                logger.warn("Unable to read file {} from local file system: {}", photoURL, e.getMessage());
                 return false;
             }
+        } else {
+            // Load image from provided base64 image
+            logger.debug("Photo base64 provided; converting to binary.");
 
-            imageFromURL = getMethod.getResponseBody();
-        } catch (HttpException e) {
-            logger.warn("HTTP protocol violation: {}", e);
-            return false;
-        } catch (IOException e) {
-            logger.warn("Transport error: {}", e);
-            return false;
-        } finally {
-            getMethod.releaseConnection();
+            if (photoURL.split(",").length > 1) {
+                String base64Image = photoURL.split(",")[1];
+
+                try {
+                    image = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+                } catch (Exception e) {
+                    logger.warn("Failed to convert base64 image to binary: {}", e);
+                    return false;
+                }
+            } else {
+                logger.warn("Invalid base64 image provided.");
+                return false;
+            }
         }
 
         // parse image type
         String imageType;
         try {
-            ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(imageFromURL));
+            ImageInputStream iis = ImageIO.createImageInputStream(new ByteArrayInputStream(image));
             logger.debug("imageInputStream length: {}", iis.length());
             Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
             if (!imageReaders.hasNext()) {
@@ -242,21 +302,11 @@ public class Telegram {
         }
 
         // post photo to telegram
-        String url = String.format(TELEGRAM_PHOTO_URL, groupTokens.get(group).getToken());
+        String url = String.format(TELEGRAM_PHOTO_URL, bot.getToken());
 
-        PostMethod postMethod = new PostMethod(url);
+        PostMethod postMethod = createPostMethod(url, timeoutMillis, retries);
         try {
-            postMethod.getParams().setContentCharset("UTF-8");
-            postMethod.getParams().setSoTimeout(timeoutMillis);
-            postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                    new DefaultHttpMethodRetryHandler(retries, false));
-            Part[] parts = new Part[caption != null ? 3 : 2];
-            parts[0] = new StringPart("chat_id", groupTokens.get(group).getChatId());
-            parts[1] = new FilePart("photo",
-                    new ByteArrayPartSource(String.format("image.%s", imageType), imageFromURL));
-            if (caption != null) {
-                parts[2] = new StringPart("caption", caption, "UTF-8");
-            }
+            Part[] parts = createSendPhotoRequestParts(bot, image, imageType, caption);
             postMethod.setRequestEntity(new MultipartRequestEntity(parts, postMethod.getParams()));
 
             HttpClient client = new HttpClient();
@@ -281,5 +331,20 @@ public class Telegram {
         } finally {
             postMethod.releaseConnection();
         }
+    }
+
+    private static Part[] createSendPhotoRequestParts(TelegramBot bot, byte[] image, String imageType, String caption) {
+        List<Part> partList = new ArrayList<>();
+        partList.add(new StringPart("chat_id", bot.getChatId()));
+        partList.add(new FilePart("photo", new ByteArrayPartSource(String.format("image.%s", imageType), image)));
+
+        if (StringUtils.isNotBlank(caption)) {
+            partList.add(new StringPart("caption", caption, "UTF-8"));
+        }
+
+        if (StringUtils.isNotBlank(bot.getParseMode())) {
+            partList.add(new StringPart("parse_mode", bot.getParseMode()));
+        }
+        return partList.toArray(new Part[0]);
     }
 }

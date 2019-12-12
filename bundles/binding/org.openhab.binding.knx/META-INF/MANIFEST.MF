@@ -3,10 +3,10 @@ Private-Package: org.openhab.binding.knx.internal
 Ignore-Package: org.openhab.binding.knx.internal
 Bundle-Name: openHAB KNX Binding
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.12.0.qualifier
+Bundle-Version: 1.14.0.qualifier
 Bundle-Activator: org.openhab.binding.knx.internal.KNXActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Description: This is the runtime component of the open Home Aut
  omation Bus (openHAB)
 Import-Package: com.google.common.base,
@@ -32,6 +32,7 @@ Bundle-SymbolicName: org.openhab.binding.knx
 Bundle-DocURL: http://www.openhab.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/knxconnection.xml, OSGI-INF/knxbinding.xml, OSGI-INF/knxcoretypemapper.xml, OSGI-INF/knxgenericbindingprovider.xml
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/calimero-rxtx-2.0a3.jar,
  lib/calimero-core-2.3-beta.jar,
  .

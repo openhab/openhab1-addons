@@ -1,0 +1,25 @@
+This content is produced and maintained by the openHAB project.
+
+* Project home: https://www.openhab.org
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0/.
+
+== Source Code
+
+https://github.com/openhab/openhab1-addons
+
+== Third-party Content
+
+ola-java-client
+* License: Apache 2.0 License
+* Project: https://www.openlighting.org/ola
+* Source:  https://github.com/OpenLightingProject/ola
+
+protobuf-java
+* License: BSD License
+* Project: https://developers.google.com/protocol-buffers
+* Source:  https://github.com/protocolbuffers/protobuf

@@ -1,14 +1,19 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.action.telegram.internal;
 
 import java.util.Dictionary;
+import java.util.Objects;
 
 import org.openhab.core.scriptengine.action.ActionService;
 import org.osgi.service.cm.ConfigurationException;
@@ -62,8 +67,18 @@ public class TelegramActionService implements ActionService, ManagedService {
             for (String bot : bots) {
                 String chatIdKey = String.format("%s.chatId", bot);
                 String tokenKey = String.format("%s.token", bot);
-                if (config.get(chatIdKey) != null && config.get(tokenKey) != null) {
-                    Telegram.addToken(bot, (String) config.get(chatIdKey), (String) config.get(tokenKey));
+                String parseModeKey = String.format("%s.parseMode", bot);
+
+                String chatId = Objects.toString(config.get(chatIdKey), null);
+                String token = Objects.toString(config.get(tokenKey), null);
+                String parseMode = Objects.toString(config.get(parseModeKey), null);
+
+                if (chatId != null && token != null) {
+                    if (parseMode == null) {
+                        Telegram.addToken(bot, chatId, token);
+                    } else {
+                        Telegram.addToken(bot, chatId, token, parseMode);
+                    }
                     logger.info("Bot {} loaded from config file", bot);
                 } else {
                     logger.warn("Bot {} is misconfigured. Please check the configuration", bot);

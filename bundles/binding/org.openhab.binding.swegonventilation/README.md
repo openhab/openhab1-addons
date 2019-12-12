@@ -25,9 +25,10 @@ swegongw -v -d /dev/ttyUSB0 -a 192.168.1.10
 
 This binding can be configured in the file `services/swegonventilation.cfg`.
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| udpPort  | 9998    |    No    | UDP port on which the binding will listen |
+| Property      | Default | Required | Description |
+|---------------|---------|:--------:|-------------|
+| udpPort       | 9998    |    No    | UDP port on which the binding will listen |
+| throttleTime  | 0       |    No    | Throttle received messages. 0 = throttle is disabled, otherwise throttle time in milliseconds. |
 
 ## Item Configuration
 

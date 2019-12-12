@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.jdbc.db;
 
@@ -319,6 +323,7 @@ public class JdbcBaseDAO {
         String sql = StringUtilsExt.replaceArrayMerge(SQL_CREATE_ITEM_TABLE,
                 new String[] { "#tableName#", "#dbType#", "#tablePrimaryKey#" },
                 new String[] { vo.getTableName(), vo.getDbType(), sqlTypes.get("tablePrimaryKey") });
+        logger.debug("JDBC::doCreateItemTable sql={}", sql);
         Yank.execute(sql, null);
     }
 
@@ -432,10 +437,9 @@ public class JdbcBaseDAO {
             logger.debug("JDBC::storeItemValueProvider: newVal.intValue: '{}'", newVal.intValue());
             vo.setValue(newVal.intValue());
         } else if ("DATETIMEITEM".equals(itemType)) {
-            // vo.setValueTypes(getSqlTypes().get(itemType), java.util.Date.class);
-            vo.setValueTypes(getSqlTypes().get(itemType), java.sql.Date.class);
+            vo.setValueTypes(getSqlTypes().get(itemType), java.sql.Timestamp.class);
             Calendar x = ((DateTimeType) item.getState()).getCalendar();
-            java.sql.Date d = new java.sql.Date(x.getTimeInMillis());
+            java.sql.Timestamp d = new java.sql.Timestamp(x.getTimeInMillis());
             logger.debug("JDBC::storeItemValueProvider: DateTimeItem: '{}'", d);
             vo.setValue(d);
         } else {

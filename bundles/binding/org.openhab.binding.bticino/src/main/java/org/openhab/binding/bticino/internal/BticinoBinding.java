@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.bticino.internal;
 
@@ -32,8 +36,10 @@ import org.slf4j.LoggerFactory;
  * configurations are provided by the {@link GenericItemProvider}.
  *
  * @author Tom De Vlaminck, Andrea Carabillo'
+ * @author Reinhard Freuis - various enhancements for heating, rollershutter
  * @serial 1.0
  * @since 1.7.0
+ *
  */
 public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> implements ManagedService {
 
@@ -41,10 +47,10 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
 
     /**
      * RegEx to validate a bticino gateway config
-     * <code>'^(.*?)\\.(host|port)$'</code>
+     * <code>'^(.*?)\\.(host|port|passwd|rescan_secs|heating_zones|shutter_run_msecs)$'</code>
      */
     private static final Pattern EXTRACT_BTICINO_GATEWAY_CONFIG_PATTERN = Pattern
-            .compile("^(.*?)\\.(host|port|passwd|rescan_secs)$");
+            .compile("^(.*?)\\.(host|port|passwd|rescan_secs|heating_zones|shutter_run_msecs)$");
 
     // indicates that the updated has been run once
     boolean m_binding_initialized = false;
@@ -65,11 +71,16 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
         String passwd = "12345";
         // Default rescan interval is 300 seconds
         int rescan_secs = 300;
+        // Default heating zones are 99
+        int heating_zones = 99;
+        // Default Shutter Run Time is 0 milliseconds
+        int shutter_run_msecs = 0;
 
         @Override
         public String toString() {
             return "Bticino [id=" + id + ", host=" + host + ", port=" + port + ", passwd=" + passwd + ", rescan secs="
-                    + rescan_secs + "]";
+                    + rescan_secs + ", heating zones=" + heating_zones + ", shutter run time=" + shutter_run_msecs
+                    + "]";
         }
     }
 
@@ -199,8 +210,9 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
                 Matcher matcher = EXTRACT_BTICINO_GATEWAY_CONFIG_PATTERN.matcher(key);
 
                 if (!matcher.matches()) {
-                    logger.debug("given bticino gateway-config-key '" + key
-                            + "' does not follow the expected pattern '<gateway_name>.<host|port>'");
+                    logger.debug(
+                            "given bticino gateway-config-key '{}' does not follow the expected pattern '<gateway_name>.<host|port|passwd|rescan_secs|heating_zones|shutter_run_msecs>'",
+                            key);
                     continue;
                 }
 
@@ -212,7 +224,7 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
 
                 // Search the config, to update the values (row / row)
                 BticinoConfig l_bticino_config = m_bticino_devices_config.get(l_gw_if_id);
-                // Create a new config if it wasnt found now
+                // Create a new config if it wasn't found now
                 if (l_bticino_config == null) {
                     l_bticino_config = new BticinoConfig();
                     // set the id
@@ -235,6 +247,12 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
                     l_bticino_config.passwd = value;
                 } else if ("rescan_secs".equals(configKey)) {
                     l_bticino_config.rescan_secs = Integer.valueOf(value);
+                } else if ("heating_zones".equals(configKey)) {
+                    // parameter heating
+                    l_bticino_config.heating_zones = Integer.valueOf(value);
+                } else if ("shutter_run_msecs".equals(configKey)) {
+                    // parameter shutter runtime
+                    l_bticino_config.shutter_run_msecs = Integer.valueOf(value);
                 } else {
                     throw new ConfigurationException(configKey,
                             "the given configKey '" + configKey + "' with value '" + value + "' is unknown");
@@ -264,6 +282,8 @@ public class BticinoBinding extends AbstractBinding<BticinoBindingProvider> impl
             l_bticino_device.setPort(l_current_device_config.port);
             l_bticino_device.setPasswd(l_current_device_config.passwd);
             l_bticino_device.setRescanInterval(l_current_device_config.rescan_secs);
+            l_bticino_device.setHeatingZones(l_current_device_config.heating_zones);
+            l_bticino_device.setShutterRunTime(l_current_device_config.shutter_run_msecs);
             try {
                 l_bticino_device.initialize();
             } catch (InitializationException e) {

@@ -2,11 +2,11 @@
 
 This binding provides access to AVM Home Automation devices, such as the Fritz!DECT 200 connected to a Fritz!Box or the Fritz!Powerline 546E. It is designed to allow for multiple hosts, for instance using both a Fritz!Box and a Fritz!Powerline.
 
-[![Fritz AHA](http://img.youtube.com/vi/qYrpPrLY868/0.jpg)](http://www.youtube.com/watch?v=qYrpPrLY868)
+[![Fritz AHA](https://img.youtube.com/vi/qYrpPrLY868/0.jpg)](http://www.youtube.com/watch?v=qYrpPrLY868)
 
 The binding interfaces with hosts using a choice of two different interfaces, the query script used in the Fritz!OS UI and a webservice designed for interfacing with external applications.
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/avmfritz/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/avmfritz/).
 
 ## Binding Configuration
 

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.fritzboxtr064.internal;
 
@@ -16,7 +20,7 @@ import java.util.function.Function;
 /**
  * {@link ItemMap} for a FritzBox SOAP service which returns the values of multiple items in
  * a single service response. The value of each {@link #getItemCommands() configured command} is
- * read from one {@link #getReadDataOutName(String)} XML element in the service response by
+ * read from one {@link #getItemArgumentName(String)} XML element in the service response by
  * a {@link SoapValueParser}.
  *
  * @author Michael Koch <tensberg@gmx.net>
@@ -40,7 +44,7 @@ public class MultiItemMap extends AbstractItemMap {
     }
 
     @Override
-    public String getReadDataOutName(String itemCommand) {
+    public String getItemArgumentName(String itemCommand) {
         if (!_itemCommands.contains(itemCommand)) {
             throw new IllegalArgumentException("unsupported itemCommand " + itemCommand);
         }

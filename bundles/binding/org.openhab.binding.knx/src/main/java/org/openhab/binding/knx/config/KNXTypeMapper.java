@@ -1,14 +1,20 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.knx.config;
 
 import org.openhab.core.types.Type;
+
+import com.sun.istack.internal.Nullable;
 
 import tuwien.auto.calimero.datapoint.Datapoint;
 import tuwien.auto.calimero.process.ProcessEvent;
@@ -27,7 +33,7 @@ public interface KNXTypeMapper {
 
     /**
      * maps an openHAB command/state to a string value which correspond to its datapoint in KNX
-     * 
+     *
      * @param type a command or state
      * @param dpt the corresponding datapoint type
      * @return datapoint value as a string
@@ -36,11 +42,14 @@ public interface KNXTypeMapper {
 
     /**
      * maps a datapoint value to an openHAB command or state
-     * 
+     *
      * @param datapoint the source datapoint
      * @param data the datapoint value as an ASDU byte array (see <code>{@link ProcessEvent}.getASDU()</code>)
      * @return a command or state of openHAB
      */
     public Type toType(Datapoint datapoint, byte[] data);
+
+    @Nullable
+    public Class<? extends Type> toTypeClass(@Nullable String dpt);
 
 }

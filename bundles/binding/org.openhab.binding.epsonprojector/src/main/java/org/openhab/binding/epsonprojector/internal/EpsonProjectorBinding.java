@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.epsonprojector.internal;
 
@@ -82,10 +86,10 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
     @Override
     public void deactivate() {
         logger.debug("Deactivate");
-        closeConnection();
+        shutdownConnections();
     }
 
-    private void closeConnection() {
+    private void shutdownConnections() {
         if (deviceConfigCache != null) {
             // close all connections
             for (Entry<String, DeviceConfig> entry : deviceConfigCache.entrySet()) {
@@ -169,7 +173,8 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
                     if (state != null) {
                         eventPublisher.postUpdate(itemName, state);
                     } else {
-                        logger.error("No response received from command '{}'", commmandType);
+                        logger.debug("No response received from command '{}'", commmandType);
+                        closeConnection(deviceId);
                     }
 
                     lastUpdateMap.put(itemName, System.currentTimeMillis());
@@ -346,8 +351,8 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
             }
 
         } catch (EpsonProjectorException e) {
-            logger.warn("Couldn't execute command '{}', {}", commmandType.toString(), e.getMessage());
-
+            logger.debug("Couldn't execute command '{}', {}", commmandType.toString(), e.getMessage());
+            closeConnection(deviceId);
         } catch (Exception e) {
             logger.warn("Couldn't create state of type '{}'", itemType);
             return null;
@@ -522,7 +527,27 @@ public class EpsonProjectorBinding extends AbstractActiveBinding<EpsonProjectorB
 
         } catch (EpsonProjectorException e) {
             logger.warn("Couldn't execute command '{}', {}", commmandType, e.getMessage());
+            closeConnection(deviceId);
+        }
+    }
 
+    private void closeConnection(String deviceId) {
+        DeviceConfig device = deviceConfigCache.get(deviceId);
+
+        if (device == null) {
+            logger.warn("Could not find device '{}'", deviceId);
+            return;
+        }
+
+        EpsonProjectorDevice remoteController = device.getConnection();
+
+        if (remoteController != null) {
+            try {
+                logger.debug("Closing connection to device '{}' ", deviceId);
+                remoteController.disconnect();
+            } catch (EpsonProjectorException e) {
+                logger.debug("Error occurred when closing connection to device '{}'", deviceId);
+            }
         }
     }
 

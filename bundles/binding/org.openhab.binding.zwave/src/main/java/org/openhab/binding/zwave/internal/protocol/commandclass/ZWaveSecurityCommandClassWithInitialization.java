@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.openhab.binding.zwave.internal.protocol.commandclass;
 
 import java.io.ByteArrayOutputStream;
@@ -149,7 +161,7 @@ public class ZWaveSecurityCommandClassWithInitialization extends ZWaveSecurityCo
                 // Should be received during inclusion only
                 if (!wasThisNodeJustIncluded() || inclusionStateTracker == null) {
                     logger.error("NODE {}: Received SECURITY_SCHEME_REPORT but we are not in inclusion mode! {}",
-                            serialMessage);
+                    		this.getNode().getNodeId(), serialMessage);
                     return;
                 }
                 int schemes = serialMessage.getMessagePayloadByte(offset + 1);
@@ -201,7 +213,7 @@ public class ZWaveSecurityCommandClassWithInitialization extends ZWaveSecurityCo
                 // Should be received during inclusion only
                 if (!wasThisNodeJustIncluded() || inclusionStateTracker == null) {
                     logger.error("NODE {}: Received SECURITY_NETWORK_KEY_VERIFY but we are not in inclusion mode! {}",
-                            serialMessage);
+                    		this.getNode().getNodeId(), serialMessage);
                     return;
                 }
                 // Since we got here, it means we decrypted a packet using the key we sent in
