@@ -39,44 +39,42 @@ Each item binding should have this format:
 - COMPLETED
 - ALL
 
-
-## Examples
-
-- Number  Print_Jobs_Queued   "Unfinished print jobs"   (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
-
-- Number  Print_Jobs_Completed   "Completed print jobs"   (FF_Office)   { cups="http://127.0.0.1:631/printers/MX-870" }
-
 ### Example Use Case
 
 The CUPS Binding can be used to switch on a printer if there are print jobs in the queue and switch it off if the queue is empty.
 
 #### Items
 
-    Number Print_Jobs_Queued  "Unfinished print jobs"  (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
-    Switch Printer            "Printer"
+```
+Number  Print_Jobs_Completed  "Completed print jobs"   (FF_Office)   { cups="http://127.0.0.1:631/printers/MX-870" }
+Number  Print_Jobs_Queued     "Unfinished print jobs"  (FF_Office)   { cups="MX-870#NOT_COMPLETED" }
+Switch  Printer               "Printer"
+```
 
 #### Rules
 
-    import org.openhab.model.script.actions.Timer
-    
-    var Timer printerTimer = null
-    
-    rule "CUPS-Printer Queue"
-    when
-    	Item Print_Jobs_Queued changed
-    then
-    	if (Print_Jobs_Queued.state>0) {
-    		if (printerTimer!=null) {
-    			printerTimer.cancel
-    			printerTimer=null
-    		}
-    		if (Printer.state==OFF) {
-    			sendCommand(Printer,ON)
-    		}
-    	}
-    	else if (Printer.state==ON) {
-    		printerTimer = createTimer(now.plusMinutes(5)) [|
-    			sendCommand(Printer,OFF)
-    		]
-    	}
-    end
+```
+import org.openhab.model.script.actions.Timer
+
+var Timer printerTimer = null
+
+rule "CUPS-Printer Queue"
+when
+    Item Print_Jobs_Queued changed
+then
+    if (Print_Jobs_Queued.state>0) {
+        if (printerTimer!=null) {
+            printerTimer.cancel
+            printerTimer=null
+        }
+        if (Printer.state==OFF) {
+            Printer.sendCommand(ON)
+        }
+    }
+    else if (Printer.state==ON) {
+        printerTimer = createTimer(now.plusMinutes(5)) [|
+            Printer.sendCommand(OFF)
+        ]
+    }
+end
+```
