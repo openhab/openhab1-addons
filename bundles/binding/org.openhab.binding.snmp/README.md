@@ -9,6 +9,7 @@ This binding can be configured in the file `services/snmp.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | community | public |    No    | default community for listening for traps (defaults to public). |
+| version  | v1      |    No    | define snmp protocol-version (can be v1 or v2c). |
 | port     | 162     |    No    | listening port.  See [Binding Port](#binding-port) below. |
 | timeout  | 1500    |    No    | timeout period (in milliseconds) when polling SNMP GET and SET requests. |
 | retries  | 0       |    No    | number of retries before giving up. The retries will be sent every `timeout` milliseconds. 0 means no retries. |
@@ -37,7 +38,7 @@ The syntax for the SNMP binding configuration string depending on whether you ar
 GET
 
 ```
-snmp="<[<address>:<community>:<oid>:<update>]"
+snmp="<[<address>:<protocol-version>:<community>:<oid>:<update>]"
 ```
 
 SET
@@ -55,6 +56,7 @@ snmp="<[<address>:<community>:<oid>:0]"
 where:
 
 * `<address>` is the IP address[/Port] of the SNMP device. The Port is optional, the default value is 161
+* `<protocol-version>` where possible values for protocol-version are v1, v2c and v3 (v3 not supported by the binding at the moment, but possible in future enhancement).
 * `<community>` is the SNMP community string
 * `<oid>` is the object ID to GET or SET
 * `<update>` is the amount of milliseconds the binding waits between periodic queries of the OID
@@ -63,9 +65,9 @@ where:
 Here are some examples of valid binding configuration strings:
 
 ```
-snmp="<[192.168.2.111:public:.1.3.6.1.2.1.2.2.1.10.10:10000]"
+snmp="<[192.168.2.111:v1:public:.1.3.6.1.2.1.2.2.1.10.10:10000]"
 snmp=">[OFF:192.168.2.111:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:2]"
-snmp="<[192.168.2.111:public:.1.3.6.1.2.1.2.2.1.10.10:0]"
+snmp="<[192.168.2.111:v2c:public:.1.3.6.1.2.1.2.2.1.10.10:0]"
 ```
 
 ## Examples
@@ -73,8 +75,8 @@ snmp="<[192.168.2.111:public:.1.3.6.1.2.1.2.2.1.10.10:0]"
 items/snmpdemo.items
 
 ```
-Number Switch_POEState2  "PoE WiFi State  [%s]"  { snmp="<[192.168.2.111:public:.1.3.6.1.4.1.4526.11.16.1.1.1.6.1.2:10000]" }
-Switch Switch_POEEnable2 "PoE WiFi Enable [%s]"  { snmp="<[192.168.2.111:public:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:10000] >[OFF:192.168.2.111:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:2] >[ON:192.168.2.111:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:1]" }
+Number Switch_POEState2  "PoE WiFi State  [%s]"  { snmp="<[192.168.2.111:v1:public:.1.3.6.1.4.1.4526.11.16.1.1.1.6.1.2:10000]" }
+Switch Switch_POEEnable2 "PoE WiFi Enable [%s]"  { snmp="<[192.168.2.111:pv1:ublic:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:10000] >[OFF:192.168.2.111:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:2] >[ON:192.168.2.111:private:.1.3.6.1.4.1.4526.11.16.1.1.1.3.1.2:1]" }
 String switch1p01desc "switch1 port 01 description [%s]" { snmp="<[192.168.3.222:public:.1.3.6.1.4.1.11863.1.1.3.2.1.1.1.1.2.1:10000]" }
 ```
 
