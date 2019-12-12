@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.ihc.internal;
 
@@ -13,12 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openhab.binding.ihc.IhcBindingProvider;
-import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
@@ -71,8 +73,7 @@ import org.slf4j.LoggerFactory;
  * @author Simon Merschjohann
  * @since 1.1.0
  */
-public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
-        implements IhcBindingProvider, AutoUpdateBindingProvider {
+public class IhcGenericBindingProvider extends AbstractGenericBindingProvider implements IhcBindingProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(IhcGenericBindingProvider.class);
 
@@ -290,7 +291,7 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
         if (!(item instanceof NumberItem || item instanceof SwitchItem || item instanceof ContactItem
-                || item instanceof StringItem || item instanceof DateTimeItem || item instanceof DimmerItem
+                || item instanceof StringItem || item instanceof DateTimeItem
                 || item instanceof RollershutterItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
@@ -298,11 +299,6 @@ public class IhcGenericBindingProvider extends AbstractGenericBindingProvider
 
         }
 
-    }
-
-    @Override
-    public Boolean autoUpdate(String itemName) {
-        return null;
     }
 
     @Override

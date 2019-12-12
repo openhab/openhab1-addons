@@ -9,13 +9,22 @@ As described in the Telegram Bot API, this is the manual procedure needed in ord
 1. Create the Bot and get the Token
 
 - On a Telegram client open a chat with BotFather.
-- write `/newbot` to BotFather, fill all the needed information, write down the token. This is the authentication token needed.
+- Send `/newbot` to BotFather and fill in all the needed information. The authentication token that is given will be needed in the next steps.
 
-2. Create the destination chat and get the chatId
+2. Create the destination chat
 
-- Open a new chat with your new Bot and post a message on the chat
+- Open a chat with your new Bot and send any message to it. The next step will not work unless you send a message to your bot first.
+
+3. Get the chatId
+
 - Open a browser and invoke `https://api.telegram.org/bot<token>/getUpdates` (where `<token>` is the authentication token previously obtained)
-- Look at the JSON result and write down the value of `result[0].message.chat.id`. That is the chatId. Note that Telegram group chat chatIds are prefixed with a dash "-" that must be included in the config file. (e.g. bot1.chatId: -22334455)
+- Look at the JSON result to find the value of `id`. That is the chatId. Note that if using a Telegram group chat, the group chatIds are prefixed with a dash that must be included in the config file. (e.g. bot1.chatId: -22334455)
+
+4. Test the bot
+
+- Open this URL in your web browser, replacing <token> with the authentication token and <chatId> with the chatId:
+- `https://api.telegram.org/bot<token>/sendMessage?chat_id=<chatId>&text=testing`
+- Your Telegram-bot should send you a message with the text: `testing`
 
 ## Actions
 
@@ -23,7 +32,8 @@ Each of the actions returns `true` on success or `false` on failure.
 
 - `sendTelegram(String group, String message)`: Sends a Telegram via Telegram REST API - direct message
 - `sendTelegram(String group, String format, Object... args)`: Sends a Telegram via Telegram REST API - build message with format and args
-- `sendTelegramPhoto(String group, String photoURL, String caption)`: Sends a Picture via Telegram REST API
+- `sendTelegramPhoto(String group, String photoURL, String caption)`: Sends a Picture via Telegram REST API.
+The URL can be specified using the http, https, and file protocols.
 - `sendTelegramPhoto(String group, String photoURL, String caption, Integer timeoutMillis)`: Sends a Picture via Telegram REST API, using custom HTTP timeout
 - `sendTelegramPhoto(String group, String photoURL, String caption, String username, String password)`: Sends a Picture, protected by username/password authentication, via Telegram REST API
 - `sendTelegramPhoto(String group, String photoURL, String caption, String username, String password, int timeoutMillis, int retries)`: Sends a Picture, protected by username/password authentication, using custom HTTP timeout and retries, via Telegram REST API
@@ -32,11 +42,14 @@ Each of the actions returns `true` on success or `false` on failure.
 
 The action can be configured in `services/telegram.cfg`.
 
-| Property            | Default | Required | Description                           |
-|---------------------|---------|:--------:|---------------------------------------|
-| bots                |         | Yes      | Comma-separated list of `<bot-name>`s |
-| `<bot name>.chatId` |         | Yes      | chat id                               |
-| `<bot name>.token`  |         | Yes      | authentication token                  |
+| Property                | Default | Required | Description                                                                                  |
+|-------------------------|---------|:--------:|----------------------------------------------------------------------------------------------|
+| bots                    |         | Yes      | Comma-separated list of `<bot-name>`s                                                        |
+| `<bot name>.chatId`     |         | Yes      | chat id                                                                                      |
+| `<bot name>.token`      |         | Yes      | authentication token                                                                         |
+| `<bot name>.parseMode`  |         | No       | Support for formatted messages, values: `Markdown` or `HTML`. Default: no formatting is used |
+
+See https://core.telegram.org/bots/api#markdown-style for formatting options if `Markdown` or `HTML` is set as `parseMode`.
 
 ### Configuration example
 
@@ -45,6 +58,7 @@ bots=bot1,bot2
 
 bot1.chatId=22334455
 bot1.token=xxxxxxxxxxx
+bot1.parseMode=Markdown
 
 bot2.chatId=654321
 bot2.token=yyyyyyyyyyy
@@ -86,7 +100,7 @@ When sending an image from a URL, do not place the username/password in the URL 
 `http://<username>:<password>@server/image.png`; pass the credentials to the `sendTelegramPhoto`
 method instead.
 
-`http` and `https` are the only protocols allowed.
+`http`, `https`, and `file` are the only protocols allowed.
 
 telegram.rules
 
@@ -136,7 +150,20 @@ when
     Item Light_GF_Living_Table changed
 then
     var String base64Image = "data:image/jpeg;base64, LzlqLzRBQ..."
-    sendTelegramPhoto("bot1", base64Image, "sent from Openhab")
+    sendTelegramPhoto("bot1", base64Image, "sent from openHAB")
+end
+```
+
+To send an image that resides on the local computer file system:
+
+telegram.rules
+
+```java
+rule "Send telegram with local image and caption"
+when
+    Item Light_GF_Living_Table changed
+then
+    sendTelegramPhoto("bot1", "file:///path/to/local/image.jpg", "sent from openHAB")
 end
 ```
 
@@ -149,6 +176,6 @@ rule "Send telegram with Image Item image and caption"
 when
     Item Webcam_Image changed
 then
-    sendTelegramPhoto("bot1", Webcam_Image.state.toFullString, "sent from Openhab")
+    sendTelegramPhoto("bot1", Webcam_Image.state.toFullString, "sent from openHAB")
 end
 ```

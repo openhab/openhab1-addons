@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.zibase.internal;
 
@@ -49,7 +53,7 @@ public class ZibaseBindingConfigVariable extends ZibaseBindingConfig {
         if (valueToSet >= -32768 && valueToSet <= 32768) {
             zibase.setVariable(Integer.parseInt(this.getId()), valueToSet);
         } else {
-            logger.error("Out of range value " + valueToSet + " for variable " + this.getId());
+            logger.error("Out of range value {} for variable {}", valueToSet, this.getId());
         }
     }
 
@@ -58,7 +62,7 @@ public class ZibaseBindingConfigVariable extends ZibaseBindingConfig {
      */
     @Override
     protected boolean isItemConfigValid() {
-        logger.info("Checking config for variable " + this.getId());
+        logger.info("Checking config for variable {}", this.getId());
 
         int variableNumber = Integer.parseInt(this.getId());
 
@@ -66,7 +70,7 @@ public class ZibaseBindingConfigVariable extends ZibaseBindingConfig {
         if (variableNumber >= 0 && variableNumber <= 31) {
             return true;
         } else {
-            logger.error("bad variable number : " + this.getId());
+            logger.error("bad variable number : {}", this.getId());
             return false;
 
         }

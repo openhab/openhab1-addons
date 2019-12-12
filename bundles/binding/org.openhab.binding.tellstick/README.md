@@ -6,7 +6,7 @@ See further information from http://www.telldus.com
 
 The binding supports sensors (temperature and humidity) and devices (switches, dimmers and dimmers without an absolute level).
 
-There is also a binding specifically for openHAB 2 [here](http://docs.openhab.org/addons/bindings/tellstick/readme.html).
+There is also a binding specifically for openHAB 2 [here](https://www.openhab.org/addons/bindings/tellstick/).
 
 ## Prerequisites
 

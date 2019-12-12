@@ -76,7 +76,7 @@ Item myItem {mqtt="<direction>[<broker>:<topic>:<type>:<transformer>:<regex_filt
 |----------|-------------|
 | direction | This is always "&lt;" for inbound messages. |
 | broker | The broker alias as it is defined in the openHAB configuration. |
-| topic | The MQTT Topic to subscribe to. |
+| topic | The MQTT Topic to subscribe to. If a colon is part of the topic, use \\: to escape the colon.|
 | type | Describes what the message content contains: a status update or command. Allowed values are 'state' or 'command'. |
 | transformation | Rule defining how to transform the received message content into something openHAB recognizes. Transformations are defined in the format of TRANSFORMATION_NAME(transformation_function).  Allowed values are 'default' or any of the transformers provided in the org.openhab.core.transform bundle. Custom transformations can be contributed directly to the transform bundle by making the Transformation available through Declarative Services. Any value other than the above types will be interpreted as static text, in which case the actual content of the message is ignored. |
 | regex_filter (optional, since 1.6) | A string representing a regular expression. Only messages that match this expression will be further processed. All other messages will be dropped. Use Case: If multiple different data is sent over one topic (for example multiple sensors of one device), it is possible to distinguish the messages for different items. Example ".*" (excluding the quotes) will match every message, ".*\"type\"=2\n.*" (excluding the quotes) will match every message including type=2. |

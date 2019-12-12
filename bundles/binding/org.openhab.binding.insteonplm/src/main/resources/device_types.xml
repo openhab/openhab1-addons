@@ -158,6 +158,7 @@ Example entry:
      <feature_group name="ext_group" type="ExtStatusGroup">
           <feature name="ledbrightness">LEDBrightness</feature>
 	  <feature name="ramprate">RampRate</feature>
+          <feature name="onlevel">OnLevel</feature>
      </feature_group>
 
  </device>

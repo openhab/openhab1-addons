@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.davis.internal;
 
@@ -13,6 +17,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -42,7 +48,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Trathnigg Thomas
  * @since 1.6.0
  */
-public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>implements ManagedService {
+public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider> implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(DavisBinding.class);
 
@@ -54,7 +60,33 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
 
     private static final int BUF_LENGTH = 256;
 
+    private boolean typeIsSerial = true;
+
+    /**
+     * serial port name of the davis weather station, in case of SERIAL communication
+     */
     private String port;
+
+    private Socket ipSocket;
+
+    /**
+     * hostName of the davis weather station, in case of IP communication
+     */
+    private String hostName;
+
+    /**
+     * ipPortNumber of the davis weather station, in case of IP communication (davis settings, fixed)
+     */
+    private int ipPortNumber = 22222;
+
+    /**
+     * waitTime before reading response, default value are is different according communication type
+     */
+    private long readResponseWaitTime;
+
+    private long defaultSerialReadResponseWaitTime = 200;
+    private long defaultIpReadResponseWaitTime = 1000;
+
     private SerialPort serialPort;
     private InputStream inputStream;
     private OutputStream outputStream;
@@ -116,7 +148,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
             closePort();
 
         } catch (InitializationException e) {
-            logger.error(e.getMessage());
+            logger.warn(e.getMessage());
         }
 
         logger.trace("execute() method is finished!");
@@ -131,58 +163,114 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
     }
 
     public void updated(Dictionary<String, ?> config) throws ConfigurationException {
-        logger.trace("update() method is called!");
-        if (config != null) {
+        if (config == null) {
+            logger.warn("updated() method was called, but no configuration was provided. Nothing to do!");
+            return;
+        }
+        logger.trace("updated() method was called. Processing configuration...");
             // to override the default refresh interval one has to add a
             // parameter to openhab.cfg like <bindingName>:refresh=<intervalInMs>
             String refreshIntervalString = (String) config.get("refresh");
             if (StringUtils.isNotBlank(refreshIntervalString)) {
                 refreshInterval = Long.parseLong(refreshIntervalString);
             }
+
             String newPort = (String) config.get("port"); //$NON-NLS-1$
-            if (StringUtils.isNotBlank(newPort) && !newPort.equals(port)) {
-                port = newPort;
-                setProperlyConfigured(true);
-            }
+            String newHostName = (String) config.get("hostName"); //$NON-NLS-1$
+
+            if (StringUtils.isBlank(newPort) && StringUtils.isBlank(newHostName)) {
+            logger.warn("Neither port nor hostname were configured. No communication possible.");
+                setProperlyConfigured(false);
+            return;
         }
+                if (StringUtils.isNotBlank(newPort) && StringUtils.isNotBlank(newHostName)) {
+            logger.warn("Both port and hostname were configured, but only one should"
+                +" be set depending on communication type (port for serial"
+                +" communication or hostname for IP communication.");
+            setProperlyConfigured(false);
+            return;
+                }
+
+                if (StringUtils.isNotBlank(newPort)) {
+                    typeIsSerial = true;
+                    port = newPort;
+                    readResponseWaitTime = defaultSerialReadResponseWaitTime;
+        } else { // newHostName is not blank
+                    typeIsSerial = false;
+                    hostName = newHostName;
+                    readResponseWaitTime = defaultIpReadResponseWaitTime;
+                    // not possible, already treated above
+                }
+
+                String readResponseWaitTimeString = (String) config.get("readResponseWaitTime");
+                if (StringUtils.isNotBlank(readResponseWaitTimeString)) {
+                    try {
+                        readResponseWaitTime = Long.parseLong(readResponseWaitTimeString);
+                    } catch (NumberFormatException e) {
+                logger.warn("Ignoring value for property 'readResponseWaitTime': not numeric");
+                    }
+                }
+
+                if (typeIsSerial) {
+            logger.info("ProperlyConfigured on port {} and readResponseWaitTime of {}",
+                port, readResponseWaitTime);
+                } else {
+            logger.info("ProperlyConfigured with hostName {} and readResponseWaitTime of {}",
+                hostName, readResponseWaitTime);
+                }
+
+                setProperlyConfigured(true);
+
     }
 
     public void openPort() throws InitializationException {
-        CommPortIdentifier portIdentifier;
-
-        try {
-            portIdentifier = CommPortIdentifier.getPortIdentifier(port);
+        if (typeIsSerial) {
+            CommPortIdentifier portIdentifier;
 
             try {
-                serialPort = portIdentifier.open("openhab", 3000);
-                serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-                        SerialPort.PARITY_NONE);
-                // serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
-                serialPort.enableReceiveTimeout(100);
-                serialPort.enableReceiveThreshold(1);
-                inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));
-                outputStream = serialPort.getOutputStream();
-                logger.debug("port opened: " + port);
-            } catch (PortInUseException e) {
-                throw new InitializationException(e);
-            } catch (UnsupportedCommOperationException e) {
-                throw new InitializationException(e);
-            } catch (IOException e) {
-                throw new InitializationException(e);
-            }
+                portIdentifier = CommPortIdentifier.getPortIdentifier(port);
 
-        } catch (NoSuchPortException e) {
-            StringBuilder sb = new StringBuilder();
-            Enumeration portList = CommPortIdentifier.getPortIdentifiers();
-            while (portList.hasMoreElements()) {
-                CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
-                if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-                    sb.append(id.getName() + "\n");
+                try {
+                    serialPort = portIdentifier.open("openhab", 3000);
+                    serialPort.setSerialPortParams(19200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+                            SerialPort.PARITY_NONE);
+                    serialPort.enableReceiveTimeout(100);
+                    serialPort.enableReceiveThreshold(1);
+                    inputStream = new DataInputStream(new BufferedInputStream(serialPort.getInputStream()));
+                    outputStream = serialPort.getOutputStream();
+                    logger.debug("port opened: {}", port);
+                } catch (PortInUseException e) {
+                    throw new InitializationException(e);
+                } catch (UnsupportedCommOperationException e) {
+                    throw new InitializationException(e);
+                } catch (IOException e) {
+                    throw new InitializationException(e);
                 }
-            }
 
-            throw new InitializationException(
-                    "Serial port '" + port + "' could not be found. Available ports are:\n" + sb.toString());
+            } catch (NoSuchPortException e) {
+                StringBuilder sb = new StringBuilder();
+                Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+                while (portList.hasMoreElements()) {
+                    CommPortIdentifier id = (CommPortIdentifier) portList.nextElement();
+                    if (id.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                        sb.append(id.getName() + "\n");
+                    }
+                }
+
+                throw new InitializationException(
+                        "Serial port '" + port + "' could not be found. Available ports are:\n" + sb.toString());
+            }
+        } else {
+            try {
+                ipSocket = new Socket(hostName, ipPortNumber);
+                inputStream = ipSocket.getInputStream();
+                outputStream = ipSocket.getOutputStream();
+                logger.debug("ipSocket opened: {} on port {}", hostName, ipPortNumber);
+            } catch (UnknownHostException e) {
+                throw new InitializationException("Unknown Host '" + hostName + "'");
+            } catch (IOException e) {
+                throw new InitializationException("I/O error with '" + hostName + "' on port " + ipPortNumber);
+            }
         }
     }
 
@@ -190,15 +278,24 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
         try {
             inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug("closePort inputStream.close error", e);
         }
         try {
             outputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug("closePort outputStream.close error", e);
         }
-        serialPort.close();
-        logger.debug("port closed: " + port);
+        if (typeIsSerial) {
+            serialPort.close();
+            logger.debug("port closed: {}", port);
+        } else {
+            try {
+                ipSocket.close();
+                logger.debug("ipSocket closed: {} on port {}", hostName, ipPortNumber);
+            } catch (IOException e) {
+                logger.debug("I/O error when closing ip communication", e);
+            }
+        }
     }
 
     protected void resetAfterError() {
@@ -211,12 +308,12 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
             byte[] buf = readResponse();
             expectString(buf, "\n\rOK\n\r");
         } catch (IOException e1) {
-            logger.warn("IO Exception reset after Error: " + e1);
+            logger.warn("I/O Exception reset after Error: {}", e1);
             closePort();
             try {
                 openPort();
             } catch (InitializationException e) {
-                logger.error("reopening port failed!");
+                logger.warn("reopening port failed!");
             }
         }
     }
@@ -240,14 +337,15 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
             try {
                 // add wait states around reading the stream, so that
                 // interrupted transmissions are merged
-                Thread.sleep(200);
+                Thread.sleep(readResponseWaitTime);
             } catch (InterruptedException e) {
                 // ignore interruption
+                logger.debug("InterruptedException");
             }
 
         } while (inputStream.available() > 0);
         String string = new String(responseBlock);
-        logger.debug("RX: " + escape(string));
+        logger.debug("RX: {}", escape(string));
         return responseBlock;
     }
 
@@ -315,7 +413,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
                 System.arraycopy(responseBlock, offset, inputBuf, 0, responseLength);
 
                 String string = new String(inputBuf);
-                logger.debug("parsing: " + escape(string));
+                logger.debug("parsing: {}", escape(string));
                 // aus response alle werte dekodieren für es ein item gibt -> postUpdate
                 Set<DavisValueType> valueTypes = DavisValueType.getValueTypesByCommandType(commandType);
                 for (DavisValueType valueType : valueTypes) {
@@ -338,7 +436,7 @@ public class DavisBinding extends AbstractActiveBinding<DavisBindingProvider>imp
     }
 
     protected void writeString(String string) throws IOException {
-        logger.debug("TX: " + escape(string));
+        logger.debug("TX: {}", escape(string));
         outputStream.write(string.getBytes());
         outputStream.flush();
     }

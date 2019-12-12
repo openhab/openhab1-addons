@@ -145,10 +145,10 @@ when
 	Item rweSwitchLivingBtn1 changed to ON
 then
 	if(TV.state == ON)
-		sendCommand(TV, OFF)
+		TV.sendCommand(OFF)
 	else
-		sendCommand(TV, ON)
-end	
+		TV.sendCommand(ON)
+end
 ```
 
 ### Workaround for motiondetectors

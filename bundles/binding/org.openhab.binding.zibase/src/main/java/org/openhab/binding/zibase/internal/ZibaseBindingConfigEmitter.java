@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.zibase.internal;
 
@@ -78,8 +82,7 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
             constructor = valueStateMap.get(configParameters[ZibaseBindingConfig.POS_VALUES])
                     .getConstructor(String.class);
         } catch (Exception ex) {
-            logger.debug("unsupported value " + configParameters[ZibaseBindingConfig.POS_VALUES] + " for item ID "
-                    + this.getId() + " => value will be passed as is...");
+            logger.debug("unsupported value {} for item ID {} => value will be passed as is...", configParameters[ZibaseBindingConfig.POS_VALUES], this.getId());
         }
     }
 
@@ -96,12 +99,12 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
      */
     @Override
     protected boolean isItemConfigValid() {
-        logger.info("Checking config for Command item " + this.getId());
+        logger.info("Checking config for Command item {}", this.getId());
 
         if (ZibaseBindingConfigEmitter.getValueStateMap().containsKey(this.values[ZibaseBindingConfig.POS_VALUES])) {
-            logger.info("Config OK for Receiver item " + this.getId());
+            logger.info("Config OK for Receiver item {}", this.getId());
         } else {
-            logger.info("Unsupported value identifier for item " + this.getId() + " => value will be passed as is");
+            logger.info("Unsupported value identifier for item {} => value will be passed as is", this.getId());
         }
 
         return true;
@@ -127,7 +130,7 @@ public class ZibaseBindingConfigEmitter extends ZibaseBindingConfig {
                         zbResponseStr);
                 return (State) constructor.newInstance(zibaseValue);
             } catch (Exception e) {
-                logger.error("unable to convert zibase value to openHab State : " + e.toString());
+                logger.error("unable to convert zibase value to openHab State : {}", e.toString());
                 e.printStackTrace();
             }
         }

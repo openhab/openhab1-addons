@@ -4,10 +4,10 @@ Ignore-Package: org.openhab.binding.mcp3424.internal
 Bundle-Name: openHAB mcp3424 Binding
 Bundle-SymbolicName: org.openhab.binding.mcp3424
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.13.0.qualifier
+Bundle-Version: 1.14.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Description: This is the mcp3424 binding of the open Home Automation Bus (openHAB)
 Import-Package: org.apache.commons.collections,
  org.apache.commons.collections.bidimap,

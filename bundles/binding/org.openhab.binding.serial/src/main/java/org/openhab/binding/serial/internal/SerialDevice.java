@@ -1,16 +1,22 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.serial.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +25,9 @@ import java.util.TooManyListenersException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openhab.core.events.EventPublisher;
+import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
@@ -60,6 +68,7 @@ public class SerialDevice implements SerialPortEventListener {
 
     private CommPortIdentifier portId;
     private SerialPort serialPort;
+    private Charset charset;
 
     private InputStream inputStream;
 
@@ -72,6 +81,8 @@ public class SerialDevice implements SerialPortEventListener {
         boolean base64;
         String onCommand;
         String offCommand;
+        String openCommand;
+        String closedCommand;
         String upCommand;
         String downCommand;
         String stopCommand;
@@ -83,8 +94,9 @@ public class SerialDevice implements SerialPortEventListener {
         return configMap.isEmpty();
     }
 
-    public void addConfig(String itemName, Class<?> type, String pattern, boolean base64, String onCommand,
-            String offCommand, String upCommand, String downCommand, String stopCommand, String format) {
+    public void addConfig(Item item, String pattern, boolean base64, String onCommand, String offCommand,
+            String openCommand, String closedCommand, String upCommand, String downCommand, String stopCommand,
+            String format) {
         if (configMap == null) {
             configMap = new HashMap<>();
         }
@@ -92,15 +104,17 @@ public class SerialDevice implements SerialPortEventListener {
         ItemType typeItem = new ItemType();
         typeItem.pattern = pattern;
         typeItem.base64 = base64;
-        typeItem.type = type;
+        typeItem.type = item.getClass();
         typeItem.onCommand = onCommand;
         typeItem.offCommand = offCommand;
+        typeItem.openCommand = onCommand;
+        typeItem.closedCommand = offCommand;
         typeItem.upCommand = upCommand;
         typeItem.downCommand = downCommand;
         typeItem.stopCommand = stopCommand;
         typeItem.format = format;
 
-        configMap.put(itemName, typeItem);
+        configMap.put(item.getName(), typeItem);
     }
 
     public void removeConfig(String itemName) {
@@ -117,12 +131,36 @@ public class SerialDevice implements SerialPortEventListener {
     }
 
     public SerialDevice(String port) {
-        this.port = port;
+        this(port, null);
+    }
+
+    public SerialDevice(String port, String charsetName) {
+        this(port, 9600, charsetName);
     }
 
     public SerialDevice(String port, int baud) {
+        this(port, baud, null);
+    }
+
+    public SerialDevice(String port, int baud, String charsetName) {
         this.port = port;
         this.baud = baud;
+        setCharset(charsetName);
+    }
+
+    private void setCharset(String charsetName) {
+        try {
+            if (charsetName == null) {
+                charset = Charset.defaultCharset();
+            } else {
+                charset = Charset.forName(charsetName);
+            }
+
+            logger.debug("Serial port '{}' charset '{}' set.", port, charsetName);
+        } catch (IllegalCharsetNameException e) {
+            logger.warn("Serial port '{}' charset '{}' not found.", port, charsetName);
+            charset = Charset.defaultCharset();
+        }
     }
 
     public void setEventPublisher(EventPublisher eventPublisher) {
@@ -164,6 +202,22 @@ public class SerialDevice implements SerialPortEventListener {
     public String getDownCommand(String itemName) {
         if (configMap.get(itemName) != null) {
             return configMap.get(itemName).downCommand;
+        }
+
+        return "";
+    }
+
+    public String getOpenCommand(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).openCommand;
+        }
+
+        return "";
+    }
+
+    public String getClosedCommand(String itemName) {
+        if (configMap.get(itemName) != null) {
+            return configMap.get(itemName).closedCommand;
         }
 
         return "";
@@ -276,7 +330,7 @@ public class SerialDevice implements SerialPortEventListener {
                         // read data from serial device
                         while (inputStream.available() > 0) {
                             int bytes = inputStream.read(readBuffer);
-                            sb.append(new String(readBuffer, 0, bytes));
+                            sb.append(new String(readBuffer, 0, bytes, charset));
                         }
                         try {
                             // add wait states around reading the stream, so that interrupted transmissions are merged
@@ -310,6 +364,10 @@ public class SerialDevice implements SerialPortEventListener {
                                                     state = new DecimalType(match);
                                                 } else if (entry.getValue().type == RollershutterItem.class) {
                                                     state = new PercentType(match);
+                                                } else if (entry.getValue().type == SwitchItem.class) {
+                                                    state = OnOffType.valueOf(match);
+                                                } else if (entry.getValue().type == ContactItem.class) {
+                                                    state = OpenClosedType.valueOf(match);
                                                 } else {
                                                     state = new StringType(match);
                                                 }
@@ -325,7 +383,7 @@ public class SerialDevice implements SerialPortEventListener {
                                     }
                                 } else if (entry.getValue().type == StringItem.class) {
                                     if (entry.getValue().base64) {
-                                        result = Base64.encodeBase64String(result.getBytes());
+                                        result = Base64.encodeBase64String(result.getBytes(charset));
                                     }
                                     eventPublisher.postUpdate(entry.getKey(), new StringType(result));
 
@@ -333,29 +391,29 @@ public class SerialDevice implements SerialPortEventListener {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
-                                    } else if (result.equals(getOnCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOnCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.ON);
-                                    } else if (result.equals(getOffCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOffCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OnOffType.OFF);
                                     }
                                 } else if (entry.getValue().type == ContactItem.class) {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.CLOSED);
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.OPEN);
-                                    } else if (result.equals(getOnCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOnCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.CLOSED);
-                                    } else if (result.equals(getOffCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getOffCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), OpenClosedType.OPEN);
                                     }
                                 } else if (entry.getValue().type == RollershutterItem.class
                                         || entry.getValue().type == DimmerItem.class) {
                                     if (result.trim().isEmpty()) {
                                         eventPublisher.postUpdate(entry.getKey(), new PercentType(50));
-                                    } else if (result.equals(getUpCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getUpCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), PercentType.HUNDRED);
-                                    } else if (result.equals(getDownCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getDownCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), PercentType.ZERO);
-                                    } else if (result.equals(getStopCommand(entry.getKey()))) {
+                                    } else if (StringUtils.contains(result, getStopCommand(entry.getKey()))) {
                                         eventPublisher.postUpdate(entry.getKey(), new PercentType(50));
                                     }
                                 }
@@ -378,12 +436,17 @@ public class SerialDevice implements SerialPortEventListener {
      */
     public void writeString(String msg) {
         logger.debug("Writing '{}' to serial port {}", msg, port);
+
+        if (msg == null) {
+            return;
+        }
+
         try {
             // write string to serial port
             if (msg.startsWith("BASE64:")) {
                 outputStream.write(Base64.decodeBase64(msg.substring(7, msg.length())));
             } else {
-                outputStream.write(msg.getBytes());
+                outputStream.write(msg.getBytes(charset));
             }
 
             outputStream.flush();

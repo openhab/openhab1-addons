@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.novelanheatpump.internal;
 
@@ -18,6 +22,7 @@ import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.StringItem;
+import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.slf4j.Logger;
@@ -69,10 +74,10 @@ public class HeatPumpGenericBindingProvider extends AbstractGenericBindingProvid
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof NumberItem || item instanceof StringItem)) {
+        if (!(item instanceof NumberItem || item instanceof StringItem || item instanceof SwitchItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
-                            + "', only Number- and StringItems are allowed - please check your *.items configuration");
+                            + "', only Number-, String- and SwitchItems are allowed - please check your *.items configuration");
         }
     }
 

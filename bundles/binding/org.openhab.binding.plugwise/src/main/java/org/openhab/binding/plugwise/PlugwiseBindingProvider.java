@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.plugwise;
 
@@ -12,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openhab.binding.plugwise.internal.PlugwiseGenericBindingProvider.PlugwiseBindingConfigElement;
-import org.openhab.core.autoupdate.AutoUpdateBindingProvider;
+import org.openhab.core.binding.BindingProvider;
 import org.openhab.core.types.Command;
 
 /**
@@ -21,7 +25,7 @@ import org.openhab.core.types.Command;
  * @author Karel Goderis
  * @since 1.1.0
  */
-public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
+public interface PlugwiseBindingProvider extends BindingProvider {
 
     /**
      * Returns a <code>List</code> of matching Plugwise IDs (associated to <code>itemName</code>.
@@ -36,7 +40,7 @@ public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
      * Returns the matching Plugwise ID (associated to <code>itemName</code> and aCommand).
      *
      * @param itemName the item for which to find a Plugwise ID (the device MAC or name)
-     * @param command the a command
+     * @param command  the a command
      * @return a List of matching Plugwise IDs or <code>null</code> if no matching Plugwise ID
      *         could be found.
      */
@@ -46,7 +50,7 @@ public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
      * Returns the matching Plugwise command (associated to <code>itemName</code> and aCommand).
      *
      * @param plugwiseID the Plugwise ID (the device MAC or name)
-     * @param type the type
+     * @param type       the type
      * @return a List of matching Plugwise IDs or <code>null</code> if no matching Plugwise ID
      *         could be found.
      */
@@ -67,7 +71,7 @@ public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
     /**
      * Gets the commands by type.
      *
-     * @param itemName the item name
+     * @param itemName     the item name
      * @param commandClass the command class
      * @return the commands by type
      */
@@ -77,7 +81,7 @@ public interface PlugwiseBindingProvider extends AutoUpdateBindingProvider {
      * Gets the corresponding plugwise command type for a given Item and Command
      *
      * @param itemName the item name
-     * @param command the command
+     * @param command  the command
      * @return the plugwise command type
      */
     public PlugwiseCommandType getPlugwiseCommandType(String itemName, Command command);

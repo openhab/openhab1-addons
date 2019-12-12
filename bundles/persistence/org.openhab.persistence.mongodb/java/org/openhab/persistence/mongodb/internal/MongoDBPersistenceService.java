@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.mongodb.internal;
 
@@ -21,7 +25,6 @@ import org.bson.types.ObjectId;
 import org.openhab.core.items.Item;
 import org.openhab.core.items.ItemNotFoundException;
 import org.openhab.core.items.ItemRegistry;
-import org.openhab.core.library.items.ColorItem;
 import org.openhab.core.library.items.ContactItem;
 import org.openhab.core.library.items.DateTimeItem;
 import org.openhab.core.library.items.DimmerItem;
@@ -30,7 +33,6 @@ import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.DateTimeType;
 import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.HSBType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
@@ -285,8 +287,6 @@ public class MongoDBPersistenceService implements QueryablePersistenceService {
                 state = OpenClosedType.valueOf(obj.getString(FIELD_VALUE));
             } else if (item instanceof RollershutterItem) {
                 state = new PercentType(obj.getInt(FIELD_VALUE));
-            } else if (item instanceof ColorItem) {
-                state = new HSBType(obj.getString(FIELD_VALUE));
             } else if (item instanceof DateTimeItem) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(obj.getDate(FIELD_VALUE));

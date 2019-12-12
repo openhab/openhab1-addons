@@ -2,6 +2,37 @@
 
 The Pushbullet action allows you to notify iOS, Android & Windows 10 Phone & Desktop devices of a message using the Pushbullet API web service.
 
+## Configuration
+
+You may define default values for parameters to action calls in the file `services/pushbullet.cfg`.
+To override the default values, specify configuration parameters in the action call (using `Action override`).
+
+| Property            | Default | Required                        | Action override       | Description                                                                                                   |
+|---------------------|---------|:-------------------------------:|-----------------------|---------------------------------------------------------------------------|
+| accesstoken         |         | Yes                             | -                     | Pushbullet [API token](#obtaining-an-api-key) to send to devices       |
+| devicename          | DEFAULT | No                              |  botname              | The name of the openHAB bot                                               |
+| defaultreceiver     |         | No                              | receiver              | The name of the Recipient                                                 |
+| bots                |         | No                              | -                     | Comma-separated list of multiple bots, each with its own settings below.  |
+| `<bot>`.devicename  |         | Yes, if using multiple bots     | botname               | Device name for a single bot                                               |
+| `<bot>`.accesstoken |         | Yes, if using multiple bots     | -                                       | API token for a single bot                               |
+
+### Example Configurations
+Minimal (required):
+
+```
+accesstoken=<API token>
+```
+
+Extended setup with 2 bots, each with its own access token (optional):
+
+```
+bots=bot1,bot2
+bot1.devicename=openHAB-foobar
+bot1.accesstoken=1234abc
+bot2.devicename=openHAB-tralala
+bot2.accesstoken=4711qwert
+```
+
 ## Actions
 
 The following is a valid action call that can be made when the plugin is loaded.
@@ -44,7 +75,7 @@ If you use an alias key, the parameters (device, icon, sound, vibration) are ove
 
 ## Rate limits
 
-As of June 2017, free accounts have a limit of 500 pushes per month.
+Free accounts have a limit of 100 pushes per month.
 This action does not evaluate the rate limiting headers though.
 
 ## Libraries

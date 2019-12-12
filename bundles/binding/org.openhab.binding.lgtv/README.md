@@ -11,13 +11,13 @@ This binding can be configured in the file `services/lgtv.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | `<lgtvId1>`.host | |   Yes   | host name or IP address of the LG TV to control |
-| `<lgtvId1>`.port | 60128 | No | TCP port number of the LG TV to control |
+| `<lgtvId1>`.port | 8080 | No | TCP port number of the LG TV to control |
 | `<lgtvId1>`.serverport | | Yes | TCP port address of the openHAB system to receive LG TV status messages.  Only the first occurance is used for all TVs and is usually 8080. |
 | `<lgtvId1>`.xmldatafiles | | | location to put xml files with the information of availiable channels and apps |
 | `<lgtvId1>`.checkalive | | | check if TV is availiable every in seconds.  Common value is 60 |
 | `<lgtvId1>`.pairkey | | Yes | if it's wrong the device shows the right pairkey at every connection attempt |
 | `<lgtvId2>`.host | | Yes | host name or IP address of the LG TV to control |
-| `<lgtvId2>`.port | 60128 | No | TCP port number of the LG TV to control |
+| `<lgtvId2>`.port | 8080 | No | TCP port number of the LG TV to control |
 | `<lgtvId2>`.xmldatafiles | | | location to put xml files with the information of availiable channels and apps |
 | `<lgtvId2>`.checkalive | | | check if TV is availiable every in seconds.  Common value is 60 |
 | `<lgtvId2>`.pairkey | | Yes | if it's wrong the device shows the right pairkey at every connection attempt |
@@ -26,7 +26,7 @@ Where `<lgtvIdN>` is a name you can use to reference the device from your item c
 
 ### Example
 
-In `services/mgtv.cfg`:
+In `services/lgtv.cfg`:
 
 ```
 wohnzimmer.host=192.168.77.15
@@ -203,7 +203,7 @@ Within a rules file you can then open a browser and set a location
 
 ```
 LgTvAppExecute.sendCommand("Internet")
-postUpdate(LgTvBrowserRemote,"http://www.profil.at")
+LgTvBrowserRemote.postUpdate("http://www.profil.at")
 ```
 
 With the following example rule you can automate this process and changes websites based on a timeshedule. 
@@ -244,7 +244,7 @@ then
                 if (currentpage==2) site="http://www.diepresse.at"
                 if (currentpage==3) site="http://www.spiegel.de"
                 if (currentpage==4) site="http://openhabserver:8080/openhab.app?sitemap=demo"
-                postUpdate(LgTvBrowserRemote,site)
+                LgTvBrowserRemote.postUpdate(site)
         }else
         {
                 LgTvAppTerminate.sendCommand("Internet")
@@ -270,7 +270,7 @@ then
                 }
                 logInfo("lginfomode","infolauft: lgruninsec="+lgruninsec+" currentpage="+currentpage)
                 if (currentpage>4) currentpage=1
-                postUpdate(LgTvInfoMode,currentpage)
+                LgTvInfoMode.postUpdate(currentpage)
         }
 end
 ```

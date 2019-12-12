@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Service-Component: OSGI-INF/caldav.xml, OSGI-INF/configuration.xml
 Bundle-Name: openHAB calDAV Persistence
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.13.0.qualifier
+Bundle-Version: 1.14.0.qualifier
 Bundle-Activator: org.openhab.persistence.caldav.internal.CaldavActivator
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Import-Package: com.google.common.annotations;version="1.0.0",
  org.apache.commons.lang,
  org.joda.time,

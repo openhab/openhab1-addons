@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: openHAB Insteon Hub Binding
 Bundle-SymbolicName: org.openhab.binding.insteonhub
-Bundle-Version: 1.13.0.qualifier
+Bundle-Version: 1.14.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.openhab.binding.insteonhub.internal.InsteonHubActivator
 Bundle-Vendor: openHAB.org
@@ -29,4 +29,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Private-Package: org.openhab.binding.insteonhub.internal
 Bundle-Description: This is the InsteonHub binding of the open Home Automation Bus (openHAB)
 Service-Component: OSGI-INF/binding.xml, OSGI-INF/genericbindingprovider.xml
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0

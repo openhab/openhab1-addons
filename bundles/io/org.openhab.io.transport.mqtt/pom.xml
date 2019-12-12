@@ -2,21 +2,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-  	<groupId>org.openhab.bundles</groupId>
-  	<artifactId>io</artifactId>
-  	<version>1.13.0-SNAPSHOT</version>
+    <groupId>org.openhab.bundles</groupId>
+    <artifactId>io</artifactId>
+    <version>1.14.0-SNAPSHOT</version>
   </parent>
-
-  <properties>
-    <bundle.symbolicName>org.openhab.io.transport.mqtt</bundle.symbolicName>
-    <bundle.namespace>org.openhab.io.transport.mqtt</bundle.namespace>
-  </properties>
 
   <groupId>org.openhab.io</groupId>
   <artifactId>org.openhab.io.transport.mqtt</artifactId>
 
-  <name>openHAB MQTT Transport</name>
-
   <packaging>eclipse-plugin</packaging>
+
+  <name>openHAB MQTT Transport</name>
 
 </project>

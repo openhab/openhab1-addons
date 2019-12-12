@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.comfoair.internal;
 
@@ -21,7 +25,7 @@ public class InitializationException extends Exception {
 
     /**
      * Initialize the exceptions with an error message
-     * 
+     *
      * @param msg
      */
     public InitializationException(String msg) {
@@ -30,7 +34,7 @@ public class InitializationException extends Exception {
 
     /**
      * Initialize the exceptions with a encapsulated exceptions
-     * 
+     *
      * @param msg
      */
     public InitializationException(Throwable cause) {
@@ -39,7 +43,7 @@ public class InitializationException extends Exception {
 
     /**
      * Initialize the exceptions with a error message and a encapsulated exceptions
-     * 
+     *
      * @param msg
      */
     public InitializationException(String msg, Throwable cause) {

@@ -1,16 +1,22 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.comfoair.datatypes;
 
 import org.openhab.binding.comfoair.handling.ComfoAirCommandType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.types.State;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to handle error messages
@@ -20,45 +26,53 @@ import org.openhab.core.types.State;
  */
 public class DataTypeMessage implements ComfoAirDataType {
 
+    private Logger logger = LoggerFactory.getLogger(DataTypeMessage.class);
+
     /**
      * {@inheritDoc}
      */
     @Override
     public State convertToState(int[] data, ComfoAirCommandType commandType) {
 
-        int[] get_reply_data_pos = commandType.getGetReplyDataPos();
+        if (data == null || commandType == null) {
+            logger.trace("\"DataTypeMessage\" class \"convertToState\" method parameter: null");
+            return null;
+        } else {
 
-        int errorAlo = data[get_reply_data_pos[0]];
-        int errorE = data[get_reply_data_pos[1]];
-        int errorEA = data[get_reply_data_pos[2]];
-        int errorAhi = data[get_reply_data_pos[3]];
+            int[] get_reply_data_pos = commandType.getGetReplyDataPos();
 
-        String errorCode = "";
+            int errorAlo = data[get_reply_data_pos[0]];
+            int errorE = data[get_reply_data_pos[1]];
+            int errorEA = data[get_reply_data_pos[2]];
+            int errorAhi = data[get_reply_data_pos[3]];
 
-        if (errorAlo > 0) {
-            errorCode = "A:" + convertToCode(errorAlo);
-        }
+            String errorCode = "";
 
-        else if (errorAhi > 0) {
-            if (errorAhi == 0x80) {
-                errorCode = "A0";
+            if (errorAlo > 0) {
+                errorCode = "A:" + convertToCode(errorAlo);
             }
-            errorCode = "A:" + (convertToCode(errorAhi) + 8);
-        }
 
-        if (errorE > 0) {
-            if (errorCode.length() > 0) {
-                errorCode += " ";
+            else if (errorAhi > 0) {
+                if (errorAhi == 0x80) {
+                    errorCode = "A0";
+                }
+                errorCode = "A:" + (convertToCode(errorAhi) + 8);
             }
-            errorCode += "E:" + convertToCode(errorE);
-        } else if (errorEA > 0) {
-            if (errorCode.length() > 0) {
-                errorCode += " ";
-            }
-            errorCode += "EA:" + convertToCode(errorEA);
-        }
 
-        return new StringType(errorCode.length() > 0 ? errorCode : "Ok");
+            if (errorE > 0) {
+                if (errorCode.length() > 0) {
+                    errorCode += " ";
+                }
+                errorCode += "E:" + convertToCode(errorE);
+            } else if (errorEA > 0) {
+                if (errorCode.length() > 0) {
+                    errorCode += " ";
+                }
+                errorCode += "EA:" + convertToCode(errorEA);
+            }
+
+            return new StringType(errorCode.length() > 0 ? errorCode : "Ok");
+        }
     }
 
     /**
@@ -96,4 +110,5 @@ public class DataTypeMessage implements ComfoAirDataType {
         }
         return -1;
     }
+
 }

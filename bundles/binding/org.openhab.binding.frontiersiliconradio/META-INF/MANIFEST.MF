@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Private-Package: org.openhab.binding.frontiersiliconradio.internal
 Ignore-Package: org.openhab.binding.frontiersiliconradio.internal
-Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-License: http://www.eclipse.org/legal/epl-2.0
 Bundle-Name: openHAB FrontierSiliconRadio Binding
 Bundle-SymbolicName: org.openhab.binding.frontiersiliconradio
 Bundle-Vendor: openHAB.org
-Bundle-Version: 1.13.0.qualifier
+Bundle-Version: 1.14.0.qualifier
 Bundle-Activator: org.openhab.binding.frontiersiliconradio.internal.FrontierSiliconRadioActivator
 Bundle-ManifestVersion: 2
 Bundle-Description: This is the FrontierSiliconRadio binding of the open Home Aut

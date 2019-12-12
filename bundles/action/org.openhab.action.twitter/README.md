@@ -4,8 +4,37 @@ Twitter can be used to "tweet" notifications when certain events take place in o
 
 ## Actions
 
-- `sendTweet(message)`: Send a Tweet
-- `sendDirectMessage('recipient', 'direct message')`: Send a direct message simply use the following syntax inside a rule or script;
+* `sendTweet('message')`: Send a standard Tweet
+* `sendTweet('message', 'image')`: Send a Tweet, including a picture (may be a remote URL or a local file)
+* `sendDirectMessage('recipient', 'direct message')`: Send a direct message simply use the following syntax inside a rule or script;
+
+### Examples
+
+* Send a tweet with an attached image available on filesystem (here with the official OpenHAB2 docker container, otherwise path needs to be adapted to your installation and image location) :
+
+```
+sendTweet("Test with image on filesystem", "/openhab/conf/icons/test.png")
+```
+
+* Send a tweet with an attached image available on a remote URL :
+
+```
+sendTweet("Test with remote URL", "https://i.imgur.com/F9eDwMY.png")
+```
+
+
+* Send a tweet with an attached image available on filesystem (here with the official OpenHAB2 docker container, otherwise path needs to be adapted to your installation and image location) :
+
+```
+sendTweet("Test with image on filesystem", "/openhab/conf/icons/test.png")
+```
+
+* Send a tweet with an attached image available on a remote URL :
+
+```
+sendTweet("Test with remote URL", "https://i.imgur.com/F9eDwMY.png")
+```
+
 
 ## Configuration
 
@@ -20,7 +49,7 @@ Typically a new Twitter account would be set up for openHAB, rather than using y
 ## Prerequisites
 
 You'll have to authorise openHAB to use Twitter.
-This is done using a two step process, similar to Dropbox authentication.
+This is done using a two step process.
 openHAB requests a token which is used as a one-time-password to get hold of an authentication token (second step) which will be used for all future requests to Twitter.
 
 ### Step 1

@@ -170,7 +170,14 @@ platforms or with different devices, consult the [OLA documentation](https://www
 
 ### Installing OLA binaries
 
-To install OLA, edit the software repository list using the following command:
+OLA is now in the Debian/Ubuntu/Raspbian repositiories, so you can install the binaries with the following commands:
+
+    sudo apt-get update
+    sudo apt-get install ola
+    
+When prompted whether to start OLA at boot, select Yes.
+
+If this doesn't work, you may be using a very old OS and will need to edit the software repository list using the following command:
 
     sudo nano /etc/apt/sources.list
     
@@ -178,13 +185,7 @@ And add the following line to the list:
 
     deb   http://apt.openlighting.org/raspbian  wheezy main
     
-After saving the file, install the binaries with the following commands:
-
-    sudo apt-get update
-    sudo apt-get install ola
-    
-When prompted whether to start OLA at boot, select Yes.
-
+After saving the file re-run the commands above
 
 ### Configuring OLA devices
 

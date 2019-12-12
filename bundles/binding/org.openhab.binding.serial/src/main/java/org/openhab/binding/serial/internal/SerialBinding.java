@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.serial.internal;
 
@@ -14,17 +18,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.openhab.core.events.AbstractEventSubscriber;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.ContactItem;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.OpenClosedType;
 import org.openhab.core.library.types.PercentType;
 import org.openhab.core.library.types.StopMoveType;
 import org.openhab.core.library.types.StringType;
@@ -33,7 +36,6 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.model.item.binding.BindingConfigParseException;
 import org.openhab.model.item.binding.BindingConfigReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * GenericItemProvider}.
  *
  * The format of the binding configuration is simple and looks like this:
- *     serial="<port>@<baudrate>"
+ * serial="<port>@<baudrate>"
  *
  * `port` is the identification of the serial port on the host system, e.g.
  * "COM1" on Windows, "/dev/ttyS0" on Linux or "/dev/tty.PL2303-0000103D" on
@@ -114,6 +116,12 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 } else {
                     serialDevice.writeString(serialDevice.getOffCommand(itemName));
                 }
+            } else if (command instanceof OpenClosedType) {
+                if (command == OpenClosedType.OPEN) {
+                    serialDevice.writeString(serialDevice.getOpenCommand(itemName));
+                } else {
+                    serialDevice.writeString(serialDevice.getClosedCommand(itemName));
+                }
             } else if (command instanceof UpDownType) {
                 if (command == UpDownType.UP) {
                     serialDevice.writeString(serialDevice.getUpCommand(itemName));
@@ -160,7 +168,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         }
 
         if (!(item instanceof SwitchItem || item instanceof StringItem || item instanceof NumberItem
-                || item instanceof RollershutterItem || item instanceof ContactItem || item instanceof DimmerItem)) {
+                || item instanceof RollershutterItem || item instanceof ContactItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
                     + "', only Switch-, Number-, Rollershutter-, Contact-, Dimmer- and StringItems are allowed - please check your *.items configuration");
@@ -185,10 +193,13 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         boolean base64 = false;
         String onCommand = null;
         String offCommand = null;
+        String openCommand = null;
+        String closedCommand = null;
         String upCommand = null;
         String downCommand = null;
         String stopCommand = null;
         String format = null;
+        String charset = null;
 
         int parameterSplitterAt = bindingConfig.indexOf(",");
 
@@ -196,6 +207,10 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
             String[] split = bindingConfig.substring(parameterSplitterAt + 1, bindingConfig.length()).split("\\),");
             for (int i = 0; i < split.length; i++) {
                 String substring = split[i];
+                // Remove the closing bracket on the last setting, because this isn't removed by the split.
+                if (i == split.length - 1 && substring.endsWith(")")) {
+                    substring = substring.substring(0, substring.length() - 1);
+                }
 
                 if (substring.startsWith("REGEX(")) {
                     pattern = substring.substring(6, substring.length());
@@ -203,7 +218,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 } else if (substring.startsWith("FORMAT(")) {
                     format = substring.substring(7, substring.length());
                     logger.debug("FORMAT: '{}'", format);
-                } else if (substring.equals("BASE64")) {
+                } else if (substring.equals("BASE64") || substring.equals("BASE64(")) {
                     base64 = true;
                     logger.debug("Base64-Mode enabled");
                 } else if (substring.startsWith("ON(")) {
@@ -212,6 +227,12 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 } else if (substring.startsWith("OFF(")) {
                     offCommand = substring.substring(4, substring.length());
                     logger.debug("OFF: '{}'", offCommand);
+                } else if (substring.startsWith("OPEN(")) {
+                    onCommand = substring.substring(5, substring.length());
+                    logger.debug("OPEN: '{}'", openCommand);
+                } else if (substring.startsWith("CLOSED(")) {
+                    offCommand = substring.substring(7, substring.length());
+                    logger.debug("CLOSED: '{}'", closedCommand);
                 } else if (substring.startsWith("UP(")) {
                     upCommand = substring.substring(3, substring.length());
                     logger.debug("UP: '{}'", upCommand);
@@ -221,6 +242,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
                 } else if (substring.startsWith("STOP(")) {
                     stopCommand = substring.substring(5, substring.length());
                     logger.debug("STOP: '{}'", stopCommand);
+                } else if (substring.startsWith("CHARSET(")) {
+                    charset = substring.substring(8, substring.length());
+                    logger.debug("CHARSET: '{}'", charset);
                 } else {
                     logger.warn("Unrecognized transform: {}", substring);
                 }
@@ -248,9 +272,9 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         SerialDevice serialDevice = serialDevices.get(port);
         if (serialDevice == null) {
             if (baudRate > 0) {
-                serialDevice = new SerialDevice(port, baudRate);
+                serialDevice = new SerialDevice(port, baudRate, charset);
             } else {
-                serialDevice = new SerialDevice(port);
+                serialDevice = new SerialDevice(port, charset);
             }
 
             serialDevice.setEventPublisher(eventPublisher);
@@ -266,9 +290,7 @@ public class SerialBinding extends AbstractEventSubscriber implements BindingCon
         }
 
         itemMap.put(item.getName(), port);
-
-        serialDevice.addConfig(item.getName(), item.getClass(), pattern, base64, onCommand, offCommand, upCommand,
-                downCommand, stopCommand, format);
+        serialDevice.addConfig(item, pattern, base64, onCommand, offCommand, openCommand, closedCommand, upCommand, downCommand, stopCommand, format);
 
         Set<String> itemNames = contextMap.get(context);
         if (itemNames == null) {

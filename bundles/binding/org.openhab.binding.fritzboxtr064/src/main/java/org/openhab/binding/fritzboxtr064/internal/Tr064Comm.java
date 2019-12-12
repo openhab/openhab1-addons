@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.fritzboxtr064.internal;
 
@@ -179,7 +183,7 @@ public class Tr064Comm {
 
             String itemCommand = itemConfiguration.getItemCommand();
 
-            if (values.containsKey(itemCommand)) {
+            if (values.containsKey(itemConfiguration)) {
                 // item value already read by earlier MultiItemMap
                 continue;
             }
@@ -193,6 +197,10 @@ public class Tr064Comm {
                 continue;
             }
 
+            if (itemMap.getReadServiceCommand() == null) {
+                logger.debug("skipping {}, read command is null", itemMap);
+                continue;
+            }
             // determine which url etc. to connect to for accessing required value
             Tr064Service tr064service = determineServiceByItemMapping(itemMap);
 
@@ -356,7 +364,7 @@ public class Tr064Comm {
      *            the URL from config file of fbox to connect to
      * @return the ready-to-use httpclient for tr064 requests
      */
-    private CloseableHttpClient createTr064HttpClient(String fboxUrl) {
+    private synchronized CloseableHttpClient createTr064HttpClient(String fboxUrl) {
         CloseableHttpClient hc = null;
         // Convert URL String from config in easy explotable URI object
         URIBuilder uriFbox = null;
@@ -455,7 +463,9 @@ public class Tr064Comm {
         try {
             entBody = new StringEntity(soapToString(request), ContentType.create("text/xml", "UTF-8")); // add body
             postSoap.setEntity(entBody);
-            resp = _httpClient.execute(postSoap, _httpClientContext);
+            synchronized (_httpClient) {
+                resp = _httpClient.execute(postSoap, _httpClientContext);
+            }
 
             // Fetch content data
             StatusLine slResponse = resp.getStatusLine();
@@ -677,8 +687,9 @@ public class Tr064Comm {
                 }).build();
         addItemMap(imMacOnline);
 
-        addItemMap(new MultiItemMap(Arrays.asList("modelName", "manufacturerName", "softwareVersion", "serialNumber"),
-                "GetInfo", "urn:DeviceInfo-com:serviceId:DeviceInfo1", name -> "New" + WordUtils.capitalize(name)));
+        addItemMap(new MultiItemMap(
+                Arrays.asList("modelName", "manufacturerName", "softwareVersion", "serialNumber", "upTime"), "GetInfo",
+                "urn:DeviceInfo-com:serviceId:DeviceInfo1", name -> "New" + WordUtils.capitalize(name)));
         addItemMap(SingleItemMap.builder().itemCommand("wanip")
                 .serviceId("urn:WANPPPConnection-com:serviceId:WANPPPConnection1")
                 .itemArgumentName("NewExternalIPAddress").readServiceCommand("GetExternalIPAddress").build());
@@ -867,6 +878,11 @@ public class Tr064Comm {
                 .itemArgumentName("NewEnable").readServiceCommand("GetDeflection")
                 .writeServiceCommand("SetDeflectionEnable").build();
         addItemMap(callDeflection);
+
+        // reboot
+        SingleItemMap reboot = SingleItemMap.builder().itemCommand("reboot")
+                .serviceId("urn:DeviceConfig-com:serviceId:DeviceConfig1").writeServiceCommand("Reboot").build();
+        addItemMap(reboot);
     }
 
     private void addItemMap(ItemMap itemMap) {
@@ -889,18 +905,19 @@ public class Tr064Comm {
         HttpGet httpGet = new HttpGet(url);
         boolean exceptionOccurred = false;
         try {
-            CloseableHttpResponse resp = _httpClient.execute(httpGet, _httpClientContext);
-            int responseCode = resp.getStatusLine().getStatusCode();
-            if (responseCode == 200) {
-                HttpEntity entity = resp.getEntity();
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                tr064response = db.parse(entity.getContent());
-                EntityUtils.consume(entity);
-            } else {
-                logger.error("Failed to receive valid response from httpGet");
+            synchronized (_httpClient) {
+                CloseableHttpResponse resp = _httpClient.execute(httpGet, _httpClientContext);
+                int responseCode = resp.getStatusLine().getStatusCode();
+                if (responseCode == 200) {
+                    HttpEntity entity = resp.getEntity();
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    tr064response = db.parse(entity.getContent());
+                    EntityUtils.consume(entity);
+                } else {
+                    logger.error("Failed to receive valid response from httpGet");
+                }
             }
-
         } catch (Exception e) {
             exceptionOccurred = true;
             logger.error("Failed to receive valid response from httpGet: {}", e.getMessage());

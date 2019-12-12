@@ -1,6 +1,6 @@
 # Serial Binding
 
-The Serial binding allows openHAB to communicate in ASCII over serial ports attached to the openHAB server.
+The Serial binding allows openHAB to communicate over serial ports attached to the openHAB server.
 
 | Item Type | Function |
 |-----------|----------|
@@ -21,6 +21,8 @@ In most cases it will not be needed to perform special steps to access serial po
 ```
 
 where `/dev/ttyAMA0` is the path to the serial port. Remember to change all scripts used for startup (debug, automatic start in Linux, etc.).
+
+* If using a systemd based distribution, then add the Serial Ports parameters to the configuration file at /etc/default/openhab2
 
 * A Linux distro might require adding the `openhab` user to the `dialout` group to grant permission to read/write to the serial port.
 
@@ -53,8 +55,9 @@ The format has the following variations:
 
 ```
 serial="<port>@<baudrate>" 
-serial="<port>@<baudrate>,REGEX(<regular expression>)" 
-serial="<port>@<baudrate>,BASE64 
+serial="<port>@<baudrate>,REGEX(<regular expression>)"
+serial="<port>@<baudrate>,CHARSET(ISO-8859-1)"
+serial="<port>@<baudrate>,BASE64"
 serial="<port>@<baudrate>,ON(<On string>),OFF(<Off string>)" 
 serial="<port>@<baudrate>,REGEX(<regular expression>), UP(<Up string>),DOWN(<Down string>), STOP(<Stop string>)" 
 ```
@@ -67,6 +70,7 @@ where:
 * `BASE64` enables the Base64 mode. With this mode all data received on the serial port is saved in Base64 format. All data that is sent to the serial port also has to be Base64 encoded. (This was implemented because some serial devices are using bytes that are not supported by the REST interface).
 * `ON(<On string>),OFF(<Off string>)` used in conjunction with a Switch, this mapping will send specific commands to serial port and also match a serial command to specific ON/OFF state. This makes it unnecessary to use a rule to send a command to serial.
 * `UP(<Up string>),DOWN(<Down string>),STOP(<Stop string>)` used in conjunction with a Rollershutter, this mapping will send specific commands to serial port. Use REGEX to parse Rollershutter postion (0-100%) coming as feedback over serial link.
+* `CHARSET(<charset>)` sets the charset to be used for converting to a String and back to bytes when writing. (e.g. UTF-8, ISO-8859-1, etc.)
 
 Base64 can be decoded in the rules by importing `javax.xml.bind.DatatypeConverter` and then decoding the value like this:
 

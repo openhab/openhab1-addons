@@ -1,0 +1,55 @@
+This content is produced and maintained by the openHAB project.
+
+* Project home: https://www.openhab.org
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0/.
+
+== Source Code
+
+https://github.com/openhab/openhab1-addons
+
+== Third-party Content
+
+commons-lang3
+* License: Apache 2.0 License
+* Project: https://commons.apache.org/proper/commons-lang
+* Source:  https://github.com/apache/commons-lang
+
+httpclient
+* License: Apache 2.0 License
+* Project: https://hc.apache.org/httpcomponents-client-ga
+* Source:  https://hc.apache.org/httpcomponents-client-ga
+
+httpcore
+* License: Apache 2.0 License
+* Project: http://hc.apache.org/httpcomponents-core-ga
+* Source:  http://hc.apache.org/httpcomponents-core-ga
+
+ical4j
+* License: BSD-3-Clause License
+* Project: https://github.com/ical4j/ical4j
+* Source:  https://github.com/ical4j/ical4j
+
+sardine
+* License: Apache 2.0 License
+* Project: https://github.com/lookfirst/sardine
+* Source:  https://github.com/lookfirst/sardine
+
+ThreeTen Backport
+* License: BSD-3-Clause License
+* Project: https://www.threeten.org/threetenbp/
+* Source:  https://github.com/ThreeTen/threetenbp
+
+JSR107 (JCache)
+* License: Apache 2.0 License
+* Project: https://github.com/jsr107
+* Source:  https://github.com/jsr107
+
+Apache Commons Collections
+* License: Apache 2.0 License
+* Project: https://commons.apache.org/proper/commons-collections/
+* Source:  https://commons.apache.org/proper/commons-collections/

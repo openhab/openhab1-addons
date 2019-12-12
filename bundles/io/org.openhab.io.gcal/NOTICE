@@ -1,0 +1,40 @@
+This content is produced and maintained by the openHAB project.
+
+* Project home: https://www.openhab.org
+
+== Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0/.
+
+== Source Code
+
+https://github.com/openhab/openhab1-addons
+
+== Third-party Content
+
+google-api-java-client
+* License: Apache 2.0 License
+* Project: https://developers.google.com/api-client-library/java
+* Source:  https://github.com/googleapis/google-api-java-client
+
+google-http-java-client
+* License: Apache 2.0 License
+* Project: https://developers.google.com/api-client-library/java/google-http-java-client
+* Source:  https://github.com/googleapis/google-http-java-client
+
+google-oauth-java-client
+* License: Apache 2.0 License
+* Project: https://developers.google.com/api-client-library/java/google-oauth-java-client
+* Source:  https://github.com/googleapis/google-oauth-java-client
+
+jackson
+* License: Apache 2.0 License
+* Project: https://github.com/FasterXML/jackson
+* Source:  https://github.com/FasterXML/jackson
+
+jsr305
+* License: LGPL v2.0 License
+* Project: http://findbugs.sourceforge.net
+* Source:  https://sourceforge.net/projects/findbugs

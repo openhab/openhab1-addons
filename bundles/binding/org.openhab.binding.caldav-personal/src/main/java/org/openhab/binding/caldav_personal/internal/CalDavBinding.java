@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.caldav_personal.internal;
 
@@ -167,12 +171,18 @@ public class CalDavBinding extends AbstractBinding<CalDavBindingProvider> implem
      */
     @Override
     public void eventBegins(CalDavEvent event) {
+        logger.debug("eventBegins() called for event '{}'", event.getShortName());
+
         if (!calendars.contains(event.getCalendarId())) {
+            logger.trace("event calendarId does not exist in calendars");
             return;
         }
 
+        logger.debug("check start of event '{}'", event.getShortName());
         if (event.getStart().isBeforeNow()) {
-            return;
+            logger.debug("event is before now; ignoring and updating anyway.");
+            logger.trace("event start time: {} ", event.getStart());
+            logger.trace("now:              {} ", DateTime.now());
         }
 
         logger.debug("adding event to map: {}", event.getShortName());

@@ -9,7 +9,42 @@ The binding can be configured in the file `services/fatekplc.cfg`.
 | Property | Default | Required | Description |
 |----------|---------|:--------:|-------------|
 | refresh  | 60000   |    No    | refresh interval in milliseconds which is used to poll values from the Fatek PLC server |
-| `<plcName>`.connectionUri | | Yes    | connection URI for the `<plcName>` you provide, so multiple Fatek PLCs can be addressed. Supports either `tcp://` or `udp://` protocol.  For example, `udp://192.168.1.100?plcId=1` |
+| `<plcName>`.connectionUri | | Yes    | connection URI for the `<plcName>` you provide, so multiple Fatek PLCs can be addressed. Supports either `tcp://`, `udp://` or `serial://` protocol. |
+
+The common `connectionUri` syntax is:
+```
+protocol://address:[port]?plcId=<plcId>param1=value1&paramN=ValueN
+```
+| Name    | Description | Default |
+|---------|-----------------------------------------|-------|
+| plcId   | PLC id, must be set | - |
+| timeout | connection/read timeout in milliseconds | 5000  |
+
+### `tcp` or `udp` parameters
+
+There are not more parameters for this connection protocols.
+
+Example, `udp://192.168.1.100?plcId=1&timeout=1000`
+Default `port` is `500`
+
+### serial parameters
+
+| Name    | Description | Default |
+|---------|-------------|---------|
+| baudRate | serial connection speed  bit/s | 9600 |
+| dataBits | number of data bits in each character | 7 |
+| stopBits | number of bits sent at the end of each character, can be `1`, `2` or `1.5` | 1 |
+| parity   | control bit set, can be: `NONE`, `ODD`, `EVEN`, `MARK` or `SPACE` | EVEN |
+
+Serial port name is given as address of connectionUri.
+You can write begin name of port, first matched will be used.
+
+Examples:
+
+`serial:///dev/tty-usbserial?plcId=1&baudRate=19200`
+
+`serial://COM1?plcId=1&baudRate=19200&timeout=1000`
+
 
 ## Item Configuration
 

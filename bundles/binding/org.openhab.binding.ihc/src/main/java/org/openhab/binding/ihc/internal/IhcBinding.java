@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.ihc.internal;
 
@@ -151,8 +155,7 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         if (StringUtils.isNotBlank(ip) && StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
 
-            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+            logger.info("Connecting to IHC / ELKO LS controller [IP='{}' Username='{}'].", ip, username);
 
             ihc = new IhcClient(ip, username, password, timeout);
             ihc.setProjectFile(projectFile);
@@ -163,8 +166,8 @@ public class IhcBinding extends AbstractActiveBinding<IhcBindingProvider>
 
         } else {
             logger.warn(
-                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password='{}'].",
-                    new Object[] { ip, username, "******" });
+                    "Couldn't connect to IHC controller because of missing connection parameters [IP='{}' Username='{}' Password={}].",
+                    ip, username, StringUtils.isBlank(password) ? "Missing" : "Configured");
         }
     }
 

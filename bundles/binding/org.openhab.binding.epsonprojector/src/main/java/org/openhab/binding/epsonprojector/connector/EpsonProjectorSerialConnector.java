@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.epsonprojector.connector;
 
@@ -86,21 +90,19 @@ public class EpsonProjectorSerialConnector implements EpsonProjectorConnector, S
         if (out != null) {
             logger.debug("Close serial out stream");
             IOUtils.closeQuietly(out);
+            out = null;
         }
         if (in != null) {
             logger.debug("Close serial in stream");
             IOUtils.closeQuietly(in);
+            in = null;
         }
         if (serialPort != null) {
             logger.debug("Close serial port");
             serialPort.close();
+            serialPort.removeEventListener();
+            serialPort = null;
         }
-
-        serialPort.removeEventListener();
-
-        serialPort = null;
-        out = null;
-        in = null;
 
         logger.debug("Closed");
     }

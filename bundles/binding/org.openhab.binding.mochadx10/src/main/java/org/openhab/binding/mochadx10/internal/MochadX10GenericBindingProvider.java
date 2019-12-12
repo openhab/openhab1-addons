@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.mochadx10.internal;
 
@@ -17,7 +21,6 @@ import org.openhab.binding.mochadx10.MochadX10BindingProvider;
 import org.openhab.binding.mochadx10.commands.MochadX10Address;
 import org.openhab.core.binding.BindingConfig;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.items.DimmerItem;
 import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.model.item.binding.AbstractGenericBindingProvider;
@@ -58,7 +61,7 @@ public class MochadX10GenericBindingProvider extends AbstractGenericBindingProvi
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
 
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem || item instanceof RollershutterItem)) {
+        if (!(item instanceof SwitchItem || item instanceof RollershutterItem)) {
             throw new BindingConfigParseException("Item '" + item.getName() + "' is of type '"
                     + item.getClass().getSimpleName()
                     + "', only SwitchItems, DimmerItems and RollershutterItems are allowed - please check your *.items configuration");

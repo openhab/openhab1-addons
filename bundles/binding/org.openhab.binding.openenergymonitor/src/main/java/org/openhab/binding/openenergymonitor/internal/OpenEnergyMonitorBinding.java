@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.openenergymonitor.internal;
 
@@ -52,6 +56,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
     private int udpPort = 9997;
     private String serialPort = null;
     private boolean simulate = false;
+    private int throttleTime = 0;
 
     private OpenEnergyMonitorDataParser dataParser = null;
 
@@ -114,6 +119,10 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
                     if (StringUtils.isNotBlank(value)) {
                         simulate = Boolean.parseBoolean(value);
                     }
+                } else if ("throttleTime".equals(key)) {
+                    if (StringUtils.isNotBlank(value)) {
+                        throttleTime = Integer.parseInt(value);
+                    }
                 } else {
 
                     // process all data parsing rules
@@ -127,10 +136,7 @@ public class OpenEnergyMonitorBinding extends AbstractBinding<OpenEnergyMonitorB
 
             }
 
-            if (parsingRules != null) {
-
-                dataParser = new OpenEnergyMonitorDataParser(parsingRules);
-            }
+            dataParser = new OpenEnergyMonitorDataParser(parsingRules, throttleTime);
 
             if (messageListener != null) {
 

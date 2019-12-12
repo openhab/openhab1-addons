@@ -55,21 +55,21 @@ This service can be configured in the file `services/dynamodb.cfg`.
 
 ### Basic configuration
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| accessKey |        |    Yes   | access key as shown in [Setting up Amazon account](#setting-up-amazon-account). |
-| secretKey |        |    Yes   | secret key as shown in [Setting up Amazon account](#setting-up-amazon-account). |
-| region   |         |    Yes   | AWS region ID as described in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user. |
+| Property  | Default | Required | Description                                                                                                                                                   |
+| --------- | ------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| accessKey |         |   Yes    | access key as shown in [Setting up Amazon account](#setting-up-amazon-account).                                                                               |
+| secretKey |         |   Yes    | secret key as shown in [Setting up Amazon account](#setting-up-amazon-account).                                                                               |
+| region    |         |   Yes    | AWS region ID as described in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user. |
 
 ### Configuration Using Credentials File
 
 Alternatively, instead of specifying `accessKey` and `secretKey`, one can configure a configuration profile file.
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| profilesConfigFile | |  Yes   | path to the credentials file.  For example, `/etc/openhab2/aws_creds`. Please note that the user that runs openHAB must have approriate read rights to the credential file. For more details on the Amazon credential file format, see [Amazon documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html). |
-| profile  |         |    Yes   | name of the profile to use |
-| region   |         |    Yes   | AWS region ID as described in Step 2 in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user. |
+| Property           | Default | Required | Description                                                                                                                                                                                                                                                                                                                                    |
+| ------------------ | ------- | :------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| profilesConfigFile |         |   Yes    | path to the credentials file.  For example, `/etc/openhab2/aws_creds`. Please note that the user that runs openHAB must have approriate read rights to the credential file. For more details on the Amazon credential file format, see [Amazon documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html). |
+| profile            |         |   Yes    | name of the profile to use                                                                                                                                                                                                                                                                                                                     |
+| region             |         |   Yes    | AWS region ID as described in Step 2 in [Setting up Amazon account](#setting-up-amazon-account). The region needs to match the region that was used to create the user.                                                                                                                                                                        |
 
 Example of service configuration file (`services/dynamodb.cfg`):
 
@@ -91,11 +91,15 @@ aws_secret_access_key=testSecretKey
 
 In addition to the configuration properties above, the following are also available:
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| readCapacityUnits | 1 |  No   | read capacity for the created tables |
-| writeCapacityUnits | 1 | No   | write capacity for the created tables |
-| tablePrefix | `openhab-` | No | table prefix used in the name of created tables |
+| Property                   | Default    | Required | Description                                                                                        |
+| -------------------------- | ---------- | :------: | -------------------------------------------------------------------------------------------------- |
+| readCapacityUnits          | 1          |    No    | read capacity for the created tables                                                               |
+| writeCapacityUnits         | 1          |    No    | write capacity for the created tables                                                              |
+| tablePrefix                | `openhab-` |    No    | table prefix used in the name of created tables                                                    |
+| bufferCommitIntervalMillis | 1000       |    No    | Interval to commit (write) buffered data. In milliseconds.                                         |
+| bufferSize                 | 1000       |    No    | Internal buffer size which is used to batch writes to DynamoDB every `bufferCommitIntervalMillis`. |
+
+Typically you should not need to modify parameters related to buffering. 
 
 Refer to Amazon documentation on [provisioned throughput](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ProvisionedThroughput.html) for details on read/write capacity.
 
@@ -105,9 +109,19 @@ All item- and event-related configuration is done in the file `persistence/dynam
 
 ### Tables Creation
 
-When an item is persisted via this service, a table is created (if necessary). Currently, the service will create at most two tables for different item types. The tables will be named `<prefix><item-type>`, where `<prefix>` matches the `tablePrefix` configuration property; while the `<item-type>` is either `bigdecimal` (numeric items) or `string` (string and complex items).
+When an item is persisted via this service, a table is created (if necessary). Currently, the service will create at most two tables for different item types. The tables will be named `<tablePrefix><item-type>`, where the `<item-type>` is either `bigdecimal` (numeric items) or `string` (string and complex items).
 
 Each table will have three columns: `itemname` (item name), `timeutc` (in ISO 8601 format with millisecond accuracy), and `itemstate` (either a number or string representing item state).
+
+## Buffering
+
+By default, the service is asynchronous which means that data is not written immediately to DynamoDB but instead buffered in-memory.
+The size of the buffer, in terms of datapoints, can be configured with `bufferSize`.
+Every `bufferCommitIntervalMillis` the whole buffer of data is flushed to DynamoDB.
+
+It is recommended to have the buffering enabled since the synchronous behaviour (writing data immediately) might have adverse impact to the whole system when there is many items persisted at the same time. The buffering can be disabled by setting `bufferSize` to zero.
+
+The defaults should be suitable in many use cases.
 
 ### Caveats
 
@@ -127,3 +141,5 @@ When the tables are created, the read/write capacity is configured according to 
 `ls lib/*.jar | python -c "import sys; print('  ' + ',\\n  '.join(map(str.strip, sys.stdin.readlines())))"`
 7. Generate `.classpath` entries
 `ls lib/*.jar | python -c "import sys;pre='<classpathentry exported=\"true\" kind=\"lib\" path=\"';post='\"/>'; print('\\t' + pre + (post + '\\n\\t' + pre).join(map(str.strip, sys.stdin.readlines())) + post)"`
+
+After these changes, it's good practice to run integration tests (against live AWS DynamoDB) in `org.openhab.persistence.dynamodb.test` bundle. See README.md in the test bundle for more information how to execute the tests.

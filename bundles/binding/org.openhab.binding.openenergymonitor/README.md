@@ -27,10 +27,11 @@ execution:
 
 This binding can be configured in the file `services/openenergymonitor.cfg`.
 
-| Property | Default | Required | Description |
-|----------|---------|:--------:|-------------|
-| udpPort  | 9997    |   No     | UDP port of the Open Energy Monitor devices |
-| `<rule>` |         |   No     | `<node address>:<data type(byte indexes)>` |
+| Property      | Default | Required | Description |
+|---------------|---------|:--------:|-------------|
+| udpPort       | 9997    |   No     | UDP port of the Open Energy Monitor devices |
+| throttleTime  | 0       |   No     | Throttle received messages. 0 = throttle is disabled, otherwise throttle time in milliseconds. |
+| `<rule>`      |         |   No     | `<node address>:<data type(byte indexes)>` |
 
 where `<rule>` is in the format used in this example:
 

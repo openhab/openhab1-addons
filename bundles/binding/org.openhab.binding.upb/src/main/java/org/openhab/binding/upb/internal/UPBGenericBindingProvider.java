@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016, openHAB.org and others.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.upb.internal;
 
@@ -36,7 +40,7 @@ public class UPBGenericBindingProvider extends AbstractGenericBindingProvider im
      */
     @Override
     public void validateItemType(Item item, String bindingConfig) throws BindingConfigParseException {
-        if (!(item instanceof SwitchItem || item instanceof DimmerItem)) {
+        if (!(item instanceof SwitchItem)) {
             throw new BindingConfigParseException(
                     "item '" + item.getName() + "' is of type '" + item.getClass().getSimpleName()
                             + "', only Switch- and DimmerItems are allowed - please check your *.items configuration");

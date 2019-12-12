@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.openhab</groupId>
     <artifactId>pom-addons1</artifactId>
-    <version>1.13.0-SNAPSHOT</version>
+    <version>1.14.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openhab.distro</groupId>
@@ -13,29 +13,6 @@
   <packaging>pom</packaging>
 
   <name>openHAB Distribution</name>
-
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2</version>
-        <executions>
-          <execution>
-            <id>distro-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptors>
-                <descriptor>src/assemble/addons.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
   <dependencies>
     <dependency>
@@ -170,7 +147,7 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    
+
     <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.alarmdecoder</artifactId>
@@ -861,53 +838,53 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.satel</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.ebus</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.harmonyhub</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.rpircswitch</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.mochadx10</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.autelis</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.mailcontrol</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
     <dependency>
-          <groupId>org.openhab.binding</groupId>
-          <artifactId>org.openhab.binding.ipx800</artifactId>
-          <version>${project.version}</version>
-          <type>jar</type>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.ipx800</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.openhab.binding</groupId>
@@ -915,102 +892,102 @@
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.primare</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-    <dependency> 
+    <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.panasonictv</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.enphaseenergy</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.lightwaverf</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.souliss</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.tacmi</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.lcn</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.sapp</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.rwesmarthome</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.ucprelayboard</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.myq</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.panstamp</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.octoller</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.akm868</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.sonance</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
-	<dependency>
-		<groupId>org.openhab.binding</groupId>
-		<artifactId>org.openhab.binding.stiebelheatpump</artifactId>
-		<version>${project.version}</version>
-		<type>jar</type>
-	</dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.enphaseenergy</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.lightwaverf</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.souliss</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.tacmi</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.lcn</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.sapp</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.rwesmarthome</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.ucprelayboard</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.myq</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.panstamp</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.octoller</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.akm868</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.sonance</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.binding</groupId>
+      <artifactId>org.openhab.binding.stiebelheatpump</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+    </dependency>
     <dependency>
       <groupId>org.openhab.binding</groupId>
       <artifactId>org.openhab.binding.sallegra</artifactId>
@@ -1122,12 +1099,6 @@
     </dependency>
     <dependency>
       <groupId>org.openhab.io</groupId>
-      <artifactId>org.openhab.io.dropbox</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.openhab.io</groupId>
       <artifactId>org.openhab.io.gpio</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
@@ -1197,12 +1168,6 @@
     <dependency>
       <groupId>org.openhab.persistence</groupId>
       <artifactId>org.openhab.persistence.caldav</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.openhab.persistence</groupId>
-      <artifactId>org.openhab.persistence.sense</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
     </dependency>
@@ -1303,5 +1268,28 @@
       <type>jar</type>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <id>distro-assembly</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <descriptors>
+                <descriptor>src/assemble/addons.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        *
+        * Copyright (c) 2010-2019 Contributors to the openHAB project
+        *
+        * See the NOTICE file(s) distributed with this work for additional
+        * information.
+        *
+        * This program and the accompanying materials are made available under the
+        * terms of the Eclipse Public License 2.0 which is available at
+        * http://www.eclipse.org/legal/epl-2.0
+        *
+        * SPDX-License-Identifier: EPL-2.0
+        *
+-->
+<binding:binding id="velux" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+	<name>Velux Binding (1.x)</name>
+	<description>A 1.x binding for the Velux KLF200 Bridge. The Velux Binding interacts via a Velux Bridge with the
+		different Velux devices
+		like controlling window openers, shutters and others. For example a KLF200 can act as interface between the HomeAutomation
+		and the VELUX INTEGRA products with wireless connectivity based on the io-homecontrol standard.
+	</description>
+	<service-id>org.openhab.velux</service-id>
+
+	<config-description>
+		<parameter name="bridgeProtocol" type="text">
+			<label>Bridge Protocol</label>
+			<description>The connection protocol to contact the Velux Bridge with (either slip or json).</description>
+			<default>slip</default>
+			<required>false</required>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="bridgeIPAddress" type="text">
+			<label>Bridge IP Address</label>
+			<description>The IP address of the Velux Bridge.</description>
+			<required>true</required>
+		</parameter>
+		<parameter name="bridgeTCPPort" type="integer" required="false" min="1" max="65335">
+			<label>Bridge Port</label>
+			<description>TCP port of the Velux gateway</description>
+			<default>51200</default>
+			<required>false</required>
+
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="bridgePassword" type="text">
+			<label>Bridge Password</label>
+			<description>Password for authentication against the Velux Bridge.</description>
+			<required>true</required>
+			<!-- Velux Bridge factory default -->
+			<default>velux123</default>
+		</parameter>
+		<parameter name="timeoutMsecs" type="integer" min="1" step="1">
+			<label>Timeout</label>
+			<description>Initial Connection timeout in milliseconds.</description>
+			<required>false</required>
+			<default>1000</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="retries" type="integer" min="1" step="1">
+			<label>Connection retries</label>
+			<description>Number of retries with timing along the Binary Exponential Backoff (BEB) Algorithm.</description>
+			<required>false</required>
+			<default>5</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="refreshMsecs" type="integer" min="1" step="1">
+			<label>Timeout</label>
+			<description>Refresh interval in milliseconds.</description>
+			<required>false</required>
+			<default>15000</default>
+			<advanced>true</advanced>
+		</parameter>
+		<parameter name="isBulkRetrievalEnabled" type="text">
+			<label>Enable Bulk retrieval</label>
+			<description>Fetch the complete actuator information in a bulk.</description>
+			<required>false</required>
+			<default>"true"</default>
+			<advanced>true</advanced>
+		</parameter>
+
+	</config-description>
+</binding:binding>

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.persistence.influxdb08.internal;
 
@@ -221,8 +225,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
     State state = null;
     if (item instanceof DimmerItem || item instanceof RollershutterItem) {
       state = item.getStateAs(PercentType.class);
-    } else if (item instanceof ColorItem) {
-      state = item.getStateAs(HSBType.class);
     } else {
         // All other items should return the best format by default
         state = item.getState();
@@ -429,8 +431,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       value = (OnOffType) state == OnOffType.ON ? 1 : 0;
     } else if (state instanceof OpenClosedType) {
       value = (OpenClosedType) state == OpenClosedType.OPEN ? 1 : 0;
-    } else if (state instanceof HSBType) {
-      value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
       value = ((DateTimeType) state).getCalendar().getTime().getTime();
     } else {
@@ -453,8 +453,6 @@ public class InfluxDBPersistenceService implements QueryablePersistenceService {
       value = ((OnOffType) state) == OnOffType.ON ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;
     } else if (state instanceof OpenClosedType) {
       value = ((OpenClosedType) state) == OpenClosedType.OPEN ? DIGITAL_VALUE_ON : DIGITAL_VALUE_OFF;  
-    } else if (state instanceof HSBType) {
-      value = ((HSBType) state).toString();
     } else if (state instanceof DateTimeType) {
       value = String.valueOf(((DateTimeType) state).getCalendar().getTime().getTime());
     } else {

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2016 by the respective copyright holders.
+ * Copyright (c) 2010-2019 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.zibase.internal;
 
@@ -47,13 +51,13 @@ public class ZibaseBindingConfigScenario extends ZibaseBindingConfig {
      */
     @Override
     protected boolean isItemConfigValid() {
-        logger.info("Checking config for scenario item " + this.getId());
+        logger.info("Checking config for scenario item {}", this.getId());
 
         try {
             Integer.parseInt(this.values[ZibaseBindingConfig.POS_ID]);
             return true;
         } catch (NumberFormatException ex) {
-            logger.error("bad scenario id : " + this.getId());
+            logger.error("bad scenario id : {}", this.getId());
         }
 
         return false;
