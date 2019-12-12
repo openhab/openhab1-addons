@@ -123,12 +123,13 @@ You've got the option to show just specific events.
 * NAMEANDTIME: name and start- to end time (itemtype:String)
 
 # Logging
+
 * `<logger name="org.openhab.binding.caldav_personal" level="TRACE"/>`
 * `<logger name="org.openhab.binding.caldav_command" level="TRACE"/>`
 * `<logger name="org.openhab.io.caldav" level="TRACE"/>`
 
-# Tested calDAV Servers with examples
-As far as i know are these
+# Tested calDAV Servers with Examples
+
 ## ownCloud (my reference implementation)
 
 ```
@@ -159,6 +160,16 @@ caldavio:openhab_tasks:reloadInterval=10
 caldavio:openhab_tasks:preloadTime=20000
 ```
 
+## Synology Calendar
+
+```
+caldavio:openhab_tasks:url=http://server_ip:server_port/homes/username/calendar_name/
+caldavio:openhab_tasks:username=username
+caldavio:openhab_tasks:password=password
+caldavio:openhab_tasks:reloadInterval=10
+caldavio:openhab_tasks:preloadTime=20000
+```
+
 ## Locate URL
 This site may help to find the Calendar URL (i.e. Google Shared Calendars):
 http://www.ict4g.net/adolfo/notes/2015/07/04/determingurlofcaldav.html
@@ -180,7 +191,7 @@ Saves the events to the calendar named history with a length of 10 minutes
 You can simulate presence with this binding.
 To do this you have to
 * enable the caldav-command binding
-* enbale the caldav-persistence binding
+* enable the caldav-persistence binding
 * configure the Items you need for simulation for caldav persistence
 * configure the caldav persistence to singleEvents=true and an offset you want. One week or two make sense.
 * keep openHAB running for a week or more and the persistent events will occur again in the future regarding the offset you set up
