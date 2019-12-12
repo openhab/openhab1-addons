@@ -64,7 +64,7 @@ openhab.cfg
 Since 1.9.0, the CalDAV Command binding also supports a default item which may optionally be added to openhab.cfg:
 
 ```
-caldavCommand:defaultItemOnBegin=&lt;item&gt;
+caldavCommand:defaultItemOnBegin=<item>
 ```
 If the command calendar contains items whose description does not follow the `BEGIN/END:<item>:<value>` pattern AND a default item is specified, then the respective lines are interpreted as `BEGIN:<defaultItemOnBegin>:<line>`
 
