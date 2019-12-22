@@ -349,6 +349,7 @@ public class MyHomeJavaConnector {
                 retry++;
                 Thread.sleep(1000);
                 logger.warn("Monitor connection problem. Attempting retry {}.", retry);
+                logger.debug("Monitor connection problem. Exception details",e);
                 try {
                     startMonitoring();
                 } catch (IOException e1) {
