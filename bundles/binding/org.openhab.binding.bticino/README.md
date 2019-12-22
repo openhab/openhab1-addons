@@ -60,7 +60,7 @@ where `<who>` is from the following table:
 
 At the moment only 2 (Automation), 1 (Lightning), 15 (Basic & Evolved CEN) and part of the 4 (Temperature Control) are supported.
 
-For more details refer to the official document [OpenWebNet Introduction](http://www.myopen-legrandgroup.com/resources/own_protocol/m/own_documents/16.aspx).
+For more details refer to the official document [OpenWebNet Introduction](https://developer.legrand.com/uploads/2019/12/OWN_Intro_ENG.pdf).
 
 ## Examples
 
