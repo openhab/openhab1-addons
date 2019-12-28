@@ -130,6 +130,9 @@ public class GaradgetBinding extends AbstractActiveBinding<GaradgetBindingProvid
         if (isNotBlank(username) && isNotBlank(password)) {
             connection = new Connection(username, password, timeout);
             connection.login();
+        }
+
+        if (connection.isLoggedIn()) {
             // Poll at the earliest opportunity
             schedulePoll(0);
             setProperlyConfigured(true);
