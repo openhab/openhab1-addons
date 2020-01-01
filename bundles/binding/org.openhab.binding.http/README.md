@@ -93,6 +93,8 @@ http://www.domain.org/home/lights/23871/?status=%2$s&date=%1$tY-%1$tm-%1$td
 
 Each format string starts with '%' followed by an optional index e.g. `2$`, where `2` is the index of the parameter arg given to the format(format, args...) method. Besides the index you have to specify the format to be applied to the argument. eg. `s` to format a String in the given example or `d` to format an Integer, or `.1f` to format a floating point number with one decimal place.
 
+Dynamic URLs are only support if you use the item definition without a cache.  If you use the cache, the translation will not happen correctly.
+
 ## HTTP headers
 
 It is possible to define optional HTTP headers which will be sent during the HTTP method call. Those optional headers can be added to the url in the form `header1=value1&header2=value2...`. This headers string should be enclosed in curly brackets right after the url itself (before the separation colon).
