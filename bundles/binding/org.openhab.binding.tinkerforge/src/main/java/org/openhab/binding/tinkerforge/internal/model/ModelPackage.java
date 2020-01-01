@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.EReference;
  * @since 1.3.0
  *        <!-- end-user-doc -->
  *        <!-- begin-model-doc -->
- *        Copyright (c) 2010-2019 Contributors to the openHAB project
+ *        Copyright (c) 2010-2020 Contributors to the openHAB project
  *        
  *        See the NOTICE file(s) distributed with this work for additional
  *        information.
