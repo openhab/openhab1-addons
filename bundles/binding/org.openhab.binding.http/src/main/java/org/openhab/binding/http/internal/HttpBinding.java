@@ -445,9 +445,14 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
 
             if (cacheNeedsUpdate) {
 
+                String finalUrl = cacheConfig.url;
+                if (format) {
+                    finalUrl = String.format(cacheConfig.url, Calendar.getInstance().getTime());
+                }
+
                 // update and store data on cache
-                logger.debug("updating cache for '{}' ('{}')", cacheId, cacheConfig.url);
-                cacheConfig.data = HttpUtil.executeUrl("GET", cacheConfig.url, cacheConfig.headers, null, null,
+                logger.debug("updating cache for '{}' ('{}')", cacheId, finalUrl);
+                cacheConfig.data = HttpUtil.executeUrl("GET", finalUrl, cacheConfig.headers, null, null,
                         timeout);
 
                 if (cacheConfig.data != null) {
@@ -473,16 +478,19 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                 String timeoutString = Objects.toString(config.get(CONFIG_TIMEOUT), null);
                 if (StringUtils.isNotBlank(timeoutString)) {
                     timeout = Integer.parseInt(timeoutString);
+                    logger.trace("Timeout set to {}", timeout);
                 }
 
                 String granularityString = Objects.toString(config.get(CONFIG_GRANULARITY), null);
                 if (StringUtils.isNotBlank(granularityString)) {
                     granularity = Integer.parseInt(granularityString);
+                    logger.trace("Granularity set to {}", granularity);
                 }
 
                 String formatString = Objects.toString(config.get(CONFIG_FORMAT), null);
                 if (StringUtils.isNotBlank(formatString)) {
                     format = formatString.equalsIgnoreCase("true");
+                    logger.trace("Format set to {}", format);
                 }
 
                 // Parse page cache config
@@ -530,6 +538,7 @@ public class HttpBinding extends AbstractActiveBinding<HttpBindingProvider> impl
                                     + "' does not follow the expected pattern '<id>.url[{<headers>}]'");
                         }
                         cacheConfig.url = matcher.group(1);
+                        logger.trace("Set cache url {}", cacheConfig.url);
                         cacheConfig.headers = parseHttpHeaders(matcher.group(2));
                     } else if ("updateInterval".equals(configKey)) {
                         cacheConfig.updateInterval = Integer.valueOf(value);
