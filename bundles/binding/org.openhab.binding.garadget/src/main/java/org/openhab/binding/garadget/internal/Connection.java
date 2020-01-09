@@ -115,6 +115,10 @@ public class Connection {
                         logger.warn("Unable to parse token response.", e);
                     }
                 }
+                else {
+                    logger.warn("Login failure. Status code = {}", statusCode);
+                    logger.trace("Failure response: {}", responseBody);
+                }
             }
         });
     }
@@ -222,13 +226,25 @@ public class Connection {
                 break;
             case "deleteToken":
                 httpMethod = HTTP_DELETE;
+                if (tokens == null) {
+                    logger.debug("Unable to execute deleteToken command; no tokens exist");
+                    return;
+                }
                 url = String.format(ACCESS_TOKENS_URL, tokens.accessToken);
                 break;
             case "getDevices":
                 httpMethod = HTTP_GET;
+                if (tokens == null) {
+                    logger.debug("Unable to execute getDevices command; no tokens exist");
+                    return;
+                }
                 url = String.format(GET_DEVICES_URL, tokens.accessToken);
                 break;
             default:
+                if (tokens == null) {
+                    logger.debug("Unable to execute {} command; no tokens exist", funcName);
+                    return;
+                }
                 url = String.format(DEVICE_FUNC_URL, device.getId(), funcName, tokens.accessToken);
                 if (command == null) {
                     // retrieve a variable
