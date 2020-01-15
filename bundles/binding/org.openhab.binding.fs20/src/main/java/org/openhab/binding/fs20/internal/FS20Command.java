@@ -46,6 +46,10 @@ public enum FS20Command {
     RESET("1B"),
     UNKNOWN(null),
     ON_OLD_DIM_VALUE("11"),
+    TEMP_SYNC("37"),
+    TEMP_OFF("38"),
+    TEMP_ON("39"),
+    MOTION_ON("3E"),
     TOGGLE("12");
     // TODO add the other values with extension bit set
     // http://fhz4linux.info/tiki-index.php?page=FS20+Protocol
