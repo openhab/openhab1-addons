@@ -67,7 +67,7 @@ There are three supported protocol types, "active", "message_waiting" and "api"
     * calls can be filtered on freeswitch event headers, multiple headers can be used, all must match. 
     * filters format is "Key:Value,Key:Value,...."
     * Ex: `Switch Incoming_Call "Home Phone" (Phone) {freeswitch="active:Call-Direction:inbound,Caller-Destination-Number:5555551212"}`
-    * see [Freesiwtch Events](http://wiki.freeswitch.org/wiki/Event_List) for more info on event headers
+    * see [Freeswitch Events](http://wiki.freeswitch.org/wiki/Event_List) for more info on event headers
   * Non Filtered
     * if no filter is given any inbound call will be used
     * for multiple active calls the most recent active call's callerid will be displayed
