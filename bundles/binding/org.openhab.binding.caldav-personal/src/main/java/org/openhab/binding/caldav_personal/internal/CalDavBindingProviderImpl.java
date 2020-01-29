@@ -51,9 +51,9 @@ public class CalDavBindingProviderImpl extends AbstractGenericBindingProvider im
     private static final String REGEX_TYPE = "type:'?([A-Za-z]+)'?";
     private static final String REGEX_EVENT_NR = "eventNr:'?([0-9]+)'?";
     private static final String REGEX_VALUE = "value:'?([A-Za-z]+)'?";
-    private static final String REGEX_FILTER_NAME = "filter-name:'?([A-Za-z\\.\\*\\+\\- \\|]+)'?";
-    private static final String REGEX_FILTER_CATEGORY = "filter-category:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
-    private static final String REGEX_FILTER_CATEGORY_ANY = "filter-category-any:'?([A-Za-z-_]+(, ?[A-Za-z-_]+)*)'?";
+    private static final String REGEX_FILTER_NAME = "filter-name:'([^']+)'";
+    private static final String REGEX_FILTER_CATEGORY = "filter-category:'([^']+)'";
+    private static final String REGEX_FILTER_CATEGORY_ANY = "filter-category-any:'([^']+)'";
 
     private boolean categoriesFiltersAny = false;
 
