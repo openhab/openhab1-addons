@@ -52,7 +52,7 @@
       </snapshots>
       <id>jfrog</id>
       <name>JFrog OSS Repository</name>
-      <url>http://oss.jfrog.org/libs-snapshot/</url>
+      <url>https://oss.jfrog.org/libs-snapshot/</url>
     </repository>
   </repositories>
 
