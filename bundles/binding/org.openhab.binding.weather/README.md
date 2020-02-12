@@ -45,13 +45,13 @@ The table below shows the apikey properties for the different weather providers;
 | apikey.ForecastIo         | API key for [ForecastIo](http://forecast.io) |
 | apikey.OpenWeatherMap     | API key for [OpenWeatherMap](http://openweathermap.org) |
 | apikey.WorldWeatherOnline | API key for [WorldWeatherOnline](http://worldweatheronline.com) |
-| apikey.Hamweather         | `client_id` for [Hamweather](http://hamweather.com) |
-| apikey2.Hamweather        | `client_secret` for [Hamweather](http://hamweather.com) |
+| apikey.Aerisweather       | `client_id` for [Aerisweather](http://aerisweather.com) |
+| apikey2.Aerisweather      | `client_secret` for [Aerisweather](http://aerisweather.com) |
 | apikey.Meteoblue          | API key for [MeteoBlue](https://www.meteoblue.com/) |
 | apikey.ApiXU              | API key for [ApiXU](https://www.apixu.com/) |
 | apikey.Weatherbit         | API key for [Weatherbit](https://www.weatherbit.io/) |
 
-> [Hamweather](http://hamweather.com) is the only provider with multiple keys; both are required.
+> [Aerisweather](http://aerisweather.com) is the only provider with multiple keys; both are required.
 
 
 ### Location Configuration
