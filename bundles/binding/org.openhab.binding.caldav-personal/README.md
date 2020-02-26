@@ -37,7 +37,7 @@ Binding file: org.openhab.binding.caldav-command-version.jar
 Used to execute commands through an event, triggered at the start or the end of an event.
 The event summary is free selectable. The event description must fullfill special syntax.
 Syntax is `<BEGIN|END>:<Item-Name>:<Command>`.
-Each item trigger must be a single line without linebreaks. Every line which starts with "BEGIN" will be executed at the begin of the event. Each line with an "END" will be executed at the end of the event. You can define multiple lines, which must not be ordered. For example:
+Each item trigger must be a single line without linebreaks. Every line which starts with "BEGIN" will be executed at the begin of the event. Each line with an "END" will be executed at the end of the event. You can define multiple lines, which need not be ordered. For example:
 
 ```
 BEGIN:Heater_Livingroom:22
