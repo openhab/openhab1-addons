@@ -138,3 +138,9 @@ Number Weather_OutTemp "Value: [%.1f °C]" { http="<[http://weewx/now.json:60000
 ```
 
 [jsonpath.com](http://jsonpath.com/) is a handy tool to create the JSONPATH transformation.
+
+Make sure the transformation used is installed, either via PaperUI (Addons -> Transformations) or by adding an entry to the `addons.cfg` file in `$OPENHAB_CONF/services`, like this:
+
+```
+transformation=jsonpath,javascript,...
+```
