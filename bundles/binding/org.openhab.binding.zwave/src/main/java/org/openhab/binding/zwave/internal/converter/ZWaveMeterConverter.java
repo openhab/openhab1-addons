@@ -97,7 +97,7 @@ public class ZWaveMeterConverter extends ZWaveCommandClassConverter<ZWaveMeterCo
 
         // we ignore any meter reports for item bindings configured with 'meter_reset=true'
         // since we don't want to be updating the 'reset' switch
-        if ("true".equalsIgnoreCase(arguments.get("meter_reset"))) {
+        if (Boolean.parseBoolean(arguments.get("meter_reset"))) {
             return;
         }
 
