@@ -9,7 +9,7 @@
 
   <files>
     <file>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>.</outputDirectory>
       <source>src/assemble/resources/README_addons.TXT</source>
       <destName>README.TXT</destName>
     </file>
