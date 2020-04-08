@@ -1005,3 +1005,323 @@ then
 	}
 end
 ```
+
+
+## Additional Examples (German Version)
+
+![Sitemap Panel](https://github.com/openhab/openhab1-addons/blob/master/bundles/binding/org.openhab.binding.comfoair/ComfoAir1-ExamplesGermanVersion.png)
+![Settings Panel](https://github.com/openhab/openhab1-addons/blob/master/bundles/binding/org.openhab.binding.comfoair/ComfoAir1-ExamplesGermanVersion-Settings.png)
+
+`items/comfoair.items`:
+
+```
+Group ComfoAir "ComfoAir" <recu> (devices)
+
+// Steuerung
+Number Comfoair_Steuerung "Lüftungssteuerung[]" <fan> (ComfoAir) {comfoair="activate"}
+Number Comfoair_Stufe "Lüftungsstufe [MAP(ventilation_fanlevel.map):%s]" <fan> (ComfoAir) {comfoair="fan_level"}
+Switch Comfoair_Automatik "Lüftungsautomatik" <fan> (ComfoAir)
+Number Comfoair_Power "Lüftungsleistung [%d %%]" <fan> (ComfoAir)
+
+// Temperaturfühler
+Number Comfoair_Temperatur_Aussenluft "Temperatur: Außenluft [%.1f °C]" <temperature> (ComfoAir) {comfoair="outdoor_incomming_temperatur"}
+Number Comfoair_Temperatur_Fortluft "Temperatur: Fortluft [%.1f °C]" <temperature> (ComfoAir) {comfoair="outdoor_outgoing_temperatur"}
+Number Comfoair_Temperatur_Zuluft "Temperatur: Zuluft [%.1f °C]" <temperature> (ComfoAir) {comfoair="indoor_incomming_temperatur"}
+Number Comfoair_Temperatur_Abluft "Temperatur: Abluft [%.1f °C]" <temperature> (ComfoAir) {comfoair="indoor_outgoing_temperatur"}
+
+// Laufzeiten
+Number Comfoair_Laufzeit_Abwesenheit "Laufzeit Stufe: Abwesend [%d h]" <time> (ComfoAir) {comfoair="level0_time"}
+Number Comfoair_Laufzeit_Stufe1 "Laufzeit Stufe: Niedrig [%d h]" <time> (ComfoAir) {comfoair="level1_time"}
+Number Comfoair_Laufzeit_Stufe2 "Laufzeit Stufe: Mittel [%d h]" <time> (ComfoAir) {comfoair="level2_time"}
+Number Comfoair_Laufzeit_Stufe3 "Laufzeit Stufe: Hoch [%d h]" <time> (ComfoAir) {comfoair="level3_time"}
+
+// Ventilatoren
+Number Comfoair_FanIn_Aktuell "Zuluft Kapazität [%d %%]" <fan> (ComfoAir) {comfoair="fan_in_efficiency"}
+Number Comfoair_FanIn_RPM "Zuluft Leistung [%d rpm]" <fan> (ComfoAir) {comfoair="fan_in_speed"}
+Number Comfoair_FanIn_Level0 "Zuluft Kapazität Stufe: Abwesend [%d %%]" <fan> (ComfoAir) {comfoair="fan_in_0"}
+Number Comfoair_FanIn_Level1 "Zuluft Kapazität Stufe: Niedrig [%d %%]" <fan> (ComfoAir) {comfoair="fan_in_1"}
+Number Comfoair_FanIn_Level2 "Zuluft Kapazität Stufe: Mittel [%d %%]" <fan> (ComfoAir) {comfoair="fan_in_2"}
+Number Comfoair_FanIn_Level3 "Zuluft Kapazität Stufe: Hoch [%d %%]" <fan> (ComfoAir) {comfoair="fan_in_3"}
+Number Comfoair_FanOut_Aktuell "Abluft Kapazität [%d %%]" <fan> (ComfoAir) {comfoair="fan_out_efficiency"}
+Number Comfoair_FanOut_RPM "Abluft Leistung [%d rpm]" <fan> (ComfoAir) {comfoair="fan_out_speed"}
+Number Comfoair_FanOut_Level0 "Abluft Kapazität Stufe: Abwesend [%d %%]" <fan> (ComfoAir) {comfoair="fan_out_0"}
+Number Comfoair_FanOut_Level1 "Abluft Kapazität Stufe: Niedrig [%d %%]" <fan> (ComfoAir) {comfoair="fan_out_1"}
+Number Comfoair_FanOut_Level2 "Abluft Kapazität Stufe: Mittel [%d %%]" <fan> (ComfoAir) {comfoair="fan_out_2"}
+Number Comfoair_FanOut_Level3 "Abluft Kapazität Stufe: Hoch [%d %%]" <fan> (ComfoAir) {comfoair="fan_out_3"}
+
+// Bypass Einstellungen
+Number Comfoair_Bypass_Installation "Bypass [MAP(ventilation_option.map):%d]" <radiator> (ComfoAir) {comfoair="is_bypass"}
+Number Comfoair_Bypass_Modus "Bypass [MAP(ventilation_bypassmode.map):%d]" <radiator> (ComfoAir) {comfoair="bypass_mode"}
+Number Comfoair_Bypass_Saison "Bypass Saison [MAP(ventilation_bypassseason.map):%d]" <sun_clouds> (ComfoAir) {comfoair="bypass_season"}
+Number Comfoair_Bypass_Zieltemperatur "Bypass Zieltemperatur [%.1f °C]" <temperature> (ComfoAir) {comfoair="target_temperatur"}
+Number Comfoair_Laufzeit_Bypass "Bypass Laufzeit [%d h]" <time> (ComfoAir) {comfoair="bypass_time"}
+
+// Enthalpie Einstellungen
+Number Comfoair_Enthalpie_Installation "Enthalpy [MAP(ventilation_option.map):%d]" <humidity> (ComfoAir) {comfoair="is_enthalpy"}
+Number Comfoair_Enthalpie_Modus "Enthalpy [MAP(ventilation_optionmode.map):%d]" <humidity> (ComfoAir) {comfoair="enthalpy_mode"}
+Number Comfoair_Enthalpie_Temperatur "Enthalpy Temperatur [%d °C]" <temperature> (ComfoAir) {comfoair="enthalpy_temperature"}
+Number Comfoair_Enthalpie_Luftfeuchte "Enthalpy Luftfeuchtigkeit [%d Rh%%]" <humidity> (ComfoAir) {comfoair="enthalpy_humidity"}
+Number Comfoair_Enthalpie_Koeffizient "Enthalpy Koeffizient [%d %%]" <humidity> (ComfoAir) {comfoair="enthalpy_humidity"}
+Number Comfoair_Enthalpie_Laufzeit "Enthalpie Laufzeit [%d h]" <time> (ComfoAir) {comfoair="enthalpy_time"}
+
+// Feuerstelle Einstellungen
+Number Comfoair_Feuerstelle_Installation "Feuerstelle [MAP(ventilation_option.map):%d]" <fire> (ComfoAir) {comfoair="is_chimney"}
+Number Comfoair_Feuerstelle_Modus "Feuerstelle [MAP(ventilation_optionmode.map):%s]" <fire> (ComfoAir) {comfoair="chimney_mode"}
+
+// Frostschutz Einstellungen
+Number Comfoair_Frostschutz_Modus "Frostschutz [MAP(ventilation_optionmode.map):%s]" <climate> (ComfoAir) {comfoair="freeze_mode"}
+Number Comfoair_Frostschutz_Laufzeit "Frostschutz Laufzeit [%d h]" <time> (ComfoAir) {comfoair="freeze_time"}
+
+// Filterzustände und Reset
+Number Comfoair_Filter_Reset "Filter Reset [%d]" <error> (ComfoAir) {comfoair="filter_reset", expire="3s,state=0"}
+Number Comfoair_Filter_Periode "Filter Periode [%d Wochen]" <calendar> (ComfoAir) {comfoair="filter_period"}
+Number Comfoair_Filter_Dauer "Filter Dauer [%d h]" <time> (ComfoAir) {comfoair="filter_running"}
+Number Comfoair_Filter_WechselIntern "Filterwechsel: Intern [MAP(ventilation_filtererror.map):%d]" <error> (ComfoAir) {comfoair="filter_error_intern"}
+Number Comfoair_Filter_WechselExtern "Filterwechsel: Extern [MAP(ventilation_filtererror.map):%d]" <error> (ComfoAir) {comfoair="filter_error_extern"}
+
+// Fehlerzustände und Reset
+Number Comfoair_Fehler_Reset "Fehler Reset [%d]" <error> (ComfoAir) {comfoair="error_reset", expire="3s,state=0"}
+String Comfoair_Fehlermeldung "Fehlermeldung [%s]" <error> (ComfoAir) {comfoair="error_message"}
+```
+
+
+`rules/comfoair.rules`:
+
+```
+rule "Openhab Steuerung aktivieren"
+when
+    System started
+then
+    createTimer(now.plusSeconds(60), [|
+        Comfoair_Steuerung.sendCommand(1)
+    ])
+end
+
+rule "Openhab Steuerung deaktivieren"
+when
+    System shuts down
+then
+    Comfoair_Steuerung.sendCommand(0)
+end
+
+rule "Lüftungsleistung einstellen"
+when
+    Item Comfoair_Power received command
+then
+    val power = (receivedCommand as DecimalType).intValue
+    if (power < 0 || power > 100) {
+        logError("ComfoAir", "Invalid power parameter! Value must be in range [0,100] but was: " + power)
+        return;
+    }
+    
+    var stufe = 1
+    if (power < 5) {
+        // Stufe: Aus
+        stufe = 1
+        Comfoair_FanIn_Level0.sendCommand(0)
+        Comfoair_FanOut_Level0.sendCommand(0)
+    } else if (power < 25) {
+        // Stufe: Abwesend
+        stufe = 1
+        Comfoair_FanIn_Level0.sendCommand(power)
+        Comfoair_FanOut_Level0.sendCommand(power - 2)
+    } else if (power < 50) {
+        // Stufe: Niedrig
+        stufe = 2
+        Comfoair_FanIn_Level1.sendCommand(power)
+        Comfoair_FanOut_Level1.sendCommand(power - 3)
+    } else if (power < 75) {
+        // Stufe: Mittel
+        stufe = 3
+        Comfoair_FanIn_Level2.sendCommand(power)
+        Comfoair_FanOut_Level2.sendCommand(power - 4)
+    } else {
+        // Stufe: Hoch
+        stufe = 4
+        Comfoair_FanIn_Level3.sendCommand(power)
+        Comfoair_FanOut_Level3.sendCommand(power - 5)
+    }
+
+    // Ändere Stufe, wenn nötig
+    if (Comfoair_Stufe.state != stufe) {
+        createTimer(now.plusMillis(500), [|
+            Comfoair_Stufe.sendCommand(stufe)
+        ])
+    }
+end
+
+rule "Lüftungsleistung wiederherstellen"
+when
+    Item Comfoair_Stufe received command
+then
+    var stufe = (receivedCommand as DecimalType).intValue
+    
+    if (stufe != 1) {
+        // Reset Stufe: Abwesend
+        Comfoair_FanIn_Level0.sendCommand(24)
+        Comfoair_FanOut_Level0.sendCommand(22)
+    } else {
+        Comfoair_Power.postUpdate(Comfoair_FanIn_Level0.state as DecimalType)
+    }
+    if (stufe != 2) {
+        // Reset Stufe: Niedrig
+        Comfoair_FanIn_Level1.sendCommand(48)
+        Comfoair_FanOut_Level1.sendCommand(45)
+    } else {
+        Comfoair_Power.postUpdate(Comfoair_FanIn_Level1.state as DecimalType)
+    }
+    if (stufe != 3) {
+        // Reset Stufe: Mittel
+        Comfoair_FanIn_Level2.sendCommand(69)
+        Comfoair_FanOut_Level2.sendCommand(65)
+    } else {
+        Comfoair_Power.postUpdate(Comfoair_FanIn_Level2.state as DecimalType)
+    }
+    if (stufe != 4) {
+        // Reset Stufe: Hoch
+        Comfoair_FanIn_Level3.sendCommand(100)
+        Comfoair_FanOut_Level3.sendCommand(95)
+    } else {
+        Comfoair_Power.postUpdate(Comfoair_FanIn_Level3.state as DecimalType)
+    }
+end
+```
+
+
+`sitemaps/comfoair.sitemap`:
+```
+sitemap comfoair label="ComfoAir" {
+	Frame label="Übersicht" {
+		Switch item=Comfoair_Steuerung mappings=[1="Openhab",0="CC Ease"]
+		Switch item=Comfoair_Automatik
+		Group item=ComfoAir label="Warnungen" icon="error" visibility=[Comfoair_Fehlermeldung!="Ok",Comfoair_Filter_WechselIntern!=0,Comfoair_Filter_WechselExtern!=0] {
+			Frame label="Warnungen" visibility=[Comfoair_Fehlermeldung!="Ok"] {
+				Default item=Comfoair_Fehlermeldung visibility=[Comfoair_Fehlermeldung!="Ok"]
+				Switch item=Comfoair_Fehler_Reset mappings=[1="Reset"] visibility=[Comfoair_Fehlermeldung!="Ok"]
+			}
+			Frame label="Filter" visibility=[Comfoair_Filter_WechselIntern!=0,Comfoair_Filter_WechselExtern!=0] {
+				Default item=Comfoair_Filter_WechselIntern visibility=[Comfoair_Filter_WechselIntern!=0]
+				Default item=Comfoair_Filter_WechselExtern visibility=[Comfoair_Filter_WechselExtern!=0]
+				Switch item=Comfoair_Filter_Reset mappings=[1="Reset"] visibility=[Comfoair_Filter_WechselIntern!=0,Comfoair_Filter_WechselExtern!=0]
+			}
+		}
+		Group item=ComfoAir label="Einstellungen" icon="settings" {
+			Frame label="Lüftersteuerung" {
+				Slider item=Comfoair_FanIn_Level0
+				Slider item=Comfoair_FanOut_Level0
+				Slider item=Comfoair_FanIn_Level1
+				Slider item=Comfoair_FanOut_Level1
+				Slider item=Comfoair_FanIn_Level2
+				Slider item=Comfoair_FanOut_Level2
+				Slider item=Comfoair_FanIn_Level3
+				Slider item=Comfoair_FanOut_Level3
+			}
+			Frame label="Bypass" {
+				Default item=Comfoair_Bypass_Installation
+				Text item=Comfoair_Bypass_Modus
+				Text item=Comfoair_Bypass_Saison
+				Setpoint item=Comfoair_Bypass_Zieltemperatur minValue=15 maxValue=25 step=1
+			}
+			Frame label="Enthalpie" {
+				Default item=Comfoair_Enthalpie_Installation
+				Text item=Comfoair_Enthalpie_Modus
+				Default item=Comfoair_Enthalpie_Temperatur
+				Default item=Comfoair_Enthalpie_Luftfeuchte
+				Default item=Comfoair_Enthalpie_Koeffizient
+			}
+			Frame label="Feuerstelle" {
+				Default item=Comfoair_Feuerstelle_Installation
+				Text item=Comfoair_Feuerstelle_Modus
+			}
+			Frame label="Frostschutz" {
+				Text item=Comfoair_Frostschutz_Modus
+			}
+		}
+	}
+	Frame label="Steuerung" {
+		Slider item=Comfoair_Power minValue=0 maxValue=100 step=1 visibility=[Comfoair_Automatik==OFF]
+		Setpoint item=Comfoair_Stufe minValue=1 maxValue=4 step=1 visibility=[Comfoair_Automatik==OFF]
+		Text item=Comfoair_FanIn_Aktuell
+		Text item=Comfoair_FanOut_Aktuell
+		Text item=Comfoair_FanIn_RPM
+		Text item=Comfoair_FanOut_RPM
+	}
+	Frame label="Temperaturen" {
+		Text item=Comfoair_Temperatur_Aussenluft
+		Text item=Comfoair_Temperatur_Fortluft
+		Text item=Comfoair_Temperatur_Zuluft
+		Text item=Comfoair_Temperatur_Abluft
+	}
+	Frame label="Betriebsstunden" {
+		Text item=Comfoair_Laufzeit_Abwesenheit
+		Text item=Comfoair_Laufzeit_Stufe1
+		Text item=Comfoair_Laufzeit_Stufe2
+		Text item=Comfoair_Laufzeit_Stufe3
+		Text item=Comfoair_Filter_Dauer
+		Text item=Comfoair_Filter_Periode
+	}
+}
+```
+
+
+`transform/ventilation_bypassmode.map`:
+```
+0=Geschlossen
+1=Offen
+null=unbekannt
+undefined=unbekannt
+-=unbekannt
+```
+
+
+`transform/ventilation_bypassseason.map`:
+```
+0=Winter
+1=Sommer
+null=unbekannt
+undefined=unbekannt
+-=unbekannt
+```
+
+
+`transform/ventilation_fanlevel.map`:
+```
+1=Abwesend
+2=Niedrig
+3=Mittel
+4=Hoch
+null=unbekannt
+undefined=unbekannt
+-=unbekannt
+```
+
+
+`transform/ventilation_filtererror.map`:
+```
+0=nicht notwendig
+1=notwendig
+null=unbekannt
+undefined=unbekannt
+-=unbekannt
+```
+
+
+`transform/ventilation_option.map`:
+```
+0=Nicht Installiert
+1=Installiert
+2=Installiert (ohne Sensor)
+null=unbekannt
+undefined=unbekannt
+-=unbekannt
+```
+
+
+`transform/ventilation_optionmode.map`:
+```
+0=Inaktiv
+1=Aktiv
+null=unbekannt
+undefined=unbekannt
+-=unbekannt
+```
