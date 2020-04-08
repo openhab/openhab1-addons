@@ -1009,8 +1009,8 @@ end
 
 ## Additional Examples (German Version)
 
-![Sitemap Panel](https://github.com/openhab/openhab1-addons/blob/master/bundles/binding/org.openhab.binding.comfoair/ComfoAir1-ExamplesGermanVersion.png)
-![Settings Panel](https://github.com/openhab/openhab1-addons/blob/master/bundles/binding/org.openhab.binding.comfoair/ComfoAir1-ExamplesGermanVersion-Settings.png)
+![Sitemap Panel](./ComfoAir1-ExamplesGermanVersion.png)
+![Settings Panel](./ComfoAir1-ExamplesGermanVersion-Settings.png)
 
 `items/comfoair.items`:
 
