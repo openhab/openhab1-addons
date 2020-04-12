@@ -3,9 +3,7 @@ dist: xenial
 
 language: java
 
-jdk:
-  - openjdk8
-  - openjdk11
+jdk: openjdk8
 
 cache:
   directories:
@@ -16,9 +14,6 @@ before_install:
   - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
 install:
   - |
-    function extra_maven_opts() {
-        if [ "$TRAVIS_JDK_VERSION" != "openjdk8" ]; then echo "-Denforcer.skip=true"; fi;
-    }
     function prevent_timeout() {
         local i=0
         while [ -e /proc/$1 ]; do
@@ -46,9 +41,5 @@ after_success:
   - print_reactor_summary .build.log
 after_failure:
   - tail -n 2000 .build.log
-env: # required for allowing failures
-matrix:
-  allow_failures:
-    - jdk: openjdk11
 script:
-  - mvnp clean verify -B $(extra_maven_opts)
+  - mvnp clean verify -B
