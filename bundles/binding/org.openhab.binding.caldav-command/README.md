@@ -26,7 +26,7 @@ openhab.cfg
 
 ### Note for openHAB 2
 
-The CalDAV binding is compatible with openHAB 2 just like any other openHAB 1.x binding. There is currently just one bug in the way the configuration file is parsed. Create the configuration file `caldavio.cfg` with the additional prefix `caldavio:`. Do the same for `caldavCommand.cfg` and `caldavCommandPersonal.cfg`.
+The CalDAV binding is compatible with openHAB 2 just like any other openHAB 1.x binding. There is currently just one bug in the way the configuration file is parsed. Create the configuration file `caldavio.cfg` with the additional prefix `caldavio:`. Do the same for `caldavCommand.cfg` and `caldavPersonal.cfg`.
 For more details see the [discussion here](https://github.com/openhab/openhab/issues/4074#issuecomment-202737544). 
 
 ***
