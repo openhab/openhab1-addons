@@ -1,5 +1,7 @@
 # Insteon PLM Binding
 
+>DO NOT USE THIS BINDING. It is no longer supported, and has been replaced by the Insteon binding.
+
 Insteon is a home area networking technology developed primarily for connecting light switches and loads. Insteon devices send messages either via the power line, or by means of radio frequency (RF) waves, or both (dual-band). A considerable number of Insteon compatible devices such as switchable relays, thermostats, sensors etc are available. More about Insteon can be found on [Wikipedia](http://en.wikipedia.org/wiki/Insteon).
 
 This binding provides access to the Insteon network by means of either an Insteon PowerLinc Modem (PLM), a legacy Insteon Hub 2242-222 (pre-2014) or the new 2245-222 ("2014") Insteon Hub. The modem can be connected to the openHAB server either via a serial port (Model 2413S) or a USB port (Model 2413U). As of 1.9, the modem can also be connected via TCP (such as ser2net).  The binding translates openHAB commands into Insteon messages and sends them on the Insteon network. Relevant messages from the Insteon network (like notifications about switches being toggled) are picked up by the modem and converted to openHAB status updates by the binding. The binding also supports sending and receiving of legacy X10 messages.
