@@ -60,6 +60,8 @@ where `<direction>` is one of the following values:
 
 `<ip address>` is the hostname or IP address in dotted notation of the remote host.
 
+For inbound communications, `<ip address>:<port>` are the allowed client IP and client ports (see examples bellow).
+
 `<transformationrule>` can be one of:
 
 * a string in the form of `TEXT1(TEXT2)`, and then it goes through the transformation `TEXT1` with the argument `TEXT2`;
@@ -77,10 +79,15 @@ This is identical for incoming and outgoing directions. The direction just says 
 
 Here are some examples of valid binding configuration strings. 
 
-Open a port on the openHAB server and listen for incoming connections (e.g. for a String Item that captures some state of a remote device that connects to openHAB):
-
+Open a port on the openHAB server and listen for incoming connections (e.g. for a String Item that captures some state of a remote device that connects to openHAB)
+. The client must have IP 192.168.0.2 and use the client port 3000:
 ```
 tcp="<[192.168.0.2:3000:'REGEX((.*))']"
+```
+
+Open a port on the openHAB server and listen for incoming connections from client 192.168.0.2. The client may use any client port:
+```
+tcp="<[192.168.0.2:*:'REGEX((.*))']"
 ```
 
 Connect to a remote server, for a Switch Item where values are converted using the my.device.map:
