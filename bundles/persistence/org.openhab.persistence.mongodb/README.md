@@ -1,6 +1,6 @@
 # MongoDB Persistence
 
-This service allows you to persist state updates using the MongoDB database.  It supports writing information to a MongoDB document store, as well as querying from it.
+This service allows you to persist state updates using the [MongoDB](https://www.mongodb.com/) database.  It supports writing information to a MongoDB document store, as well as querying from it.
 
 ## Configuration
 
