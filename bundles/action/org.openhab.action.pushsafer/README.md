@@ -8,9 +8,9 @@ The following is a valid action call that can be made when the plugin is loaded.
 For specific information on each item, see the [Pushsafer API](https://www.pushsafer.com/en/pushapi).
 
 ```java
-pushsafer(String apiToken, String message, String title, String device, String icon, String vibration, String sound)
+pushsafer(String apiToken, String message, String title, String device, String icon, String vibration, String sound, String iconcolor, String url, String urltitle, String priority, String time2live, String retry, String expire, String answer)
 ```
 
 You must at least provide an API token (Private or Alias Key from Pushsafer.com) and a message in some manner before a message can be pushed.
 All other parameters are optional.
-If you use an alias key, the parameters (device, icon, sound, vibration) are overwritten by the alias setting on pushsafer.
+If you use an alias key, the parameters (device, icon, sound, vibration, iconcolor, url, urltitle, priority, time2live, retry, expire, answer) are overwritten by the alias setting on pushsafer.
