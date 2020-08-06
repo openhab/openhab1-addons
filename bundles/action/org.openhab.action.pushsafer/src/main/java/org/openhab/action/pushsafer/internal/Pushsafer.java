@@ -55,14 +55,14 @@ public class Pushsafer {
     public static final String MESSAGE_KEY_ICON = "i";
     public static final String MESSAGE_KEY_VIBRATION = "v";
     public static final String MESSAGE_KEY_SOUND = "s";
-	public static final String MESSAGE_KEY_ICONCOLOR = "ic";
-	public static final String MESSAGE_KEY_URL = "u";
-	public static final String MESSAGE_KEY_URLTITLE = "ut";
-	public static final String MESSAGE_KEY_PRIORITY = "pr";
-	public static final String MESSAGE_KEY_TIME2LIVE = "l";
-	public static final String MESSAGE_KEY_RETRY = "re";
-	public static final String MESSAGE_KEY_EXPIRE = "ex";
-	public static final String MESSAGE_KEY_ANWSER = "a";
+    public static final String MESSAGE_KEY_ICONCOLOR = "ic";
+    public static final String MESSAGE_KEY_URL = "u";
+    public static final String MESSAGE_KEY_URLTITLE = "ut";
+    public static final String MESSAGE_KEY_PRIORITY = "pr";
+    public static final String MESSAGE_KEY_TIME2LIVE = "l";
+    public static final String MESSAGE_KEY_RETRY = "re";
+    public static final String MESSAGE_KEY_EXPIRE = "ex";
+    public static final String MESSAGE_KEY_ANSWER = "a";
 
     static int timeout = 10000;
 
@@ -75,15 +75,15 @@ public class Pushsafer {
             @ParamDoc(name = "device", text = "Your device id or device group id to send the message to that device(s), leave empty to send the message to all of your registered devices.") String device,
             @ParamDoc(name = "icon", text = "A icon to show with your message.") String icon,
             @ParamDoc(name = "vibration", text = "How often the device should vibrate (1-3 or leave empty).") String vibration,
-			@ParamDoc(name = "sound", text = "The id of one of the sounds to override the default sound.") String sound,
-			@ParamDoc(name = "iconcolor", text = "Icons color.") String icon,
-			@ParamDoc(name = "url", text = "URL or URL Scheme.") String url,
-			@ParamDoc(name = "urltitle", text = "URL's title.") String urltitle,
-			@ParamDoc(name = "priority", text = "Message priority.") String priority,
-			@ParamDoc(name = "time2live", text = "Time in minutes, after the message automatically gets purged.") String time2live,
-			@ParamDoc(name = "retry", text = "Time in seconds, after a message should resend.") String retry,
-			@ParamDoc(name = "expire", text = "Time in seconds, after the retry/resend should stop.") String expire,
-			@ParamDoc(name = "answer", text = "Ability to send a answer.") String answer) {
+            @ParamDoc(name = "sound", text = "The id of one of the sounds to override the default sound.") String sound,
+            @ParamDoc(name = "iconcolor", text = "Icons color.") String icon,
+            @ParamDoc(name = "url", text = "URL or URL Scheme.") String url,
+            @ParamDoc(name = "urltitle", text = "URL's title.") String urltitle,
+            @ParamDoc(name = "priority", text = "Message priority.") String priority,
+            @ParamDoc(name = "time2live", text = "Time in minutes, after the message automatically gets purged.") String time2live,
+            @ParamDoc(name = "retry", text = "Time in seconds, after a message should resend.") String retry,
+            @ParamDoc(name = "expire", text = "Time in seconds, after the retry/resend should stop.") String expire,
+            @ParamDoc(name = "answer", text = "Ability to send a answer.") String answer) {
 
         StringBuilder data = new StringBuilder();
 
@@ -126,7 +126,7 @@ public class Pushsafer {
             if (!StringUtils.isEmpty(icon)) {
                 addEncodedParameter(data, MESSAGE_KEY_ICON, icon);
             }
-			
+	
             // Vibration
             if (!StringUtils.isEmpty(vibration)) {
                 addEncodedParameter(data, MESSAGE_KEY_VIBRATION, vibration);
@@ -136,43 +136,43 @@ public class Pushsafer {
             if (!StringUtils.isEmpty(sound)) {
                 addEncodedParameter(data, MESSAGE_KEY_SOUND, sound);
             }
-			
-			// Icon Color
+	
+            // Icon Color
             if (!StringUtils.isEmpty(iconcolor)) {
                 addEncodedParameter(data, MESSAGE_KEY_ICONCOLOR, iconcolor);
             }
-			
-			// URL
+
+            // URL
             if (!StringUtils.isEmpty(url)) {
                 addEncodedParameter(data, MESSAGE_KEY_URL, url);
             }
-			
-			// URL TITLE
+
+            // URL TITLE
             if (!StringUtils.isEmpty(urltitle)) {
                 addEncodedParameter(data, MESSAGE_KEY_URLTITLE, urltitle);
             }
-			
-			// PRIORITY
+
+            // PRIORITY
             if (!StringUtils.isEmpty(priority)) {
                 addEncodedParameter(data, MESSAGE_KEY_PRIORITY, priority);
             }
-			
-			// TIME2LIVE
+
+            // TIME2LIVE
             if (!StringUtils.isEmpty(time2live)) {
                 addEncodedParameter(data, MESSAGE_KEY_TIME2LIVE, time2live);
             }
-			
-			// RETRY
+
+            // RETRY
             if (!StringUtils.isEmpty(retry)) {
                 addEncodedParameter(data, MESSAGE_KEY_RETRY, retry);
             }
-			
-			// EXPIRE
+
+            // EXPIRE
             if (!StringUtils.isEmpty(expire)) {
                 addEncodedParameter(data, MESSAGE_KEY_EXPIRE, expire);
             }
-			
-			// ANSWER
+
+            // ANSWER
             if (!StringUtils.isEmpty(answer)) {
                 addEncodedParameter(data, MESSAGE_KEY_ANWSER, answer);
             }
