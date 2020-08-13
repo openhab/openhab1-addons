@@ -55,8 +55,8 @@ The various datasource property values are explained in the table below.
 
 | Property            | Description |
 |---------------------|-------------|
-| `<dsName>`.def      | Definition of what kind of samples are taken and when. The format is `<dsType>,<heartBeat>,<minValue>,<maxValue>,<sampleInterval>` |
-| `<dsName>`.archives | List of archives to be created. Each archive defines which subset of data samples shall be archived, and for how long. Consists of one or more archive entries separated by a ":" character. The format is `<consolidationFunction>,<xff>,<samplesPerBox>,<boxCount>[:<consolidationFunction>,<xff>,<samplesPerBox>,<boxCount>]` |
+| `<dsName>`.def      | Definition of the range of sample values to be taken, and when. The format is `<dsType>,<heartBeat>,<minValue>,<maxValue>,<sampleInterval>` |
+| `<dsName>`.archives | List of archives to be created. Each archive defines which subset of data samples shall be archived, and for how long. Consists of one or more archive entries separated by a ":" character. The format for one archive entry is `<consolidationFunction>,<xff>,<samplesPerBox>,<boxCount>` |
 | `<dsName>`.items    | List of Items whose values shall be sampled and stored in the archive. The format is `Item1,Item2` _**Note: the same Item is not allowed to be listed in more than one datasource!**_ |
 
 For example..
