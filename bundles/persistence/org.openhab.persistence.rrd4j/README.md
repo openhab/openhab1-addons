@@ -38,7 +38,7 @@ Two things must be done in order for an Item to get persisted:
 1. it must have a persistence strategy defined in the `rrd4j.persist` file.
 2. it must have a `datasource` defined as follows..
 
-# Datasources
+## Datasources
 
 The database comprises at least one datasource.
 The rrd4j service automatically creates one internal _**default**_ datasource for you.
