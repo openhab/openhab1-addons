@@ -127,14 +127,14 @@ Nobody seems to know what this parameter is, but its recommended value is 0.5 :)
 
 The number of consecutive data samples that will be consolidated to create a single entry ("storage box") in the database.
 If `<samplesPerBox>` is greater than 1 then the samples will be consolidated into the "storage box" by means of the `<consolidationFunction>` described above.
-The time span covered by a single "storage box" is therfore (`<sampleInterval>` x `<samplesPerBox>`) seconds.
+The time span covered by a single "storage box" is therefore (`<sampleInterval>` x `<samplesPerBox>`) seconds.
 
 It must be a positive integer value.
 
 ### `<boxCount>` (Box Count)
 
 The number of "storage boxes" in the archive.
-The time span covered by a full archive is therfore (`<sampleInterval>` x `<samplesPerBox>` x `<boxCount>`) seconds.
+The time span covered by a full archive is therefore (`<sampleInterval>` x `<samplesPerBox>` x `<boxCount>`) seconds.
 
 It must be a positive integer value.
 
