@@ -113,8 +113,11 @@ So if you use (say) the `AVERAGE` function, and two samples of `20.0` and `21.0`
 It must be one of the following strings:
 
 - **AVERAGE** the average of all the samples is stored in the box
-- **MINIMUM** the highest sample is stored in the box
-- **MAXIMUM** the lowest sample is stored in the box
+- **MIN** the highest sample is stored in the box
+- **MAX** the lowest sample is stored in the box
+- **LAST** the last sample is stored in the box
+- **FIRST** the first sample is stored in the box
+- **TOTAL** the sum of all samples is stored in the box
 
 ### `<xff>` (..)
 
