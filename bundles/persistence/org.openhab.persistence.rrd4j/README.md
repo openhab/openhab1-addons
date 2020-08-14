@@ -25,11 +25,12 @@ The service starts by storing samples in the leftmost box in the drawer.
 Once the leftmost box is full, the service starts filling the next box to the right; and so on.
 Once the rightmost box in the drawer is full, the leftmost box is emptied, the content of all boxes is moved one box to the left, and new content is added to the rightmost box.
 
-So for example..
+An example is shown below.
+Whereby the values indicated in the example may vary as chosen by the user..
 
-- Samples are taken at intervals of (say) `60` seconds
-- They are consolidated by (say) the `AVERAGE` function, over (say) `10` samples, into boxes i.e. a box covers `10 X 60` seconds
-- The ful archive contains (say) `250` boxes i.e. the archive/drawer covers `60 X 10 X 250` seconds
+- Samples are taken at intervals of `60` seconds
+- They are consolidated by the `AVERAGE` function, over `10` samples, into boxes i.e. a box covers `10 X 60` seconds
+- The full archive contains `250` boxes i.e. the archive/drawer covers `60 X 10 X 250` seconds
 
 ## Configuration
 
@@ -108,13 +109,13 @@ It must be a positive integer value.
 ### `<consolidationFunction>` (Consolidation Function)
 
 Determines the type of data compression to be used when more than one sample is to be stored in a single "storage box".
-So if you use (say) the `AVERAGE` function, and two samples of `20.0` and `21.0` are to be stored, then the value `20.5` would be stored in the box.
+So if you use the `AVERAGE` function, and two samples of `20.0` and `21.0` are to be stored, then the value `20.5` would be stored in the box.
 
 It must be one of the following strings:
 
 - **AVERAGE** the average of all the samples is stored in the box
-- **MIN** the highest sample is stored in the box
-- **MAX** the lowest sample is stored in the box
+- **MIN** the lowest sample is stored in the box
+- **MAX** the highest sample is stored in the box
 - **LAST** the last sample is stored in the box
 - **FIRST** the first sample is stored in the box
 - **TOTAL** the sum of all samples is stored in the box
