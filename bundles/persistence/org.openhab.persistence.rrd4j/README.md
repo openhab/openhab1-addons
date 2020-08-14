@@ -120,11 +120,10 @@ It must be one of the following strings:
 - **TOTAL** the sum of all samples is stored in the box
 
 All archives of a datasource must use the same `<consolidationFunction>`.
-    
 
-### `<xff>` (..)
+### `<xff>` (X-files Factor)
 
-Defines the maximum allowed proportion of data samples that stored as NaN relative to the set number of `<samplesPerBox>`. In case this proportion is above the set value NaN will be persisted instead of the consolidated value. Using 0.5 would require at least 50 percent of the data samples to hold a value other then NaN.
+Defines the maximum allowed proportion of data samples that are stored as NaN ("Not a Number") relative to the set number of `<samplesPerBox>`. In case this proportion is above the set value, NaN will be persisted instead of the consolidated value. Using 0.5 would require at least 50 percent of the data samples to hold a value other than NaN.
 
 It must be a value between 0 and 1.
 
@@ -156,7 +155,7 @@ ctr24h.archives=AVERAGE,0.5,1,480:AVERAGE,0.5,10,144
 ctr24h.items=Item1,Item2
 ```
 
-The `ctr24.def` defines a datasource which is using a COUNTER, a `<hearBeat>` of 900 seconds, a `<minValue>` of 0, a `<maxValue>` of unlimited  and a `<sampleIntervall>` of 60 seconds.
+The `ctr24.def` defines a datasource which is using a COUNTER, a `<hearBeat>` of 900 seconds, a `<minValue>` of 0, a `<maxValue>` of unlimited  and a `<sampleInterval>` of 60 seconds.
 
 The first archive entry in the `ctr24.archives` parameter has `480` boxes each containing `1` sample (or to be exact the `AVERAGE` of `1` sample).
 So it covers `480 X 60` seconds of data (8 hours) at a granularity of one minute.
