@@ -36,7 +36,7 @@ The following table defines the allowable values for `<value-key>`.
 | barometer                        |
 | barometer_day_hi                 |
 | barometer_day_hi_timeofday       |
-| barometer_day_hi_timeofday       |
+| barometer_day_lo_timeofday       |
 | barometer_day_lo                 |
 | barometer_month_hi               |
 | barometer_month_lo               |
@@ -79,7 +79,7 @@ The following table defines the allowable values for `<value-key>`.
 | inside_humidity_daily_lo         |
 | inside_humidity_day_hi           |
 | inside_humidity_day_hi_timeofday |
-| inside_humidity_day_hi_timeofday |
+| inside_humidity_day_lo_timeofday |
 | inside_humidity_day_lo           |
 | inside_humidity_month_hi         |
 | inside_humidity_month_lo         |
@@ -87,7 +87,7 @@ The following table defines the allowable values for `<value-key>`.
 | inside_temp                      |
 | inside_temp_day_hi               |
 | inside_temp_day_hi_timeofday     |
-| inside_temp_day_hi_timeofday     |
+| inside_temp_day_lo_timeofday     |
 | inside_temp_day_lo               |
 | inside_temp_month_hi             |
 | inside_temp_month_lo             |
