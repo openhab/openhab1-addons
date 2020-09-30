@@ -784,7 +784,7 @@ public enum DavisValueType {
 
     BAROMETER_DAY_LO_TIMEOFDAY {
         {
-            key = "barometer_day_hi_timeofday";
+            key = "barometer_day_lo_timeofday";
             data_type = DataTypeNumber.class;
             command = DavisCommandType.HILOWS;
             data_offset = 12;
@@ -874,7 +874,7 @@ public enum DavisValueType {
 
     INSIDE_TEMP_DAY_LO_TIMEOFDAY {
         {
-            key = "inside_temp_day_hi_timeofday";
+            key = "inside_temp_day_lo_timeofday";
             data_type = DataTypeNumber.class;
             command = DavisCommandType.HILOWS;
             data_offset = 27;
@@ -954,7 +954,7 @@ public enum DavisValueType {
 
     INSIDE_HUMIDITY_DAY_LO_TIMEOFDAY {
         {
-            key = "inside_humidity_day_hi_timeofday";
+            key = "inside_humidity_day_lo_timeofday";
             data_type = DataTypeNumber.class;
             command = DavisCommandType.HILOWS;
             data_offset = 41;
