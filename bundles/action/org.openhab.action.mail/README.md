@@ -36,5 +36,6 @@ val List<String> attachmentUrlList = newArrayList(
   "http://some.web/site/snap.jpg&param=value",
   "http://192.168.1.100/data.txt",
   "file:///tmp/201601011031.jpg")
-sendMail("you@email.net", "Test", "This is the message.", attachmentUrlList)
+val mailActions = getActions("mail","mail:smtp:justalogicalname") // add in paperUI - configurations - things (from mail binding)
+mailActions.sendMail("you@email.net", "Test", "This is the message.", attachmentUrlList)
 ```
